@@ -37,6 +37,14 @@
     @media(min-width:760px){ .result-grid { grid-template-columns:repeat(3,1fr); } }
     .result-item { border-radius:16px; overflow:hidden; border:1px solid rgba(242,238,229,.16); aspect-ratio:4/5; }
     .result-item img { width:100%; height:100%; object-fit:cover; }
+    /* títulos dos cards de benefício: leve headline, distinto do corpo */
+    .benef-tit { font-family: var(--f-apoio); font-style: italic; font-weight: 500; font-size: clamp(23px, 2.7vw, 31px); line-height: 1.18; margin-bottom: 2px; }
+    /* fundos sutis alternados (xadrez) — verdinho da paleta / creme */
+    .card--v { background: #E7EDE2; border-color: #D6DFCD; }
+    .card--c { background: #FAF7F0; }
+    /* preço: De R$497 maior pra dar ênfase ao R$197 */
+    .preco-de { font-size: clamp(22px, 2.9vw, 30px); }
+    .preco-de .risco { text-decoration-thickness: 2px; }
   </style>
 </head>
 <body>
@@ -75,20 +83,20 @@
       </div>
 
       <div class="grid grid--2 mt-l">
-        <div class="card">
-          <p class="apoio acento">Tratamentos que a cliente sente</p>
+        <div class="card card--v">
+          <p class="benef-tit acento">Tratamentos que a cliente sente</p>
           <p class="corpo txt2 mt-s">A cura é na hora, então quase não há vapor nem ardência. Ela pode molhar os cílios no mesmo dia e a retenção dura de 5 a 8 semanas. Tem cliente que não conseguia fazer extensão por sensibilidade e, com o LED, volta a fazer.</p>
         </div>
-        <div class="card">
-          <p class="apoio acento">Você rende mais no dia</p>
+        <div class="card card--c">
+          <p class="benef-tit acento">Você rende mais no dia</p>
           <p class="corpo txt2 mt-s">Como a cola cura na hora, você não fica esperando secar entre uma cliente e outra. Dá pra atender mais pessoas no mesmo dia, e com a retenção maior as manutenções espaçam. Mais agenda, menos correria.</p>
         </div>
-        <div class="card">
-          <p class="apoio acento">Você vira referência</p>
+        <div class="card card--c">
+          <p class="benef-tit acento">Você vira referência</p>
           <p class="corpo txt2 mt-s">O LED ainda é raro no Brasil. Quem domina agora vira a profissional que as clientes procuram, inclusive de outras cidades. É o seu nome ligado à técnica que vai ser o padrão.</p>
         </div>
-        <div class="card">
-          <p class="apoio acento">Você valoriza o seu serviço</p>
+        <div class="card card--v">
+          <p class="benef-tit acento">Você valoriza o seu serviço</p>
           <p class="corpo txt2 mt-s">Um trabalho mais confortável, mais durável e mais seguro justifica um preço maior. Você cobra pelo diferencial, não pela concorrência, e fatura mais por cliente.</p>
         </div>
       </div>
