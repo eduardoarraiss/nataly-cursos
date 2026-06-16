@@ -33,6 +33,10 @@
     @media (min-width:840px){ .nat-grid { grid-template-columns: .92fr 1.08fr; gap:56px; } }
     .nat-foto { border-radius:18px; overflow:hidden; border:1px solid var(--filete); }
     .nat-foto img { width:100%; display:block; object-fit:cover; }
+    .result-grid { display:grid; gap:16px; grid-template-columns:1fr; }
+    @media(min-width:760px){ .result-grid { grid-template-columns:repeat(3,1fr); } }
+    .result-item { border-radius:16px; overflow:hidden; border:1px solid rgba(242,238,229,.16); aspect-ratio:4/5; }
+    .result-item img { width:100%; height:100%; object-fit:cover; }
   </style>
 </head>
 <body>
@@ -87,6 +91,22 @@
           <p class="apoio acento">Você valoriza o seu serviço</p>
           <p class="corpo txt2 mt-s">Um trabalho mais confortável, mais durável e mais seguro justifica um preço maior. Você cobra pelo diferencial, não pela concorrência, e fatura mais por cliente.</p>
         </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ RESULTADOS (prova visual) ============ -->
+  <section class="secao bg-pretinho">
+    <div class="wrap">
+      <div class="centro" style="max-width:640px; margin-inline:auto;">
+        <span class="eyebrow eyebrow-c">Resultados</span>
+        <h2 class="titulo titulo--md mt-m">O que o <span class="acento">LED</span> entrega.</h2>
+        <p class="corpo--lg txt2 mt-m">Cílios confortáveis, alinhados e com uma retenção que dura. Alguns trabalhos reais feitos com a técnica.</p>
+      </div>
+      <div class="result-grid mt-l">
+        <div class="result-item"><img src="/img/resultado-1.jpg" alt="Resultado de extensão de cílios com LED" loading="lazy"></div>
+        <div class="result-item"><img src="/img/resultado-2.jpg" alt="Cliente com extensão de cílios feita com LED" loading="lazy"></div>
+        <div class="result-item"><img src="/img/resultado-3.jpg" alt="Extensão de cílios com acabamento natural" loading="lazy"></div>
       </div>
     </div>
   </section>
