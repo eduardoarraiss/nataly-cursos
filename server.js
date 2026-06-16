@@ -9,8 +9,8 @@ const PUBLIC = path.join(__dirname, 'public');
 // Rotas amigáveis (sem .html)
 const pagina = (file) => (_req, res) => res.sendFile(path.join(PUBLIC, file));
 
-app.get('/', pagina('index.html'));            // página de captação (grupo VIP)
-app.get('/vip', pagina('index.html'));
+app.get('/', pagina('home.html'));              // home oficial (placeholder; futuro site)
+app.get('/vip', pagina('index.html'));          // atalho captação
 app.get('/lash-grupo-vip', pagina('index.html')); // URL dos anúncios → captação
 app.get('/entrar', pagina('entrar.html'));     // redireciona pro grupo + dispara Lead
 app.get('/lancamento', pagina('lancamento.html')); // venda — lançamento (R$197, só dia 30/06)
