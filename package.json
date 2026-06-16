@@ -1,0 +1,15 @@
+{
+  "name": "nataly-cursos",
+  "version": "1.0.0",
+  "description": "Site de cursos da Nataly Ribeiro — captação VIP + páginas de venda Método Evolução LED",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "engines": {
+    "node": ">=18"
+  },
+  "dependencies": {
+    "express": "^4.19.2"
+  }
+}

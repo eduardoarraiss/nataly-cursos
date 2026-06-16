@@ -1,0 +1,22 @@
+const express = require('express');
+const path = require('path');
+
+const app = express();
+const PORT = process.env.PORT || 3000;
+const PUBLIC = path.join(__dirname, 'public');
+
+// Rotas amigáveis (sem .html)
+const pagina = (file) => (_req, res) => res.sendFile(path.join(PUBLIC, file));
+
+app.get('/', pagina('index.html'));            // página de captação (grupo VIP)
+app.get('/vip', pagina('index.html'));
+app.get('/lancamento', pagina('lancamento.html')); // venda — lançamento (R$197, só dia 30/06)
+app.get('/curso', pagina('curso.html'));           // venda — perpétua (R$497)
+
+// Estáticos (css, img)
+app.use(express.static(PUBLIC));
+
+// 404 → volta pra captação
+app.use((_req, res) => res.redirect('/'));
+
+app.listen(PORT, () => console.log(`Nataly Cursos rodando na porta ${PORT}`));

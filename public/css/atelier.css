@@ -1,0 +1,272 @@
+/* ===================================================================
+   ATELIER SÁLVIA — Design System (Nataly Ribeiro)
+   Fonte da verdade: ATELIER-SALVIA-design-system.md
+   Regra de ouro: cor é função, não decoração. Só as 3 receitas travadas.
+   =================================================================== */
+
+:root {
+  /* Paleta nomeada */
+  --branco-quente: #F2EEE5;   /* fundo principal */
+  --papel:         #FAF7F0;   /* cards / superfícies */
+  --pedra:         #E2D8C8;   /* superfície alternativa */
+  --blush:         #E8D4C8;   /* pastel / destaque */
+  --argila:        #C9A48B;   /* acento claro sobre escuro */
+  --salvia:        #A5B59A;   /* acento fresco / fundo sálvia */
+  --salvia-prof:   #7E9072;   /* ponto eyebrow claro / contorno CTA 2º */
+  --mocha:         #7A5C44;   /* só foto/superfície, NUNCA texto */
+  --chocolate:     #6B4F3A;   /* acento principal / CTA / eyebrow claro */
+  --tinta:         #463729;   /* texto principal (claro) */
+  --tinta-suave:   #8A7766;   /* texto 2º (claro) */
+  --filete:        #DED3C2;   /* filete fino (claro) */
+  --pretinho:      #241C15;   /* fundo escuro editorial */
+  --verde-tinta:   #2C3724;   /* texto sobre fundo sálvia */
+
+  /* Ações WhatsApp / preço promocional (exceção de ação, fora das 3 receitas):
+     o WhatsApp tem cor de marca própria; o preço promocional pede verde de "oferta".
+     Uso restrito: botão do grupo VIP e preço de lançamento. */
+  --whatsapp:      #25D366;   /* verde oficial WhatsApp (botão VIP) */
+  --whatsapp-esc:  #1EBE5A;   /* hover */
+  --verde-promo:   #34C759;   /* preço promocional em fundo escuro */
+  --verde-promo-c: #1E9E4A;   /* preço promocional em fundo claro */
+
+  /* Fontes */
+  --f-display: 'Playfair Display', serif;     /* títulos (itálico) */
+  --f-body:    'Hanken Grotesk', sans-serif;  /* corpo, eyebrow, CTA */
+  --f-apoio:   'Cormorant Garamond', serif;   /* linha de apoio curta */
+  --f-impacto: 'Abril Fatface', serif;        /* 1 número/impacto */
+
+  /* Ritmo */
+  --pad-secao: clamp(72px, 11vw, 140px);
+  --largura-texto: 680px;
+  --largura-total: 1120px;
+}
+
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+html { scroll-behavior: smooth; -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; }
+
+body {
+  font-family: var(--f-body);
+  background: var(--branco-quente);
+  color: var(--tinta);
+  font-size: 18px;
+  line-height: 1.65;
+  font-weight: 400;
+  overflow-x: hidden; /* nunca deixar texto/elemento vazar na horizontal */
+}
+
+img { display: block; max-width: 100%; }
+
+/* ---------- Containers ---------- */
+.wrap     { width: 100%; max-width: var(--largura-total); margin: 0 auto; padding: 0 24px; }
+.wrap--txt{ max-width: var(--largura-texto); }
+.secao    { padding: var(--pad-secao) 0; }
+.centro   { text-align: center; }
+
+/* ===================================================================
+   3 RECEITAS DE FUNDO (TRAVADAS)
+   =================================================================== */
+
+/* CLARO — padrão (~70%) */
+.bg-claro   { background: var(--branco-quente); color: var(--tinta); }
+.bg-papel   { background: var(--papel);         color: var(--tinta); }
+.bg-claro .txt2, .bg-papel .txt2 { color: var(--tinta-suave); }
+.bg-claro .acento, .bg-papel .acento { color: var(--chocolate); }
+.bg-claro .eyebrow, .bg-papel .eyebrow { color: var(--chocolate); }
+.bg-claro .eyebrow::before, .bg-papel .eyebrow::before { background: var(--salvia-prof); }
+.bg-claro .filete, .bg-papel .filete { background: var(--filete); }
+
+/* PRETINHO — pontual (1 a cada 3–4) */
+.bg-pretinho { background: var(--pretinho); color: var(--branco-quente); }
+.bg-pretinho .txt2 { color: rgba(242,238,229,.66); }
+.bg-pretinho .acento { color: var(--argila); }
+.bg-pretinho .eyebrow { color: var(--argila); }
+.bg-pretinho .eyebrow::before { background: var(--salvia); }
+.bg-pretinho .filete { background: rgba(242,238,229,.16); }
+
+/* SÁLVIA — respiro (1×) */
+.bg-salvia { background: var(--salvia); color: var(--verde-tinta); }
+.bg-salvia .txt2 { color: #3A4730; }
+.bg-salvia .acento { color: var(--branco-quente); }
+.bg-salvia .eyebrow { color: var(--verde-tinta); }
+.bg-salvia .eyebrow::before { background: var(--verde-tinta); }
+.bg-salvia .filete { background: rgba(44,55,36,.18); }
+
+/* ===================================================================
+   TIPOGRAFIA (papéis fixos)
+   =================================================================== */
+
+/* Eyebrow / rótulo */
+.eyebrow {
+  font-family: var(--f-body);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: .26em;
+  font-size: 12px;
+  display: inline-flex;
+  align-items: center;
+  gap: .7em;
+}
+.eyebrow::before {
+  content: "";
+  width: 6px; height: 6px;
+  border-radius: 50%;
+  display: inline-block;
+}
+
+/* Título — Playfair itálico (1 palavra na cor de acento via .acento) */
+.titulo {
+  font-family: var(--f-display);
+  font-style: italic;
+  font-weight: 500;
+  line-height: 1.1;
+  letter-spacing: -0.01em;
+  font-size: clamp(38px, 6.2vw, 76px);
+}
+.titulo--md { font-size: clamp(30px, 4.6vw, 52px); }
+.titulo--sm { font-size: clamp(24px, 3.4vw, 36px); }
+
+/* Linha de apoio — Cormorant itálico, curta */
+.apoio {
+  font-family: var(--f-apoio);
+  font-style: italic;
+  font-weight: 500;
+  font-size: clamp(20px, 2.6vw, 27px);
+  line-height: 1.4;
+}
+
+/* Corpo */
+.corpo { font-size: clamp(16px, 1.5vw, 19px); line-height: 1.7; }
+.corpo--lg { font-size: clamp(18px, 1.8vw, 21px); }
+
+/* Número/impacto — Abril, 1 número só */
+.impacto {
+  font-family: var(--f-impacto);
+  font-weight: 400;
+  line-height: 1;
+  font-size: clamp(56px, 9vw, 104px);
+}
+
+.mt-s { margin-top: 14px; } .mt-m { margin-top: 24px; } .mt-l { margin-top: 40px; }
+.mb-s { margin-bottom: 14px; } .mb-m { margin-bottom: 24px; } .mb-l { margin-bottom: 40px; }
+.peso { font-weight: 700; } /* negrito = peso, mantém a cor */
+
+/* ===================================================================
+   COMPONENTES
+   =================================================================== */
+
+/* CTA — pílula raio 100px */
+.cta {
+  font-family: var(--f-body);
+  font-weight: 600;
+  font-size: 16px;
+  letter-spacing: .01em;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: .6em;
+  padding: 19px 42px;
+  border-radius: 100px;
+  border: 1.5px solid transparent;
+  text-decoration: none;
+  cursor: pointer;
+  transition: transform .25s ease, opacity .25s ease, background .25s ease;
+}
+.cta:hover { transform: translateY(-2px); opacity: .94; }
+.bg-claro .cta, .bg-papel .cta, .bg-salvia .cta { background: var(--chocolate); color: var(--branco-quente); }
+.bg-pretinho .cta { background: var(--branco-quente); color: var(--tinta); }
+/* CTA secundário (contorno) */
+.cta--ghost { background: transparent !important; }
+.bg-claro .cta--ghost, .bg-papel .cta--ghost { color: var(--chocolate); border-color: var(--salvia-prof); }
+.bg-pretinho .cta--ghost { color: var(--branco-quente); border-color: rgba(242,238,229,.4); }
+
+/* CTA WhatsApp (grupo VIP) — vence as cores de bloco */
+.cta--whatsapp,
+.bg-claro .cta--whatsapp, .bg-papel .cta--whatsapp,
+.bg-pretinho .cta--whatsapp, .bg-salvia .cta--whatsapp {
+  background: var(--whatsapp);
+  color: #fff;
+  border-color: transparent;
+}
+.cta--whatsapp:hover { background: var(--whatsapp-esc); }
+.cta--whatsapp svg { width: 1.25em; height: 1.25em; flex: none; }
+
+/* Preço promocional em verde (oferta) */
+.promo { color: var(--verde-promo); }
+.bg-claro .promo, .bg-papel .promo, .bg-salvia .promo { color: var(--verde-promo-c); }
+
+/* Filete 1px (sem box-shadow nunca) */
+.filete { height: 1px; width: 100%; border: 0; }
+.filete--curto { width: 64px; height: 1px; }
+
+/* Card */
+.card {
+  background: var(--papel);
+  border: 1px solid var(--filete);
+  border-radius: 16px;
+  padding: clamp(28px, 4vw, 44px);
+}
+.bg-pretinho .card { background: rgba(242,238,229,.05); border-color: rgba(242,238,229,.16); }
+
+/* Imagem com overlay (quando há texto por cima) */
+.foto-overlay { position: relative; overflow: hidden; }
+.foto-overlay::after {
+  content: ""; position: absolute; inset: 0;
+  background: linear-gradient(180deg, rgba(36,28,21,.15) 0%, rgba(36,28,21,.72) 100%);
+}
+.foto-overlay > * { position: relative; z-index: 2; }
+
+/* Selo de preço */
+.preco-antigo { text-decoration: line-through; opacity: .55; font-weight: 600; }
+.preco-novo { font-family: var(--f-impacto); line-height: 1; font-size: clamp(52px, 8vw, 88px); }
+
+/* Lista de módulos / itens */
+.lista { list-style: none; display: grid; gap: 18px; }
+.lista li { display: flex; gap: 14px; align-items: flex-start; }
+.lista .nro { font-family: var(--f-apoio); font-style: italic; font-size: 1.3em; line-height: 1.2; opacity: .8; flex: none; }
+
+/* Grid utilitário */
+.grid { display: grid; gap: 28px; }
+@media (min-width: 760px) {
+  .grid--2 { grid-template-columns: 1fr 1fr; }
+  .grid--3 { grid-template-columns: repeat(3, 1fr); }
+}
+.al-c { align-items: center; }
+
+/* Player VSL responsivo (16:9) */
+.player {
+  position: relative; width: 100%; aspect-ratio: 16 / 9;
+  background: var(--pretinho); border: 1px solid var(--filete);
+  border-radius: 16px; overflow: hidden;
+  display: flex; align-items: center; justify-content: center;
+}
+.player iframe, .player video { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; }
+.player__ph { text-align: center; color: rgba(242,238,229,.7); padding: 24px; font-size: 15px; letter-spacing: .04em; }
+.player__play { width: 70px; height: 70px; border-radius: 50%; border: 1.5px solid rgba(242,238,229,.5); display: flex; align-items: center; justify-content: center; margin: 0 auto 16px; }
+.player__play::after { content: ""; border-style: solid; border-width: 11px 0 11px 18px; border-color: transparent transparent transparent rgba(242,238,229,.8); margin-left: 4px; }
+
+/* Sticky barra de oferta (página de venda) */
+.barra-fixa {
+  position: fixed; left: 0; right: 0; bottom: 0; z-index: 50;
+  background: var(--pretinho); color: var(--branco-quente);
+  border-top: 1px solid rgba(242,238,229,.16);
+  padding: 14px 20px;
+  display: flex; align-items: center; justify-content: center; gap: 20px;
+  flex-wrap: wrap;
+  transform: translateY(110%); transition: transform .4s ease;
+}
+.barra-fixa.show { transform: translateY(0); }
+.barra-fixa .cta { padding: 13px 30px; }
+
+/* Eyebrow centralizado helper */
+.eyebrow-c { justify-content: center; }
+
+/* Reveal on scroll */
+.reveal { opacity: 0; transform: translateY(24px); transition: opacity .8s ease, transform .8s ease; }
+.reveal.in { opacity: 1; transform: none; }
+
+/* Rodapé */
+.rodape { padding: 56px 0; font-size: 13px; letter-spacing: .02em; }
+.rodape .logo { font-family: var(--f-display); font-style: italic; font-size: 24px; }
+
+footer .txt2, .rodape .txt2 { opacity: .7; }
