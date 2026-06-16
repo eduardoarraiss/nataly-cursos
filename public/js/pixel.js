@@ -6,7 +6,7 @@
 //
 //  Eventos automáticos depois de ativado:
 //   • PageView         — em toda página
-//   • Lead             — clique em qualquer botão "Entrar pro grupo VIP"
+//   • Lead             — disparado na página /entrar (redireciona pro grupo VIP)
 //   • InitiateCheckout — clique em qualquer botão de compra (Hotmart)
 // ============================================================
 
@@ -28,14 +28,13 @@ var META_PIXEL_ID = ""; // <-- COLE AQUI o ID (ex.: "1234567890123456")
   fbq("init", META_PIXEL_ID);
   fbq("track", "PageView");
 
-  // Conversões por clique (delegação — funciona em todos os botões)
+  // InitiateCheckout no clique dos botões de compra (Hotmart).
+  // O Lead é disparado na página /entrar (mais confiável que no clique).
   document.addEventListener("click", function (ev) {
     var a = ev.target.closest && ev.target.closest("a");
     if (!a) return;
     var href = (a.getAttribute("href") || "").toLowerCase();
-    if (href.indexOf("chat.whatsapp.com") !== -1) {
-      fbq("track", "Lead", { content_name: "Grupo VIP Lash 2.0" });
-    } else if (href.indexOf("hotmart") !== -1) {
+    if (href.indexOf("hotmart") !== -1) {
       fbq("track", "InitiateCheckout", { content_name: "Lash 2.0" });
     }
   });

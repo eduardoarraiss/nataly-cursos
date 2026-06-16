@@ -19,6 +19,7 @@ const pagina = (file) => (_req, res) => res.sendFile(path.join(PUBLIC, file));
 
 app.get('/', pagina('index.html'));            // página de captação (grupo VIP)
 app.get('/vip', pagina('index.html'));
+app.get('/entrar', pagina('entrar.html'));     // redireciona pro grupo + dispara Lead
 app.get('/lancamento', pagina('lancamento.html')); // venda — lançamento (R$197, só dia 30/06)
 app.get('/curso', pagina('curso.html'));           // venda — perpétua (R$497)
 

@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="robots" content="noindex">
+  <title>Entrando no grupo VIP…</title>
+
+  <!-- Meta Pixel: PageView (e fica pronto pra Lead abaixo) -->
+  <script src="/js/pixel.js"></script>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@400;600&family=Playfair+Display:ital@1&display=swap" rel="stylesheet">
+  <style>
+    :root{ --pretinho:#241C15; --creme:#F2EEE5; --argila:#C9A48B; }
+    *{margin:0;box-sizing:border-box}
+    body{background:var(--pretinho);color:var(--creme);font-family:'Hanken Grotesk',sans-serif;
+      min-height:100vh;min-height:100svh;display:flex;align-items:center;justify-content:center;text-align:center;padding:24px}
+    .box{max-width:420px}
+    .tit{font-family:'Playfair Display',serif;font-style:italic;font-size:clamp(26px,7vw,38px);line-height:1.15;margin-bottom:14px}
+    .sub{color:rgba(242,238,229,.7);font-size:16px;line-height:1.6}
+    .spin{width:34px;height:34px;border:2px solid rgba(242,238,229,.25);border-top-color:var(--argila);
+      border-radius:50%;margin:0 auto 22px;animation:r 0.8s linear infinite}
+    @keyframes r{to{transform:rotate(360deg)}}
+    a.fb{display:inline-block;margin-top:22px;color:var(--argila);font-weight:600;font-size:14px}
+  </style>
+</head>
+<body>
+  <div class="box">
+    <div class="spin"></div>
+    <p class="tit">Te levando pro grupo <span style="color:var(--argila)">VIP</span>…</p>
+    <p class="sub">Se não abrir em instantes, toque no botão abaixo.</p>
+    <a class="fb" id="link" href="https://chat.whatsapp.com/LK3Y8mAc72L2WkTJFNb72I">Abrir o grupo VIP no WhatsApp →</a>
+  </div>
+
+  <script>
+    var DESTINO = "https://chat.whatsapp.com/LK3Y8mAc72L2WkTJFNb72I";
+    // 1) dispara o evento de conversão Lead (só se o Pixel estiver ativo)
+    try { if (window.fbq) fbq('track', 'Lead', { content_name: 'Grupo VIP Lash 2.0', source: 'pagina-entrar' }); } catch (e) {}
+    // 2) redireciona rápido pro grupo (replace = não fica no histórico)
+    setTimeout(function () { window.location.replace(DESTINO); }, 600);
+  </script>
+  <noscript><meta http-equiv="refresh" content="0;url=https://chat.whatsapp.com/LK3Y8mAc72L2WkTJFNb72I"></noscript>
+</body>
+</html>

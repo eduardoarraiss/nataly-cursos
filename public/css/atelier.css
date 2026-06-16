@@ -165,14 +165,19 @@ img { display: block; max-width: 100%; }
   align-items: center;
   justify-content: center;
   gap: .6em;
-  padding: 19px 42px;
+  padding: 19px 40px;
   border-radius: 100px;
   border: 1.5px solid transparent;
   text-decoration: none;
   cursor: pointer;
+  white-space: nowrap;
+  max-width: 100%;
   transition: transform .25s ease, opacity .25s ease, background .25s ease;
 }
 .cta:hover { transform: translateY(-2px); opacity: .94; }
+@media (max-width: 460px) {
+  .cta { padding: 16px 26px; font-size: 15px; width: 100%; } /* mobile-first: botão cheio, 1 linha */
+}
 .bg-claro .cta, .bg-papel .cta, .bg-salvia .cta { background: var(--chocolate); color: var(--branco-quente); }
 .bg-pretinho .cta { background: var(--branco-quente); color: var(--tinta); }
 /* CTA secundário (contorno) */
