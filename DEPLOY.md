@@ -22,15 +22,16 @@ npm install
 npm start          # http://localhost:3000
 ```
 
-## Deploy no Railway
-Projeto **Nataly Ribeiro** · serviço **cursos** (já criado).
+## Deploy — AUTOMÁTICO via GitHub (não precisa de ação manual)
+O serviço **cursos** está conectado ao repo **github.com/eduardoarraiss/nataly-cursos** (branch `main`).
+Todo push pra `main` dispara build + deploy automático no Railway. Fluxo:
 ```bash
 cd ~/Documents/clientes/Nataly/site-cursos
-railway link --project "Nataly Ribeiro"      # se ainda não estiver linkado
-railway up --service cursos --detach
+git add -A && git commit -m "minha mudança"
+git push                       # Railway builda e publica sozinho (~1-2 min)
 ```
-> Obs.: do ambiente do Claude Code o upload do Railway dá timeout (restrição de rede).
-> Rode o `railway up` do seu Terminal normal — funciona como nos outros projetos.
+> Não use mais `railway up` (o upload dá timeout do Claude Code). O git push resolve.
+> Acompanhar build: `railway status` ou dashboard do Railway.
 
 ### Gerar domínio Railway (depois do 1º deploy)
 ```bash
