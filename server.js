@@ -5,15 +5,7 @@ const app = express();
 const PORT = process.env.PORT || 3000;
 const PUBLIC = path.join(__dirname, 'public');
 
-// Redireciona www -> domínio principal (apex)
-app.use((req, res, next) => {
-  const host = req.headers.host || '';
-  if (host.startsWith('www.')) {
-    return res.redirect(301, 'https://' + host.slice(4) + req.url);
-  }
-  next();
-});
-
+// Canônico = www.natalyribeiro.com.br (o apex redireciona pro www via Cloudflare).
 // Rotas amigáveis (sem .html)
 const pagina = (file) => (_req, res) => res.sendFile(path.join(PUBLIC, file));
 
