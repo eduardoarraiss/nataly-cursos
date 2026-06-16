@@ -10,7 +10,7 @@
 //   • InitiateCheckout — clique em qualquer botão de compra (Hotmart)
 // ============================================================
 
-var META_PIXEL_ID = ""; // <-- COLE AQUI o ID (ex.: "1234567890123456")
+var META_PIXEL_ID = "1474568504358962"; // Pixel da Nataly (Lash 2.0)
 
 (function () {
   if (!META_PIXEL_ID) return; // sem ID = pixel desligado
