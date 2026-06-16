@@ -191,9 +191,18 @@ img { display: block; max-width: 100%; }
 .cta--whatsapp:hover { background: var(--whatsapp-esc); }
 .cta--whatsapp svg { width: 1.25em; height: 1.25em; flex: none; }
 
-/* Preço promocional em verde (oferta) */
-.promo { color: var(--verde-promo); }
-.bg-claro .promo, .bg-papel .promo, .bg-salvia .promo { color: var(--verde-promo-c); }
+/* Bloco de oferta (preço de lançamento) — alinhado e premium */
+.oferta-card {
+  max-width: 540px; margin: 0 auto;
+  border: 1px solid rgba(242,238,229,.22); border-radius: 22px;
+  padding: clamp(32px, 5vw, 52px);
+}
+.bg-claro .oferta-card, .bg-papel .oferta-card { border-color: var(--filete); }
+.preco-de { font-size: clamp(18px, 2vw, 22px); letter-spacing: .01em; }
+.preco-de .risco { text-decoration: line-through; }
+.bg-pretinho .preco-de .risco { color: rgba(242,238,229,.72); } /* R$497 bem legível no escuro */
+.bg-claro .preco-de .risco, .bg-papel .preco-de .risco { color: var(--tinta-suave); }
+.preco-por { font-family: var(--f-impacto); line-height: 1; font-size: clamp(70px, 12vw, 116px); }
 
 /* Filete 1px (sem box-shadow nunca) */
 .filete { height: 1px; width: 100%; border: 0; }

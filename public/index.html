@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Lash 2.0 · Lista VIP · Nataly Ribeiro</title>
-  <meta name="description" content="Entre na lista VIP do Lash 2.0, o método de extensão de cílios com LED que não depende de umidade, reduz a exposição química e entrega retenção superior. Lançamento dia 30 de junho.">
+  <meta name="description" content="Entre na lista VIP do Lash 2.0, o curso de extensão de cílios com LED da Nataly Ribeiro. A técnica que cura na luz, acaba com a ardência e os vapores e entrega muito mais retenção. Lançamento dia 30 de junho.">
   <meta property="og:title" content="Lash 2.0 · Lista VIP">
   <meta property="og:description" content="A evolução da extensão de cílios chega dia 30 de junho. Entre na lista VIP e garanta o preço de lançamento.">
   <meta property="og:type" content="website">
@@ -25,36 +25,38 @@
     /* específico da captação */
     .hero-cap { min-height: 100svh; display: flex; align-items: center; padding: 88px 0 56px; }
     .hero-grid { display: grid; gap: 40px; align-items: center; }
-    .hero-txt { max-width: 560px; }
+    .hero-txt { max-width: 580px; }
     .hero-cap .foto { border-radius: 18px; overflow: hidden; border: 1px solid rgba(242,238,229,.16); }
-    .hero-cap .foto img { width: 100%; height: 100%; object-fit: cover; object-position: center top; min-height: 360px; max-height: 78vh; }
+    .hero-cap .foto img { width: 100%; height: 100%; object-fit: cover; object-position: center top; min-height: 360px; max-height: 80vh; }
     @media (min-width: 900px){
       .hero-grid { grid-template-columns: 1.02fr .98fr; gap: 56px; }
       .hero-cap { padding: 96px 0; }
     }
-    .pill-data { display:inline-flex; align-items:center; gap:.6em; border:1px solid rgba(242,238,229,.28); border-radius:100px; padding:7px 16px; font-size:12px; letter-spacing:.12em; text-transform:uppercase; font-weight:600; }
-    .preco-box { border:1px solid var(--filete); border-radius:18px; padding: clamp(28px,4vw,44px); }
-    .bg-pretinho .preco-box { border-color: rgba(242,238,229,.18); }
+    .pill-data { display:inline-flex; align-items:center; gap:.6em; border:1px solid rgba(242,238,229,.28); border-radius:100px; padding:8px 18px; font-size:13px; letter-spacing:.12em; text-transform:uppercase; font-weight:600; }
     .titulo { overflow-wrap: anywhere; }
+    .nat-grid { display:grid; gap:36px; align-items:center; }
+    @media (min-width:840px){ .nat-grid { grid-template-columns: .92fr 1.08fr; gap:56px; } }
+    .nat-foto { border-radius:18px; overflow:hidden; border:1px solid var(--filete); }
+    .nat-foto img { width:100%; display:block; object-fit:cover; }
   </style>
 </head>
 <body>
 
-  <!-- ============ HERO / CAPTAÇÃO (1ª dobra: headline · subheadline · botão) ============ -->
+  <!-- ============ DOBRA 1 · HERO (headline · subheadline · botão) ============ -->
   <header class="bg-pretinho hero-cap">
     <div class="wrap">
       <div class="hero-grid">
         <div class="hero-txt">
           <span class="pill-data acento">● &nbsp;Lançamento 30 de junho</span>
           <h1 class="titulo mt-m">A <span class="acento">evolução</span> da extensão de cílios está chegando.</h1>
-          <p class="apoio mt-m txt2">Cílios que não dependem do clima, não ardem e duram muito mais.</p>
+          <p class="corpo--lg mt-m txt2" style="font-size:clamp(18px,1.9vw,22px); line-height:1.6;">Está chegando o <span class="peso">Lash 2.0</span>, o curso de extensão de cílios com LED da Nataly Ribeiro. A técnica que cura na luz, e não na umidade: acaba com a ardência e os vapores, e entrega muito mais retenção pra você e pras suas clientes.</p>
           <div class="mt-l">
             <a href="#GRUPO_VIP" class="cta cta--whatsapp">
               <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12.04 2C6.58 2 2.13 6.45 2.13 11.91c0 1.75.46 3.45 1.32 4.95L2 22l5.25-1.38c1.45.79 3.08 1.21 4.79 1.21h.01c5.46 0 9.91-4.45 9.91-9.91 0-2.65-1.03-5.14-2.9-7.01C17.18 3.03 14.69 2 12.04 2zm0 18.13h-.01c-1.52 0-3.01-.41-4.31-1.18l-.31-.18-3.12.82.83-3.04-.2-.31a8.23 8.23 0 0 1-1.26-4.35c0-4.54 3.7-8.24 8.25-8.24 2.2 0 4.27.86 5.83 2.42a8.18 8.18 0 0 1 2.41 5.83c0 4.54-3.7 8.23-8.24 8.23zm4.52-6.16c-.25-.12-1.47-.72-1.69-.81-.23-.08-.39-.12-.56.12-.16.25-.64.81-.79.97-.14.17-.29.19-.54.06-.25-.12-1.05-.39-1.99-1.23-.74-.66-1.23-1.47-1.38-1.72-.14-.25-.01-.38.11-.5.11-.11.25-.29.37-.43.13-.14.17-.25.25-.41.08-.17.04-.31-.02-.43-.06-.12-.56-1.34-.76-1.84-.2-.48-.4-.42-.56-.43-.14-.01-.31-.01-.48-.01-.17 0-.43.06-.66.31-.23.25-.86.85-.86 2.07 0 1.22.89 2.4 1.01 2.56.12.17 1.75 2.67 4.23 3.74.59.26 1.05.41 1.41.52.59.19 1.13.16 1.56.1.48-.07 1.47-.6 1.68-1.18.21-.58.21-1.07.14-1.18-.06-.1-.22-.16-.47-.28z"/></svg>
               Entrar pro grupo VIP
             </a>
           </div>
-          <p class="corpo mt-m txt2" style="font-size:14px;">As vagas do preço de lançamento abrem só no dia 30. Quem está no grupo entra primeiro.</p>
+          <p class="corpo mt-m txt2" style="font-size:16px;">As vagas do preço de lançamento abrem só no dia 30. Quem está no grupo entra primeiro.</p>
         </div>
 
         <div class="foto">
@@ -64,42 +66,72 @@
     </div>
   </header>
 
-  <!-- ============ POR QUE LED (3 pontos) ============ -->
+  <!-- ============ DOBRA 2 · POR QUE O LED É A REVOLUÇÃO (benefícios pra extensionista) ============ -->
   <section class="secao bg-claro">
     <div class="wrap">
-      <div class="centro">
-        <span class="eyebrow eyebrow-c">Por que isso importa</span>
-        <h2 class="titulo titulo--md mt-m">Não é uma técnica nova. É uma <span class="acento">evolução</span>.</h2>
+      <div class="centro" style="max-width:720px; margin-inline:auto;">
+        <span class="eyebrow eyebrow-c">A nova revolução</span>
+        <h2 class="titulo titulo--md mt-m">Por que o LED muda o jogo pra quem faz <span class="acento">cílios</span>.</h2>
+        <p class="corpo--lg txt2 mt-m">A cola tradicional sempre dependeu da umidade do ar pra curar. Com o LED, o adesivo só endurece quando você ativa a luz. Mais controle, mais retenção, menos exposição química. E pra você, isso vira muito mais do que uma técnica nova.</p>
       </div>
-      <div class="grid grid--3 mt-l">
+
+      <div class="grid grid--2 mt-l">
         <div class="card">
-          <p class="apoio acento">Sem depender do clima</p>
-          <p class="corpo txt2 mt-s">A cola tradicional precisa de umidade pra curar. A cola LED cura com luz, no momento que você ativa. Você tem o controle, em qualquer dia.</p>
+          <p class="apoio acento">Tratamentos melhores</p>
+          <p class="corpo txt2 mt-s">Suas clientes saem do studio podendo molhar os cílios na hora, sem ardência e sem vapores. A retenção sobe de 3 ou 4 semanas para 5 a 8. Elas sentem a diferença, e voltam.</p>
         </div>
         <div class="card">
-          <p class="apoio acento">Mais saúde no atendimento</p>
-          <p class="corpo txt2 mt-s">Cura instantânea significa muito menos vapor de cianoacrilato no ar. Menos ardência pra cliente, menos exposição pra você no longo prazo.</p>
+          <p class="apoio acento">Você vira referência</p>
+          <p class="corpo txt2 mt-s">O mercado de LED no Brasil ainda está no começo. Quem domina a técnica agora se posiciona como pioneira numa tecnologia que vai ser o padrão. Sua autoridade cresce na sua região.</p>
         </div>
         <div class="card">
-          <p class="apoio acento">Retenção que impressiona</p>
-          <p class="corpo txt2 mt-s">A cliente sai do studio podendo molhar os cílios na hora. A retenção sobe de 3 ou 4 semanas para 5 a 8. Mais resultado, mais indicação.</p>
+          <p class="apoio acento">Você ganha mais</p>
+          <p class="corpo txt2 mt-s">Com um serviço visivelmente superior, você cobra de 20% a 30% a mais. Menos retoques, mais indicações, mais faturamento por cliente. O diferencial se paga rápido.</p>
+        </div>
+        <div class="card">
+          <p class="apoio acento">Mais saúde pra você</p>
+          <p class="corpo txt2 mt-s">A cura é instantânea, então quase não há vapor de cianoacrilato no ar. Menos ardência pra cliente e muito menos exposição pra você, que respira isso todos os dias.</p>
         </div>
       </div>
     </div>
   </section>
 
-  <!-- ============ ANTECIPAÇÃO DE PREÇO ============ -->
+  <!-- ============ DOBRA 3 · NATALY ESPECIALISTA (imagem limpa, sem texto sobre a foto) ============ -->
+  <section class="secao bg-papel">
+    <div class="wrap">
+      <div class="nat-grid">
+        <div class="nat-foto">
+          <img src="/img/nataly-ribeiro.jpg" alt="Nataly Ribeiro">
+        </div>
+        <div>
+          <span class="eyebrow">Quem vai te ensinar</span>
+          <h2 class="titulo titulo--md mt-m">Nataly <span class="acento">Ribeiro</span></h2>
+          <p class="corpo--lg txt2 mt-m">Lash designer há mais de 9 anos, com mais de 300 alunas formadas presencialmente e certificação internacional na técnica.</p>
+          <p class="corpo--lg txt2 mt-m">Ela não aplica LED por moda. Estudou a fundo, testou, se certificou lá fora e só então trouxe a tecnologia pro atendimento. Quem te ensina é quem faz cílios todo dia e vive isso na prática, sem achismo.</p>
+          <div class="mt-l">
+            <a href="#GRUPO_VIP" class="cta cta--whatsapp">
+              <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12.04 2C6.58 2 2.13 6.45 2.13 11.91c0 1.75.46 3.45 1.32 4.95L2 22l5.25-1.38c1.45.79 3.08 1.21 4.79 1.21h.01c5.46 0 9.91-4.45 9.91-9.91 0-2.65-1.03-5.14-2.9-7.01C17.18 3.03 14.69 2 12.04 2zm0 18.13h-.01c-1.52 0-3.01-.41-4.31-1.18l-.31-.18-3.12.82.83-3.04-.2-.31a8.23 8.23 0 0 1-1.26-4.35c0-4.54 3.7-8.24 8.25-8.24 2.2 0 4.27.86 5.83 2.42a8.18 8.18 0 0 1 2.41 5.83c0 4.54-3.7 8.23-8.24 8.23zm4.52-6.16c-.25-.12-1.47-.72-1.69-.81-.23-.08-.39-.12-.56.12-.16.25-.64.81-.79.97-.14.17-.29.19-.54.06-.25-.12-1.05-.39-1.99-1.23-.74-.66-1.23-1.47-1.38-1.72-.14-.25-.01-.38.11-.5.11-.11.25-.29.37-.43.13-.14.17-.25.25-.41.08-.17.04-.31-.02-.43-.06-.12-.56-1.34-.76-1.84-.2-.48-.4-.42-.56-.43-.14-.01-.31-.01-.48-.01-.17 0-.43.06-.66.31-.23.25-.86.85-.86 2.07 0 1.22.89 2.4 1.01 2.56.12.17 1.75 2.67 4.23 3.74.59.26 1.05.41 1.41.52.59.19 1.13.16 1.56.1.48-.07 1.47-.6 1.68-1.18.21-.58.21-1.07.14-1.18-.06-.1-.22-.16-.47-.28z"/></svg>
+              Entrar pro grupo VIP
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ DOBRA 4 · PREÇO DE LANÇAMENTO ============ -->
   <section class="secao bg-pretinho centro">
     <div class="wrap wrap--txt">
       <span class="eyebrow eyebrow-c">O que te espera no dia 30</span>
       <h2 class="titulo titulo--md mt-m">O preço de quem entra <span class="acento">primeiro</span>.</h2>
-      <div class="preco-box mt-l">
-        <p class="corpo txt2">No lançamento, só no dia 30 de junho:</p>
-        <p class="mt-s"><span class="preco-antigo corpo--lg">R$497</span></p>
-        <p class="preco-novo promo">R$197</p>
-        <p class="corpo txt2 mt-s">Esse valor é só no dia do lançamento. No dia seguinte, o curso volta para R$497.</p>
-        <div class="filete filete--curto mt-m" style="margin-inline:auto;"></div>
-        <p class="corpo mt-m">Quem está no grupo VIP recebe o link antes de todo mundo, com calma pra decidir.</p>
+
+      <div class="oferta-card mt-l">
+        <p class="apoio acento">Só no dia 30 de junho</p>
+        <p class="preco-de mt-m txt2"><span class="risco">R$497</span> &nbsp;por</p>
+        <p class="preco-por acento">R$197</p>
+        <p class="corpo mt-s txt2" style="font-size:16px;">No dia seguinte, o curso volta para R$497. Esse valor é só no dia do lançamento.</p>
+        <div class="filete filete--curto mt-l" style="margin-inline:auto;"></div>
+        <p class="corpo--lg mt-l">Quem está no grupo VIP recebe o link antes de todo mundo, com calma pra decidir.</p>
         <div class="mt-l">
           <a href="#GRUPO_VIP" class="cta cta--whatsapp">
             <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12.04 2C6.58 2 2.13 6.45 2.13 11.91c0 1.75.46 3.45 1.32 4.95L2 22l5.25-1.38c1.45.79 3.08 1.21 4.79 1.21h.01c5.46 0 9.91-4.45 9.91-9.91 0-2.65-1.03-5.14-2.9-7.01C17.18 3.03 14.69 2 12.04 2zm0 18.13h-.01c-1.52 0-3.01-.41-4.31-1.18l-.31-.18-3.12.82.83-3.04-.2-.31a8.23 8.23 0 0 1-1.26-4.35c0-4.54 3.7-8.24 8.25-8.24 2.2 0 4.27.86 5.83 2.42a8.18 8.18 0 0 1 2.41 5.83c0 4.54-3.7 8.23-8.24 8.23zm4.52-6.16c-.25-.12-1.47-.72-1.69-.81-.23-.08-.39-.12-.56.12-.16.25-.64.81-.79.97-.14.17-.29.19-.54.06-.25-.12-1.05-.39-1.99-1.23-.74-.66-1.23-1.47-1.38-1.72-.14-.25-.01-.38.11-.5.11-.11.25-.29.37-.43.13-.14.17-.25.25-.41.08-.17.04-.31-.02-.43-.06-.12-.56-1.34-.76-1.84-.2-.48-.4-.42-.56-.43-.14-.01-.31-.01-.48-.01-.17 0-.43.06-.66.31-.23.25-.86.85-.86 2.07 0 1.22.89 2.4 1.01 2.56.12.17 1.75 2.67 4.23 3.74.59.26 1.05.41 1.41.52.59.19 1.13.16 1.56.1.48-.07 1.47-.6 1.68-1.18.21-.58.21-1.07.14-1.18-.06-.1-.22-.16-.47-.28z"/></svg>
@@ -110,30 +142,7 @@
     </div>
   </section>
 
-  <!-- ============ QUEM É A NATALY (imagem limpa, sem texto sobre a foto) ============ -->
-  <section class="secao bg-claro">
-    <div class="wrap">
-      <div class="grid grid--2 al-c">
-        <div style="border-radius:18px; overflow:hidden; border:1px solid var(--filete);">
-          <img src="/img/nataly-ribeiro.jpg" alt="Nataly Ribeiro" style="width:100%; object-fit:cover;">
-        </div>
-        <div>
-          <span class="eyebrow">Quem ensina</span>
-          <h2 class="titulo titulo--md mt-m">Nataly <span class="acento">Ribeiro</span></h2>
-          <p class="corpo--lg txt2 mt-m">Lash designer há mais de 9 anos, com mais de 300 alunas formadas presencialmente e certificação internacional. Ela faz cílios todo dia e ensina quem faz cílios todo dia.</p>
-          <p class="corpo txt2 mt-m">Estudou a fundo, testou, se certificou lá fora, e só então trouxe o LED pro atendimento. Agora ela ensina o caminho completo, sem achismo.</p>
-          <div class="mt-l">
-            <a href="#GRUPO_VIP" class="cta cta--whatsapp">
-              <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12.04 2C6.58 2 2.13 6.45 2.13 11.91c0 1.75.46 3.45 1.32 4.95L2 22l5.25-1.38c1.45.79 3.08 1.21 4.79 1.21h.01c5.46 0 9.91-4.45 9.91-9.91 0-2.65-1.03-5.14-2.9-7.01C17.18 3.03 14.69 2 12.04 2zm0 18.13h-.01c-1.52 0-3.01-.41-4.31-1.18l-.31-.18-3.12.82.83-3.04-.2-.31a8.23 8.23 0 0 1-1.26-4.35c0-4.54 3.7-8.24 8.25-8.24 2.2 0 4.27.86 5.83 2.42a8.18 8.18 0 0 1 2.41 5.83c0 4.54-3.7 8.23-8.24 8.23zm4.52-6.16c-.25-.12-1.47-.72-1.69-.81-.23-.08-.39-.12-.56.12-.16.25-.64.81-.79.97-.14.17-.29.19-.54.06-.25-.12-1.05-.39-1.99-1.23-.74-.66-1.23-1.47-1.38-1.72-.14-.25-.01-.38.11-.5.11-.11.25-.29.37-.43.13-.14.17-.25.25-.41.08-.17.04-.31-.02-.43-.06-.12-.56-1.34-.76-1.84-.2-.48-.4-.42-.56-.43-.14-.01-.31-.01-.48-.01-.17 0-.43.06-.66.31-.23.25-.86.85-.86 2.07 0 1.22.89 2.4 1.01 2.56.12.17 1.75 2.67 4.23 3.74.59.26 1.05.41 1.41.52.59.19 1.13.16 1.56.1.48-.07 1.47-.6 1.68-1.18.21-.58.21-1.07.14-1.18-.06-.1-.22-.16-.47-.28z"/></svg>
-              Entrar pro grupo VIP
-            </a>
-          </div>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- ============ CTA FINAL ============ -->
+  <!-- ============ DOBRA 5 · CTA FINAL (mantida como está) ============ -->
   <section class="secao bg-salvia centro">
     <div class="wrap wrap--txt">
       <span class="eyebrow eyebrow-c">Última chamada</span>
@@ -152,14 +161,14 @@
   <footer class="rodape bg-pretinho centro">
     <div class="wrap">
       <p class="logo acento">Nataly Ribeiro</p>
-      <p class="corpo txt2 mt-s" style="font-size:13px;">Lash 2.0 · Lançamento 30 de junho de 2026</p>
-      <p class="txt2 mt-m" style="font-size:12px;">© 2026 Nataly Ribeiro. Todos os direitos reservados.</p>
+      <p class="corpo txt2 mt-s" style="font-size:14px;">Lash 2.0 · Lançamento 30 de junho de 2026</p>
+      <p class="txt2 mt-m" style="font-size:13px;">© 2026 Nataly Ribeiro. Todos os direitos reservados.</p>
     </div>
   </footer>
 
   <script>
     const io = new IntersectionObserver((es)=>es.forEach(e=>{ if(e.isIntersecting){ e.target.classList.add('in'); io.unobserve(e.target);} }), {threshold:.12});
-    document.querySelectorAll('.card, .preco-box, section .titulo').forEach(el=>{ el.classList.add('reveal'); io.observe(el); });
+    document.querySelectorAll('.card, .oferta-card, .nat-foto, section .titulo').forEach(el=>{ el.classList.add('reveal'); io.observe(el); });
   </script>
 </body>
 </html>
