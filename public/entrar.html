@@ -36,10 +36,27 @@
 
   <script>
     var DESTINO = "https://chat.whatsapp.com/LK3Y8mAc72L2WkTJFNb72I";
-    // 1) dispara o evento de conversão Lead (só se o Pixel estiver ativo)
+
+    // redirect idempotente — só vai uma vez, venha do callback do GA ou do fallback
+    var jaFoi = false;
+    function irPraGrupo() { if (jaFoi) return; jaFoi = true; window.location.replace(DESTINO); }
+
+    // 1) Pixel Meta — Lead (fbq usa beacon internamente)
     try { if (window.fbq) fbq('track', 'Lead', { content_name: 'Grupo VIP Lash 2.0', source: 'pagina-entrar' }); } catch (e) {}
-    // 2) redireciona pro grupo (1,2s garante que o pixel/Lead envie antes de sair)
-    setTimeout(function () { window.location.replace(DESTINO); }, 1200);
+
+    // 2) GA4 — generate_lead via beacon, e só redireciona quando o GA confirmar o envio
+    try {
+      if (window.gtag) {
+        gtag('event', 'generate_lead', {
+          content_name: 'Grupo VIP Lash 2.0',
+          transport_type: 'beacon',
+          event_callback: irPraGrupo
+        });
+      }
+    } catch (e) {}
+
+    // 3) Fallback: se GA estiver bloqueado (adblock) ou o callback não vier, vai em 1,5s
+    setTimeout(irPraGrupo, 1500);
   </script>
   <noscript><meta http-equiv="refresh" content="0;url=https://chat.whatsapp.com/LK3Y8mAc72L2WkTJFNb72I"></noscript>
 </body>

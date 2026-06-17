@@ -24,8 +24,7 @@ var GA_MEASUREMENT_ID = "G-MZS1VCZ89D"; // Nataly — Lash 2.0 (GA4)
   gtag("js", new Date());
   gtag("config", GA_MEASUREMENT_ID);
 
-  // Conversão de Lead na página de redirecionamento /entrar
-  if (location.pathname.indexOf("/entrar") !== -1) {
-    gtag("event", "generate_lead", { content_name: "Grupo VIP Lash 2.0" });
-  }
+  // Obs.: o generate_lead (conversão) é disparado pela própria página /entrar,
+  // coordenado com o redirect (transport=beacon + event_callback), pra não se
+  // perder no window.location.replace. Ver entrar.html.
 })();
