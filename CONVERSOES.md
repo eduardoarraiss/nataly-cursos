@@ -68,6 +68,31 @@ Além disso, o `InitiateCheckout` já dispara no nosso site quando clicam no bot
 
 ---
 
+## 5b. Google Analytics 4 (GA4) — ATIVO desde 17/06/2026
+**Measurement ID:** `G-MZS1VCZ89D` — propriedade **"Nataly — Lash 2.0"** na conta Google do **Eduardo**.
+Configurado em `public/js/analytics.js` (linha `var GA_MEASUREMENT_ID = "G-MZS1VCZ89D"`).
+
+**Eventos:**
+| Evento GA4 | Quando | Onde |
+|------------|--------|------|
+| `page_view` | toda página, **carregando os UTMs da URL** (fonte/campanha casam com as UTMs das campanhas Meta) | todas |
+| `generate_lead` | pessoa avança pro grupo VIP | `/entrar` |
+
+**Como o `generate_lead` sobrevive ao redirect (importante):** a `/entrar` redireciona rápido pro
+WhatsApp. Pra o evento não se perder, ele é enviado com `transport_type:'beacon'` e o **redirect só
+acontece no `event_callback`** (assim que o GA confirma o envio), com **fallback de 3s** caso o GA
+esteja bloqueado (adblock). Há `preconnect` pra googletagmanager/facebook acelerando o carregamento.
+> ⚠️ Lição: a versão inicial redirecionava em 1,2s e o `generate_lead` se perdia (o `gtag.js` é
+> assíncrono e não terminava de enviar). Validado com Puppeteer headless: a sequência correta é
+> `page_view → generate_lead → redirect`.
+
+**Falta 1 passo manual (Eduardo):** marcar `generate_lead` como **Evento-chave** no GA4.
+- O evento **aparece sozinho** depois de disparar (DebugView/Tempo Real = na hora; lista de Eventos = até 24h). **Não precisa "criar" o evento.**
+- Depois que aparecer: **Administração → Eventos-chave** → ligar a chave em `generate_lead`. A partir daí conta como conversão.
+- Conferir agora: GA4 → **DebugView** (ou Tempo Real) → abrir `/entrar` em outra aba.
+
+---
+
 ## 6. Resumo do fluxo de tracking
 ```
 Ad (Meta)  →  /  (captação, PageView)  →  clica "Entrar pro grupo VIP"
