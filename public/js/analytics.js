@@ -8,7 +8,7 @@
 //   • generate_lead na página /entrar (conversão = entrou no grupo VIP)
 // ============================================================
 
-var GA_MEASUREMENT_ID = ""; // <-- COLE AQUI (ex.: "G-XXXXXXXXXX")
+var GA_MEASUREMENT_ID = "G-MZS1VCZ89D"; // Nataly — Lash 2.0 (GA4)
 
 (function () {
   if (!GA_MEASUREMENT_ID) return; // sem ID = desligado
