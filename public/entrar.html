@@ -6,6 +6,11 @@
   <meta name="robots" content="noindex">
   <title>Entrando no grupo VIP…</title>
 
+  <!-- acelera o carregamento dos scripts de tracking (conversão sai antes do redirect) -->
+  <link rel="preconnect" href="https://www.googletagmanager.com">
+  <link rel="preconnect" href="https://connect.facebook.net">
+  <link rel="dns-prefetch" href="https://region1.google-analytics.com">
+
   <!-- Meta Pixel: PageView (e fica pronto pra Lead abaixo) -->
   <script src="/js/pixel.js"></script>
   <script src="/js/analytics.js"></script>
@@ -55,8 +60,9 @@
       }
     } catch (e) {}
 
-    // 3) Fallback: se GA estiver bloqueado (adblock) ou o callback não vier, vai em 1,5s
-    setTimeout(irPraGrupo, 1500);
+    // 3) Fallback: se GA estiver bloqueado (adblock) ou o callback não vier, vai em 3s.
+    //    No caminho normal o event_callback acima já redireciona bem antes disso.
+    setTimeout(irPraGrupo, 3000);
   </script>
   <noscript><meta http-equiv="refresh" content="0;url=https://chat.whatsapp.com/LK3Y8mAc72L2WkTJFNb72I"></noscript>
 </body>
