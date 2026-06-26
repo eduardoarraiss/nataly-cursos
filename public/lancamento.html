@@ -533,18 +533,9 @@
     </div>
   </footer>
 
-  <!-- ============ BARRA FIXA DE OFERTA ============ -->
-  <div class="barra-fixa" id="barra">
-    <span class="corpo" style="font-size:15px;">Só hoje · <span class="preco-antigo">R$497</span> <span class="acento peso">R$197</span></span>
-    <a href="#oferta" class="cta">Garantir minha vaga →</a>
-  </div>
-
   <script>
     const io = new IntersectionObserver((es)=>es.forEach(e=>{ if(e.isIntersecting){ e.target.classList.add('in'); io.unobserve(e.target);} }), {threshold:.12});
     document.querySelectorAll('.area, .passo, .seg-card, .card, .result-item, .nat-foto, .fase, .quadro, .oferta-card, .tl-wrap, section .titulo').forEach(el=>{ el.classList.add('reveal'); io.observe(el); });
-
-    const barra = document.getElementById('barra');
-    window.addEventListener('scroll', ()=>{ if(window.scrollY > window.innerHeight*0.9){ barra.classList.add('show'); } else { barra.classList.remove('show'); } });
   </script>
 </body>
 </html>
