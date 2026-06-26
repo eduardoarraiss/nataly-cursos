@@ -13,7 +13,8 @@ app.get('/', pagina('home.html'));              // home oficial (placeholder; fu
 app.get('/vip', pagina('index.html'));          // atalho captação
 app.get('/lash-grupo-vip', pagina('index.html')); // URL dos anúncios → captação
 app.get('/entrar', pagina('entrar.html'));     // redireciona pro grupo + dispara Lead
-app.get('/lancamento', pagina('lancamento.html')); // venda — lançamento (R$197, só dia 30/06)
+app.get('/lancamento-197', pagina('lancamento.html')); // venda — lançamento (R$197, dia 30/06) · link direto, escondido da home
+app.get('/lancamento', pagina('lancamento.html'));     // alias interno (mesma página)
 app.get('/curso', pagina('curso.html'));           // venda — perpétua (R$497)
 
 // Estáticos (css, img)
