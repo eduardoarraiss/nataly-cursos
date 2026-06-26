@@ -101,9 +101,22 @@
     .preco-de .risco { text-decoration-thickness: 2px; }
     .inclui { text-align:left; max-width:440px; margin: 26px auto 0; }
 
-    /* ---------- FAQ ---------- */
-    .faq dt { font-family: var(--f-display); font-style: italic; font-size: clamp(19px,2.2vw,24px); margin-top: 28px; }
-    .faq dd { margin-top: 8px; }
+    /* ---------- FAQ dinâmico (sanfona) ---------- */
+    .faq2 { max-width: 740px; margin: 0 auto; }
+    .faq-item { border-top: 1px solid var(--filete); }
+    .faq-item:last-child { border-bottom: 1px solid var(--filete); }
+    .faq-item summary { list-style: none; cursor: pointer; padding: 24px 4px; display: flex; align-items: center; justify-content: space-between; gap: 22px;
+      font-family: var(--f-display); font-style: italic; font-weight: 500; font-size: clamp(19px,2.2vw,24px); line-height: 1.25; color: var(--tinta); transition: color .2s ease; }
+    .faq-item summary::-webkit-details-marker { display: none; }
+    .faq-item summary:hover { color: var(--chocolate); }
+    .faq-item .ico { flex: none; width: 26px; height: 26px; position: relative; }
+    .faq-item .ico::before, .faq-item .ico::after { content: ""; position: absolute; background: var(--chocolate); border-radius: 2px; transition: transform .28s ease, opacity .28s ease; }
+    .faq-item .ico::before { top: 12px; left: 4px; right: 4px; height: 2px; }
+    .faq-item .ico::after { left: 12px; top: 4px; bottom: 4px; width: 2px; }
+    .faq-item[open] .ico::after { transform: rotate(90deg); opacity: 0; }
+    .faq-a { overflow: hidden; }
+    .faq-a p { padding: 0 4px 26px; max-width: 640px; }
+    .faq-item[open] summary { color: var(--chocolate); }
   </style>
 </head>
 <body>
@@ -117,7 +130,7 @@
           <h1 class="titulo mt-m">O LED vai ser o novo <span class="acento">padrão</span> da extensão de cílios.</h1>
           <p class="corpo--lg mt-m txt2" style="font-size:clamp(18px,1.9vw,22px); line-height:1.6;">A pergunta não é mais se você vai trabalhar com LED. É se você vai dominar essa técnica antes ou depois da sua concorrência.</p>
           <div class="mt-l">
-            <a href="https://pay.kiwify.com.br/BMda0X4" class="cta">Quero dominar o LED →</a>
+            <a href="#oferta" class="cta">Quero dominar o LED →</a>
           </div>
           <p class="corpo mt-m txt2 micro">Acesso imediato e vitalício · Grupo de suporte · Garantia de 7 dias.</p>
         </div>
@@ -172,7 +185,7 @@
     <div class="wrap">
       <div class="wrap--txt" style="margin-inline:auto;">
         <span class="eyebrow">Como funciona</span>
-        <h2 class="titulo titulo--md mt-m">A sua cola seca quando o tempo deixa. A do LED seca quando <span class="acento">você manda</span>.</h2>
+        <h2 class="titulo titulo--md mt-m">Você nunca mais vai depender do <span class="acento">clima</span> pra trabalhar.</h2>
         <p class="corpo--lg txt2 mt-l">A cola tradicional precisa da umidade do ar pra endurecer, e a umidade você não controla. A cola LED é fotopolimerizável: ela só cura quando recebe a luz certa. Quem decide a hora é você.</p>
       </div>
       <div class="passos mt-l" style="max-width:880px; margin-inline:auto;">
@@ -381,7 +394,7 @@
       </div>
 
       <div class="centro mt-l">
-        <a href="https://pay.kiwify.com.br/BMda0X4" class="cta">Quero o Método LED completo →</a>
+        <a href="#oferta" class="cta">Quero o Método LED completo →</a>
       </div>
     </div>
   </section>
@@ -440,6 +453,7 @@
 
         <div class="inclui">
           <div class="check"><span class="mk acento">✓</span><span class="corpo txt2">O Método LED completo em vídeo, nas 4 fases</span></div>
+          <div class="check"><span class="mk acento">✓</span><span class="corpo txt2"><span class="peso">1 mentoria online por mês</span> comigo, pra tirar dúvidas ao vivo</span></div>
           <div class="check"><span class="mk acento">✓</span><span class="corpo txt2">Grupo de suporte pra tirar dúvidas durante o aprendizado</span></div>
           <div class="check"><span class="mk acento">✓</span><span class="corpo txt2">Acesso imediato e vitalício, no seu ritmo, pelo celular</span></div>
           <div class="check"><span class="mk acento">✓</span><span class="corpo txt2">Garantia incondicional de 7 dias</span></div>
@@ -464,18 +478,36 @@
         <span class="eyebrow eyebrow-c">Ainda com dúvida?</span>
         <h2 class="titulo titulo--md mt-m">É normal. Deixa eu <span class="acento">responder</span>.</h2>
       </div>
-      <dl class="faq mt-l">
-        <dt>Preciso já saber fazer extensão de cílios?</dt>
-        <dd class="corpo txt2">Sim. O curso é pra quem já aplica cílios e quer evoluir pro LED. A aplicação dos fios continua a mesma, o que muda é como o adesivo cura.</dd>
-        <dt>O LED é seguro pros olhos da cliente?</dt>
-        <dd class="corpo txt2">Sim, quando usado corretamente. Tem uma fase inteira de segurança explicando os tipos de ultravioleta, a faixa que usamos e por que ela é a mais segura, além da distância e do tempo de exposição corretos.</dd>
-        <dt>Vou precisar comprar equipamento novo?</dt>
-        <dd class="corpo txt2">Sim, uma lâmpada LED e a cola fotoativada. No curso eu te explico exatamente o que procurar, a potência, o comprimento de onda e as marcas que eu já testei, pra você comprar com segurança e sem desperdiçar dinheiro.</dd>
-        <dt>Por quanto tempo tenho acesso?</dt>
-        <dd class="corpo txt2">O acesso é vitalício. Você assiste quantas vezes quiser, no seu ritmo, pelo celular ou computador.</dd>
-        <dt>E se eu não gostar?</dt>
-        <dd class="corpo txt2">Você tem 7 dias de garantia incondicional. Se não for pra você, devolvo todo o valor, sem perguntas.</dd>
-      </dl>
+      <div class="faq2 mt-l">
+        <details class="faq-item">
+          <summary>Preciso já saber fazer extensão de cílios?<span class="ico"></span></summary>
+          <div class="faq-a"><p class="corpo txt2">Sim. O curso é pra quem já aplica cílios e quer evoluir pro LED. A aplicação dos fios continua a mesma, o que muda é como o adesivo cura.</p></div>
+        </details>
+        <details class="faq-item">
+          <summary>O LED é seguro pros olhos da cliente?<span class="ico"></span></summary>
+          <div class="faq-a"><p class="corpo txt2">Sim, quando usado corretamente. Tem uma fase inteira de segurança explicando os tipos de ultravioleta, a faixa que usamos e por que ela é a mais segura, além da distância e do tempo de exposição corretos.</p></div>
+        </details>
+        <details class="faq-item">
+          <summary>O LED não sai mais caro que a cola comum?<span class="ico"></span></summary>
+          <div class="faq-a"><p class="corpo txt2">Pelo contrário. Como a cola só cura na luz, você não desperdiça gota seca, não precisa de finalizador e aproveita melhor o produto. O equipamento é um investimento único, e o que você cobra a mais por aplicação se paga rápido.</p></div>
+        </details>
+        <details class="faq-item">
+          <summary>Vou precisar comprar equipamento novo?<span class="ico"></span></summary>
+          <div class="faq-a"><p class="corpo txt2">Sim, uma lâmpada LED e a cola fotoativada. No curso eu te explico exatamente o que procurar, a potência, o comprimento de onda e as marcas que eu já testei, pra você comprar com segurança e sem desperdiçar dinheiro.</p></div>
+        </details>
+        <details class="faq-item">
+          <summary>Como funciona a mentoria mensal?<span class="ico"></span></summary>
+          <div class="faq-a"><p class="corpo txt2">Uma vez por mês a gente se encontra online pra você tirar dúvidas comigo ao vivo, mostrar suas aplicações e destravar o que estiver te travando na prática. É o acompanhamento que faz diferença no começo.</p></div>
+        </details>
+        <details class="faq-item">
+          <summary>Por quanto tempo tenho acesso?<span class="ico"></span></summary>
+          <div class="faq-a"><p class="corpo txt2">O acesso ao curso é vitalício. Você assiste quantas vezes quiser, no seu ritmo, pelo celular ou computador.</p></div>
+        </details>
+        <details class="faq-item">
+          <summary>E se eu não gostar?<span class="ico"></span></summary>
+          <div class="faq-a"><p class="corpo txt2">Você tem 7 dias de garantia incondicional. Se não for pra você, devolvo todo o valor, sem perguntas.</p></div>
+        </details>
+      </div>
     </div>
   </section>
 
@@ -486,7 +518,7 @@
       <h2 class="titulo titulo--md mt-m">Seja a primeira a <span class="acento">evoluir</span> na sua região.</h2>
       <p class="corpo--lg mt-m">O mercado de LED no Brasil ainda está no começo. Quem domina a técnica agora se posiciona como referência. Essa é a sua janela.</p>
       <div class="mt-l">
-        <a href="https://pay.kiwify.com.br/BMda0X4" class="cta">Quero dominar o LED por R$197 →</a>
+        <a href="#oferta" class="cta">Quero dominar o LED por R$197 →</a>
       </div>
       <p class="corpo mt-m txt2 micro">Acesso imediato e vitalício · Garantia de 7 dias.</p>
     </div>
@@ -504,7 +536,7 @@
   <!-- ============ BARRA FIXA DE OFERTA ============ -->
   <div class="barra-fixa" id="barra">
     <span class="corpo" style="font-size:15px;">Só hoje · <span class="preco-antigo">R$497</span> <span class="acento peso">R$197</span></span>
-    <a href="https://pay.kiwify.com.br/BMda0X4" class="cta">Garantir minha vaga →</a>
+    <a href="#oferta" class="cta">Garantir minha vaga →</a>
   </div>
 
   <script>
