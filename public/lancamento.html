@@ -99,6 +99,12 @@
     /* ---------- Oferta ---------- */
     .preco-de { font-size: clamp(20px, 2.6vw, 28px); }
     .preco-de .risco { text-decoration-thickness: 2px; }
+    .preco-grande { font-family: var(--f-impacto); line-height: .94; font-size: clamp(54px, 10.5vw, 92px); margin-top: 8px; letter-spacing: -0.01em; white-space: nowrap; }
+    .preco-grande .px { display:block; font-family: var(--f-body); font-weight:600; font-size:.2em; letter-spacing:.08em; text-transform:uppercase; opacity:.8; margin-bottom:.5em; white-space:normal; }
+    .preco-grande .cif { font-size:.46em; vertical-align:.42em; margin-right:.06em; letter-spacing:0; }
+    .preco-avista { font-size: clamp(16px, 2vw, 21px); }
+    .preco-avista .peso { color: var(--argila); }
+    .bg-claro .preco-avista .peso, .bg-papel .preco-avista .peso { color: var(--chocolate); }
     .inclui { text-align:left; max-width:440px; margin: 26px auto 0; }
 
     /* ---------- FAQ dinâmico (sanfona) ---------- */
@@ -331,6 +337,30 @@
     </div>
   </section>
 
+  <!-- ============ DOBRA: DEPOIMENTOS (prova social) ============ -->
+  <section class="secao bg-pretinho">
+    <div class="wrap">
+      <div class="centro" style="max-width:700px; margin-inline:auto;">
+        <span class="eyebrow eyebrow-c">Prova real</span>
+        <h2 class="titulo titulo--md mt-m">Não sou só eu falando. <span class="acento">Elas</span> sentiram.</h2>
+        <p class="corpo--lg txt2 mt-m">Mensagens reais de clientes logo depois do procedimento com LED. Sem ardência, sem coceira e com retenção. É isso que o LED entrega, e que você vai aprender a dominar.</p>
+      </div>
+      <div class="depo-masonry mt-l">
+        <div class="depo-card"><img src="/img/depoimentos/depo-1.jpg" alt="Depoimento: quase desisti dos cílios por ardência, mas com o LED não senti nada" loading="lazy"></div>
+        <div class="depo-card"><img src="/img/depoimentos/depo-2.jpg" alt="Depoimento: inacreditável, não sinto nadinha na raiz" loading="lazy"></div>
+        <div class="depo-card"><img src="/img/depoimentos/depo-3.jpg" alt="Depoimento: nenhuma reação, nenhuma coceira, nenhuma ardência" loading="lazy"></div>
+        <div class="depo-card"><img src="/img/depoimentos/depo-4.jpg" alt="Depoimento: amei meus cílios, não estou sentindo nada e não caiu nenhum" loading="lazy"></div>
+        <div class="depo-card"><img src="/img/depoimentos/depo-5.jpg" alt="Depoimento: está tudo no lugar, não caiu nada ainda" loading="lazy"></div>
+        <div class="depo-card"><img src="/img/depoimentos/depo-6.jpg" alt="Depoimento: não estou sentindo nada, nem coçou e nem inchou" loading="lazy"></div>
+        <div class="depo-card"><img src="/img/depoimentos/depo-7.jpg" alt="Depoimento: tudo ok, nenhum desconforto" loading="lazy"></div>
+        <div class="depo-card"><img src="/img/depoimentos/depo-8.jpg" alt="Depoimento: você acredita que não saiu nenhum cílio" loading="lazy"></div>
+      </div>
+      <div class="centro mt-l">
+        <a href="#oferta" class="cta">Quero dominar o LED</a>
+      </div>
+    </div>
+  </section>
+
   <!-- ============ DOBRA: QUEM ENSINA ============ -->
   <section class="secao bg-papel">
     <div class="wrap">
@@ -475,8 +505,9 @@
 
       <div class="oferta-card mt-l">
         <p class="apoio acento">Só no dia 30 de junho</p>
-        <p class="preco-de mt-m txt2"><span class="risco">R$497</span> &nbsp;por</p>
-        <p class="preco-por acento">R$197</p>
+        <p class="preco-de mt-m txt2">De <span class="risco">R$497</span> por apenas</p>
+        <p class="preco-grande acento"><span class="px">12× de</span><span class="cif">R$</span>20,37</p>
+        <p class="preco-avista mt-s txt2">ou <span class="peso">R$197</span> à vista no Pix</p>
         <p class="corpo mt-s txt2" style="font-size:16px;">No dia seguinte, o curso volta para R$497. Esse valor é só no dia do lançamento.</p>
 
         <div class="inclui">
