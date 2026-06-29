@@ -15,6 +15,8 @@ app.get('/lash-grupo-vip', pagina('index.html')); // URL dos anúncios → capta
 app.get('/entrar', pagina('entrar.html'));     // redireciona pro grupo + dispara Lead
 app.get('/lancamento-197', pagina('lancamento.html')); // venda — lançamento (R$197, dia 30/06) · link direto, escondido da home
 app.get('/lancamento', pagina('lancamento.html'));     // alias interno (mesma página)
+app.get('/presencial', pagina('lancamento-presencial.html'));            // venda — Formação Presencial (R$1.500 / lançamento R$1.197)
+app.get('/lancamento-presencial', pagina('lancamento-presencial.html')); // alias interno (mesma página)
 app.get('/curso', pagina('curso.html'));           // venda — perpétua (R$497)
 
 // Estáticos (css, img)

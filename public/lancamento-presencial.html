@@ -1,0 +1,740 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Método LED — Formação Presencial · Nataly Ribeiro</title>
+  <meta name="description" content="A Formação Presencial do Método LED com Nataly Ribeiro. Em um dia, você aprende a extensão de cílios com fotopolimerização ao vivo: vê a técnica de perto, pega no aparelho e tira todas as dúvidas na hora. Turma reduzida, certificação e acompanhamento.">
+  <meta property="og:title" content="Método LED — Formação Presencial · Nataly Ribeiro">
+  <meta property="og:description" content="Em vez de meses tentando entender o LED sozinha, você aprende em um dia, ao vivo. Turma reduzida. Primeiras 20 vagas com condição de lançamento.">
+  <meta property="og:type" content="website">
+
+  <!-- Meta Pixel + GA4 -->
+  <script src="/js/pixel.js"></script>
+  <script src="/js/analytics.js"></script>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Abril+Fatface&family=Cormorant+Garamond:ital,wght@0,500;1,400;1,500&family=Hanken+Grotesk:wght@400;500;600;700&family=Playfair+Display:ital,wght@0,500;1,400;1,500;1,600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/css/atelier.css">
+  <style>
+    /* ---------- HERO ---------- */
+    .hero { min-height: 100svh; display: flex; align-items: center; padding: 92px 0 56px; }
+    .hero-grid { display: grid; gap: 40px; align-items: center; }
+    .hero-txt { max-width: 600px; }
+    .hero .foto { border-radius: 18px; overflow: hidden; border: 1px solid rgba(242,238,229,.16); }
+    .hero .foto img { width: 100%; height: 100%; object-fit: cover; object-position: center 28%; min-height: 380px; max-height: 82vh; }
+    @media (min-width: 900px){
+      .hero-grid { grid-template-columns: 1.04fr .96fr; gap: 56px; }
+      .hero { padding: 96px 0; }
+    }
+    .pill-data { display:inline-flex; align-items:center; gap:.6em; border:1px solid rgba(242,238,229,.28); border-radius:100px; padding:8px 18px; font-size:13px; letter-spacing:.12em; text-transform:uppercase; font-weight:600; }
+    .titulo { overflow-wrap: anywhere; }
+    .micro { font-size: 14px; letter-spacing:.02em; }
+    .hero-meta { display:flex; flex-wrap:wrap; gap:10px 14px; margin-top:26px; }
+    .hero-meta .mi { display:inline-flex; align-items:center; gap:.5em; font-size:13.5px; letter-spacing:.04em; border:1px solid rgba(242,238,229,.22); border-radius:100px; padding:8px 16px; }
+    .hero-meta .mi b { font-weight:600; }
+    .hero-meta .mi .d { width:6px; height:6px; border-radius:50%; background:var(--salvia); flex:none; }
+
+    /* ---------- Áreas onde o LED já é usado (didático) ---------- */
+    .areas { display:grid; gap:18px; grid-template-columns:1fr 1fr; }
+    @media (min-width:760px){ .areas { grid-template-columns:repeat(4,1fr); } }
+    .area { border:1px solid var(--filete); border-radius:14px; padding: clamp(20px,2.6vw,28px); background:var(--papel); }
+    .area .ic { width:42px; height:42px; margin-bottom:12px; }
+    .area h4 { font-family:var(--f-body); font-size:12px; font-weight:600; letter-spacing:.16em; text-transform:uppercase; }
+    .area h3 { font-family:var(--f-display); font-style:italic; font-weight:500; font-size:clamp(20px,2.4vw,26px); margin-top:4px; line-height:1.1; }
+    .area p { font-size:14.5px; line-height:1.55; margin-top:8px; }
+
+    /* ---------- Passos do mecanismo ---------- */
+    .passos { display:grid; gap:20px; grid-template-columns:1fr; }
+    @media (min-width:680px){ .passos { grid-template-columns:repeat(3,1fr); } }
+    .passo .pn { font-family:var(--f-apoio); font-style:italic; font-size:clamp(34px,5vw,52px); line-height:1; }
+    .passo p { font-size:16px; margin-top:8px; }
+
+    /* ---------- Comparação de segurança (48W x 5W) ---------- */
+    .seg { display:grid; gap:20px; grid-template-columns:1fr; align-items:stretch; }
+    @media (min-width:680px){ .seg { grid-template-columns:1fr 1fr; } }
+    .seg-card { border:1px solid rgba(242,238,229,.2); border-radius:18px; padding: clamp(26px,3.4vw,40px); }
+    .seg-card h4 { font-family:var(--f-body); font-size:12.5px; font-weight:600; letter-spacing:.18em; text-transform:uppercase; opacity:.85; }
+    .seg-num { font-family:var(--f-impacto); line-height:.95; font-size:clamp(72px,11vw,120px); margin-top:6px; }
+    .seg-num span { font-size:.4em; font-style:italic; font-family:var(--f-display); }
+    .seg-bar { height:7px; border-radius:4px; margin:14px 0; }
+    .seg-card.hi { background:var(--salvia); border-color:transparent; }
+    .seg-card.hi h4, .seg-card.hi p { color:#2C3724; }
+    .seg-card.hi .seg-num { color:#2C3724; }
+
+    /* ---------- Timeline ---------- */
+    .tl-wrap { max-width:980px; margin:0 auto; }
+    .tl-wrap svg { width:100%; height:auto; display:block; }
+
+    /* ---------- Cards xadrez (benefícios) ---------- */
+    .benef-tit { font-family: var(--f-apoio); font-style: italic; font-weight: 500; font-size: clamp(23px, 2.7vw, 31px); line-height: 1.18; margin-bottom: 2px; }
+    .card--v { background: #E7EDE2; border-color: #D6DFCD; }
+    .card--c { background: #FAF7F0; }
+
+    /* ---------- Presencial x Online (a virada) ---------- */
+    .vs { display:grid; gap:20px; grid-template-columns:1fr; align-items:stretch; }
+    @media (min-width:760px){ .vs { grid-template-columns:1fr 1fr; } }
+    .vs-card { border-radius:18px; padding: clamp(28px,3.6vw,42px); }
+    .vs-card .vs-tag { font-family:var(--f-body); font-size:12px; font-weight:600; letter-spacing:.18em; text-transform:uppercase; }
+    .vs-card h3 { font-family:var(--f-display); font-style:italic; font-weight:500; font-size:clamp(24px,3vw,32px); line-height:1.12; margin-top:8px; }
+    .vs-card .li { display:flex; gap:12px; align-items:flex-start; margin-top:16px; font-size:15.5px; line-height:1.55; }
+    .vs-card .li .mk { flex:none; width:20px; height:20px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:11px; line-height:1; margin-top:2px; }
+    .vs-online { border:1px solid rgba(242,238,229,.2); }
+    .vs-pres { background:var(--salvia); }
+    .vs-pres .vs-tag, .vs-pres h3, .vs-pres .li { color:var(--verde-tinta); }
+    .vs-pres .li .mk { background:var(--verde-tinta); color:var(--salvia); }
+    .vs-online .li .mk { border:1.5px solid var(--argila); color:var(--argila); }
+
+    /* ---------- Como funciona o dia (cronograma de fases ao vivo) ---------- */
+    .fase { border-top: 1px solid var(--filete); padding: 36px 0; }
+    .fase:first-of-type { border-top: 0; }
+    .fase__n { font-family: var(--f-impacto); font-size: clamp(42px,6vw,66px); line-height:1; opacity:.85; }
+    .fase__verbo { font-family: var(--f-display); font-style: italic; font-size: clamp(27px,3.6vw,42px); line-height:1.04; }
+    .fase__apoio { font-family: var(--f-apoio); font-style: italic; font-size: clamp(17px,2vw,21px); margin-top: 2px; }
+    .fase__aulas { font-size: 14.5px; opacity:.9; }
+    @media (min-width:760px){ .fase-grid { display:grid; grid-template-columns: 92px 1fr; gap: 34px; align-items: start; } }
+
+    /* ---------- O que está incluído ---------- */
+    .inc-grid { display:grid; gap:16px; grid-template-columns:1fr; }
+    @media (min-width:680px){ .inc-grid { grid-template-columns:1fr 1fr; } }
+    .inc { display:flex; gap:16px; align-items:flex-start; border:1px solid var(--filete); border-radius:14px; padding:22px 24px; background:var(--papel); }
+    .inc .ic { flex:none; width:38px; height:38px; }
+    .inc h4 { font-family:var(--f-display); font-style:italic; font-weight:500; font-size:clamp(19px,2.2vw,23px); line-height:1.1; }
+    .inc p { font-size:14.5px; line-height:1.55; margin-top:5px; }
+
+    /* ---------- Resultados ---------- */
+    .result-grid { display:grid; gap:16px; grid-template-columns:1fr; }
+    @media(min-width:760px){ .result-grid { grid-template-columns:repeat(3,1fr); } }
+    .result-item { border-radius:16px; overflow:hidden; border:1px solid rgba(242,238,229,.16); aspect-ratio:4/5; }
+    .result-item img { width:100%; height:100%; object-fit:cover; }
+
+    /* ---------- Nataly ---------- */
+    .nat-grid { display:grid; gap:36px; align-items:center; }
+    @media (min-width:840px){ .nat-grid { grid-template-columns: .92fr 1.08fr; gap:56px; } }
+    .nat-foto { border-radius:18px; overflow:hidden; border:1px solid var(--filete); }
+    .nat-foto img { width:100%; display:block; object-fit:cover; }
+    .nat-selos { display:flex; flex-wrap:wrap; gap:10px; margin-top:26px; }
+    .nat-selos .s { display:inline-flex; align-items:center; gap:.5em; font-size:13px; letter-spacing:.03em; border:1px solid var(--filete); border-radius:100px; padding:8px 16px; }
+    .nat-selos .s b { font-weight:600; }
+
+    /* ---------- Pra quem é / não é ---------- */
+    .col2 { display:grid; gap:24px; }
+    @media (min-width:760px){ .col2 { grid-template-columns: 1fr 1fr; gap: 32px; } }
+    .quadro { border:1px solid rgba(242,238,229,.2); border-radius:18px; padding: clamp(26px,3.4vw,38px); }
+    .check { display:flex; gap:12px; align-items:flex-start; margin-top:14px; }
+    .check .mk { flex:none; width:22px; height:22px; border-radius:50%; border:1.5px solid currentColor; display:flex; align-items:center; justify-content:center; font-size:12px; line-height:1; }
+
+    /* ---------- Oferta ---------- */
+    .preco-de { font-size: clamp(20px, 2.6vw, 28px); }
+    .preco-de .risco { text-decoration-thickness: 2px; }
+    .preco-grande { font-family: var(--f-impacto); line-height: .94; font-size: clamp(54px, 10.5vw, 92px); margin-top: 8px; letter-spacing: -0.01em; white-space: nowrap; }
+    .preco-grande .px { display:block; font-family: var(--f-body); font-weight:600; font-size:.2em; letter-spacing:.08em; text-transform:uppercase; opacity:.8; margin-bottom:.5em; white-space:normal; }
+    .preco-grande .cif { font-size:.46em; vertical-align:.42em; margin-right:.06em; letter-spacing:0; }
+    .preco-avista { font-size: clamp(16px, 2vw, 21px); }
+    .preco-avista .peso { color: var(--argila); }
+    .bg-claro .preco-avista .peso, .bg-papel .preco-avista .peso { color: var(--chocolate); }
+    .inclui { text-align:left; max-width:460px; margin: 26px auto 0; }
+    .bonus { max-width:460px; margin:24px auto 0; text-align:left; border:1px solid var(--argila); border-radius:16px; padding:22px 24px; background:rgba(201,164,139,.07); }
+    .bonus-tag { font-family:var(--f-body); font-size:11.5px; font-weight:700; letter-spacing:.16em; text-transform:uppercase; color:var(--argila); display:flex; align-items:center; gap:.5em; }
+    .bonus .check { margin-top:13px; }
+    .bonus .check .mk { border-color:var(--argila); color:var(--argila); }
+    .lote { display:inline-flex; align-items:center; gap:.6em; border-radius:100px; padding:8px 18px; font-size:13px; letter-spacing:.1em; text-transform:uppercase; font-weight:700; background:var(--salvia); color:var(--verde-tinta); }
+    .parcela { font-size:15px; letter-spacing:.01em; }
+
+    /* ---------- FAQ dinâmico (sanfona) ---------- */
+    .faq2 { max-width: 740px; margin: 0 auto; }
+    .faq-item { border-top: 1px solid var(--filete); }
+    .faq-item:last-child { border-bottom: 1px solid var(--filete); }
+    .faq-item summary { list-style: none; cursor: pointer; padding: 24px 4px; display: flex; align-items: center; justify-content: space-between; gap: 22px;
+      font-family: var(--f-display); font-style: italic; font-weight: 500; font-size: clamp(19px,2.2vw,24px); line-height: 1.25; color: var(--tinta); transition: color .2s ease; }
+    .faq-item summary::-webkit-details-marker { display: none; }
+    .faq-item summary:hover { color: var(--chocolate); }
+    .faq-item .ico { flex: none; width: 26px; height: 26px; position: relative; }
+    .faq-item .ico::before, .faq-item .ico::after { content: ""; position: absolute; background: var(--chocolate); border-radius: 2px; transition: transform .28s ease, opacity .28s ease; }
+    .faq-item .ico::before { top: 12px; left: 4px; right: 4px; height: 2px; }
+    .faq-item .ico::after { left: 12px; top: 4px; bottom: 4px; width: 2px; }
+    .faq-item[open] .ico::after { transform: rotate(90deg); opacity: 0; }
+    .faq-a { overflow: hidden; }
+    .faq-a p { padding: 0 4px 26px; max-width: 640px; }
+    .faq-item[open] summary { color: var(--chocolate); }
+
+    /* ---------- Comparativo de preço (gráfico de barras) ---------- */
+    .compara { max-width: 780px; margin-inline: auto; text-align: left; }
+    .cmp-row { display: grid; grid-template-columns: 1fr; gap: 8px; margin-top: 26px; align-items: center; }
+    .cmp-row:first-child { margin-top: 0; }
+    @media (min-width: 700px) { .cmp-row { grid-template-columns: 240px 1fr 150px; gap: 24px; } }
+    .cmp-label { font-size: 15px; line-height: 1.3; color: var(--tinta-suave); }
+    .cmp-row--hi .cmp-label { color: var(--tinta); font-weight: 600; }
+    .cmp-track { height: 22px; border-radius: 100px; background: var(--pedra); overflow: hidden; }
+    .cmp-bar { width: 0; height: 100%; border-radius: 100px; transition: width 1.1s cubic-bezier(.2,.7,.2,1); }
+    .cmp-val { font-weight: 700; font-size: clamp(17px,1.9vw,21px); white-space: nowrap; }
+    @media (min-width: 700px) { .cmp-val { text-align: right; } }
+    .cmp-row--hi .cmp-val { font-family: var(--f-impacto); font-weight: 400; font-size: clamp(28px,3.4vw,40px); line-height: 1; color: var(--chocolate); }
+
+    /* ---------- Barra fixa de oferta ---------- */
+    .barra-fixa .bf-txt { font-size:14px; }
+    .barra-fixa .bf-txt b { font-weight:700; }
+  </style>
+</head>
+<body>
+
+  <!-- ============ HERO ============ -->
+  <header class="bg-pretinho hero">
+    <div class="wrap">
+      <div class="hero-grid">
+        <div class="hero-txt">
+          <span class="pill-data acento">● &nbsp;Método LED · Formação Presencial</span>
+          <h1 class="titulo titulo--md mt-m">Em vez de meses tentando entender o LED sozinha, você aprende em <span class="acento">um único dia</span>.</h1>
+          <p class="corpo--lg mt-m txt2" style="font-size:clamp(18px,1.9vw,22px); line-height:1.6;">Ao vivo comigo, pegando no aparelho e tirando todas as dúvidas na hora. Você vê a técnica de perto, entende o porquê de cada coisa e sai sabendo, em uma tarde.</p>
+          <div class="hero-meta">
+            <span class="mi"><span class="d"></span><b>13, 20 e 25 de julho</b></span>
+            <span class="mi"><span class="d"></span><b>Cambuí, MG</b></span>
+            <span class="mi"><span class="d"></span><b>Só 5 por turma</b></span>
+          </div>
+          <div class="mt-l">
+            <a href="#oferta" class="cta">Quero minha vaga</a>
+          </div>
+          <p class="corpo mt-m txt2 micro">Aprendizado ao vivo · Certificado de formação · Acompanhamento depois do encontro.</p>
+        </div>
+
+        <div class="foto">
+          <img src="/img/nataly-hero-led.jpg?v=2" alt="Nataly Ribeiro, lash designer, na formação presencial do Método LED">
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- ============ DOBRA: A VIRADA (por que presencial) ============ -->
+  <section class="secao bg-claro">
+    <div class="wrap">
+      <div class="centro" style="max-width:780px; margin-inline:auto;">
+        <span class="eyebrow eyebrow-c">Por que presencial</span>
+        <h2 class="titulo titulo--md mt-m">Tem coisa que só acontece quando a minha mão está do lado da <span class="acento">sua</span>.</h2>
+        <p class="corpo--lg txt2 mt-m">Você pode assistir mil vídeos sobre o LED. Mas ver a técnica acontecer bem na sua frente, pegar no aparelho, sentir como ele funciona e tirar cada dúvida na hora, isso a tela não te dá. No presencial, o que você não entende eu explico ali, ao vivo, quantas vezes precisar, até fazer sentido de verdade.</p>
+        <p class="apoio acento mt-l">No fim do dia, você não vai ter só assistido mais um conteúdo sobre o LED. Você vai ter entendido a técnica, ao vivo, sem achismo.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ DOBRA: O LED NÃO É NOVO (mata objeção "é confiável?") ============ -->
+  <section class="secao bg-papel">
+    <div class="wrap">
+      <div class="centro" style="max-width:760px; margin-inline:auto;">
+        <span class="eyebrow eyebrow-c">Antes de tudo, uma verdade</span>
+        <h2 class="titulo titulo--md mt-m">Você confia no LED há anos. Só não tinha <span class="acento">reparado</span>.</h2>
+        <p class="corpo--lg txt2 mt-m">O LED não é nenhuma novidade arriscada. É a mesma tecnologia que já está na saúde e na estética que você conhece. O que muda na extensão de cílios é só a potência e o comprimento de onda.</p>
+      </div>
+
+      <div class="areas mt-l">
+        <div class="area">
+          <svg class="ic" viewBox="0 0 48 48" fill="none" stroke="var(--chocolate)" stroke-width="1.8"><path d="M16 8c-5 0-8 4-8 9 0 6 3 9 4 16 1 5 2 8 5 8s3-6 7-6 4 6 7 6 4-3 5-8c1-7 4-10 4-16 0-5-3-9-8-9-4 0-5 2-8 2s-4-2-9-2Z"/></svg>
+          <h4 class="acento">Odontologia</h4>
+          <h3>No dentista</h3>
+          <p class="txt2">Secagem de resinas e clareamento dos dentes.</p>
+        </div>
+        <div class="area">
+          <svg class="ic" viewBox="0 0 48 48" fill="none" stroke="var(--chocolate)" stroke-width="1.8"><circle cx="24" cy="20" r="13"/><path d="M24 13v14M17 20h14"/><path d="M14 38h20M16 44h16"/></svg>
+          <h4 class="acento">Medicina</h4>
+          <h3>Na pele</h3>
+          <p class="txt2">Tratamentos dermatológicos e recuperação da pele.</p>
+        </div>
+        <div class="area">
+          <svg class="ic" viewBox="0 0 48 48" fill="none" stroke="var(--chocolate)" stroke-width="1.8"><circle cx="24" cy="15" r="8"/><path d="M12 40c0-7 5-12 12-12s12 5 12 12"/><path d="M20 14c1 2 7 2 8 0"/></svg>
+          <h4 class="acento">Neonatologia</h4>
+          <h3>Nos bebês</h3>
+          <p class="txt2">Tratamento da icterícia, o "amarelão" dos recém-nascidos.</p>
+        </div>
+        <div class="area">
+          <svg class="ic" viewBox="0 0 48 48" fill="none" stroke="var(--chocolate)" stroke-width="1.8"><rect x="10" y="20" width="28" height="18" rx="2"/><path d="M16 20v-4a8 8 0 0116 0v4M24 27v4"/></svg>
+          <h4 class="acento">Estética</h4>
+          <h3>Nas unhas</h3>
+          <p class="txt2">As cabines de LED da esmaltação em gel que você já usa.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ DOBRA: O MECANISMO (didático) ============ -->
+  <section class="secao bg-pretinho">
+    <div class="wrap">
+      <div class="wrap--txt" style="margin-inline:auto;">
+        <span class="eyebrow">Como funciona</span>
+        <h2 class="titulo titulo--md mt-m">Você nunca mais vai depender do <span class="acento">clima</span> pra trabalhar.</h2>
+        <p class="corpo--lg txt2 mt-l">A cola tradicional precisa da umidade do ar pra endurecer, e a umidade você não controla. A cola LED é fotopolimerizável: ela só cura quando recebe a luz certa. Quem decide a hora é você.</p>
+      </div>
+      <div class="passos mt-l" style="max-width:880px; margin-inline:auto;">
+        <div class="passo">
+          <div class="pn acento">01</div>
+          <p class="txt2">Você posiciona o fio com calma, sem pressa de a cola pegar.</p>
+        </div>
+        <div class="passo">
+          <div class="pn acento">02</div>
+          <p class="txt2">Quando está perfeito, você ativa a luz LED sobre a aplicação.</p>
+        </div>
+        <div class="passo">
+          <div class="pn acento">03</div>
+          <p class="txt2">A cola cura em cerca de 3 segundos. Quase sem vapor e sem espera.</p>
+        </div>
+      </div>
+      <p class="apoio acento centro mt-l" style="max-width:680px;margin-inline:auto;">A aplicação continua igual. O que muda é que agora o controle é seu. E no presencial, você treina isso até virar automático.</p>
+    </div>
+  </section>
+
+  <!-- ============ DOBRA: SEGURANÇA OCULAR (mata a objeção nº 1) ============ -->
+  <section class="secao bg-claro">
+    <div class="wrap">
+      <div class="centro" style="max-width:760px; margin-inline:auto;">
+        <span class="eyebrow eyebrow-c">A pergunta que toda cliente faz</span>
+        <h2 class="titulo titulo--md mt-m">"Mas essa luz não faz mal pros <span class="acento">olhos</span>?"</h2>
+        <p class="corpo--lg txt2 mt-m">É a dúvida número um, e a resposta tem números. A cabine de unha que você já usa tem quase dez vezes mais potência que o LED de cílios, e fica minutos ligada na pele. O LED de cílios trabalha com potência baixíssima, por poucos segundos e com proteção ocular. No presencial, você aprende a explicar isso pra cliente com a mesma firmeza que eu.</p>
+      </div>
+
+      <div class="seg mt-l" style="max-width:820px;margin-inline:auto;">
+        <div class="seg-card" style="border-color:var(--filete); background:var(--papel);">
+          <h4 class="txt2">Cabine de unha</h4>
+          <div class="seg-num" style="color:var(--mocha);">48<span>W</span></div>
+          <div class="seg-bar" style="background:var(--mocha);"></div>
+          <p class="txt2">Exposição direta das mãos, por um minuto ou mais.</p>
+        </div>
+        <div class="seg-card hi">
+          <h4>LED para cílios</h4>
+          <div class="seg-num">5<span>W</span></div>
+          <div class="seg-bar" style="width:10.4%; background:#2C3724;"></div>
+          <p>Cerca de 3 segundos por aplicação, com proteção ocular.</p>
+        </div>
+      </div>
+      <p class="apoio acento centro mt-l">395 a 410 nanômetros. Uma faixa criada justamente pra curar a cola com eficiência e segurança.</p>
+    </div>
+  </section>
+
+  <!-- ============ DOBRA: BENEFÍCIOS (o que muda na cadeira) ============ -->
+  <section class="secao bg-claro" style="padding-top:0;">
+    <div class="wrap">
+      <div class="centro" style="max-width:720px; margin-inline:auto;">
+        <span class="eyebrow eyebrow-c">O que muda na sua cadeira</span>
+        <h2 class="titulo titulo--md mt-m">Não é uma cola mais cara. É um jeito melhor de <span class="acento">trabalhar</span>.</h2>
+      </div>
+      <div class="grid grid--2 mt-l">
+        <div class="card card--v">
+          <p class="benef-tit acento">A cliente sente a diferença</p>
+          <p class="corpo txt2 mt-s">A cura é na hora, então quase não há vapor nem ardência. Ela pode esquecer a regra das 24 horas e já sai podendo molhar os cílios. E como o fio cura no lugar exato, ele não entorta nem forma aquele grudinho. Tem cliente que não conseguia fazer extensão por sensibilidade e, com o LED, voltou a fazer.</p>
+        </div>
+        <div class="card card--c">
+          <p class="benef-tit acento">O LED também cuida de você</p>
+          <p class="corpo txt2 mt-s">Depois de anos respirando cianoacrilato, o vapor é uma preocupação real. Como a cola LED cura na hora e libera muito menos vapor, você se expõe bem menos ao longo do dia. É a sua saúde respiratória agradecendo no longo prazo.</p>
+        </div>
+        <div class="card card--c">
+          <p class="benef-tit acento">Você vira referência</p>
+          <p class="corpo txt2 mt-s">O LED ainda é raro no Brasil. Quem domina agora vira a profissional que as clientes procuram, inclusive de outras cidades. É o seu nome ligado à técnica que vai ser o padrão.</p>
+        </div>
+        <div class="card card--v">
+          <p class="benef-tit acento">Você valoriza o seu serviço</p>
+          <p class="corpo txt2 mt-s">Um trabalho mais confortável e mais seguro justifica um preço maior. E como o LED dispensa o finalizador e aproveita quase 100% da gota, você ainda economiza material. Cobra mais e gasta menos.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ DOBRA: É MODISMO? (timeline + urgência) ============ -->
+  <section class="secao bg-pretinho">
+    <div class="wrap">
+      <div class="centro" style="max-width:760px; margin-inline:auto;">
+        <span class="eyebrow eyebrow-c">"Será que é só moda?"</span>
+        <h2 class="titulo titulo--md mt-m">Foi exatamente o que disseram do Volume <span class="acento">Russo</span>.</h2>
+        <p class="corpo--lg txt2 mt-m">Toda revolução da extensão de cílios assustou no começo. E em todas elas, quem aprendeu primeiro virou referência. Quem esperou demais teve que correr atrás.</p>
+      </div>
+
+      <div class="tl-wrap mt-l">
+        <svg viewBox="0 0 1500 500" role="img" aria-label="Linha do tempo das técnicas de extensão de cílios">
+          <defs><linearGradient id="tl" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0" stop-color="#C9A48B" stop-opacity=".22"/><stop offset="1" stop-color="#C9A48B" stop-opacity="0"/>
+          </linearGradient></defs>
+          <path d="M200 332 L560 262 L920 196 L1280 120 L1280 384 L200 384 Z" fill="url(#tl)"/>
+          <line x1="120" y1="384" x2="1410" y2="384" stroke="rgba(242,238,229,.22)" stroke-width="2"/>
+          <text x="120" y="50" font-family="Hanken Grotesk" font-size="21" font-weight="700" fill="rgba(242,238,229,.6)" letter-spacing="1.5">ADOÇÃO NO MERCADO</text>
+          <path d="M200 332 L560 262 L920 196 L1280 120" fill="none" stroke="#C9A48B" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/>
+          <path d="M1280 120 L1408 88" fill="none" stroke="#A5B59A" stroke-width="5" stroke-linecap="round" stroke-dasharray="2 16"/>
+          <circle cx="200" cy="332" r="9" fill="#C9A48B"/>
+          <circle cx="560" cy="262" r="9" fill="#C9A48B"/>
+          <circle cx="920" cy="196" r="9" fill="#C9A48B"/>
+          <circle cx="1280" cy="120" r="17" fill="#C9A48B" stroke="#241C15" stroke-width="5"/>
+          <rect x="1206" y="58" width="148" height="38" rx="19" fill="#A5B59A"/>
+          <text x="1280" y="83" text-anchor="middle" font-family="Hanken Grotesk" font-size="18" font-weight="700" fill="#2C3724" letter-spacing="1.5">AGORA</text>
+          <g text-anchor="middle">
+            <text x="200" y="426" font-family="Playfair Display" font-style="italic" font-size="30" fill="#F2EEE5">Clássico</text>
+            <text x="200" y="458" font-family="Hanken Grotesk" font-size="17" font-weight="700" letter-spacing="2" fill="rgba(242,238,229,.6)">ANOS 2000</text>
+            <text x="560" y="426" font-family="Playfair Display" font-style="italic" font-size="30" fill="#F2EEE5">Volume Russo</text>
+            <text x="560" y="458" font-family="Hanken Grotesk" font-size="17" font-weight="700" letter-spacing="2" fill="rgba(242,238,229,.6)">ANOS 2010</text>
+            <text x="920" y="426" font-family="Playfair Display" font-style="italic" font-size="30" fill="#F2EEE5">Fox Eyes</text>
+            <text x="920" y="458" font-family="Hanken Grotesk" font-size="17" font-weight="700" letter-spacing="2" fill="rgba(242,238,229,.6)">2020</text>
+            <text x="1280" y="426" font-family="Playfair Display" font-style="italic" font-size="30" fill="#C9A48B">LED</text>
+            <text x="1280" y="458" font-family="Hanken Grotesk" font-size="17" font-weight="700" letter-spacing="2" fill="#C9A48B">2026</text>
+          </g>
+        </svg>
+      </div>
+      <p class="apoio acento centro mt-l">A cada revolução, as primeiras a aprender saíram na frente. O LED é a próxima. E a sala de aula tem lugar marcado.</p>
+    </div>
+  </section>
+
+  <!-- ============ DOBRA: PRESENCIAL x ONLINE (a virada de valor) ============ -->
+  <section class="secao bg-claro">
+    <div class="wrap">
+      <div class="centro" style="max-width:740px; margin-inline:auto;">
+        <span class="eyebrow eyebrow-c">A diferença que importa</span>
+        <h2 class="titulo titulo--md mt-m">O online te ensina a técnica. O presencial te entrega a <span class="acento">mão</span>.</h2>
+        <p class="corpo--lg txt2 mt-m">Os dois são honestos, e os dois funcionam. A diferença é o quanto você anda no mesmo dia. No presencial, a curva de meses vira um encontro, porque a dúvida é respondida na hora e a confiança nasce ali, vendo a técnica de perto.</p>
+      </div>
+
+      <div class="vs mt-l" style="max-width:880px;margin-inline:auto;">
+        <div class="vs-card vs-online">
+          <span class="vs-tag txt2">Curso Online</span>
+          <h3>No seu ritmo, pela tela</h3>
+          <div class="li"><span class="mk">·</span><span class="txt2">Você assiste, repete e aplica sozinha em casa</span></div>
+          <div class="li"><span class="mk">·</span><span class="txt2">Tira dúvida na mentoria mensal, depois</span></div>
+          <div class="li"><span class="mk">·</span><span class="txt2">A confiança vem com a sua própria repetição</span></div>
+          <div class="li"><span class="mk">·</span><span class="txt2">Ótimo pra quem aprende bem sozinha</span></div>
+        </div>
+        <div class="vs-card vs-pres">
+          <span class="vs-tag">Formação Presencial</span>
+          <h3>Comigo do seu lado, ao vivo</h3>
+          <div class="li"><span class="mk">✓</span><span>Você vê a técnica demonstrada de perto e pega no aparelho, no dia</span></div>
+          <div class="li"><span class="mk">✓</span><span>Tira cada dúvida na hora, ao vivo, quantas vezes precisar</span></div>
+          <div class="li"><span class="mk">✓</span><span>Turma de apenas 5 pessoas, atenção individual de verdade</span></div>
+          <div class="li"><span class="mk">✓</span><span>Você sai entendendo o LED de verdade, em um dia só</span></div>
+        </div>
+      </div>
+      <p class="apoio acento centro mt-l">Você não passa meses tentando entender sozinha. Em um dia, comigo, tudo faz sentido.</p>
+    </div>
+  </section>
+
+  <!-- ============ DOBRA: COMO É O ENCONTRO (4 fases ao vivo) ============ -->
+  <section class="secao bg-papel">
+    <div class="wrap">
+      <div class="centro" style="max-width:680px;margin-inline:auto;">
+        <span class="eyebrow eyebrow-c">Como é a formação</span>
+        <h2 class="titulo titulo--md mt-m">Da ciência da luz até a sua mão <span class="acento">dominando</span> a técnica.</h2>
+        <p class="corpo--lg txt2 mt-m">Uma jornada em quatro fases, ao vivo. Você entende o porquê de cada coisa, vê eu fazer, e então faz você. E termina sabendo precificar, comunicar e se posicionar com a técnica.</p>
+      </div>
+
+      <div class="mt-l" style="max-width:860px; margin-inline:auto;">
+        <div class="fase">
+          <div class="fase-grid">
+            <div class="fase__n acento">01</div>
+            <div>
+              <div class="fase__verbo">Entender</div>
+              <p class="fase__apoio acento">a ciência por trás da luz</p>
+              <p class="corpo txt2 mt-s">O que é a tecnologia LED, como ela funciona de verdade e por que é uma evolução real na extensão de cílios. A gente começa pela base, pra você enxergar o todo antes de pegar a pinça.</p>
+            </div>
+          </div>
+        </div>
+        <div class="fase">
+          <div class="fase-grid">
+            <div class="fase__n acento">02</div>
+            <div>
+              <div class="fase__verbo">Dominar</div>
+              <p class="fase__apoio acento">equipamento, cola e segurança</p>
+              <p class="corpo txt2 mt-s">Qual equipamento comprar e qual evitar, na mão. A diferença real entre a cola tradicional e a cola LED. E a parte de segurança que toda cliente pergunta: tipos de ultravioleta, a faixa segura e como resolver qualquer imprevisto sem travar na cadeira.</p>
+            </div>
+          </div>
+        </div>
+        <div class="fase">
+          <div class="fase-grid">
+            <div class="fase__n acento">03</div>
+            <div>
+              <div class="fase__verbo">Aplicar</div>
+              <p class="fase__apoio acento">a técnica acontecendo na sua frente</p>
+              <p class="corpo txt2 mt-s">O coração do presencial. Eu demonstro o passo a passo do preparo à ativação da luz, bem na sua frente e sem pressa, e você acompanha pegando no aparelho, sentindo o equipamento e tirando cada dúvida na hora. Retenção, remoção e manutenção, você entende vendo acontecer.</p>
+            </div>
+          </div>
+        </div>
+        <div class="fase">
+          <div class="fase-grid">
+            <div class="fase__n acento">04</div>
+            <div>
+              <div class="fase__verbo">Crescer</div>
+              <p class="fase__apoio acento">precificar, comunicar e se posicionar</p>
+              <p class="corpo txt2 mt-s">A parte que quase ninguém ensina. Como precificar a técnica LED com argumento e sem medo. Como explicar pra cliente traduzindo benefício, não fórmula química. E como se posicionar pra virar a referência de LED da sua região.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="centro mt-l">
+        <a href="#oferta" class="cta">Quero minha vaga</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ DOBRA: O QUE ESTÁ INCLUÍDO ============ -->
+  <section class="secao bg-claro">
+    <div class="wrap">
+      <div class="centro" style="max-width:680px; margin-inline:auto;">
+        <span class="eyebrow eyebrow-c">O que você leva</span>
+        <h2 class="titulo titulo--md mt-m">Você sai daqui pronta pra <span class="acento">atender</span>.</h2>
+        <p class="corpo--lg txt2 mt-m">Não é só um dia de aula. É tudo o que você precisa pra começar a oferecer o LED já na semana seguinte.</p>
+      </div>
+
+      <div class="inc-grid mt-l" style="max-width:880px;margin-inline:auto;">
+        <div class="inc">
+          <svg class="ic" viewBox="0 0 40 40" fill="none" stroke="var(--chocolate)" stroke-width="1.7"><path d="M8 14h24v16a2 2 0 01-2 2H10a2 2 0 01-2-2V14Z"/><path d="M14 14V9a6 6 0 0112 0v5"/></svg>
+          <div>
+            <h4>Demonstração ao vivo, de perto</h4>
+            <p class="txt2">Você vê a técnica acontecer, pega no aparelho e tira cada dúvida comigo, na hora.</p>
+          </div>
+        </div>
+        <div class="inc">
+          <svg class="ic" viewBox="0 0 40 40" fill="none" stroke="var(--chocolate)" stroke-width="1.7"><rect x="7" y="9" width="26" height="22" rx="2"/><path d="M13 16h14M13 21h14M13 26h8"/></svg>
+          <div>
+            <h4>Material de apoio completo</h4>
+            <p class="txt2">Apostila e guias de potência, comprimento de onda, marcas e protocolos pra consultar sempre.</p>
+          </div>
+        </div>
+        <div class="inc">
+          <svg class="ic" viewBox="0 0 40 40" fill="none" stroke="var(--chocolate)" stroke-width="1.7"><circle cx="20" cy="16" r="9"/><path d="M14 24l-2 11 8-4 8 4-2-11"/></svg>
+          <div>
+            <h4>Certificado de formação presencial</h4>
+            <p class="txt2">O documento que comprova a sua formação no Método LED, assinado por mim.</p>
+          </div>
+        </div>
+        <div class="inc">
+          <svg class="ic" viewBox="0 0 40 40" fill="none" stroke="var(--chocolate)" stroke-width="1.7"><path d="M6 30c0-5 4-8 9-8s9 3 9 8"/><circle cx="15" cy="14" r="5"/><path d="M26 22c4 0 8 3 8 8M27 9a5 5 0 010 10"/></svg>
+          <div>
+            <h4>Apenas 5 pessoas por turma</h4>
+            <p class="txt2">Super exclusivo de propósito: com só 5 alunas, eu acompanho de perto cada uma.</p>
+          </div>
+        </div>
+        <div class="inc">
+          <svg class="ic" viewBox="0 0 40 40" fill="none" stroke="var(--chocolate)" stroke-width="1.7"><path d="M8 10h24v15H20l-7 6v-6H8z"/></svg>
+          <div>
+            <h4>Grupo de suporte depois do encontro</h4>
+            <p class="txt2">Você não volta pra casa sozinha. O acompanhamento continua enquanto você aplica nas suas clientes.</p>
+          </div>
+        </div>
+        <div class="inc">
+          <svg class="ic" viewBox="0 0 40 40" fill="none" stroke="var(--chocolate)" stroke-width="1.7"><path d="M20 6l3.5 9.5L33 17l-7 6.5L28 33l-8-5-8 5 2-9.5L7 17l9.5-1.5z"/></svg>
+          <div>
+            <h4>Bônus: o Método LED online</h4>
+            <p class="txt2">Acesso ao Lash 2.0 — O Método LED online (vale R$497), pra rever a teoria com calma quando precisar.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ DOBRA: RESULTADOS ============ -->
+  <section class="secao bg-claro" style="padding-top:0;">
+    <div class="wrap">
+      <div class="centro" style="max-width:640px; margin-inline:auto;">
+        <span class="eyebrow eyebrow-c">Resultados</span>
+        <h2 class="titulo titulo--md mt-m">O que o <span class="acento">LED</span> entrega.</h2>
+        <p class="corpo--lg txt2 mt-m">Cílios confortáveis, alinhados e com uma retenção que dura. Trabalhos reais feitos com a técnica.</p>
+      </div>
+      <div class="result-grid mt-l">
+        <div class="result-item"><img src="/img/resultado-1.jpg?v=2" alt="Resultado de extensão de cílios com LED" loading="lazy"></div>
+        <div class="result-item"><img src="/img/resultado-2.jpg?v=2" alt="Cliente com extensão de cílios feita com LED" loading="lazy"></div>
+        <div class="result-item"><img src="/img/resultado-3.jpg?v=2" alt="Extensão de cílios com acabamento natural" loading="lazy"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ DOBRA: QUEM ENSINA ============ -->
+  <section class="secao bg-papel">
+    <div class="wrap">
+      <div class="nat-grid">
+        <div class="nat-foto">
+          <img src="/img/nataly-bio-led.jpg" alt="Nataly Ribeiro" loading="lazy">
+        </div>
+        <div>
+          <span class="eyebrow">Quem vai te formar</span>
+          <h2 class="titulo titulo--md mt-m">Mais de 300 alunas já passaram pelas minhas <span class="acento">mãos</span>.</h2>
+          <p class="corpo--lg txt2 mt-m">Eu sou lash designer há mais de 9 anos e já formei mais de 300 alunas presencialmente. Eu sei o que é olhar pra uma mão insegura no primeiro fio e saber exatamente o que dizer pra ela destravar.</p>
+          <p class="corpo--lg txt2 mt-m">O que me levou até o LED não foi um curso, foram as minhas clientes. Algumas amavam fazer cílios, mas sentiam ardência durante o procedimento ou sensibilidade dias depois. Cheguei a precisar interromper a extensão de algumas delas pra não prejudicar a saúde dos olhos, e isso me incomodava demais. Foi aí que eu mergulhei no LED, estudei a fundo, testei, busquei quem já fazia lá fora, e só então trouxe pro meu atendimento.</p>
+          <p class="corpo--lg txt2 mt-m">Deu mais certo do que eu imaginava. Hoje eu sou referência na minha região, e a Formação Presencial é tudo isso passado de mão em mão, do jeito que eu faço todo dia.</p>
+          <div class="nat-selos">
+            <span class="s"><b>+9 anos</b>&nbsp;de cadeira</span>
+            <span class="s"><b>+300 alunas</b>&nbsp;formadas</span>
+            <span class="s"><b>Premiada</b>&nbsp;Designer de Cílios</span>
+          </div>
+          <p class="apoio acento mt-l">Arte com responsabilidade.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ DOBRA: PRA QUEM É / NÃO É ============ -->
+  <section class="secao bg-pretinho">
+    <div class="wrap">
+      <div class="centro" style="max-width:680px;margin-inline:auto;">
+        <span class="eyebrow eyebrow-c">Antes de decidir</span>
+        <h2 class="titulo titulo--md mt-m">Essa formação é uma <span class="acento">escolha</span>, e não é pra todo mundo.</h2>
+      </div>
+      <div class="col2 mt-l">
+        <div class="quadro">
+          <p class="apoio acento">É pra você se…</p>
+          <div class="check mt-m"><span class="mk acento">✓</span><span class="corpo txt2">Você já aplica cílios e quer dominar o LED de uma vez, sem meses tentando sozinha</span></div>
+          <div class="check"><span class="mk acento">✓</span><span class="corpo txt2">Aprende melhor fazendo, com alguém corrigindo na hora</span></div>
+          <div class="check"><span class="mk acento">✓</span><span class="corpo txt2">Quer sair do encontro já tendo aplicado, com confiança pra atender</span></div>
+          <div class="check"><span class="mk acento">✓</span><span class="corpo txt2">Vê o LED como posicionamento, e quer ser referência antes da concorrência</span></div>
+        </div>
+        <div class="quadro">
+          <p class="apoio acento">Não é pra você se…</p>
+          <div class="check mt-m"><span class="mk acento">·</span><span class="corpo txt2">Você quer um atalho sem se dedicar no dia</span></div>
+          <div class="check"><span class="mk acento">·</span><span class="corpo txt2">Busca promessa milagrosa de "nunca mais cai"</span></div>
+          <div class="check"><span class="mk acento">·</span><span class="corpo txt2">Acha que tecnologia conserta aplicação mal feita</span></div>
+        </div>
+      </div>
+      <p class="apoio txt2 mt-l centro" style="max-width:580px;margin-inline:auto;">Aqui a gente trabalha com verdade. O LED não corrige aplicação mal feita. Ele potencializa quem domina a técnica, e eu te ajudo a dominar.</p>
+    </div>
+  </section>
+
+  <!-- ============ DOBRA: ANCORAGEM (gráfico comparativo) ============ -->
+  <section class="secao bg-claro centro">
+    <div class="wrap">
+      <span class="eyebrow eyebrow-c">Quanto vale</span>
+      <h2 class="titulo titulo--md mt-m">Uma formação presencial dessas custa uma <span class="acento">fortuna</span>. Compare.</h2>
+      <p class="corpo--lg txt2 mt-m" style="max-width:600px;margin-inline:auto;">A técnica LED, ao vivo, com correção individual, é o tipo de formação que cobra caro no mundo todo. Veja onde a minha se encaixa.</p>
+
+      <div class="compara mt-l">
+        <div class="cmp-row">
+          <span class="cmp-label">Formação de LED no exterior</span>
+          <div class="cmp-track"><div class="cmp-bar" data-w="100%" style="background:var(--mocha)"></div></div>
+          <span class="cmp-val txt2">R$4.000 a 9.000</span>
+        </div>
+        <div class="cmp-row">
+          <span class="cmp-label">Formação presencial premium no Brasil</span>
+          <div class="cmp-track"><div class="cmp-bar" data-w="55%" style="background:var(--mocha)"></div></div>
+          <span class="cmp-val txt2">R$2.500 a 4.000</span>
+        </div>
+        <div class="cmp-row cmp-row--hi">
+          <span class="cmp-label">Formação Presencial · Método LED</span>
+          <div class="cmp-track"><div class="cmp-bar" data-w="33%" style="background:var(--salvia)"></div></div>
+          <span class="cmp-val">R$1.500</span>
+        </div>
+      </div>
+
+      <p class="apoio acento mt-l">A formação mais avançada do mercado, com a minha mão guiando a sua, por uma fração do que cobram lá fora.</p>
+    </div>
+  </section>
+
+  <!-- ============ DOBRA: OFERTA + GARANTIA ============ -->
+  <section class="secao bg-pretinho centro" id="oferta">
+    <div class="wrap wrap--txt">
+      <span class="eyebrow eyebrow-c">A oferta de lançamento</span>
+      <h2 class="titulo titulo--md mt-m">As <span class="acento">20 primeiras</span> entram por um valor que não volta.</h2>
+
+      <div class="oferta-card mt-l">
+        <p class="lote">● &nbsp;Lote de lançamento · 20 vagas</p>
+        <p class="preco-de mt-m txt2">De <span class="risco">R$1.500</span> por apenas</p>
+        <p class="preco-grande acento"><span class="px">12× de</span><span class="cif">R$</span>123,80</p>
+        <p class="preco-avista mt-s txt2">ou <span class="peso">R$1.197</span> à vista no Pix</p>
+        <p class="corpo mt-s txt2" style="font-size:16px;">Essa condição é só pras 20 primeiras vagas do lançamento. Depois, a formação volta para R$1.500.</p>
+
+        <div class="inclui">
+          <div class="check"><span class="mk acento">✓</span><span class="corpo txt2"><span class="peso">Um dia inteiro de formação ao vivo</span>, comigo do seu lado</span></div>
+          <div class="check"><span class="mk acento">✓</span><span class="corpo txt2">Demonstração ao vivo: você vê a técnica de perto, pega no aparelho e tira dúvidas na hora</span></div>
+          <div class="check"><span class="mk acento">✓</span><span class="corpo txt2">O Método LED completo, nas 4 fases (entender, dominar, aplicar, crescer)</span></div>
+          <div class="check"><span class="mk acento">✓</span><span class="corpo txt2">Certificado de formação presencial</span></div>
+          <div class="check"><span class="mk acento">✓</span><span class="corpo txt2">Material de apoio e grupo de suporte depois do encontro</span></div>
+          <div class="check"><span class="mk acento">✓</span><span class="corpo txt2">Turma de apenas 5 pessoas — atenção individual de verdade</span></div>
+        </div>
+
+        <div class="bonus">
+          <p class="bonus-tag">★ &nbsp;Bônus de quem garante a vaga</p>
+          <div class="check"><span class="mk">★</span><span class="corpo txt2">Acesso ao <span class="peso">Lash 2.0 — O Método LED online</span> (vale R$497), pra rever a teoria com calma sempre que precisar</span></div>
+          <div class="check"><span class="mk">★</span><span class="corpo txt2">Entrada na <span class="peso">comunidade de suporte</span>, pra continuar tirando dúvidas depois da formação</span></div>
+        </div>
+
+        <div class="mt-l">
+          <a href="https://pay.kiwify.com.br/9dKsbFP" class="cta">Quero minha vaga</a>
+        </div>
+        <p class="corpo mt-m txt2 micro">Cambuí, MG · turmas em 13, 20 e 25 de julho · Vagas limitadas pela capacidade da sala.</p>
+      </div>
+
+      <div class="card mt-l" style="max-width:560px; margin-inline:auto;">
+        <p class="apoio acento">O meu compromisso com você</p>
+        <p class="corpo txt2 mt-s">Você não vai embora desse encontro com a dúvida que trouxe. Eu fico do seu lado o dia todo, demonstrando, respondendo e mostrando cada detalhe de perto, até o LED fazer sentido de verdade pra você. E o acompanhamento continua no grupo depois.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ DOBRA: FAQ ============ -->
+  <section class="secao bg-papel">
+    <div class="wrap wrap--txt">
+      <div class="centro">
+        <span class="eyebrow eyebrow-c">Ainda com dúvida?</span>
+        <h2 class="titulo titulo--md mt-m">É normal. Deixa eu <span class="acento">responder</span>.</h2>
+      </div>
+      <div class="faq2 mt-l">
+        <details class="faq-item">
+          <summary>Preciso já saber fazer extensão de cílios?<span class="ico"></span></summary>
+          <div class="faq-a"><p class="corpo txt2">Sim. A formação é pra quem já aplica cílios e quer dominar o LED. A aplicação dos fios continua a mesma, o que muda é como o adesivo cura. É por isso que em um encontro a gente consegue ir tão fundo na prática.</p></div>
+        </details>
+        <details class="faq-item">
+          <summary>Por que pagar mais caro que o curso online?<span class="ico"></span></summary>
+          <div class="faq-a"><p class="corpo txt2">Porque aqui você vê a técnica de perto, pega no aparelho e tira todas as dúvidas comigo na hora. No online você caminha sozinha no seu ritmo; no presencial, o que levaria meses pra você decifrar sozinha por vídeo a gente resolve em um dia, ao vivo, sem achismo.</p></div>
+        </details>
+        <details class="faq-item">
+          <summary>Onde e quando vai ser?<span class="ico"></span></summary>
+          <div class="faq-a"><p class="corpo txt2">A formação acontece em Cambuí, MG. As primeiras turmas já estão garantidas para os dias 13, 20 e 25 de julho, e conforme a procura a gente abre novas datas. Quando você garante a sua vaga, escolhe a turma e eu te envio todos os detalhes de endereço, horário e o que levar.</p></div>
+        </details>
+        <details class="faq-item">
+          <summary>Quantas pessoas tem na turma?<span class="ico"></span></summary>
+          <div class="faq-a"><p class="corpo txt2">Apenas 5. É super exclusivo de propósito: com só 5 alunas, eu consigo dar atenção real pra cada uma e tirar todas as dúvidas com calma. As primeiras turmas (13, 20 e 25 de julho) somam poucas vagas, e o valor de lançamento de R$1.197 vale pras 20 primeiras inscritas. Conforme as turmas enchem, eu abro novas datas.</p></div>
+        </details>
+        <details class="faq-item">
+          <summary>E se eu não entender alguma parte?<span class="ico"></span></summary>
+          <div class="faq-a"><p class="corpo txt2">É exatamente pra isso que o presencial existe. Você pergunta na hora, quantas vezes precisar, e eu mostro de novo, de perto, até fazer sentido. Ninguém sai daqui com a dúvida que tinha quando chegou.</p></div>
+        </details>
+        <details class="faq-item">
+          <summary>Vou precisar comprar equipamento?<span class="ico"></span></summary>
+          <div class="faq-a"><p class="corpo txt2">Pra atender depois, sim: uma lâmpada LED e a cola fotoativada. Na formação eu te mostro exatamente o que procurar, a potência, o comprimento de onda e as marcas que eu já testei, pra você comprar com segurança e sem desperdiçar dinheiro. [Confirmar se o kit inicial está incluso.]</p></div>
+        </details>
+        <details class="faq-item">
+          <summary>A formação dá certificado?<span class="ico"></span></summary>
+          <div class="faq-a"><p class="corpo txt2">Sim. Você recebe o certificado de formação presencial no Método LED, assinado por mim, comprovando a sua capacitação na técnica.</p></div>
+        </details>
+        <details class="faq-item">
+          <summary>O presencial dá acesso ao curso online?<span class="ico"></span></summary>
+          <div class="faq-a"><p class="corpo txt2">Dá, de bônus. Quem entra na formação presencial ganha acesso ao Lash 2.0 — O Método LED online (que vale R$497), pra rever a teoria com calma sempre que precisar, mais a entrada na nossa comunidade de suporte. Você leva o ao vivo comigo e o conteúdo pra consultar pra sempre.</p></div>
+        </details>
+        <details class="faq-item">
+          <summary>Posso parcelar?<span class="ico"></span></summary>
+          <div class="faq-a"><p class="corpo txt2">Pode. Dá pra parcelar em até 12× no cartão. É só escolher a opção na hora de garantir a sua vaga.</p></div>
+        </details>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ DOBRA: CTA FINAL ============ -->
+  <section class="secao bg-salvia centro">
+    <div class="wrap wrap--txt">
+      <span class="eyebrow eyebrow-c">Última chamada</span>
+      <h2 class="titulo titulo--md mt-m">Tem uma cadeira com o seu <span class="acento">nome</span> nessa turma.</h2>
+      <p class="corpo--lg mt-m">São só 20 vagas no valor de lançamento, e quem domina o LED agora se posiciona como referência antes de todo mundo. Essa é a sua janela, e ela tem dia pra fechar.</p>
+      <div class="mt-l">
+        <a href="#oferta" class="cta">Quero minha vaga</a>
+      </div>
+      <p class="corpo mt-m txt2 micro">Prática ao vivo · Certificado · Acompanhamento depois do encontro.</p>
+    </div>
+  </section>
+
+  <!-- ============ RODAPÉ ============ -->
+  <footer class="rodape bg-pretinho centro">
+    <div class="wrap">
+      <p class="logo acento">Nataly Ribeiro</p>
+      <p class="corpo txt2 mt-s" style="font-size:13px;">Método LED · Formação Presencial · Extensão de cílios com fotopolimerização</p>
+      <p class="txt2 mt-m" style="font-size:12px;">© 2026 Nataly Ribeiro. Todos os direitos reservados.</p>
+    </div>
+  </footer>
+
+  <script>
+    const io = new IntersectionObserver((es)=>es.forEach(e=>{ if(e.isIntersecting){ e.target.classList.add('in'); io.unobserve(e.target);} }), {threshold:.12});
+    document.querySelectorAll('.area, .passo, .seg-card, .card, .vs-card, .inc, .result-item, .nat-foto, .fase, .quadro, .oferta-card, .tl-wrap, .compara, section .titulo').forEach(el=>{ el.classList.add('reveal'); io.observe(el); });
+
+    // Gráfico comparativo: as barras crescem quando entram na tela
+    const barsIO = new IntersectionObserver((es)=>es.forEach(e=>{ if(e.isIntersecting){ e.target.style.width = e.target.dataset.w; barsIO.unobserve(e.target); } }), {threshold:.5});
+    document.querySelectorAll('.cmp-bar').forEach(b=>barsIO.observe(b));
+  </script>
+</body>
+</html>
