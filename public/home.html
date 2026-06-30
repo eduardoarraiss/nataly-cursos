@@ -3,44 +3,179 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Nataly Ribeiro</title>
-  <meta name="description" content="Nataly Ribeiro — Lash Designer. Beleza atemporal, feita com calma.">
-  <meta property="og:title" content="Nataly Ribeiro">
+  <title>Nataly Ribeiro — O Método LED</title>
+  <meta name="description" content="Nataly Ribeiro, lash designer. Aprenda a extensão de cílios com a tecnologia LED — online, no seu ritmo, ou na formação presencial em Cambuí, MG. A técnica que vai ser o padrão do mercado.">
+  <meta property="og:title" content="Nataly Ribeiro — O Método LED">
+  <meta property="og:description" content="Aprenda a extensão de cílios com LED: online, no seu ritmo, ou presencial em Cambuí-MG.">
   <meta property="og:type" content="website">
+
   <script src="/js/pixel.js"></script>
   <script src="/js/analytics.js"></script>
+
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital@1&family=Hanken+Grotesk:wght@400;600&family=Playfair+Display:ital,wght@1,500&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Abril+Fatface&family=Cormorant+Garamond:ital,wght@0,500;1,400;1,500&family=Hanken+Grotesk:wght@400;500;600;700&family=Playfair+Display:ital,wght@0,500;1,400;1,500;1,600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/css/atelier.css?v=20260629c">
   <style>
-    :root{ --pretinho:#241C15; --creme:#F2EEE5; --argila:#C9A48B; --salvia:#7E9072; }
-    *{margin:0;box-sizing:border-box}
-    body{
-      background:var(--pretinho); color:var(--creme);
-      font-family:'Hanken Grotesk',sans-serif;
-      min-height:100vh; min-height:100svh;
-      display:flex; align-items:center; justify-content:center;
-      text-align:center; padding:32px;
+    /* ---------- HERO ---------- */
+    .hero { min-height: 92svh; display: flex; align-items: center; padding: 88px 0 56px; }
+    .hero-grid { display: grid; gap: 40px; align-items: center; }
+    .hero-txt { max-width: 600px; }
+    .hero .foto { border-radius: 18px; overflow: hidden; border: 1px solid rgba(242,238,229,.16); }
+    .hero .foto img { width: 100%; height: 100%; object-fit: cover; object-position: center 26%; min-height: 360px; max-height: 78vh; }
+    @media (min-width: 900px){
+      .hero-grid { grid-template-columns: 1.06fr .94fr; gap: 56px; }
+      .hero { padding: 96px 0; }
     }
-    .wrap{ max-width:560px }
-    .eyebrow{ font-size:12px; letter-spacing:.28em; text-transform:uppercase; font-weight:600; color:var(--argila); display:inline-flex; align-items:center; gap:.7em }
-    .eyebrow::before{ content:""; width:6px;height:6px;border-radius:50%;background:var(--salvia);display:inline-block }
-    h1{ font-family:'Playfair Display',serif; font-style:italic; font-weight:500; font-size:clamp(46px,12vw,92px); line-height:1.04; margin:20px 0 0; letter-spacing:-.01em }
-    .apoio{ font-family:'Cormorant Garamond',serif; font-style:italic; font-size:clamp(20px,3vw,27px); color:rgba(242,238,229,.72); margin-top:14px }
-    .filete{ width:60px;height:1px;background:rgba(242,238,229,.25);margin:34px auto }
-    .link{ display:inline-flex; align-items:center; gap:.5em; color:var(--argila); text-decoration:none; font-weight:600; font-size:15px; border:1px solid rgba(242,238,229,.25); border-radius:100px; padding:13px 26px; transition:.25s }
-    .link:hover{ border-color:var(--argila); transform:translateY(-2px) }
-    .rodape{ margin-top:46px; font-size:12px; color:rgba(242,238,229,.4); letter-spacing:.02em }
+    .pill-data { display:inline-flex; align-items:center; gap:.6em; border:1px solid rgba(242,238,229,.28); border-radius:100px; padding:8px 18px; font-size:13px; letter-spacing:.12em; text-transform:uppercase; font-weight:600; }
+    .micro { font-size: 14px; letter-spacing:.02em; }
+    .hero-ctas { display:flex; flex-wrap:wrap; gap:14px; margin-top:38px; }
+
+    /* ---------- Caminhos (online x presencial) ---------- */
+    .caminhos { display:grid; gap:24px; max-width:980px; margin-inline:auto; }
+    @media (min-width:840px){ .caminhos { grid-template-columns:1fr 1fr; } }
+    .caminho { border:1px solid var(--filete); border-radius:22px; padding: clamp(28px,4vw,44px); background:var(--papel); display:flex; flex-direction:column; }
+    .caminho .c-eyebrow { font-family:var(--f-body); font-size:12px; font-weight:600; letter-spacing:.2em; text-transform:uppercase; color:var(--chocolate); display:flex; align-items:center; gap:.6em; }
+    .caminho .c-eyebrow::before { content:""; width:6px; height:6px; border-radius:50%; background:var(--salvia-prof); }
+    .caminho h3 { font-family:var(--f-display); font-style:italic; font-weight:500; font-size:clamp(28px,3.6vw,40px); line-height:1.06; margin-top:12px; color:var(--tinta); }
+    .caminho .c-sub { font-family:var(--f-apoio); font-style:italic; font-size:clamp(18px,2.2vw,22px); color:var(--tinta-suave); margin-top:6px; }
+    .caminho .c-li { display:flex; gap:11px; align-items:flex-start; margin-top:14px; font-size:15px; line-height:1.5; color:var(--tinta-suave); }
+    .caminho .c-li .mk { flex:none; width:19px; height:19px; border-radius:50%; border:1.5px solid var(--salvia-prof); color:var(--salvia-prof); display:flex; align-items:center; justify-content:center; font-size:10px; margin-top:2px; }
+    .caminho .c-preco { margin-top:22px; padding-top:20px; border-top:1px solid var(--filete); }
+    .caminho .c-preco .p-grande { font-family:var(--f-impacto); font-size:clamp(34px,5vw,46px); line-height:1; color:var(--chocolate); }
+    .caminho .c-preco .p-grande .cif { font-size:.5em; vertical-align:.5em; margin-right:.05em; }
+    .caminho .c-preco .p-avista { font-size:14.5px; color:var(--tinta-suave); margin-top:6px; }
+    .caminho .cta { margin-top:24px; width:100%; }
+    /* presencial em destaque sálvia */
+    .caminho--pres { background:var(--salvia); border-color:transparent; }
+    .caminho--pres .c-eyebrow, .caminho--pres h3, .caminho--pres .c-sub, .caminho--pres .c-li { color:var(--verde-tinta); }
+    .caminho--pres .c-eyebrow::before { background:var(--verde-tinta); }
+    .caminho--pres .c-li .mk { border-color:var(--verde-tinta); color:var(--verde-tinta); }
+    .caminho--pres .c-preco { border-top-color:rgba(44,55,36,.2); }
+    .caminho--pres .c-preco .p-grande, .caminho--pres .c-preco .p-avista { color:var(--verde-tinta); }
+    .caminho--pres .cta { background:var(--verde-tinta); color:var(--branco-quente); }
+    .c-tag { align-self:flex-start; font-family:var(--f-body); font-size:11px; font-weight:700; letter-spacing:.14em; text-transform:uppercase; background:var(--verde-tinta); color:var(--salvia); border-radius:100px; padding:6px 14px; margin-bottom:16px; }
+
+    /* ---------- Bio ---------- */
+    .nat-grid { display:grid; gap:36px; align-items:center; }
+    @media (min-width:840px){ .nat-grid { grid-template-columns: .9fr 1.1fr; gap:56px; } }
+    .nat-foto { border-radius:18px; overflow:hidden; border:1px solid var(--filete); }
+    .nat-foto img { width:100%; height:auto; display:block; }
   </style>
 </head>
 <body>
-  <div class="wrap">
-    <span class="eyebrow">Lash Designer</span>
-    <h1>Nataly <span style="color:var(--argila)">Ribeiro</span></h1>
-    <p class="apoio">Beleza atemporal, feita com calma.</p>
-    <div class="filete"></div>
-    <a class="link" href="/lash-grupo-vip">Conheça o Lash 2.0 &rarr;</a>
-    <p class="rodape">© 2026 Nataly Ribeiro · site em construção</p>
-  </div>
+
+  <!-- ============ HERO ============ -->
+  <header class="bg-pretinho hero">
+    <div class="wrap">
+      <div class="hero-grid">
+        <div class="hero-txt">
+          <span class="pill-data acento">● &nbsp;Nataly Ribeiro · Lash Designer</span>
+          <h1 class="titulo mt-m">A extensão de cílios com <span class="acento">LED</span>, ensinada com responsabilidade.</h1>
+          <p class="corpo--lg mt-m txt2" style="font-size:clamp(18px,1.9vw,22px); line-height:1.6;">Eu sou a Nataly. Há mais de 9 anos na cadeira e com mais de 300 alunas formadas, eu te ensino a técnica que vai ser o padrão do mercado — do jeito certo, entendendo o porquê de cada coisa.</p>
+          <div class="hero-ctas">
+            <a href="#caminhos" class="cta">Quero aprender o LED</a>
+          </div>
+          <p class="corpo mt-m txt2 micro">Online, no seu ritmo · ou presencial, em Cambuí-MG.</p>
+        </div>
+        <div class="foto">
+          <img src="/img/nataly-hero-led.jpg?v=2" alt="Nataly Ribeiro, lash designer">
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- ============ DOIS CAMINHOS ============ -->
+  <section class="secao bg-claro" id="caminhos">
+    <div class="wrap">
+      <div class="centro" style="max-width:680px; margin-inline:auto;">
+        <span class="eyebrow eyebrow-c">Como aprender</span>
+        <h2 class="titulo titulo--md mt-m">Escolha o jeito que combina com <span class="acento">você</span>.</h2>
+        <p class="corpo--lg txt2 mt-m">São dois caminhos pro mesmo Método LED. Um você faz no seu ritmo, pela tela. No outro, você aprende ao vivo, comigo do seu lado.</p>
+      </div>
+
+      <div class="caminhos mt-l">
+        <!-- ONLINE -->
+        <div class="caminho">
+          <span class="c-eyebrow">No seu ritmo · 100% online</span>
+          <h3>Método LED Online</h3>
+          <p class="c-sub">Lash 2.0 — O Método LED</p>
+          <div class="c-li"><span class="mk">✓</span><span>O método completo em vídeo, nas 4 fases</span></div>
+          <div class="c-li"><span class="mk">✓</span><span>1 mentoria online por mês comigo</span></div>
+          <div class="c-li"><span class="mk">✓</span><span>Grupo de suporte e acesso vitalício</span></div>
+          <div class="c-li"><span class="mk">✓</span><span>Certificado · garantia de 7 dias</span></div>
+          <div class="c-preco">
+            <p class="p-grande"><span class="cif">R$</span>197</p>
+            <p class="p-avista">à vista · ou 12× de R$20,37 no cartão</p>
+          </div>
+          <a href="/lash-2-metodo-led" class="cta cta--ghost">Conhecer o curso online</a>
+        </div>
+
+        <!-- PRESENCIAL -->
+        <div class="caminho caminho--pres">
+          <span class="c-tag">Mais completo</span>
+          <span class="c-eyebrow">Ao vivo · Cambuí, MG</span>
+          <h3>Formação Presencial</h3>
+          <p class="c-sub">Você aprende em um único dia</p>
+          <div class="c-li"><span class="mk">✓</span><span>Demonstração prática + você pega no aparelho</span></div>
+          <div class="c-li"><span class="mk">✓</span><span>Turma de só 5 pessoas · 2 encontros online</span></div>
+          <div class="c-li"><span class="mk">✓</span><span>Apostila, certificado, coffee break</span></div>
+          <div class="c-li"><span class="mk">✓</span><span>O curso online incluso, de bônus</span></div>
+          <div class="c-preco">
+            <p class="p-grande"><span class="cif">R$</span>1.197</p>
+            <p class="p-avista">à vista · ou 12× de R$123,80 no cartão</p>
+          </div>
+          <a href="/presencial" class="cta">Conhecer a formação</a>
+        </div>
+      </div>
+
+      <p class="apoio acento centro mt-l" style="max-width:640px;margin-inline:auto;">Na dúvida entre os dois? Comece pelo online e evolua pro presencial quando quiser — quem faz o presencial já leva o online junto.</p>
+    </div>
+  </section>
+
+  <!-- ============ QUEM É A NATALY ============ -->
+  <section class="secao bg-papel">
+    <div class="wrap">
+      <div class="nat-grid">
+        <div class="nat-foto">
+          <img src="/img/nataly-bio-led.jpg" alt="Nataly Ribeiro" loading="lazy">
+        </div>
+        <div>
+          <span class="eyebrow">Quem é a Nataly</span>
+          <h2 class="titulo titulo--md mt-m">Eu cheguei no LED pelas minhas <span class="acento">clientes</span>.</h2>
+          <p class="corpo--lg txt2 mt-m">Algumas amavam fazer cílios, mas sentiam ardência durante o procedimento ou sensibilidade dias depois. Não fazia sentido pra mim continuar oferecendo um serviço onde a cliente precisava passar por um incômodo.</p>
+          <p class="corpo--lg txt2 mt-m">Foi aí que eu fui atrás do LED. Estudei a fundo, testei, busquei quem já fazia lá fora, e só então trouxe pro meu atendimento. Hoje sou referência na minha região, e ensino tudo isso pra você, com segurança e profundidade.</p>
+          <p class="apoio acento mt-l">Arte com responsabilidade.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ CTA FINAL ============ -->
+  <section class="secao bg-salvia centro">
+    <div class="wrap wrap--txt">
+      <span class="eyebrow eyebrow-c">Vem com a gente</span>
+      <h2 class="titulo titulo--md mt-m">A sua evolução começa <span class="acento">hoje</span>.</h2>
+      <p class="corpo--lg mt-m">Seja online ou presencial, o LED é a técnica que vai te posicionar antes da concorrência. Escolha o seu caminho.</p>
+      <div class="hero-ctas" style="justify-content:center;">
+        <a href="/lash-2-metodo-led" class="cta cta--ghost">Curso online</a>
+        <a href="/presencial" class="cta">Formação presencial</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ RODAPÉ ============ -->
+  <footer class="rodape bg-pretinho centro">
+    <div class="wrap">
+      <p class="logo acento">Nataly Ribeiro</p>
+      <p class="corpo txt2 mt-s" style="font-size:13px;">O Método LED · Extensão de cílios com fotopolimerização</p>
+      <p class="txt2 mt-m" style="font-size:12px;">© 2026 Nataly Ribeiro. Todos os direitos reservados.</p>
+    </div>
+  </footer>
+
+  <script>
+    const io = new IntersectionObserver((es)=>es.forEach(e=>{ if(e.isIntersecting){ e.target.classList.add('in'); io.unobserve(e.target);} }), {threshold:.12});
+    document.querySelectorAll('.caminho, .nat-foto, section .titulo').forEach(el=>{ el.classList.add('reveal'); io.observe(el); });
+  </script>
 </body>
 </html>
