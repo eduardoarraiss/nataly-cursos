@@ -13,6 +13,10 @@ app.get('/', pagina('home.html'));              // home oficial (placeholder; fu
 app.get('/vip', pagina('index.html'));          // atalho captação
 app.get('/lash-grupo-vip', pagina('index.html')); // URL dos anúncios → captação
 app.get('/entrar', pagina('entrar.html'));     // redireciona pro grupo + dispara Lead
+// ⭐ PÁGINA OFICIAL DOS ANÚNCIOS — URL FIXA. Trocar só o preço por dentro, nunca a URL.
+app.get('/lash-2-metodo-led', pagina('lash-2-metodo-led.html'));
+app.get('/metodo-led', pagina('lash-2-metodo-led.html')); // alias curto
+
 app.get('/lancamento-197', pagina('lancamento.html')); // venda — lançamento (R$197, dia 30/06) · link direto, escondido da home
 app.get('/lancamento', pagina('lancamento.html'));     // alias interno (mesma página)
 app.get('/presencial', pagina('lancamento-presencial.html'));            // venda — Formação Presencial (R$1.500 / lançamento R$1.197)
