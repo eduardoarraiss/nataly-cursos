@@ -47,7 +47,7 @@ var GA_MEASUREMENT_ID = "G-MZS1VCZ89D"; // Nataly — GA4
     var a = ev.target.closest && ev.target.closest("a");
     if (!a) return;
     var href = (a.getAttribute("href") || "").toLowerCase();
-    if (href.indexOf("kiwify") !== -1) {
+    if (href.indexOf("pay.kiwify") !== -1) {
       gtag("event", "begin_checkout", {
         currency: "BRL", value: produto.value, items: itens()
       });
@@ -56,7 +56,7 @@ var GA_MEASUREMENT_ID = "G-MZS1VCZ89D"; // Nataly — GA4
 
   // Eventos de venda só nas páginas que têm checkout.
   function initVenda() {
-    if (!document.querySelector('a[href*="kiwify"]')) return;
+    if (!document.querySelector('a[href*="pay.kiwify"]')) return;
 
     gtag("event", "view_item", {
       currency: "BRL", value: produto.value, items: itens()

@@ -47,6 +47,11 @@
     /* Chamada especial — grupo de suporte LED */
     .grupo-card { border-radius: 22px; padding: clamp(32px, 5vw, 52px); }
     .grupo-card .corpo { max-width: 520px; margin-left: auto; margin-right: auto; }
+
+    /* Heading só para leitor de tela (hierarquia válida) */
+    .sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0,0,0,0); white-space: nowrap; border: 0; }
+    /* CTA longo não corta em telas estreitas */
+    @media (max-width: 360px){ .cta { white-space: normal; line-height: 1.25; text-align: center; } }
   </style>
 </head>
 <body class="bg-claro">
@@ -63,37 +68,33 @@
       <span class="eyebrow eyebrow-c">Compra confirmada</span>
       <h1 class="titulo titulo--md mt-m">Bem-vinda ao <span class="acento">Método&nbsp;LED</span>.</h1>
       <p class="apoio mt-m">Sua matrícula no Lash 2.0 está garantida.</p>
-      <p class="corpo--lg mt-m txt2">Parabéns pela decisão. Você acaba de dar o passo que vai colocar o seu trabalho à frente — e agora é só começar.</p>
+      <p class="corpo--lg mt-m">Parabéns pela decisão. Você acaba de dar o passo que vai colocar o seu trabalho à frente — e agora é só começar.</p>
 
       <div class="filete filete--curto mt-l" style="margin-left:auto;margin-right:auto;"></div>
 
+      <h2 class="sr-only">Seus próximos passos</h2>
       <div class="passos-ty mt-l">
         <div class="passo-ty">
           <span class="n">1</span>
           <div>
             <h3>Seu acesso chega no e-mail</h3>
-            <p class="txt2">Em alguns minutos você recebe um e-mail com o seu login e a senha para entrar na área de alunas. <strong class="peso">Confira também a caixa de spam e a aba "Promoções"</strong> — às vezes o primeiro e-mail cai por lá.</p>
+            <p>Em alguns minutos você recebe um e-mail com o seu login e a senha para entrar na área de alunas. <strong class="peso">Confira também a caixa de spam e a aba "Promoções"</strong> — às vezes o primeiro e-mail cai por lá.</p>
           </div>
         </div>
         <div class="passo-ty">
           <span class="n">2</span>
           <div>
             <h3>Entre e comece pela boas-vindas</h3>
-            <p class="txt2">Toque no link do e-mail (ou acesse <strong class="peso">members.kiwify.com</strong>), faça login e comece pela aula de boas-vindas. Em seguida, siga os módulos na ordem.</p>
+            <p>Toque no link do e-mail para criar a sua senha e entrar na área de alunas. Comece pela aula de boas-vindas e siga os módulos na ordem.</p>
           </div>
         </div>
         <div class="passo-ty">
           <span class="n">3</span>
           <div>
             <h3>No seu ritmo, por 1 ano</h3>
-            <p class="txt2">Você assiste quantas vezes quiser, pelo celular ou computador, durante 1 ano. Ao concluir, emite o seu certificado direto na plataforma.</p>
+            <p>Você assiste quantas vezes quiser, pelo celular ou computador, durante 1 ano. Ao concluir, emite o seu certificado direto na plataforma.</p>
           </div>
         </div>
-      </div>
-
-      <div class="mt-l">
-        <!-- members.kiwify.com é a área de login universal das alunas Kiwify -->
-        <a href="https://members.kiwify.com" target="_blank" rel="noopener" class="cta">Acessar minha área de aluna</a>
       </div>
 
       <!-- ===== Chamada especial: grupo de suporte LED (alunas do curso online) ===== -->
@@ -109,10 +110,38 @@
         </div>
       </section>
 
-      <p class="corpo mt-l txt2 aviso">Não recebeu o e-mail em alguns minutos? Verifique spam/promoções. Se ainda assim não chegar, responda este mesmo e-mail de confirmação que a gente te ajuda.</p>
+      <p class="corpo mt-l aviso">Não recebeu o e-mail em alguns minutos? Verifique spam/promoções. Se ainda assim não chegar, responda este mesmo e-mail de confirmação que a gente te ajuda.</p>
 
     </div>
   </main>
+
+  <!-- Evento de COMPRADORA (audiência/funil) — NÃO é Purchase. -->
+  <!-- Purchase com value/order_id é responsabilidade da Kiwify (Pixel + CAPI). -->
+  <script>
+  (function () {
+    var isPresencial = (location.pathname || "").toLowerCase().indexOf("presencial") !== -1;
+    var prod = isPresencial
+      ? { id: "lash2-presencial", name: "Formação Presencial LED" }
+      : { id: "lash2-online",     name: "Lash 2.0 — Online" };
+
+    // META: custom event só de audiência, SEM value/currency (não infla conversão)
+    if (window.fbq) {
+      fbq("trackCustom", "CompraConfirmada", {
+        content_name: prod.name,
+        content_ids: [prod.id],
+        content_type: "product"
+      });
+    }
+    // GA4: evento não-monetário, só pra funil/Key Event (SEM value/currency)
+    if (window.gtag) {
+      gtag("event", "compra_confirmada", {
+        item_id: prod.id,
+        item_name: prod.name,
+        destino: isPresencial ? "obrigado-presencial" : "obrigado-online"
+      });
+    }
+  })();
+  </script>
 
   <footer class="rodape bg-pretinho centro">
     <div class="wrap">

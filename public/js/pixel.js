@@ -52,14 +52,14 @@ var META_PIXEL_ID = "1511752107118676"; // Pixel da Nataly
     var a = ev.target.closest && ev.target.closest("a");
     if (!a) return;
     var href = (a.getAttribute("href") || "").toLowerCase();
-    if (href.indexOf("kiwify") !== -1) {
+    if (href.indexOf("pay.kiwify") !== -1) {
       fbq("track", "InitiateCheckout", dados());
     }
   });
 
   // Eventos de venda só nas páginas que têm checkout (lançamento/presencial).
   function initVenda() {
-    if (!document.querySelector('a[href*="kiwify"]')) return; // não é página de venda
+    if (!document.querySelector('a[href*="pay.kiwify"]')) return; // não é página de venda
 
     fbq("track", "ViewContent", dados());
 
