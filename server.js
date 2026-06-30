@@ -25,6 +25,10 @@ app.get('/lancamento-497', pagina('lancamento-497.html')); // LED online — per
 app.get('/lancamento-297', pagina('lancamento-297.html')); // LED online — oferta 7 dias (R$297 · 12x R$30,72)
 app.get('/curso', pagina('curso.html'));           // venda — perpétua (R$497)
 
+// Páginas de obrigado (pós-compra) — usar como URL de redirecionamento no checkout Kiwify
+app.get('/obrigado', pagina('obrigado.html'));                       // online — acesso chega no e-mail
+app.get('/obrigado-presencial', pagina('obrigado-presencial.html')); // presencial — bônus no e-mail + equipe entra em contato
+
 // Estáticos (css, img)
 app.use(express.static(PUBLIC));
 
