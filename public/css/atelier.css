@@ -288,9 +288,8 @@ footer .txt2, .rodape .txt2 { opacity: .7; }
 /* ===================================================================
    DEPOIMENTOS (prova social — prints reais de WhatsApp)
    =================================================================== */
-.depo-masonry { columns: 1; column-gap: 16px; max-width: 1000px; margin-inline: auto; }
-@media (min-width: 620px) { .depo-masonry { columns: 2; } }
-@media (min-width: 980px) { .depo-masonry { columns: 3; } }
-.depo-card { break-inside: avoid; margin-bottom: 16px; border: 1px solid var(--filete); border-radius: 14px; overflow: hidden; background: var(--papel); }
+.depo-masonry { columns: 1; column-gap: 18px; max-width: 860px; margin-inline: auto; }
+@media (min-width: 720px) { .depo-masonry { columns: 2; } }
+.depo-card { break-inside: avoid; margin-bottom: 18px; border: 1px solid var(--filete); border-radius: 14px; overflow: hidden; background: var(--papel); }
 .depo-card img { width: 100%; display: block; }
 .bg-pretinho .depo-card { border-color: rgba(242,238,229,.14); }
