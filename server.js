@@ -14,8 +14,13 @@ app.get('/vip', pagina('index.html'));          // atalho captação
 app.get('/lash-grupo-vip', pagina('index.html')); // URL dos anúncios → captação
 app.get('/entrar', pagina('entrar.html'));     // redireciona pro grupo + dispara Lead
 // ⭐ PÁGINA OFICIAL DOS ANÚNCIOS — URL FIXA. Trocar só o preço por dentro, nunca a URL.
+//    Variante A do teste A/B (página longa). page_variant=A · UTM utm_content=pv_a
 app.get('/lash-2-metodo-led', pagina('lash-2-metodo-led.html'));
 app.get('/metodo-led', pagina('lash-2-metodo-led.html')); // alias curto
+// Variante B do teste A/B — página ENXUTA (mesma oferta R$197 / BMda0X4).
+//    page_variant=B · UTM utm_content=pv_b · gestor aponta conjuntos próprios pra cá.
+app.get('/lash-2-metodo-led-b', pagina('lash-2-metodo-led-b.html'));
+app.get('/metodo-led-b', pagina('lash-2-metodo-led-b.html')); // alias curto
 
 app.get('/lancamento-197', pagina('lancamento.html')); // venda — lançamento (R$197, dia 30/06) · link direto, escondido da home
 app.get('/lancamento', pagina('lancamento.html'));     // alias interno (mesma página)

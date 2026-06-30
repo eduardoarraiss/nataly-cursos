@@ -37,14 +37,22 @@ var META_PIXEL_ID = "1511752107118676"; // Pixel da Nataly
     ? { id: "lash2-presencial", name: "Formação Presencial LED", value: 1197 }
     : { id: "lash2-online",     name: "Lash 2.0 — Online",       value: 197 };
 
+  // --- Variante de página (teste A/B de copy+design) ---
+  // Cada HTML define window.PAGE_VARIANT ("A" = página longa canônica,
+  // "B" = página enxuta). Vai em content_category + custom data page_variant
+  // pra desdobrar no Meta. Páginas sem variante ficam sem tag (não atrapalha).
+  var VARIANT = (window.PAGE_VARIANT || "").toString().toUpperCase() || null;
+
   function dados() {
-    return {
+    var d = {
       content_name: produto.name,
       content_ids: [produto.id],
       content_type: "product",
       value: produto.value,
       currency: "BRL"
     };
+    if (VARIANT) { d.content_category = "pv_" + VARIANT.toLowerCase(); d.page_variant = VARIANT; }
+    return d;
   }
 
   // InitiateCheckout no clique de qualquer link que vá pro checkout Kiwify.

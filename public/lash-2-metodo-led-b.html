@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Lash 2.0 — O Método LED · Nataly Ribeiro</title>
+  <meta name="description" content="O LED é o novo padrão da extensão de cílios. Aprenda a técnica com a Nataly Ribeiro, no seu ritmo e pelo celular. Garantia de 7 dias.">
+  <meta property="og:title" content="Lash 2.0 — O Método LED · Nataly Ribeiro">
+  <meta property="og:description" content="O LED vai ser o novo padrão da extensão de cílios. A pergunta é se você vai dominar antes ou depois da sua concorrência.">
+  <meta property="og:type" content="website">
+
+  <!-- Variante de página (teste A/B copy+design) — B = página enxuta -->
+  <script>window.PAGE_VARIANT = "B";</script>
+  <!-- Meta Pixel + GA4 -->
+  <script src="/js/pixel.js"></script>
+  <script src="/js/analytics.js"></script>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Abril+Fatface&family=Cormorant+Garamond:ital,wght@0,500;1,400;1,500&family=Hanken+Grotesk:wght@400;500;600;700&family=Playfair+Display:ital,wght@0,500;1,400;1,500;1,600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/css/atelier.css?v=20260629c">
+  <style>
+    /* ---------- HERO (curto, oferta visível) ---------- */
+    .hero { min-height: auto; display: flex; align-items: center; padding: 88px 0 56px; }
+    .hero-grid { display: grid; gap: 32px; align-items: center; }
+    .hero-txt { max-width: 600px; }
+    .hero .foto { border-radius: 18px; overflow: hidden; border: 1px solid rgba(242,238,229,.16); }
+    .hero .foto img { width: 100%; height: 100%; object-fit: cover; object-position: center 28%; min-height: 320px; max-height: 70vh; }
+    @media (min-width: 900px){
+      .hero-grid { grid-template-columns: 1.05fr .95fr; gap: 52px; }
+      .hero { padding: 104px 0 80px; }
+    }
+    .pill-data { display:inline-flex; align-items:center; gap:.6em; border:1px solid rgba(242,238,229,.28); border-radius:100px; padding:8px 18px; font-size:13px; letter-spacing:.12em; text-transform:uppercase; font-weight:600; }
+    .titulo { overflow-wrap: anywhere; }
+    .micro { font-size: 14px; letter-spacing:.02em; }
+    .hero-preco { font-family: var(--f-body); font-weight:600; font-size:15px; letter-spacing:.02em; }
+    .hero-preco .risco { text-decoration: line-through; color: rgba(242,238,229,.6); }
+    .hero-preco .peso { font-weight:700; }
+
+    /* ---------- 4 fases compactas (só ícone + 1 linha) ---------- */
+    .fases4 { display:grid; gap:16px; grid-template-columns:1fr 1fr; max-width:880px; margin-inline:auto; }
+    @media (min-width:760px){ .fases4 { grid-template-columns:repeat(4,1fr); } }
+    .fase4 { border:1px solid var(--filete); border-radius:14px; padding: clamp(20px,2.6vw,26px); background:var(--papel); }
+    .bg-pretinho .fase4 { background: rgba(242,238,229,.05); border-color: rgba(242,238,229,.16); }
+    .fase4 .ic { width:38px; height:38px; margin-bottom:12px; }
+    .fase4 .n { font-family:var(--f-apoio); font-style:italic; font-size:15px; letter-spacing:.06em; }
+    .fase4 h3 { font-family:var(--f-display); font-style:italic; font-weight:500; font-size:clamp(20px,2.4vw,24px); line-height:1.1; margin-top:2px; }
+    .fase4 p { font-size:14px; line-height:1.5; margin-top:8px; }
+
+    /* ---------- Segurança ocular compacta (48W x 5W) ---------- */
+    .seg { display:grid; gap:18px; grid-template-columns:1fr 1fr; align-items:stretch; max-width:680px; margin-inline:auto; }
+    .seg-card { border:1px solid rgba(242,238,229,.2); border-radius:18px; padding: clamp(22px,3vw,32px); text-align:center; }
+    .bg-claro .seg-card { border-color:var(--filete); background:var(--papel); }
+    .seg-card h4 { font-family:var(--f-body); font-size:12px; font-weight:600; letter-spacing:.16em; text-transform:uppercase; }
+    .seg-num { font-family:var(--f-impacto); line-height:.95; font-size:clamp(56px,13vw,88px); margin-top:6px; }
+    .seg-num span { font-size:.42em; font-style:italic; font-family:var(--f-display); }
+    .seg-card.hi { background:var(--salvia); border-color:transparent; }
+    .seg-card.hi h4, .seg-card.hi p, .seg-card.hi .seg-num { color:#2C3724; }
+    .seg-card p { font-size:13.5px; line-height:1.5; margin-top:8px; }
+
+    /* ---------- Oferta ---------- */
+    .preco-de { font-size: clamp(18px, 2.2vw, 24px); }
+    .preco-de .risco { text-decoration-thickness: 2px; }
+    .preco-grande { font-family: var(--f-impacto); line-height: .94; font-size: clamp(54px, 10.5vw, 88px); margin-top: 8px; letter-spacing: -0.01em; white-space: nowrap; }
+    .preco-grande .px { display:block; font-family: var(--f-body); font-weight:600; font-size:.2em; letter-spacing:.08em; text-transform:uppercase; opacity:.8; margin-bottom:.5em; white-space:normal; }
+    .preco-grande .cif { font-size:.46em; vertical-align:.42em; margin-right:.06em; letter-spacing:0; }
+    .bg-pretinho .preco-grande { color: var(--argila); }
+    .preco-avista { font-size: clamp(15px, 1.9vw, 19px); }
+    .preco-avista .peso { color: var(--argila); }
+    .inclui { text-align:left; max-width:420px; margin: 24px auto 0; }
+  </style>
+</head>
+<body>
+
+  <!-- ============ HERO (headline forte + oferta visível + CTA) ============ -->
+  <header class="bg-pretinho hero">
+    <div class="wrap">
+      <div class="hero-grid">
+        <div class="hero-txt">
+          <span class="pill-data acento">● &nbsp;Lash 2.0 · O Método LED</span>
+          <h1 class="titulo mt-m">O LED vai ser o novo <span class="acento">padrão</span> da extensão de cílios.</h1>
+          <p class="corpo--lg mt-m txt2" style="font-size:clamp(17px,1.9vw,21px); line-height:1.55;">Cura na hora, sem ardência e com retenção que dura. Aprenda a técnica antes da sua concorrência.</p>
+          <div class="mt-l">
+            <a href="https://pay.kiwify.com.br/BMda0X4" class="cta">Quero o Método LED por R$197</a>
+          </div>
+          <p class="hero-preco mt-m txt2"><span class="risco">De R$497</span> &nbsp;·&nbsp; <span class="peso acento">12× de R$20,37</span> ou R$197 à vista</p>
+          <p class="corpo mt-s txt2 micro">Acesso por 1 ano · Grupo de suporte · Garantia de 7 dias.</p>
+        </div>
+
+        <div class="foto">
+          <img src="/img/nataly-hero-led.jpg?v=2" alt="Nataly Ribeiro, lash designer">
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- ============ PROVA SOCIAL CONDENSADA ============ -->
+  <section class="secao bg-claro">
+    <div class="wrap">
+      <div class="centro" style="max-width:640px; margin-inline:auto;">
+        <span class="eyebrow eyebrow-c">Prova real</span>
+        <h2 class="titulo titulo--md mt-m">Sem ardência. Sem coceira. <span class="acento">Retenção</span> que dura.</h2>
+        <p class="corpo--lg txt2 mt-m">Mensagens reais de clientes, logo depois do atendimento com LED.</p>
+      </div>
+      <div class="depo-masonry mt-l">
+        <div class="depo-card"><img src="/img/depoimentos/depo-1.jpg" width="760" height="512" alt="Depoimento: quase desisti dos cílios por ardência, mas com o LED não senti nada" loading="lazy"></div>
+        <div class="depo-card"><img src="/img/depoimentos/depo-9.jpg" width="760" height="343" alt="Depoimento: saí maravilhosa sem sentir nada, não ardeu nem na água" loading="lazy"></div>
+        <div class="depo-card"><img src="/img/depoimentos/depo-2.jpg" width="760" height="219" alt="Depoimento: inacreditável, não sinto nadinha na raiz, quero só essa técnica" loading="lazy"></div>
+        <div class="depo-card"><img src="/img/depoimentos/depo-11.jpg" width="760" height="186" alt="Depoimento: simplesmente perfeitos, não caiu nenhum tufo e não tá ardendo nada" loading="lazy"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ MÉTODO EM 4 FASES (compacto) ============ -->
+  <section class="secao bg-pretinho">
+    <div class="wrap">
+      <div class="centro" style="max-width:660px;margin-inline:auto;">
+        <span class="eyebrow eyebrow-c">O Método LED</span>
+        <h2 class="titulo titulo--md mt-m">Do porquê à <span class="acento">prática</span>, em 4 fases.</h2>
+        <p class="corpo--lg txt2 mt-m">Você entende, domina, aplica e ainda aprende a cobrar mais pela técnica.</p>
+      </div>
+
+      <div class="fases4 mt-l">
+        <div class="fase4">
+          <svg class="ic" viewBox="0 0 48 48" fill="none" stroke="var(--argila)" stroke-width="1.8"><circle cx="24" cy="24" r="6"/><path d="M24 4v6M24 38v6M4 24h6M38 24h6M10 10l4 4M34 34l4 4M38 10l-4 4M14 34l-4 4"/></svg>
+          <div class="n acento">01</div>
+          <h3>Entender</h3>
+          <p class="txt2">A ciência por trás da luz e por que o LED é uma evolução real.</p>
+        </div>
+        <div class="fase4">
+          <svg class="ic" viewBox="0 0 48 48" fill="none" stroke="var(--argila)" stroke-width="1.8"><path d="M24 6l4 8 9 1-6.5 6.5L42 30l-9-1-4 8-4-8-9 1 6.5-8.5L6 15l9-1z"/></svg>
+          <div class="n acento">02</div>
+          <h3>Dominar</h3>
+          <p class="txt2">Equipamento, cola e a segurança ocular que toda cliente pergunta.</p>
+        </div>
+        <div class="fase4">
+          <svg class="ic" viewBox="0 0 48 48" fill="none" stroke="var(--argila)" stroke-width="1.8"><path d="M8 28c8-2 14-8 22-20 2 6 0 12-4 18M8 28l-2 8 8-2M8 28c4 0 8 2 8 6"/></svg>
+          <div class="n acento">03</div>
+          <h3>Aplicar</h3>
+          <p class="txt2">O passo a passo em vídeo, do preparo à ativação da luz.</p>
+        </div>
+        <div class="fase4">
+          <svg class="ic" viewBox="0 0 48 48" fill="none" stroke="var(--argila)" stroke-width="1.8"><path d="M8 40V28M20 40V18M32 40V24M44 40V10M6 40h40"/></svg>
+          <div class="n acento">04</div>
+          <h3>Crescer</h3>
+          <p class="txt2">Precificar, comunicar e virar a referência de LED da sua região.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ SEGURANÇA OCULAR (mata a objeção nº1, compacto) ============ -->
+  <section class="secao bg-claro">
+    <div class="wrap">
+      <div class="centro" style="max-width:680px; margin-inline:auto;">
+        <span class="eyebrow eyebrow-c">A pergunta nº 1</span>
+        <h2 class="titulo titulo--md mt-m">"Essa luz não faz mal pros <span class="acento">olhos</span>?"</h2>
+        <p class="corpo--lg txt2 mt-m">A cabine de unha que você já usa tem quase dez vezes mais potência. O LED de cílios trabalha com potência baixíssima, por poucos segundos e com proteção ocular.</p>
+      </div>
+
+      <div class="seg mt-l">
+        <div class="seg-card">
+          <h4 class="txt2">Cabine de unha</h4>
+          <div class="seg-num" style="color:var(--mocha);">48<span>W</span></div>
+          <p class="txt2">Exposição direta, por um minuto ou mais.</p>
+        </div>
+        <div class="seg-card hi">
+          <h4>LED para cílios</h4>
+          <div class="seg-num">5<span>W</span></div>
+          <p>Cerca de 3 segundos, com proteção ocular.</p>
+        </div>
+      </div>
+      <p class="apoio acento centro mt-l">A mesma tecnologia que você já confia na unha, no dentista e na pele.</p>
+    </div>
+  </section>
+
+  <!-- ============ OFERTA + INCLUI ============ -->
+  <section class="secao bg-pretinho centro" id="oferta">
+    <div class="wrap wrap--txt">
+      <span class="eyebrow eyebrow-c">A oferta</span>
+      <h2 class="titulo titulo--md mt-m">Entre <span class="acento">hoje</span>, pelo preço de quem chega primeiro.</h2>
+
+      <div class="oferta-card mt-l">
+        <p class="apoio acento">Condição de lançamento</p>
+        <p class="preco-de mt-m txt2">De <span class="risco">R$497</span> por apenas</p>
+        <p class="preco-grande acento"><span class="px">12× de</span><span class="cif">R$</span>20,37</p>
+        <p class="preco-avista mt-s txt2">ou <span class="peso">R$197</span> à vista no Pix</p>
+
+        <div class="inclui">
+          <div class="check"><span class="mk acento">✓</span><span class="corpo txt2">O Método LED completo em vídeo, nas 4 fases</span></div>
+          <div class="check"><span class="mk acento">✓</span><span class="corpo txt2"><span class="peso">1 mentoria online por mês</span> comigo, ao vivo</span></div>
+          <div class="check"><span class="mk acento">✓</span><span class="corpo txt2">Grupo de suporte durante o aprendizado</span></div>
+          <div class="check"><span class="mk acento">✓</span><span class="corpo txt2">Acesso por 1 ano, no seu ritmo, pelo celular</span></div>
+          <div class="check"><span class="mk acento">✓</span><span class="corpo txt2">Garantia incondicional de 7 dias</span></div>
+        </div>
+
+        <div class="mt-l">
+          <a href="https://pay.kiwify.com.br/BMda0X4" class="cta">Garantir minha vaga por R$197</a>
+        </div>
+      </div>
+
+      <p class="corpo mt-l txt2" style="max-width:480px;margin-inline:auto;font-size:15px;">Risco zero: se em 7 dias não for pra você, devolvo <span class="peso">100% do valor</span>. Sem perguntas.</p>
+    </div>
+  </section>
+
+  <!-- ============ CTA FINAL ============ -->
+  <section class="secao bg-salvia centro">
+    <div class="wrap wrap--txt">
+      <span class="eyebrow eyebrow-c">Última chamada</span>
+      <h2 class="titulo titulo--md mt-m">Seja a primeira a <span class="acento">evoluir</span> na sua região.</h2>
+      <p class="corpo--lg mt-m">O LED ainda é raro no Brasil. Quem aprende a técnica agora sai na frente.</p>
+      <div class="mt-l">
+        <a href="https://pay.kiwify.com.br/BMda0X4" class="cta">Quero dominar o LED por R$197</a>
+      </div>
+      <p class="corpo mt-m txt2 micro">Acesso por 1 ano · Garantia de 7 dias.</p>
+    </div>
+  </section>
+
+  <!-- ============ RODAPÉ ============ -->
+  <footer class="rodape bg-pretinho centro">
+    <div class="wrap">
+      <p class="logo acento">Nataly Ribeiro</p>
+      <p class="corpo txt2 mt-s" style="font-size:13px;">Lash 2.0 · O Método LED · Extensão de cílios com fotopolimerização</p>
+      <p class="txt2 mt-m" style="font-size:12px;">© 2026 Nataly Ribeiro. Todos os direitos reservados.</p>
+    </div>
+  </footer>
+
+</body>
+</html>

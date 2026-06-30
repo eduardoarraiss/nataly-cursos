@@ -33,6 +33,20 @@ var GA_MEASUREMENT_ID = "G-MZS1VCZ89D"; // Nataly — GA4
     ? { id: "lash2-presencial", name: "Formação Presencial LED", value: 1197 }
     : { id: "lash2-online",     name: "Lash 2.0 — Online",       value: 197 };
 
+  // --- Variante de página (teste A/B de copy+design) ---
+  // Cada HTML define window.PAGE_VARIANT ("A" = longa canônica, "B" = enxuta).
+  // Vai como parâmetro page_variant em todos os eventos → comparar no GA4.
+  var VARIANT = (window.PAGE_VARIANT || "").toString().toUpperCase() || null;
+  if (VARIANT) {
+    // fica disponível em todos os eventos GA4 desta página
+    gtag("set", { page_variant: VARIANT });
+  }
+
+  function ev_extra(base) {
+    if (VARIANT) base.page_variant = VARIANT;
+    return base;
+  }
+
   function itens() {
     return [{
       item_id: produto.id,
@@ -48,9 +62,9 @@ var GA_MEASUREMENT_ID = "G-MZS1VCZ89D"; // Nataly — GA4
     if (!a) return;
     var href = (a.getAttribute("href") || "").toLowerCase();
     if (href.indexOf("pay.kiwify") !== -1) {
-      gtag("event", "begin_checkout", {
+      gtag("event", "begin_checkout", ev_extra({
         currency: "BRL", value: produto.value, items: itens()
-      });
+      }));
     }
   });
 
@@ -58,9 +72,9 @@ var GA_MEASUREMENT_ID = "G-MZS1VCZ89D"; // Nataly — GA4
   function initVenda() {
     if (!document.querySelector('a[href*="pay.kiwify"]')) return;
 
-    gtag("event", "view_item", {
+    gtag("event", "view_item", ev_extra({
       currency: "BRL", value: produto.value, items: itens()
-    });
+    }));
 
     var oferta = document.getElementById("oferta");
     if (oferta && "IntersectionObserver" in window) {
@@ -70,9 +84,9 @@ var GA_MEASUREMENT_ID = "G-MZS1VCZ89D"; // Nataly — GA4
         for (var i = 0; i < entries.length; i++) {
           if (entries[i].isIntersecting) {
             fired = true;
-            gtag("event", "scroll_to_offer", {
+            gtag("event", "scroll_to_offer", ev_extra({
               currency: "BRL", value: produto.value, items: itens()
-            });
+            }));
             io.disconnect();
             break;
           }
