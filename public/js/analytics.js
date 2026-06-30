@@ -1,14 +1,16 @@
 // ============================================================
-//  GOOGLE ANALYTICS 4 — Lash 2.0 (Nataly Ribeiro)
-//  COMO ATIVAR: cole o Measurement ID (G-XXXXXXXXXX) abaixo,
-//  entre as aspas. Vazio = desligado (não quebra o site).
+//  GOOGLE ANALYTICS 4 — Nataly Ribeiro (Lash 2.0 Online + Presencial LED)
+//  Measurement ID abaixo. Vazio = desligado (não quebra o site).
 //
-//  Captura automática:
-//   • page_view em todas as páginas (com os UTMs da URL → fonte/campanha)
-//   • generate_lead na página /entrar (conversão = entrou no grupo VIP)
+//  Captura:
+//   • page_view       — todas as páginas (com UTMs → fonte/campanha)
+//   • view_item       — ao abrir a página de venda (com valor do produto)
+//   • scroll_to_offer — ao chegar na seção de preço (#oferta) = alta intenção
+//   • begin_checkout  — clique no botão que leva ao checkout Kiwify
+//   • generate_lead   — na /entrar (conversão = entrou no grupo VIP) — ver entrar.html
 // ============================================================
 
-var GA_MEASUREMENT_ID = "G-MZS1VCZ89D"; // Nataly — Lash 2.0 (GA4)
+var GA_MEASUREMENT_ID = "G-MZS1VCZ89D"; // Nataly — GA4
 
 (function () {
   if (!GA_MEASUREMENT_ID) return; // sem ID = desligado
@@ -24,7 +26,68 @@ var GA_MEASUREMENT_ID = "G-MZS1VCZ89D"; // Nataly — Lash 2.0 (GA4)
   gtag("js", new Date());
   gtag("config", GA_MEASUREMENT_ID);
 
-  // Obs.: o generate_lead (conversão) é disparado pela própria página /entrar,
-  // coordenado com o redirect (transport=beacon + event_callback), pra não se
-  // perder no window.location.replace. Ver entrar.html.
+  // --- Detecção do produto pela rota ---
+  var path = (location.pathname || "").toLowerCase();
+  var isPresencial = path.indexOf("presencial") !== -1;
+  var produto = isPresencial
+    ? { id: "lash2-presencial", name: "Formação Presencial LED", value: 1197 }
+    : { id: "lash2-online",     name: "Lash 2.0 — Online",       value: 197 };
+
+  function itens() {
+    return [{
+      item_id: produto.id,
+      item_name: produto.name,
+      price: produto.value,
+      quantity: 1
+    }];
+  }
+
+  // begin_checkout no clique de qualquer link que vá pro checkout Kiwify.
+  document.addEventListener("click", function (ev) {
+    var a = ev.target.closest && ev.target.closest("a");
+    if (!a) return;
+    var href = (a.getAttribute("href") || "").toLowerCase();
+    if (href.indexOf("kiwify") !== -1) {
+      gtag("event", "begin_checkout", {
+        currency: "BRL", value: produto.value, items: itens()
+      });
+    }
+  });
+
+  // Eventos de venda só nas páginas que têm checkout.
+  function initVenda() {
+    if (!document.querySelector('a[href*="kiwify"]')) return;
+
+    gtag("event", "view_item", {
+      currency: "BRL", value: produto.value, items: itens()
+    });
+
+    var oferta = document.getElementById("oferta");
+    if (oferta && "IntersectionObserver" in window) {
+      var fired = false;
+      var io = new IntersectionObserver(function (entries) {
+        if (fired) return;
+        for (var i = 0; i < entries.length; i++) {
+          if (entries[i].isIntersecting) {
+            fired = true;
+            gtag("event", "scroll_to_offer", {
+              currency: "BRL", value: produto.value, items: itens()
+            });
+            io.disconnect();
+            break;
+          }
+        }
+      }, { threshold: 0.4 });
+      io.observe(oferta);
+    }
+  }
+
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", initVenda);
+  } else {
+    initVenda();
+  }
+
+  // Obs.: generate_lead (conversão do grupo VIP) é disparado pela /entrar,
+  // coordenado com o redirect (beacon + event_callback). Ver entrar.html.
 })();

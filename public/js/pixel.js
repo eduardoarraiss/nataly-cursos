@@ -1,16 +1,18 @@
 // ============================================================
-//  META PIXEL — Lash 2.0 (Nataly Ribeiro)
-//  COMO ATIVAR: cole o ID do seu Pixel do Meta na linha abaixo,
-//  entre as aspas. Salve e dê push. Enquanto estiver vazio,
-//  nada dispara (não quebra o site).
+//  META PIXEL — Nataly Ribeiro (Lash 2.0 Online + Formação Presencial LED)
+//  Pixel único: 1511752107118676. O script detecta o produto pela ROTA
+//  e ajusta content_name / content_ids / value automaticamente.
 //
-//  Eventos automáticos depois de ativado:
-//   • PageView         — em toda página
-//   • Lead             — disparado na página /entrar (redireciona pro grupo VIP)
-//   • InitiateCheckout — clique em qualquer botão de compra (Hotmart)
+//  Eventos disparados:
+//   • PageView         — toda página (automático)
+//   • ViewContent      — ao abrir a página de venda → público "viu a oferta"
+//   • ScrollOferta     — custom, ao chegar na seção de preço (#oferta) = ALTA intenção
+//   • InitiateCheckout — clique no botão que leva ao checkout Kiwify
+//   • Lead             — disparado na /entrar (grupo VIP) — ver entrar.html
+//   • Purchase         — disparado pela própria Kiwify (Pixel + API de Conversões)
 // ============================================================
 
-var META_PIXEL_ID = "1511752107118676"; // Pixel da Nataly (Lash 2.0)
+var META_PIXEL_ID = "1511752107118676"; // Pixel da Nataly
 
 (function () {
   if (!META_PIXEL_ID) return; // sem ID = pixel desligado
@@ -28,14 +30,61 @@ var META_PIXEL_ID = "1511752107118676"; // Pixel da Nataly (Lash 2.0)
   fbq("init", META_PIXEL_ID);
   fbq("track", "PageView");
 
-  // InitiateCheckout no clique dos botões de compra (Hotmart).
-  // O Lead é disparado na página /entrar (mais confiável que no clique).
+  // --- Detecção do produto pela rota ---
+  var path = (location.pathname || "").toLowerCase();
+  var isPresencial = path.indexOf("presencial") !== -1;
+  var produto = isPresencial
+    ? { id: "lash2-presencial", name: "Formação Presencial LED", value: 1197 }
+    : { id: "lash2-online",     name: "Lash 2.0 — Online",       value: 197 };
+
+  function dados() {
+    return {
+      content_name: produto.name,
+      content_ids: [produto.id],
+      content_type: "product",
+      value: produto.value,
+      currency: "BRL"
+    };
+  }
+
+  // InitiateCheckout no clique de qualquer link que vá pro checkout Kiwify.
   document.addEventListener("click", function (ev) {
     var a = ev.target.closest && ev.target.closest("a");
     if (!a) return;
     var href = (a.getAttribute("href") || "").toLowerCase();
-    if (href.indexOf("hotmart") !== -1) {
-      fbq("track", "InitiateCheckout", { content_name: "Lash 2.0" });
+    if (href.indexOf("kiwify") !== -1) {
+      fbq("track", "InitiateCheckout", dados());
     }
   });
+
+  // Eventos de venda só nas páginas que têm checkout (lançamento/presencial).
+  function initVenda() {
+    if (!document.querySelector('a[href*="kiwify"]')) return; // não é página de venda
+
+    fbq("track", "ViewContent", dados());
+
+    // ScrollOferta: dispara 1x quando a seção de preço entra na tela.
+    var oferta = document.getElementById("oferta");
+    if (oferta && "IntersectionObserver" in window) {
+      var fired = false;
+      var io = new IntersectionObserver(function (entries) {
+        if (fired) return;
+        for (var i = 0; i < entries.length; i++) {
+          if (entries[i].isIntersecting) {
+            fired = true;
+            fbq("trackCustom", "ScrollOferta", dados());
+            io.disconnect();
+            break;
+          }
+        }
+      }, { threshold: 0.4 });
+      io.observe(oferta);
+    }
+  }
+
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", initVenda);
+  } else {
+    initVenda();
+  }
 })();
