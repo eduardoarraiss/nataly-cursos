@@ -1,0 +1,678 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>LED Pro — A luz que seca o cílio na hora · Nataly Ribeiro</title>
+<meta name="description" content="O LED acoplável que cura a cola no exato momento da aplicação. Potência segura (5W), certificação internacional e a curadoria da Nataly Ribeiro.">
+<meta name="robots" content="noindex, nofollow"><!-- PRÉ-VENDA OCULTA: remover esta linha no lançamento oficial -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Playfair+Display:ital,wght@1,600;1,700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --black:#1d1d1f;--white:#ffffff;--smoke:#f5f5f7;--smoke2:#fafafa;
+    --gray:#86868b;--line:#e3e3e6;--ink-bg:#0b0b0d;--ink-soft:#1a1a1e;
+    --uv:#7b5cff;--uv-soft:#a78bff;--radius:22px;--amber:#c8821a;
+    --green:#16a34a;--green-d:#0c7a37;--green-soft:#e7f7ee;--hot:#e0322d;
+  }
+  *{margin:0;padding:0;box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{font-family:-apple-system,BlinkMacSystemFont,"SF Pro Display","SF Pro Text","Inter",sans-serif;color:var(--black);background:var(--white);line-height:1.5;-webkit-font-smoothing:antialiased;letter-spacing:-0.01em;}
+  img{display:block;max-width:100%;}
+  .wrap{max-width:1120px;margin:0 auto;padding:0 24px;}
+  .narrow{max-width:780px;margin:0 auto;padding:0 24px;}
+
+  nav{position:sticky;top:0;z-index:100;background:rgba(255,255,255,.72);backdrop-filter:saturate(180%) blur(20px);-webkit-backdrop-filter:saturate(180%) blur(20px);border-bottom:1px solid rgba(0,0,0,.06);}
+  nav .bar{max-width:1120px;margin:0 auto;padding:13px 24px;display:flex;align-items:center;justify-content:space-between;}
+  nav .brand{font-family:'Playfair Display',serif;font-style:italic;font-weight:700;font-size:24px;letter-spacing:-0.01em;}
+  nav .brand span{color:var(--uv);}
+  nav .brand small{display:block;font-family:-apple-system,BlinkMacSystemFont,"Inter",sans-serif;font-style:normal;font-size:10.5px;font-weight:500;color:var(--gray);letter-spacing:.02em;margin-top:0;}
+  nav .navcta{background:var(--black);color:#fff;font-size:14px;font-weight:600;padding:9px 18px;border-radius:30px;text-decoration:none;transition:transform .2s,background .2s;}
+  nav .navcta:hover{background:var(--uv);transform:translateY(-1px);}
+
+  .hero{background:var(--smoke);text-align:center;padding:32px 0 0;overflow:hidden;}
+  .eyebrow{font-size:14px;font-weight:600;color:var(--uv);letter-spacing:.02em;margin-bottom:14px;}
+  .hero h1{font-size:clamp(40px,7vw,80px);font-weight:800;letter-spacing:-0.03em;line-height:1.03;color:var(--black);position:relative;z-index:3;}
+  .hero h1 em{font-style:normal;background:linear-gradient(120deg,var(--uv),#4ea1ff);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;}
+  .hero .sub{font-size:clamp(18px,2.3vw,22px);color:#444;max-width:660px;margin:22px auto 0;font-weight:400;line-height:1.55;}
+  .hero .ctas{margin:32px 0 10px;display:flex;gap:14px;justify-content:center;flex-wrap:wrap;align-items:center;}
+  .btn{display:inline-flex;align-items:center;gap:8px;font-weight:600;font-size:17px;text-decoration:none;padding:14px 30px;border-radius:40px;transition:transform .2s,box-shadow .2s,background .2s;border:0;cursor:pointer;font-family:inherit;}
+  .btn-primary{background:var(--black);color:#fff;}
+  .btn-primary:hover{background:var(--uv);transform:translateY(-2px);box-shadow:0 12px 30px rgba(123,92,255,.3);}
+  .btn-ghost{color:var(--black);}
+  .btn-ghost:hover{color:var(--uv);}
+  .hero .trust{font-size:14px;color:var(--gray);margin-top:6px;}
+  .hero .herostage{position:relative;margin:0 0 -76px;padding:0;z-index:1;}
+  .hero .herostage::before{content:"";position:absolute;left:50%;top:44%;transform:translate(-50%,-50%);width:min(540px,74vw);height:240px;background:radial-gradient(ellipse at center,rgba(123,92,255,.32),rgba(78,161,255,.12) 46%,transparent 72%);filter:blur(12px);z-index:0;pointer-events:none;}
+  .hero .herostage .floaty-wrap{position:relative;z-index:1;will-change:transform,opacity;}
+  .hero .herostage img{display:block;width:min(560px,84%);margin:0 auto;filter:drop-shadow(0 20px 30px rgba(35,22,70,.18));animation:floaty 6.5s ease-in-out infinite;}
+  @keyframes floaty{0%,100%{transform:translateY(0)}50%{transform:translateY(-13px)}}
+  .badge-pre{display:inline-block;background:rgba(123,92,255,.12);color:var(--uv);font-size:13px;font-weight:600;padding:6px 14px;border-radius:30px;margin-bottom:20px;}
+
+  section{padding:96px 0;}
+  .center{text-align:center;}
+  h2{font-size:clamp(30px,4.6vw,52px);font-weight:800;letter-spacing:-0.03em;line-height:1.07;}
+  h2 em{font-style:normal;color:var(--uv);}
+  .kick{font-size:15px;font-weight:600;color:var(--uv);letter-spacing:.02em;margin-bottom:12px;}
+  .dek{font-size:clamp(17px,2vw,21px);color:#555;max-width:660px;margin:18px auto 0;line-height:1.6;}
+  .reveal{opacity:0;transform:translateY(34px) scale(.985);filter:blur(3px);transition:opacity 1s cubic-bezier(.22,.61,.36,1),transform 1s cubic-bezier(.22,.61,.36,1),filter 1s cubic-bezier(.22,.61,.36,1);}
+  .reveal.in{opacity:1;transform:none;filter:none;}
+  /* Stagger em grids (cara Apple) */
+  .bens>.reveal:nth-child(2),.steps>.reveal:nth-child(2),.specs>.reveal:nth-child(2),.pains>.reveal:nth-child(2),.vs>.reveal:nth-child(2){transition-delay:.07s}
+  .bens>.reveal:nth-child(3),.steps>.reveal:nth-child(3),.specs>.reveal:nth-child(3),.pains>.reveal:nth-child(3){transition-delay:.14s}
+  .bens>.reveal:nth-child(4),.specs>.reveal:nth-child(4),.pains>.reveal:nth-child(4){transition-delay:.21s}
+  .bens>.reveal:nth-child(5),.pains>.reveal:nth-child(5){transition-delay:.28s}
+  .bens>.reveal:nth-child(6){transition-delay:.35s}
+
+  .statement{padding:118px 0;text-align:center;}
+  .statement p{font-size:clamp(27px,4vw,44px);font-weight:700;letter-spacing:-0.03em;line-height:1.2;color:var(--black);max-width:940px;margin:0 auto;}
+  .statement p b{color:var(--uv);font-weight:700;}
+  .statement .small{font-size:18px;color:var(--gray);font-weight:400;margin-top:24px;letter-spacing:0;line-height:1.6;max-width:680px;}
+
+  /* PAINS */
+  .pains-head{text-align:center;margin-bottom:18px;}
+  .pains{max-width:880px;margin:48px auto 0;display:flex;flex-direction:column;gap:0;}
+  .pain{display:flex;gap:22px;padding:30px 0;border-bottom:1px solid var(--line);align-items:flex-start;}
+  .pain:last-child{border-bottom:0;}
+  .pain .pic{flex:0 0 44px;height:44px;border-radius:12px;background:#f0eef7;display:flex;align-items:center;justify-content:center;font-size:22px;}
+  .pain h3{font-size:21px;font-weight:700;letter-spacing:-0.02em;margin-bottom:6px;}
+  .pain p{font-size:16.5px;color:#555;line-height:1.6;}
+  .pain p b{color:var(--black);font-weight:600;}
+
+  .dark{background:var(--ink-bg);color:#f5f5f7;}
+  .dark h2{color:#fff;}
+  .dark .dek{color:#a1a1a8;}
+  .demo-grid{display:grid;grid-template-columns:1.05fr .95fr;gap:48px;align-items:center;margin-top:56px;}
+  .demo-grid .vid{border-radius:var(--radius);overflow:hidden;background:#000;box-shadow:0 30px 80px rgba(0,0,0,.5);}
+  .demo-grid video{width:100%;display:block;}
+  .demo-copy h3{font-size:clamp(26px,3vw,38px);font-weight:800;letter-spacing:-0.02em;line-height:1.1;margin-bottom:18px;}
+  .demo-copy h3 em{font-style:normal;color:var(--uv-soft);}
+  .demo-copy p{font-size:18px;color:#b8b8c0;margin-bottom:16px;line-height:1.6;}
+  .demo-copy .quote{border-left:2px solid var(--uv);padding-left:16px;color:#e2e2e8;font-style:italic;font-size:18px;line-height:1.55;}
+  .demo-copy .quote cite{display:block;font-style:normal;color:#8e8e96;font-size:14px;margin-top:8px;}
+
+  .figfull{margin-top:56px;border-radius:var(--radius);overflow:hidden;}
+  .figfull img{width:100%;}
+
+  .steps{display:grid;grid-template-columns:repeat(3,1fr);gap:28px;margin-top:60px;}
+  .step{background:var(--smoke);border-radius:var(--radius);padding:34px 28px;}
+  .step .n{font-size:15px;font-weight:700;color:var(--uv);margin-bottom:46px;}
+  .step h3{font-size:23px;font-weight:700;letter-spacing:-0.02em;margin-bottom:8px;}
+  .step p{font-size:16px;color:#555;line-height:1.6;}
+
+  /* VERSUS */
+  .vs{display:grid;grid-template-columns:1fr 1fr;gap:24px;margin-top:56px;}
+  .vscard{border-radius:var(--radius);padding:36px 32px;}
+  .vscard.bad{background:var(--smoke);border:1px solid var(--line);}
+  .vscard.good{background:#13121a;color:#fff;border:1px solid #2a2740;position:relative;overflow:hidden;}
+  .vscard.good::after{content:"";position:absolute;top:-40%;right:-20%;width:260px;height:260px;background:radial-gradient(circle,rgba(123,92,255,.35),transparent 70%);}
+  .vscard .lbl{font-size:13px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;margin-bottom:20px;}
+  .vscard.bad .lbl{color:var(--gray);}
+  .vscard.good .lbl{color:var(--uv-soft);position:relative;z-index:1;}
+  .vscard ul{list-style:none;position:relative;z-index:1;}
+  .vscard li{padding:14px 0 14px 32px;position:relative;font-size:16.5px;border-bottom:1px solid rgba(125,125,135,.18);line-height:1.5;}
+  .vscard li:last-child{border-bottom:0;}
+  .vscard.bad li{color:#666;}
+  .vscard.bad li::before{content:"✕";position:absolute;left:0;color:#c0392b;font-weight:700;}
+  .vscard.good li{color:#e8e8ee;}
+  .vscard.good li::before{content:"✓";position:absolute;left:0;color:var(--uv-soft);font-weight:700;}
+  .vscard li b{color:inherit;font-weight:700;}
+
+  .cert{max-width:880px;margin:36px auto 0;display:flex;gap:20px;align-items:center;background:#fff;border:1px solid var(--line);border-radius:var(--radius);padding:26px 30px;}
+  .cert .seal{flex:0 0 56px;height:56px;border-radius:14px;background:linear-gradient(135deg,var(--uv),#4ea1ff);display:flex;align-items:center;justify-content:center;font-size:28px;}
+  .cert h4{font-size:19px;font-weight:700;letter-spacing:-0.01em;margin-bottom:3px;}
+  .cert p{font-size:15px;color:#555;line-height:1.5;}
+
+  .bens{display:grid;grid-template-columns:repeat(2,1fr);gap:24px;margin-top:56px;}
+  .ben{display:flex;gap:18px;padding:30px;border:1px solid #2a2a30;border-radius:var(--radius);background:var(--ink-soft);align-items:flex-start;}
+  .ben .ic{flex:0 0 46px;height:46px;border-radius:13px;background:linear-gradient(135deg,var(--uv),#4ea1ff);display:flex;align-items:center;justify-content:center;font-size:22px;}
+  .ben h3{font-size:19px;font-weight:700;letter-spacing:-0.01em;margin-bottom:6px;color:#fff;}
+  .ben p{font-size:15.5px;color:#a8a8b0;line-height:1.55;}
+
+  .split{display:grid;grid-template-columns:1fr 1fr;gap:56px;align-items:center;}
+  .split img{width:100%;border-radius:var(--radius);}
+  .split .txt h2{margin-bottom:18px;}
+  .split .txt p{font-size:18px;color:#555;margin-bottom:14px;line-height:1.6;}
+  .pill-note{display:inline-flex;align-items:center;gap:8px;background:#fff4e0;color:#8a5a00;font-size:14px;font-weight:600;padding:9px 16px;border-radius:30px;border:1px solid #f0d8a8;margin-top:8px;}
+  ul.feat{list-style:none;margin-top:8px;}
+  ul.feat li{position:relative;padding:9px 0 9px 30px;font-size:16.5px;color:#333;border-bottom:1px solid var(--line);}
+  ul.feat li:last-child{border-bottom:0;}
+  ul.feat li::before{content:"✓";position:absolute;left:0;color:var(--uv);font-weight:700;}
+
+  .specs{display:grid;grid-template-columns:repeat(4,1fr);gap:24px;margin-top:56px;}
+  .spec{border-top:1px solid #2a2a30;padding-top:20px;}
+  .spec .v{font-size:clamp(42px,5vw,68px);font-weight:800;letter-spacing:-0.03em;color:#fff;line-height:1;}
+  .spec .v em{font-style:normal;color:var(--uv-soft);font-size:.55em;}
+  .spec .l{font-size:14.5px;color:#9a9aa2;margin-top:4px;line-height:1.4;}
+
+  .auth{display:grid;grid-template-columns:.85fr 1.15fr;gap:56px;align-items:center;}
+  .auth img{width:100%;border-radius:var(--radius);}
+  .auth h2{margin-bottom:20px;}
+  .auth p{font-size:18px;color:#555;margin-bottom:14px;line-height:1.62;}
+  .auth p b{color:var(--black);font-weight:600;}
+  .auth .sig{font-size:17px;font-weight:700;margin-top:8px;}
+  .auth .sig small{display:block;font-weight:500;color:var(--gray);font-size:14px;}
+
+  .faq{max-width:800px;margin:52px auto 0;}
+  .qa{border-bottom:1px solid var(--line);}
+  .qa button{width:100%;text-align:left;background:none;border:0;padding:24px 0;font-size:19px;font-weight:600;letter-spacing:-0.01em;color:var(--black);cursor:pointer;display:flex;justify-content:space-between;gap:20px;align-items:center;font-family:inherit;}
+  .qa button .plus{flex:0 0 auto;font-size:24px;color:var(--uv);transition:transform .3s;font-weight:400;}
+  .qa.open button .plus{transform:rotate(45deg);}
+  .qa .ans{max-height:0;overflow:hidden;transition:max-height .45s ease;}
+  .qa .ans p{padding:0 0 24px;font-size:16.5px;color:#555;max-width:720px;line-height:1.65;}
+  .qa .ans p b{color:var(--black);}
+
+  .offer{background:var(--smoke);}
+  .offercard{position:relative;max-width:540px;margin:0 auto;background:#fff;border-radius:30px;padding:52px 44px 38px;text-align:center;box-shadow:0 40px 90px rgba(15,80,45,.13);border:1px solid var(--line);overflow:hidden;}
+  .offercard::before{content:"";position:absolute;top:0;left:0;right:0;height:6px;background:linear-gradient(90deg,var(--green),#34d27f);}
+  .oc-ribbon{display:inline-block;background:var(--green-soft);color:var(--green-d);font-weight:800;font-size:13px;letter-spacing:.05em;text-transform:uppercase;padding:8px 16px;border-radius:30px;margin-bottom:16px;}
+  .oc-name{font-size:19px;font-weight:700;letter-spacing:-0.02em;color:#555;}
+  .oc-scarcity{display:flex;align-items:center;justify-content:center;gap:14px;background:#fdecea;border:1px solid #f2c2bd;border-radius:16px;padding:15px 22px;margin-top:16px;}
+  .oc-scarcity .big{font-size:50px;font-weight:800;color:var(--hot);line-height:.85;letter-spacing:-0.03em;}
+  .oc-scarcity .txt{text-align:left;font-size:13.5px;font-weight:800;color:var(--hot);line-height:1.22;text-transform:uppercase;letter-spacing:.03em;}
+  .oc-from{font-size:25px;color:#9a9aa2;text-decoration:line-through;text-decoration-thickness:2.5px;margin-top:18px;font-weight:600;}
+  .oc-now{font-size:clamp(46px,8.5vw,70px);font-weight:800;letter-spacing:-0.04em;line-height:.96;color:var(--green-d);margin-top:6px;}
+  .oc-now .x{display:block;font-size:.32em;font-weight:700;letter-spacing:.015em;margin-bottom:5px;color:var(--green-d);}
+  .oc-now small{font-size:.5em;font-weight:700;vertical-align:.42em;margin-right:5px;}
+  .oc-now .c{font-size:.62em;}
+  .oc-cash{font-size:17px;color:#555;font-weight:500;margin-top:10px;}
+  .oc-save{display:inline-block;background:var(--green);color:#fff;font-weight:700;font-size:15px;padding:9px 20px;border-radius:30px;margin-top:14px;box-shadow:0 10px 24px rgba(22,163,74,.30);}
+  .btn-buy{display:block;width:100%;margin:22px 0 18px;background:var(--green);color:#fff;font-weight:700;font-size:19px;padding:18px;border-radius:40px;text-decoration:none;transition:transform .2s,box-shadow .2s,background .2s;box-shadow:0 14px 32px rgba(22,163,74,.34);}
+  .btn-buy:hover{background:var(--green-d);transform:translateY(-2px);box-shadow:0 20px 44px rgba(22,163,74,.45);}
+  .oc-reassure{display:flex;flex-direction:column;gap:9px;margin-top:6px;}
+  .oc-reassure span{font-size:14.5px;color:#444;}
+  .oc-reassure b{color:var(--black);}
+  .oc-urgency{margin-top:20px;padding-top:18px;border-top:1px solid var(--line);font-size:13px;color:#8a6d2e;line-height:1.55;}
+  .oc-urgency b{color:#5f4a16;}
+
+  .guarantee{text-align:center;}
+  .gbox{max-width:700px;margin:0 auto;border:1px solid var(--line);border-radius:var(--radius);padding:44px;background:var(--smoke2);}
+  .gbox .seal{width:64px;height:64px;border-radius:50%;background:linear-gradient(135deg,var(--uv),#4ea1ff);margin:0 auto 20px;display:flex;align-items:center;justify-content:center;font-size:30px;}
+  .gbox h3{font-size:26px;font-weight:800;letter-spacing:-0.02em;margin-bottom:12px;}
+  .gbox p{font-size:17px;color:#555;line-height:1.6;}
+
+  .final{background:var(--ink-bg);color:#fff;text-align:center;}
+  .final h2{color:#fff;}
+  .final .dek{color:#a1a1a8;margin-bottom:30px;}
+  .final .btn-primary{background:#fff;color:var(--black);}
+  .final .btn-primary:hover{background:var(--uv);color:#fff;}
+
+  footer{background:#000;color:#86868b;font-size:13px;padding:40px 0;text-align:center;}
+  footer b{color:#ccc;}
+  footer .disc{max-width:720px;margin:12px auto 0;font-size:12px;line-height:1.6;}
+
+  /* Apple scroll-zoom moment */
+  .zoom-sec{padding:0;background:#000;}
+  .zoom-stage{position:relative;height:96vh;min-height:600px;overflow:hidden;display:flex;align-items:center;justify-content:center;}
+  .zoom-stage img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;transform:scale(1.08);will-change:transform;}
+  .zoom-stage::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(8,6,16,.34),rgba(8,6,16,.62));z-index:1;}
+  .zoom-cap{position:relative;z-index:2;text-align:center;padding:0 24px;}
+  .zoom-cap h2{font-size:clamp(34px,5.6vw,72px);color:#fff;}
+  .count{font-variant-numeric:tabular-nums;}
+
+  /* Carrossel de fotos oficiais */
+  .gallery-wrap{position:relative;margin-top:50px;}
+  .gallery{display:flex;gap:20px;overflow-x:auto;scroll-snap-type:x mandatory;padding:6px 24px 22px;scrollbar-width:none;-webkit-overflow-scrolling:touch;}
+  .gallery::-webkit-scrollbar{display:none;}
+  .gallery .slide{flex:0 0 min(380px,78%);scroll-snap-align:center;border-radius:24px;overflow:hidden;aspect-ratio:4/5;background:var(--smoke);box-shadow:0 20px 50px rgba(0,0,0,.08);}
+  .gallery .slide img{width:100%;height:100%;object-fit:cover;}
+  .g-arrow{position:absolute;top:50%;transform:translateY(-50%);z-index:5;width:50px;height:50px;border-radius:50%;border:0;background:#fff;box-shadow:0 8px 26px rgba(0,0,0,.16);font-size:28px;color:var(--black);cursor:pointer;display:flex;align-items:center;justify-content:center;transition:transform .2s,color .2s;line-height:1;padding-bottom:3px;}
+  .g-arrow:hover{transform:translateY(-50%) scale(1.08);color:var(--uv);}
+  .g-arrow.prev{left:14px;}.g-arrow.next{right:14px;}
+
+  /* Vídeo da Nataly */
+  .vplayer{max-width:384px;margin:50px auto 0;border-radius:28px;overflow:hidden;box-shadow:0 50px 100px rgba(0,0,0,.55);background:#000;}
+  .vplayer video{width:100%;display:block;}
+
+  /* Ilustrações line-art que se desenham */
+  .illus-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:30px;margin-top:58px;}
+  .illus-card{text-align:center;padding:8px;}
+  .illus{width:132px;height:132px;margin:0 auto 22px;display:block;border-radius:50%;background:radial-gradient(circle at 50% 36%,rgba(123,92,255,.18),rgba(123,92,255,.05));padding:31px;box-sizing:border-box;}
+  .illus [pathLength]{stroke:var(--uv);stroke-width:3.6;fill:none;stroke-linecap:round;stroke-linejoin:round;}
+  .reveal-draw [pathLength]{stroke-dasharray:1;stroke-dashoffset:1;transition:stroke-dashoffset 1.5s cubic-bezier(.55,.1,.2,1);}
+  .reveal-draw.in [pathLength]{stroke-dashoffset:0;}
+  .reveal-draw.in [pathLength]:nth-child(2){transition-delay:.22s}
+  .reveal-draw.in [pathLength]:nth-child(3){transition-delay:.44s}
+  .reveal-draw.in [pathLength]:nth-child(4){transition-delay:.62s}
+  .reveal-draw.in [pathLength]:nth-child(5){transition-delay:.8s}
+  .illus-card h3{font-size:19px;font-weight:700;letter-spacing:-0.01em;margin-bottom:6px;}
+  .illus-card p{font-size:14.5px;color:#555;line-height:1.55;}
+
+  @media(max-width:880px){
+    .g-arrow{display:none;}
+    .illus-grid{grid-template-columns:repeat(2,1fr);}
+    section{padding:70px 0;}
+    .zoom-stage{height:72vh;min-height:440px;}
+    .demo-grid,.split,.auth,.vs{grid-template-columns:1fr;gap:32px;}
+    .steps,.bens{grid-template-columns:1fr;}
+    .specs{grid-template-columns:repeat(2,1fr);}
+    .step .n{margin-bottom:22px;}
+    .cert{flex-direction:column;text-align:center;}
+  }
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="bar">
+    <div class="brand">LED <span>Pro</span><small>by Nataly Ribeiro</small></div>
+    <a href="#oferta" class="navcta">Garantir o meu</a>
+  </div>
+</nav>
+
+<!-- HERO -->
+<header class="hero">
+  <div class="wrap">
+    <div class="badge-pre">● Pré-venda · preço especial · apenas 50 unidades</div>
+    <div class="eyebrow">Certificação internacional · testado e aprovado pela Nataly Ribeiro</div>
+    <div class="herostage reveal">
+      <div class="floaty-wrap" id="floatwrap">
+        <img src="assets/img/hero-float.png" alt="LED Pro — o LED acoplável para extensão de cílios">
+      </div>
+    </div>
+    <h1>A cola seca antes<br>de você <em>soltar a pinça.</em></h1>
+    <p class="sub">Acople o LED Pro na pinça que você já usa, aplique o fio e acione a luz: a cola fixa no mesmo movimento. O fim da espera pela secagem, do vapor que arde no olho da cliente e da retenção que caía nas primeiras horas.</p>
+    <div class="ctas">
+      <a href="#oferta" class="btn btn-primary">Garantir o meu →</a>
+      <a href="#como" class="btn btn-ghost">Ver como funciona</a>
+    </div>
+    <div class="trust">✓ Potência segura 5W &nbsp;·&nbsp; ✓ Certificação internacional &nbsp;·&nbsp; ✓ Frete grátis</div>
+  </div>
+</header>
+
+<!-- STATEMENT -->
+<section class="statement">
+  <div class="narrow">
+    <p class="reveal">Você já perdeu a conta de quantos minutos passou <b>esperando a cola secar</b> entre um fio e outro. O LED Pro acaba com essa espera — e com ela vão embora o vapor, a ardência e aquela retenção que despencava nas primeiras horas.</p>
+    <p class="small reveal">A mesma tecnologia que a Nataly ensina no Método LED, agora na ferramenta certa.</p>
+  </div>
+</section>
+
+<!-- DORES -->
+<section>
+  <div class="wrap">
+    <div class="pains-head">
+      <div class="kick reveal">Se você aplica cílio, você conhece isso</div>
+      <h2 class="reveal">O problema nunca foi você.<br><em>Era a espera.</em></h2>
+    </div>
+    <div class="pains">
+      <div class="pain reveal"><div class="pic">⏳</div><div><h3>O tempo de espera da cola</h3><p>Na técnica tradicional, a cura continua acontecendo por horas. O atendimento se estende e, no fim, você consegue encaixar menos clientes no seu dia.</p></div></div>
+      <div class="pain reveal"><div class="pic">💨</div><div><h3>A ardência durante o procedimento</h3><p>Como a cola tradicional cura devagar, ela libera vapor por muito mais tempo. É esse vapor que costuma causar a <b>ardência, o olho vermelho e o lacrimejamento</b> na sua cliente.</p></div></div>
+      <div class="pain reveal"><div class="pic">🫁</div><div><h3>A sua exposição aos vapores</h3><p>E não é só a sua cliente. Você também fica exposta a esses vapores, atendimento após atendimento, o dia inteiro — e, no longo prazo, isso pesa na sua saúde respiratória.</p></div></div>
+      <div class="pain reveal"><div class="pic">💧</div><div><h3>A fixação nas primeiras horas</h3><p>Na técnica tradicional, o suor, a oleosidade, a água e o próprio vapor podem interferir na fixação logo nas primeiras horas. A sua cliente precisa de todo cuidado e nem pode molhar o rosto.</p></div></div>
+      <div class="pain reveal"><div class="pic">🔁</div><div><h3>A base conforme o fio cresce</h3><p>Com a secagem tradicional, a cola pode ficar mais esbranquiçada e grossa conforme o fio vai crescendo. A base perde aquele aspecto limpo antes da hora da manutenção.</p></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- DEMO -->
+<section class="dark" id="demo">
+  <div class="wrap center">
+    <div class="kick reveal" style="color:var(--uv-soft)">Veja a luz em ação</div>
+    <h2 class="reveal">A luz que <em>cura na hora.</em></h2>
+    <p class="dek reveal">No instante em que você aciona, a cola endurece. Não existe mais tempo de espera, nem o risco da cola continuar reagindo depois — e a liberação de vapor despenca, deixando o procedimento muito mais confortável para a cliente.</p>
+    <div class="demo-grid">
+      <div class="vid reveal">
+        <video src="assets/video/detalhe.mp4" poster="assets/video/detalhe-poster.jpg" autoplay muted loop playsinline></video>
+      </div>
+      <div class="demo-copy reveal">
+        <h3>Aplica e <em>aciona</em> — com o mesmo dedo.</h3>
+        <p>O LED Pro tem o botão no próprio corpo. Você segura a pinça já no botão, aplica o fio e aciona a luz sem soltar nada, sem trocar de mão, sem parar o atendimento. O feixe é focado: a luz vai exatamente onde você precisa.</p>
+        <p class="quote">"Eu prefiro acoplar na pinça de aplicação, porque eu aplico segurando já no botãozinho e só aciono. Sinto muito mais facilidade."<cite>— Nataly Ribeiro, na aula prática do Método LED</cite></p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SCROLL ZOOM (Apple) -->
+<section class="zoom-sec">
+  <div class="zoom-stage">
+    <img src="assets/img/real-luz-acesa.jpg" id="zoomimg" alt="A luz UV do LED Pro curando a cola">
+    <div class="zoom-cap reveal">
+      <div class="kick" style="color:var(--uv-soft)">Feixe focado</div>
+      <h2>A luz vai <em style="color:var(--uv-soft)">exatamente</em><br>onde você precisa.</h2>
+    </div>
+  </div>
+</section>
+
+<!-- COMO FUNCIONA -->
+<section id="como">
+  <div class="wrap center">
+    <div class="kick reveal">Simples como deve ser</div>
+    <h2 class="reveal">Em <em>três movimentos.</em></h2>
+    <p class="dek reveal">Sem manual, sem curva de aprendizado. Se você já aplica cílio, em cinco minutos já está trabalhando com ele.</p>
+    <div class="steps">
+      <div class="step reveal"><div class="n">PASSO 01</div><h3>Acople na sua pinça</h3><p>O braço flexível prende na sua pinça de aplicação ou de isolamento — você escolhe a que já é confortável para a sua mão. Não precisa trocar de ferramenta.</p></div>
+      <div class="step reveal"><div class="n">PASSO 02</div><h3>Posicione a luz</h3><p>O braço dobra e fixa na posição que você quiser. O feixe focado aponta direto para o ponto da aplicação, sem iluminar o rosto inteiro.</p></div>
+      <div class="step reveal"><div class="n">PASSO 03</div><h3>Aplique e acione</h3><p>Segure no botão, aplique o fio e acione a luz com o mesmo dedo. A cola seca no exato momento — e você já parte para o próximo.</p></div>
+    </div>
+  </div>
+  <div class="wrap">
+    <div class="figfull reveal"><img src="assets/img/real-encaixe.jpg" alt="LED Pro acoplado na pinça de aplicação"></div>
+  </div>
+</section>
+
+<!-- POR QUE O NOSSO (VERSUS) -->
+<section>
+  <div class="wrap">
+    <div class="center">
+      <div class="kick reveal">Não é qualquer LED de marketplace</div>
+      <h2 class="reveal">A diferença está na <em>potência certa.</em></h2>
+      <p class="dek reveal">A internet está cheia de LED de 10 a 12W vendido como "mais potente". Na área dos olhos, mais potência não é vantagem — é risco. O LED Pro foi escolhido para trabalhar na faixa segura e recomendada, com a procedência que um produto de marketplace não te dá.</p>
+    </div>
+    <div class="vs">
+      <div class="vscard bad reveal">
+        <div class="lbl">LED comum de marketplace</div>
+        <ul>
+          <li><b>10W a 12W</b> — potência excessiva para a área dos olhos</li>
+          <li>Comprimento de onda <b>incerto</b> ou sem informação</li>
+          <li><b>Sem certificação</b> nem procedência</li>
+          <li>Anúncio aleatório, <b>sem suporte</b> de verdade</li>
+          <li>Você descobre se presta <b>depois</b> que comprou</li>
+        </ul>
+      </div>
+      <div class="vscard good reveal">
+        <div class="lbl">★ LED Pro · by Nataly Ribeiro</div>
+        <ul>
+          <li><b>5W</b> — a potência segura e recomendada para cílios</li>
+          <li>Comprimento de onda <b>395–410nm</b>, o certo para curar a cola</li>
+          <li><b>Certificação internacional</b> de segurança</li>
+          <li>Testado, usado e <b>aprovado pela Nataly</b> nos atendimentos</li>
+          <li>Garantia e <b>suporte nacional</b> de quem te entende</li>
+        </ul>
+      </div>
+    </div>
+    <div class="cert reveal">
+      <div class="seal">🛡️</div>
+      <div>
+        <h4>Certificação internacional de segurança</h4>
+        <p>O LED Pro atende a norma internacional de segurança fotobiológica — o mesmo critério usado para equipamentos profissionais de luz. Você trabalha perto dos olhos da sua cliente com a tranquilidade de quem usa um produto sério, não um achado de prateleira.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- BENEFICIOS -->
+<section class="dark">
+  <div class="wrap">
+    <div class="center">
+      <div class="kick reveal" style="color:var(--uv-soft)">O que muda no seu atendimento</div>
+      <h2 class="reveal" style="color:#fff">Mais rápido, mais retenção,<br><em style="color:var(--uv-soft)">mais lucro.</em></h2>
+    </div>
+    <div class="bens">
+      <div class="ben reveal"><div class="ic">⚡</div><div><h3>Seca no mesmo movimento</h3><p>Aplicou, acionou, fixou. Acabou a espera pela secagem entre os fios — e o seu atendimento fica mais rápido sem perder qualidade.</p></div></div>
+      <div class="ben reveal"><div class="ic">💎</div><div><h3>Retenção que impressiona</h3><p>Como a cola já sai seca, a cliente pode molhar o rosto, tomar banho e ir para a academia no mesmo dia. É o diferencial que faz ela te indicar.</p></div></div>
+      <div class="ben reveal"><div class="ic">🌸</div><div><h3>Muito mais conforto</h3><p>A cola curada no LED fica mais plana e lisa, sem microfissuras. A base fica leve, a cliente não fica mexendo nos fios e a raiz permanece limpa até a manutenção.</p></div></div>
+      <div class="ben reveal"><div class="ic">🫧</div><div><h3>Menos vapor, mais saúde</h3><p>Menos liberação de vapor significa menos ardência para a cliente e menos exposição química para você, todos os dias, no longo prazo.</p></div></div>
+      <div class="ben reveal"><div class="ic">💰</div><div><h3>Você cobra mais por isso</h3><p>O LED agrega valor real: a Nataly cobra de R$40 a R$70 a mais por aplicação. Em poucos atendimentos, o LED Pro já se pagou — e depois é só lucro.</p></div></div>
+      <div class="ben reveal"><div class="ic">🕊️</div><div><h3>Liberdade total</h3><p>Sem pedal no chão, sem aparelho de mesa, sem cabo te prendendo. Cabe no nécessaire e vai com você para o atendimento em domicílio.</p></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- VANTAGENS ILUSTRADAS -->
+<section class="illus-sec">
+  <div class="wrap center">
+    <div class="kick reveal">Por que vale ter o seu</div>
+    <h2 class="reveal">As vantagens, <em>no traço.</em></h2>
+    <p class="dek reveal">Quatro motivos que mudam o seu atendimento.</p>
+  </div>
+  <div class="wrap">
+    <div class="illus-grid">
+      <div class="illus-card reveal">
+        <svg class="illus reveal-draw" viewBox="0 0 120 120" fill="none">
+          <path pathLength="1" d="M60 28 C60 28 42 52 42 70 a18 18 0 1 0 36 0 C78 52 60 28 60 28 Z"/>
+          <path pathLength="1" d="M62 56 l-9 16 h11 l-8 16"/>
+        </svg>
+        <h3>Cura na hora</h3>
+        <p>A cola fixa no instante em que a luz toca. Zero espera entre um fio e outro.</p>
+      </div>
+      <div class="illus-card reveal">
+        <svg class="illus reveal-draw" viewBox="0 0 120 120" fill="none">
+          <path pathLength="1" d="M28 84 C52 70 72 66 96 64"/>
+          <path pathLength="1" d="M32 92 C56 80 76 76 98 74"/>
+          <rect pathLength="1" x="56" y="42" width="26" height="15" rx="5"/>
+          <path pathLength="1" d="M69 42 C69 32 77 30 82 33"/>
+          <circle pathLength="1" cx="85" cy="30" r="5"/>
+        </svg>
+        <h3>Acopla na sua pinça</h3>
+        <p>Prende na pinça que você já usa. Não precisa trocar de ferramenta.</p>
+      </div>
+      <div class="illus-card reveal">
+        <svg class="illus reveal-draw" viewBox="0 0 120 120" fill="none">
+          <rect pathLength="1" x="44" y="20" width="32" height="20" rx="6"/>
+          <path pathLength="1" d="M52 40 L59 84"/>
+          <path pathLength="1" d="M68 40 L61 84"/>
+          <path pathLength="1" d="M60 40 L60 84"/>
+          <circle pathLength="1" cx="60" cy="92" r="6"/>
+        </svg>
+        <h3>Feixe focado</h3>
+        <p>A luz vai só onde precisa, sem iluminar o rosto inteiro nem desperdiçar potência.</p>
+      </div>
+      <div class="illus-card reveal">
+        <svg class="illus reveal-draw" viewBox="0 0 120 120" fill="none">
+          <circle pathLength="1" cx="54" cy="60" r="28"/>
+          <path pathLength="1" d="M54 60 L54 42"/>
+          <path pathLength="1" d="M54 60 L68 60"/>
+          <path pathLength="1" d="M86 80 L86 98"/>
+          <path pathLength="1" d="M77 89 L95 89"/>
+        </svg>
+        <h3>Mais clientes no dia</h3>
+        <p>Menos tempo por atendimento é mais espaço na agenda — e mais faturamento.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- GALERIA OFICIAL -->
+<section class="gallery-sec">
+  <div class="wrap center">
+    <div class="kick reveal">Por todos os ângulos</div>
+    <h2 class="reveal">Um objeto <em>pra se orgulhar.</em></h2>
+  </div>
+  <div class="gallery-wrap reveal">
+    <button class="g-arrow prev" aria-label="Foto anterior">‹</button>
+    <div class="gallery" id="gallery">
+      <div class="slide"><img src="assets/img/real-produto-limpo.jpg" alt="LED Pro" loading="lazy"></div>
+      <div class="slide"><img src="assets/img/real-luz-acesa.jpg" alt="LED Pro com a luz UV acesa" loading="lazy"></div>
+      <div class="slide"><img src="assets/img/real-encaixe.jpg" alt="LED Pro acoplado na pinça" loading="lazy"></div>
+      <div class="slide"><img src="assets/img/real-produto-lateral.jpg" alt="LED Pro de lado" loading="lazy"></div>
+      <div class="slide"><img src="assets/img/real-completo.jpg" alt="LED Pro completo" loading="lazy"></div>
+      <div class="slide"><img src="assets/img/real-contexto-mao.jpg" alt="LED Pro em uso no atendimento" loading="lazy"></div>
+    </div>
+    <button class="g-arrow next" aria-label="Próxima foto">›</button>
+  </div>
+</section>
+
+<!-- O QUE RECEBE -->
+<section>
+  <div class="wrap">
+    <div class="split">
+      <img src="assets/img/real-completo.jpg" alt="O que vem na caixa do LED Pro" class="reveal">
+      <div class="txt reveal">
+        <div class="kick">O que chega até você</div>
+        <h2>Pequeno na caixa, <em>gigante na bancada.</em></h2>
+        <p>O LED Pro vem pronto para acoplar. Você abre, encaixa na sua pinça e já está atendendo com a tecnologia que está mudando a extensão de cílios no Brasil.</p>
+        <ul class="feat">
+          <li>1 LED Pro acoplável com braço flexível</li>
+          <li>Cabo de recarga USB</li>
+          <li>Guia rápido de uso</li>
+        </ul>
+        <div class="pill-note">⚠️ A pinça não está inclusa — você usa a sua de sempre.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SPECS -->
+<section class="dark">
+  <div class="wrap">
+    <div class="center">
+      <div class="kick reveal" style="color:var(--uv-soft)">Ficha técnica</div>
+      <h2 class="reveal" style="color:#fff">Feito para a <em style="color:var(--uv-soft)">área dos olhos.</em></h2>
+      <p class="dek reveal">Cada detalhe pensado para a segurança de quem trabalha a milímetros do olho da cliente.</p>
+    </div>
+    <div class="specs">
+      <div class="spec reveal"><div class="v"><span class="count" data-count="5">5</span><em>W</em></div><div class="l">Potência segura para cílios</div></div>
+      <div class="spec reveal"><div class="v">395–410<em>nm</em></div><div class="l">Comprimento de onda UV correto</div></div>
+      <div class="spec reveal"><div class="v">USB</div><div class="l">Recarregável, sem fio na tomada</div></div>
+      <div class="spec reveal"><div class="v">★</div><div class="l">Certificação internacional de segurança</div></div>
+    </div>
+    <p class="reveal" style="text-align:center;color:#6a6a72;font-size:13px;margin-top:36px;">*Especificações conforme o equipamento. Confirme a ficha técnica final antes de publicar.</p>
+  </div>
+</section>
+
+<!-- AUTORIDADE -->
+<section>
+  <div class="wrap">
+    <div class="auth">
+      <img src="assets/img/nataly-oficial.jpg" alt="Nataly Ribeiro com o LED Pro" class="reveal">
+      <div class="reveal">
+        <div class="kick">Escolhido por quem ensina</div>
+        <h2>A ferramenta que a <em>Nataly</em> usa de verdade.</h2>
+        <p>Há nove anos na extensão de cílios, a Nataly Ribeiro também teve receio quando o LED chegou. Em vez de sair aplicando, ela <b>estudou a fundo, testou muita coisa e viu resultado</b> antes de levar a tecnologia para o próprio atendimento.</p>
+        <p>Hoje ela é referência na técnica e ensina o Método LED para profissionais de todo o país. O LED Pro é a ferramenta que ela <b>aprovou e usa nos próprios atendimentos</b> — não é um produto qualquer de marketplace, é a escolha de quem domina a técnica.</p>
+        <div class="sig">Nataly Ribeiro<small>Lash designer · criadora do Método LED</small></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- VIDEO NATALY -->
+<section class="dark">
+  <div class="wrap center">
+    <div class="kick reveal" style="color:var(--uv-soft)">Direto de quem entende</div>
+    <h2 class="reveal" style="color:#fff">A Nataly te explica <em style="color:var(--uv-soft)">o LED Pro.</em></h2>
+    <p class="dek reveal">Em menos de um minuto, ela mostra como funciona e por que escolheu essa ferramenta para os próprios atendimentos.</p>
+    <div class="vplayer reveal">
+      <video src="assets/video/nataly-explica.mp4" poster="assets/video/nataly-explica-poster.jpg" controls playsinline preload="metadata"></video>
+    </div>
+  </div>
+</section>
+
+<!-- FAQ -->
+<section style="background:#fff">
+  <div class="wrap center">
+    <div class="kick reveal">Tirando suas dúvidas</div>
+    <h2 class="reveal">Antes de você <em>perguntar.</em></h2>
+  </div>
+  <div class="faq">
+    <div class="qa"><button>A pinça vem junto? <span class="plus">+</span></button><div class="ans"><p>Não. O que você recebe é o <b>LED acoplável</b> — ele se prende na pinça que você já tem e em que confia. A gente fez assim de propósito: você não precisa abandonar a sua ferramenta de trabalho para ter a tecnologia LED.</p></div></div>
+    <div class="qa"><button>Acopla em qualquer pinça? <span class="plus">+</span></button><div class="ans"><p>Sim. O braço flexível foi feito para acoplar tanto na pinça de aplicação quanto na de isolamento — você escolhe a que for mais confortável para a sua mão, exatamente como a Nataly mostra na aula.</p></div></div>
+    <div class="qa"><button>Essa luz não faz mal? É segura para os olhos? <span class="plus">+</span></button><div class="ans"><p>Essa é a pergunta mais importante — e a resposta está na potência. O LED Pro trabalha em <b>5W e na faixa de 395–410nm</b>, o comprimento de onda recomendado para a área dos olhos, com certificação internacional de segurança. É justamente por isso que a Nataly não recomenda os aparelhos de 10 a 12W vendidos por aí: na área dos olhos, potência excessiva não é vantagem, é risco.</p></div></div>
+    <div class="qa"><button>Vai estragar os cílios naturais da cliente? <span class="plus">+</span></button><div class="ans"><p>Não. O LED não agride o cílio natural — ele apenas cura a cola de fotopolimerização no momento da aplicação. Inclusive, por curar de forma mais limpa e com menos vapor, tende a deixar a experiência <b>mais confortável</b> para a cliente do que a técnica tradicional.</p></div></div>
+    <div class="qa"><button>Preciso de uma cola específica? <span class="plus">+</span></button><div class="ans"><p>Sim, ele funciona com <b>cola LED</b> (cola de fotopolimerização) — a mesma que você aprende a usar no Método LED. É ela que seca no instante em que recebe a luz. Uma vantagem: como a umidade não interfere na gota, você desperdiça muito menos cola durante o atendimento.</p></div></div>
+    <div class="qa"><button>Como ele liga? Tem bateria? <span class="plus">+</span></button><div class="ans"><p>É recarregável por USB e aciona por um botão no corpo do aparelho. Você segura a pinça já no botão e aciona a luz com o mesmo dedo, sem pedal no chão e sem parar a aplicação.</p></div></div>
+    <div class="qa"><button>Sou iniciante no LED. Vou saber usar? <span class="plus">+</span></button><div class="ans"><p>Com certeza. Se você já aplica cílio, já sabe usar: acopla, posiciona e aciona. Não tem curva de aprendizado — e o LED Pro é a mesma ferramenta usada nas aulas práticas do Método LED, então você aprende exatamente como aproveitar cada detalhe.</p></div></div>
+    <div class="qa"><button>É melhor que os LED baratos que vejo por aí? <span class="plus">+</span></button><div class="ans"><p>O barato do marketplace quase sempre vem com potência fora da faixa segura, sem informação de comprimento de onda e sem nenhuma certificação. O LED Pro tem <b>potência correta, certificação internacional e a curadoria da Nataly</b> — você está pagando pela segurança de trabalhar perto dos olhos da sua cliente com um produto sério.</p></div></div>
+    <div class="qa"><button>É pré-venda — quando eu recebo? <span class="plus">+</span></button><div class="ans"><p>Este é um lote de lançamento com preço especial. O envio começa a partir de <b>[DATA DE ENTREGA]</b>. Você garante o seu agora pelo valor de lançamento, com frete grátis, e recebe em casa.</p></div></div>
+  </div>
+</section>
+
+<!-- OFERTA -->
+<section class="offer" id="oferta">
+  <div class="wrap center">
+    <div class="kick reveal">Lote de lançamento</div>
+    <h2 class="reveal">Garanta o seu <em>LED Pro.</em></h2>
+    <p class="dek reveal">Cada cliente que você atende cobrando de R$40 a R$70 a mais já paga uma fatia do aparelho. Em poucos atendimentos ele se paga — o resto é a sua agenda rendendo mais.</p>
+    <div class="offercard reveal">
+      <div class="oc-ribbon">−30% OFF · só na pré-venda</div>
+      <div class="oc-name">LED Pro · by Nataly Ribeiro</div>
+      <div class="oc-scarcity"><span class="big">50</span><span class="txt">🔥 unidades apenas<br>neste lote de lançamento</span></div>
+      <div class="oc-from">de R$ 497</div>
+      <div class="oc-now"><span class="x">12x sem juros de</span><small>R$</small>28<span class="c">,92</span></div>
+      <div class="oc-cash">ou R$ 347 à vista</div>
+      <div class="oc-save">💚 Você economiza R$ 150 (30% OFF)</div>
+      <a href="#" class="btn-buy" id="cta-checkout">Garantir o meu agora →</a>
+      <div class="oc-reassure">
+        <span>🚚 <b>Frete grátis</b> para todo o Brasil</span>
+        <span>🛡️ <b>Certificação internacional</b> de segurança</span>
+        <span>↩️ <b>7 dias</b> de garantia de arrependimento</span>
+      </div>
+      <div class="oc-urgency">⏳ Lote de lançamento com apenas <b>50 unidades</b>. Quando acabarem, o preço volta para <b>R$ 497</b>.</div>
+    </div>
+  </div>
+</section>
+
+<!-- GARANTIA -->
+<section class="guarantee">
+  <div class="wrap">
+    <div class="gbox reveal">
+      <div class="seal">🛡️</div>
+      <h3>Risco zero para você</h3>
+      <p>Se o LED Pro não for tudo o que você esperava, você tem <b>7 dias</b> para pedir reembolso — sem burocracia, sem letra miúda. E ainda conta com garantia contra defeito de fabricação. A decisão de experimentar é toda sua, sem risco nenhum.</p>
+    </div>
+  </div>
+</section>
+
+<!-- FINAL -->
+<section class="final">
+  <div class="narrow">
+    <h2 class="reveal">A evolução da sua aplicação<br>cabe na palma da mão.</h2>
+    <p class="dek reveal">Seque na hora. Atenda mais. Cobre mais. Trabalhe do seu jeito, com a segurança de quem usa a ferramenta certa.</p>
+    <a href="#oferta" class="btn btn-primary reveal">Garantir o meu LED Pro →</a>
+    <p class="reveal" style="color:#6a6a72;font-size:14px;margin-top:18px;">Frete grátis · Certificação internacional · Garantia de 7 dias</p>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <b>LED Pro</b> · by Nataly Ribeiro<br>
+    <div class="disc">A pinça de aplicação ilustrada nas imagens não acompanha o produto. O LED Pro é um acessório acoplável; o uso correto exige cola de fotopolimerização (cola LED). O LED reduz a exposição a vapores e o desconforto, mas não é um procedimento antialérgico — recomenda-se teste prévio em clientes com histórico de alergia. Imagens ilustrativas.</div>
+  </div>
+</footer>
+
+<script>
+  const io=new IntersectionObserver((es)=>{es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('in');io.unobserve(e.target);}})},{threshold:.12});
+  document.querySelectorAll('.reveal,.reveal-draw').forEach(el=>io.observe(el));
+
+  // Animação do produto conforme desce a página (parallax + giro + escala)
+  const fw=document.getElementById('floatwrap');
+  if(fw){
+    let ticking=false;
+    const onScroll=()=>{
+      const p=Math.min(Math.max((window.scrollY||0)/620,0),1); // 0→1 ao longo dos primeiros 620px
+      const ty=p*46, rot=p*7, sc=1-p*0.13, op=1-p*0.7;
+      fw.style.transform=`translateY(${ty}px) rotate(${rot}deg) scale(${sc})`;
+      fw.style.opacity=op;
+      ticking=false;
+    };
+    window.addEventListener('scroll',()=>{if(!ticking){requestAnimationFrame(onScroll);ticking=true;}},{passive:true});
+    onScroll();
+  }
+
+  // Scroll-zoom Apple (imagem cresce conforme passa)
+  const zs=document.querySelector('.zoom-stage'), zi=document.getElementById('zoomimg');
+  if(zs&&zi){
+    const onZoom=()=>{
+      const r=zs.getBoundingClientRect(), vh=window.innerHeight;
+      const p=Math.min(Math.max((vh-r.top)/(vh+r.height),0),1);
+      zi.style.transform='scale('+(1.05+p*0.34).toFixed(3)+')';
+    };
+    window.addEventListener('scroll',()=>requestAnimationFrame(onZoom),{passive:true});
+    onZoom();
+  }
+
+  // Números animados (count-up)
+  const cio=new IntersectionObserver((es)=>{es.forEach(e=>{if(e.isIntersecting){const el=e.target,t=+el.dataset.count,d=1100,s=performance.now();const tick=(now)=>{const k=Math.min((now-s)/d,1);el.textContent=Math.round(t*(0.5-Math.cos(Math.PI*k)/2));if(k<1)requestAnimationFrame(tick);};requestAnimationFrame(tick);cio.unobserve(el);}})},{threshold:.6});
+  document.querySelectorAll('.count').forEach(el=>cio.observe(el));
+
+  // Carrossel de fotos (setas)
+  const gal=document.getElementById('gallery');
+  if(gal){
+    const step=()=>Math.min(gal.clientWidth*0.82,420);
+    const next=document.querySelector('.g-arrow.next'), prev=document.querySelector('.g-arrow.prev');
+    if(next)next.addEventListener('click',()=>gal.scrollBy({left:step(),behavior:'smooth'}));
+    if(prev)prev.addEventListener('click',()=>gal.scrollBy({left:-step(),behavior:'smooth'}));
+  }
+  document.querySelectorAll('.qa button').forEach(b=>{
+    b.addEventListener('click',()=>{
+      const qa=b.parentElement, ans=qa.querySelector('.ans'), open=qa.classList.contains('open');
+      document.querySelectorAll('.qa').forEach(x=>{x.classList.remove('open');x.querySelector('.ans').style.maxHeight=null;});
+      if(!open){qa.classList.add('open');ans.style.maxHeight=ans.scrollHeight+'px';}
+    });
+  });
+</script>
+</body>
+</html>
