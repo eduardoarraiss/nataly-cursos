@@ -17,6 +17,8 @@ app.get('/lancamento-197', pagina('lancamento.html')); // venda — lançamento 
 app.get('/lancamento', pagina('lancamento.html'));     // alias interno (mesma página)
 app.get('/presencial', pagina('lancamento-presencial.html'));            // venda — Formação Presencial (R$1.500 / lançamento R$1.197)
 app.get('/lancamento-presencial', pagina('lancamento-presencial.html')); // alias interno (mesma página)
+app.get('/lancamento-497', pagina('lancamento-497.html')); // LED online — perpétua (R$497 · 12x R$51,40)
+app.get('/lancamento-297', pagina('lancamento-297.html')); // LED online — oferta 7 dias (R$297 · 12x R$30,72)
 app.get('/curso', pagina('curso.html'));           // venda — perpétua (R$497)
 
 // Estáticos (css, img)
