@@ -777,6 +777,24 @@ fbq('track', 'ViewContent', {
       }
     });
   });
+
+  // Meta Pixel · eventos PERSONALIZADOS do LED Pro (intenção → remarketing)
+  const _ledData = {content_name:'LED Pro', content_ids:['LED-PRO'], content_category:'ecommerce'};
+  // 1) VisualizouOferta — rolou até o card de preço (#oferta)
+  const _offer = document.getElementById('oferta');
+  if(_offer && window.fbq){
+    const _offIO = new IntersectionObserver((es)=>{
+      es.forEach(e=>{ if(e.isIntersecting){
+        fbq('trackCustom','VisualizouOferta',{..._ledData, value:347.00, currency:'BRL'});
+        _offIO.disconnect();
+      }});
+    },{threshold:.5});
+    _offIO.observe(_offer);
+  }
+  // 2) ViuVideoProduto — deu play em algum vídeo do produto (1x por vídeo)
+  document.querySelectorAll('video').forEach(v=>{
+    v.addEventListener('play',()=>{ if(window.fbq) fbq('trackCustom','ViuVideoProduto',_ledData); },{once:true});
+  });
 </script>
 </body>
 </html>
