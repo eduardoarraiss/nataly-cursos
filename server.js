@@ -122,6 +122,7 @@ app.get('/lancamento-497', pagina('lancamento-497.html')); // LED online — per
 app.get('/lancamento-297', pagina('lancamento-297.html')); // LED online — oferta 7 dias (R$297 · 12x R$30,72)
 app.get('/curso', pagina('curso.html'));           // venda — perpétua (R$497)
 app.get('/oferta-secreta-vip', pagina('oferta-secreta-vip.html')); // SECRETA — grupo VIP (De R$497 por R$297 · 12x R$30,72 · checkout FfyBeg0)
+app.get('/oferta-especial', pagina('oferta-especial.html')); // PÚBLICO FRIO — educacional, tema claro+ouro, oferta R$297 revelada (checkout FfyBeg0). Destino dos anúncios de tráfego frio.
 
 // Páginas de obrigado (pós-compra) — usar como URL de redirecionamento no checkout Kiwify
 app.get('/obrigado', pagina('obrigado.html'));                       // online — acesso chega no e-mail
