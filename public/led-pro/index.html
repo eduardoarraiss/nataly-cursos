@@ -211,6 +211,28 @@
   .zoom-cap h2{font-size:clamp(34px,5.6vw,72px);color:#fff;}
   .count{font-variant-numeric:tabular-nums;}
 
+  /* Preço no hero */
+  .hero-preco{margin-top:20px;font-size:16px;color:#555;font-weight:500;}
+  .hero-preco s{color:var(--gray);}
+  .hero-preco b{color:var(--green-d);font-weight:800;}
+
+  /* Seção de entrega */
+  .entrega{background:var(--smoke);}
+  .ent-timeline{display:grid;grid-template-columns:repeat(4,1fr);gap:18px;margin:52px 0 40px;}
+  .ent-step{background:#fff;border:1px solid var(--line);border-radius:18px;padding:26px 22px;text-align:center;position:relative;}
+  .ent-step .ic{width:52px;height:52px;border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:26px;margin:0 auto 14px;}
+  .ent-step .lab{font-family:'Archivo',sans-serif;font-size:11px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:var(--uv);margin-bottom:6px;}
+  .ent-step h3{font-size:17px;font-weight:700;letter-spacing:-0.01em;margin-bottom:5px;}
+  .ent-step p{font-size:14px;color:#555;line-height:1.5;}
+  .ent-regioes{max-width:640px;margin:0 auto;background:#fff;border:1px solid var(--line);border-radius:18px;padding:26px 28px;}
+  .ent-regioes .rt{font-size:13px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;color:var(--gray);text-align:center;margin-bottom:16px;}
+  .ent-reg{display:flex;align-items:center;justify-content:space-between;padding:11px 0;border-bottom:1px solid var(--line);font-size:15.5px;}
+  .ent-reg:last-child{border-bottom:0;}
+  .ent-reg .dot{display:inline-block;width:10px;height:10px;border-radius:50%;margin-right:10px;vertical-align:middle;}
+  .ent-reg b{font-weight:700;}
+  .ent-nota{text-align:center;font-size:15px;color:#555;max-width:560px;margin:24px auto 0;}
+  .ent-nota b{color:var(--green-d);}
+
   /* Carrossel de fotos oficiais */
   .gallery-wrap{position:relative;margin-top:50px;}
   .gallery{display:flex;gap:20px;overflow-x:auto;scroll-snap-type:x mandatory;padding:6px 24px 22px;scrollbar-width:none;-webkit-overflow-scrolling:touch;}
@@ -254,6 +276,7 @@
     .hero .herostage img{width:min(290px,64%);}
     .hero .herostage::before{width:min(300px,64vw);height:150px;}
     .hero h1{font-size:clamp(34px,9vw,48px);}
+    .ent-timeline{grid-template-columns:repeat(2,1fr);gap:14px;}
   }
 </style>
 </head>
@@ -278,8 +301,9 @@
     </div>
     <h1>A cola seca antes<br>de você <em>soltar a pinça.</em></h1>
     <p class="sub">Acople o LED Pro na pinça que você já usa, aplique o fio e acione a luz: a cola fixa no mesmo movimento. O fim da espera pela secagem, do vapor que arde no olho da cliente e da retenção que caía nas primeiras horas.</p>
+    <p class="hero-preco">De <s>R$ 497</s> &nbsp;·&nbsp; <b>12x de R$ 37,34</b> &nbsp;ou R$ 347 à vista</p>
     <div class="ctas">
-      <a href="#oferta" class="btn btn-primary">Garantir o meu →</a>
+      <a href="#oferta" class="btn btn-primary">Quero o meu por R$ 347 →</a>
       <a href="#como" class="btn btn-ghost">Ver como funciona</a>
     </div>
     <div class="trust">✓ Potência de 2W &nbsp;·&nbsp; ✓ Certificação CE &nbsp;·&nbsp; ✓ Frete grátis</div>
@@ -571,7 +595,30 @@
     <div class="qa"><button>Como ele liga? Tem bateria? <span class="plus">+</span></button><div class="ans"><p>É recarregável por USB e aciona por um botão no corpo do aparelho. Você segura a pinça já no botão e aciona a luz com o mesmo dedo, sem pedal no chão e sem parar a aplicação.</p></div></div>
     <div class="qa"><button>Sou iniciante no LED. Vou saber usar? <span class="plus">+</span></button><div class="ans"><p>Com certeza. Se você já aplica cílio, já sabe usar: acopla, posiciona e aciona. Não tem curva de aprendizado — e o LED Pro é a mesma ferramenta usada nas aulas práticas do Método LED, então você aprende exatamente como aproveitar cada detalhe.</p></div></div>
     <div class="qa"><button>É melhor que os LED baratos que vejo por aí? <span class="plus">+</span></button><div class="ans"><p>O barato do marketplace quase sempre vem com potência fora da faixa segura, sem informação de comprimento de onda e sem nenhuma certificação. O LED Pro tem <b>potência adequada, Certificação CE e a curadoria da Nataly</b> — você está pagando pela segurança de trabalhar perto dos olhos da sua cliente com um produto sério.</p></div></div>
-    <div class="qa"><button>É pré-venda — quando eu recebo? <span class="plus">+</span></button><div class="ans"><p>Este é um lote de lançamento com preço especial. O envio começa a partir de <b>[DATA DE ENTREGA]</b>. Você garante o seu agora pelo valor de lançamento, com frete grátis, e recebe em casa.</p></div></div>
+    <div class="qa"><button>É pré-venda — quando eu recebo? <span class="plus">+</span></button><div class="ans"><p>É uma pré-venda: a gente já comprou o estoque, que chega em <b>meados de julho</b>. Assim que chega, despachamos o seu pelos Correios com código de rastreio — depois disso, de 2 a 7 dias úteis conforme a sua região. Você garante o seu agora pelo preço de lançamento.</p></div></div>
+  </div>
+</section>
+
+<!-- ENTREGA -->
+<section class="entrega">
+  <div class="wrap center">
+    <div class="kick reveal">Como é pré-venda</div>
+    <h2 class="reveal">Quando o seu <em>chega?</em></h2>
+    <p class="dek reveal">A gente já comprou o estoque. Você garante a sua unidade agora, no preço de lançamento, e é uma das primeiras a receber. Simples assim.</p>
+    <div class="ent-timeline">
+      <div class="ent-step reveal"><div class="ic" style="background:rgba(123,92,255,.14)">🛒</div><div class="lab">Hoje</div><h3>Você garante o seu</h3><p>Sua unidade fica reservada — são só 50 no lote.</p></div>
+      <div class="ent-step reveal"><div class="ic" style="background:rgba(123,92,255,.14)">📦</div><div class="lab">15 a 20 de julho</div><h3>O lote chega até nós</h3><p>O estoque já está a caminho e chega em meados de julho.</p></div>
+      <div class="ent-step reveal"><div class="ic" style="background:rgba(22,163,74,.14)">🚚</div><div class="lab">Na hora</div><h3>Despachamos o seu</h3><p>Assim que chega, postamos pelos Correios com código de rastreio.</p></div>
+      <div class="ent-step reveal"><div class="ic" style="background:rgba(22,163,74,.14)">🏠</div><div class="lab">2 a 7 dias úteis</div><h3>Chega na sua casa</h3><p>O prazo dos Correios varia com a sua região (veja abaixo).</p></div>
+    </div>
+    <div class="ent-regioes reveal">
+      <div class="rt">Prazo dos Correios após o envio</div>
+      <div class="ent-reg"><span><span class="dot" style="background:#16a34a"></span>Sul e Sudeste</span><b>2 a 4 dias úteis</b></div>
+      <div class="ent-reg"><span><span class="dot" style="background:#7b5cff"></span>Centro-Oeste</span><b>3 a 5 dias úteis</b></div>
+      <div class="ent-reg"><span><span class="dot" style="background:#e0932d"></span>Nordeste</span><b>4 a 6 dias úteis</b></div>
+      <div class="ent-reg"><span><span class="dot" style="background:#e0662d"></span>Norte</span><b>5 a 7 dias úteis</b></div>
+    </div>
+    <p class="ent-nota reveal">Você recebe o <b>código de rastreio</b> assim que o seu LED Pro for postado — acompanha cada passo até a sua porta.</p>
   </div>
 </section>
 
