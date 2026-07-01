@@ -677,6 +677,30 @@
     // Gráfico comparativo: as barras crescem quando entram na tela
     const barsIO = new IntersectionObserver((es)=>es.forEach(e=>{ if(e.isIntersecting){ e.target.style.width = e.target.dataset.w; barsIO.unobserve(e.target); } }), {threshold:.5});
     document.querySelectorAll('.cmp-bar').forEach(b=>barsIO.observe(b));
+
+    // Ancoragem robusta: os CTAs #oferta caiam numa secao anterior no mobile porque
+    // imagens lazy acima terminavam de carregar e empurravam o layout apos o salto.
+    // Aqui reposicionamos no alvo algumas vezes ate o layout estabilizar.
+    (function(){
+      var alvo = document.getElementById('oferta');
+      if(!alvo) return;
+      alvo.style.scrollMarginTop = '12px';
+      function alinha(instant){
+        var r = alvo.getBoundingClientRect();
+        window.scrollTo({ top: window.pageYOffset + r.top - 12, behavior: instant ? 'auto' : 'smooth' });
+      }
+      function corrige(){
+        var r = alvo.getBoundingClientRect();
+        if(Math.abs(r.top - 12) > 40){ window.scrollTo(0, window.pageYOffset + r.top - 12); }
+      }
+      document.querySelectorAll('a[href="#oferta"]').forEach(function(a){
+        a.addEventListener('click', function(e){
+          e.preventDefault();
+          alinha(false);
+          [300, 700, 1300].forEach(function(ms){ setTimeout(corrige, ms); });
+        });
+      });
+    })();
   </script>
 </body>
 </html>
