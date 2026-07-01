@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Apostila · O Método LED | Nataly Ribeiro</title>
+<meta name="description" content="A apostila digital do Método LED: o método completo de extensão de cílios com LED, por escrito, pra estudar e consultar. PDF, acesso imediato. R$67,90.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Abril+Fatface&family=Cormorant:ital,wght@0,500;1,500&family=Hanken+Grotesk:wght@400;500;600;700;800&family=Playfair+Display:ital,wght@0,500;0,600;1,500;1,600&display=swap" rel="stylesheet">
+<script>window.PAGE_VARIANT = "APOSTILA"; window.LED_VALUE = 67.9;</script>
+<style>
+  :root{
+    --papel:#F2EEE5; --papel-2:#EAE4D6; --tinta:#463729; --chocolate:#6B4F3A;
+    --argila:#C9A48B; --salvia:#A5B59A; --salvia-d:#7E9079; --pretinho:#241C15;
+    --linha:rgba(70,55,41,.16);
+    --f-disp:'Playfair Display',serif; --f-body:'Hanken Grotesk',sans-serif; --f-apoio:'Cormorant',serif; --f-imp:'Abril Fatface',serif;
+  }
+  *{margin:0;padding:0;box-sizing:border-box}
+  html{scroll-behavior:smooth;scroll-padding-top:12px}
+  body{background:var(--papel);color:var(--tinta);font-family:var(--f-body);line-height:1.62;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+  .wrap{width:100%;max-width:620px;margin:0 auto;padding:0 24px}
+  b{font-weight:800}
+  img{max-width:100%;display:block}
+  .acento{color:var(--salvia-d)}
+  .eyebrow{font-family:var(--f-body);font-weight:800;font-size:12px;letter-spacing:.22em;text-transform:uppercase;color:var(--salvia-d)}
+  h1,h2{font-family:var(--f-disp);font-weight:500;line-height:1.16;letter-spacing:-.01em;color:var(--tinta)}
+  h1 i,h2 i{font-style:italic;color:var(--salvia-d)}
+  .sec{padding:56px 0}
+  .center{text-align:center}
+  .lead{color:var(--chocolate);font-size:clamp(16px,4.2vw,18px);margin-top:14px}
+  .reveal{opacity:0;transform:translateY(18px);transition:opacity .7s ease,transform .7s ease}
+  .reveal.in{opacity:1;transform:none}
+
+  .cta{display:inline-flex;flex-direction:column;align-items:center;gap:3px;text-decoration:none;
+    background:var(--pretinho);color:var(--papel);border-radius:8px;padding:18px 32px;font-family:var(--f-body);
+    transition:transform .12s ease}
+  .cta:active{transform:translateY(2px)}
+  .cta .l1{font-weight:800;font-size:17px;display:inline-flex;align-items:center;gap:9px}
+  .cta .l2{font-weight:500;font-size:11.5px;letter-spacing:.06em;text-transform:uppercase;opacity:.72}
+  .cta.block{display:flex;width:100%}
+
+  /* ---------- HERO ---------- */
+  .hero{background:linear-gradient(180deg,var(--papel),var(--papel-2));border-bottom:1px solid var(--linha);padding:44px 0 40px;text-align:center;position:relative}
+  .pill{display:inline-flex;align-items:center;gap:9px;border:1px solid var(--linha);color:var(--chocolate);
+    font-size:12px;font-weight:800;letter-spacing:.16em;text-transform:uppercase;padding:8px 18px;border-radius:100px;background:rgba(165,181,154,.12)}
+  .pill::before{content:"";width:6px;height:6px;border-radius:50%;background:var(--salvia)}
+  .hero h1{font-size:clamp(31px,8vw,44px);margin-top:18px}
+  .hero .sub{color:var(--chocolate);font-size:clamp(16px,4.4vw,19px);margin-top:16px;max-width:470px;margin-inline:auto}
+  /* mockup ebook */
+  .mock{margin:30px auto 0;width:min(300px,72vw);perspective:1200px}
+  .mock .book{position:relative;transform:rotateY(-16deg) rotateX(4deg);transform-style:preserve-3d;
+    border-radius:6px;overflow:hidden;border:1px solid rgba(0,0,0,.15);
+    box-shadow:24px 34px 60px rgba(36,28,21,.30), -2px 0 0 rgba(255,255,255,.25) inset;}
+  .mock .book img{width:100%;display:block}
+  .mock .book::before{content:"";position:absolute;left:0;top:0;bottom:0;width:14px;background:linear-gradient(90deg,rgba(0,0,0,.28),rgba(0,0,0,0));z-index:2}
+  .mock .tag{margin-top:18px;display:inline-flex;align-items:center;gap:8px;font-size:13px;font-weight:700;color:var(--chocolate);letter-spacing:.02em}
+  .hero .cta{margin-top:26px}
+  .hero .micro{margin-top:14px;font-size:13px;color:var(--chocolate);opacity:.85}
+
+  /* ---------- O QUE É ---------- */
+  .card{background:#fff;border:1px solid var(--linha);border-radius:16px;padding:28px 26px}
+
+  /* ---------- MÓDULOS ---------- */
+  .mod{background:#fff;border:1px solid var(--linha);border-radius:16px;padding:26px 24px;margin-top:16px}
+  .mod .n{font-family:var(--f-apoio);font-style:italic;font-size:18px;color:var(--salvia-d)}
+  .mod h3{font-family:var(--f-disp);font-style:italic;font-weight:500;font-size:23px;margin-top:2px}
+  .mod ul{list-style:none;margin-top:14px}
+  .mod li{display:flex;align-items:flex-start;gap:11px;padding:7px 0;border-bottom:1px solid var(--linha);font-size:16px;color:var(--tinta)}
+  .mod li:last-child{border-bottom:none}
+  .mod li .ck{flex:none;width:20px;height:20px;border-radius:50%;background:var(--salvia);color:#fff;font-weight:800;font-size:11px;display:flex;align-items:center;justify-content:center;margin-top:2px}
+
+  /* ---------- PRA QUEM É ---------- */
+  .quem{display:grid;grid-template-columns:1fr;gap:12px;margin-top:24px}
+  @media(min-width:560px){.quem{grid-template-columns:1fr 1fr 1fr}}
+  .quem .q{background:#fff;border:1px solid var(--linha);border-radius:14px;padding:20px;text-align:center}
+  .quem .q .ico{font-size:26px}
+  .quem .q p{font-size:15px;color:var(--chocolate);margin-top:8px;line-height:1.45}
+  .quem .q b{color:var(--tinta)}
+
+  /* ---------- OFERTA ---------- */
+  .oferta-sec{background:var(--pretinho);color:var(--papel)}
+  .oferta-sec .eyebrow{color:var(--salvia)}
+  .oferta-sec h2{color:var(--papel)}
+  .ocard{background:var(--papel);color:var(--tinta);border-radius:18px;padding:34px 26px 30px;text-align:center;margin-top:26px;border:1px solid rgba(0,0,0,.06)}
+  .ocard .selo{display:inline-flex;align-items:center;gap:8px;border:1px solid var(--linha);color:var(--salvia-d);font-size:11.5px;font-weight:800;letter-spacing:.12em;text-transform:uppercase;padding:7px 16px;border-radius:100px;margin-bottom:18px}
+  .ocard .inc{list-style:none;text-align:left;max-width:400px;margin:0 auto 20px}
+  .ocard .inc li{display:flex;gap:10px;padding:7px 0;border-bottom:1px solid var(--linha);font-size:15.5px}
+  .ocard .inc li:last-child{border-bottom:none}
+  .ocard .inc .ck{color:var(--salvia-d);font-weight:800}
+  .ocard .preco{font-family:var(--f-body);font-weight:800;color:var(--tinta);letter-spacing:-.02em;font-size:clamp(56px,15vw,78px);line-height:1;margin-top:6px}
+  .ocard .preco .cif{font-size:.4em;vertical-align:.5em;margin-right:.04em}
+  .ocard .preco .cent{font-size:.42em;vertical-align:.6em}
+  .ocard .um{font-family:var(--f-apoio);font-style:italic;font-size:19px;color:var(--chocolate);margin-top:4px}
+  .ocard .cta{margin-top:22px}
+  .ocard .mini{margin-top:14px;font-size:12.5px;color:var(--chocolate)}
+
+  /* ---------- FAQ ---------- */
+  .faq{max-width:560px;margin:24px auto 0}
+  .faq details{border-bottom:1px solid var(--linha)}
+  .faq summary{list-style:none;cursor:pointer;padding:16px 2px;font-weight:700;font-size:16px;color:var(--tinta);display:flex;justify-content:space-between;gap:12px;align-items:center}
+  .faq summary::-webkit-details-marker{display:none}
+  .faq summary::after{content:"+";color:var(--salvia-d);font-weight:800;font-size:22px}
+  .faq details[open] summary::after{content:"–"}
+  .faq .a{padding:0 2px 16px;color:var(--chocolate);font-size:15px;line-height:1.6}
+
+  footer{border-top:1px solid var(--linha);text-align:center;padding:34px 0 40px;background:var(--papel-2)}
+  footer .marca{font-family:var(--f-disp);font-style:italic;font-size:22px;color:var(--salvia-d)}
+  footer small{display:block;color:var(--chocolate);font-size:12px;margin-top:8px}
+</style>
+</head>
+<body>
+
+  <!-- ============ HERO ============ -->
+  <section class="hero">
+    <div class="wrap">
+      <span class="pill">Apostila digital · O Método LED</span>
+      <h1>O Método LED inteiro, <i>por escrito</i>.</h1>
+      <p class="sub">Tudo o que você precisa pra entender, aplicar e cobrar mais pelo LED — do primeiro conceito ao seu atendimento. Pra estudar no seu ritmo e consultar na hora.</p>
+      <div class="mock"><div class="book"><img src="/img/apostila-capa.png?v=1" alt="Apostila O Método LED"></div>
+        <div class="tag">📄 PDF · 26 páginas · <b>acesso imediato</b></div></div>
+      <div class="hero-cta"><a href="#oferta" class="cta" style="margin-top:26px"><span class="l1">Quero a apostila <span>&rarr;</span></span><span class="l2">Por R$67,90 · digital</span></a></div>
+      <p class="micro">Chega no seu e-mail logo após o pagamento.</p>
+    </div>
+  </section>
+
+  <!-- ============ O QUE É ============ -->
+  <section class="sec center">
+    <div class="wrap reveal">
+      <span class="eyebrow">Não é um resumo qualquer</span>
+      <h2>O <i>método completo</i> na forma que você consulta rápido.</h2>
+      <p class="lead" style="max-width:470px;margin-inline:auto">Enquanto o vídeo você assiste uma vez, a apostila fica com você pra sempre — pra revisar antes de atender, tirar a dúvida na hora e não depender da memória. É o Método LED destrinchado, do conceito ao negócio.</p>
+    </div>
+  </section>
+
+  <!-- ============ O QUE TEM DENTRO ============ -->
+  <section class="sec" style="background:var(--papel-2);border-block:1px solid var(--linha)">
+    <div class="wrap">
+      <div class="center reveal"><span class="eyebrow">O que tem dentro</span><h2>4 módulos, <i>22 tópicos</i>, do zero ao atendimento.</h2></div>
+
+      <div class="mod reveal"><div class="n">Módulo 01</div><h3>Fundamentos</h3>
+        <ul>
+          <li><span class="ck">✓</span>O que é a tecnologia LED e por que é uma evolução</li>
+          <li><span class="ck">✓</span>A ciência por trás · cola tradicional x cola LED</li>
+          <li><span class="ck">✓</span>A composição química do adesivo</li>
+          <li><span class="ck">✓</span>Equipamento: potência e comprimento de onda</li>
+          <li><span class="ck">✓</span>Os tipos de ultravioleta — <b>o LED faz mal?</b></li>
+        </ul></div>
+
+      <div class="mod reveal"><div class="n">Módulo 02</div><h3>Mão na massa</h3>
+        <ul>
+          <li><span class="ck">✓</span>Os tipos de equipamento LED e como configurar o seu</li>
+          <li><span class="ck">✓</span>O passo a passo completo da aplicação</li>
+          <li><span class="ck">✓</span>Dicas práticas e marcas de cola</li>
+          <li><span class="ck">✓</span>Remoção e manutenção</li>
+        </ul></div>
+
+      <div class="mod reveal"><div class="n">Módulo 03</div><h3>Segurança e resultado</h3>
+        <ul>
+          <li><span class="ck">✓</span>Problemas e soluções · irritação e alergia</li>
+          <li><span class="ck">✓</span>Retenção: <b>o grande diferencial</b> do LED</li>
+        </ul></div>
+
+      <div class="mod reveal"><div class="n">Módulo 04</div><h3>Transformando em negócio</h3>
+        <ul>
+          <li><span class="ck">✓</span>Precificação — quanto cobrar pelo LED</li>
+          <li><span class="ck">✓</span>Comunicação com a cliente</li>
+          <li><span class="ck">✓</span>Posicionamento e marketing</li>
+        </ul></div>
+    </div>
+  </section>
+
+  <!-- ============ PRA QUEM É ============ -->
+  <section class="sec center">
+    <div class="wrap reveal">
+      <span class="eyebrow">Pra quem é</span>
+      <h2>Feita pra quem leva o <i>LED</i> a sério.</h2>
+      <div class="quem">
+        <div class="q"><div class="ico">🌱</div><p><b>Está começando</b> e quer uma base sólida, sem achismo.</p></div>
+        <div class="q"><div class="ico">💡</div><p><b>Já atende</b> e quer migrar pro LED com segurança.</p></div>
+        <div class="q"><div class="ico">📖</div><p>Quer um <b>material de consulta</b> rápido no dia a dia.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ OFERTA ============ -->
+  <section class="oferta-sec sec" id="oferta">
+    <div class="wrap center">
+      <span class="eyebrow">A apostila digital</span>
+      <h2>O método que vira <i>padrão</i>, por menos que uma aplicação.</h2>
+      <div class="ocard reveal">
+        <span class="selo">📄 PDF · acesso imediato</span>
+        <ul class="inc">
+          <li><span class="ck">✓</span>A <b>apostila completa</b> do Método LED — 26 páginas, 4 módulos</li>
+          <li><span class="ck">✓</span>Do <b>fundamento</b> ao <b>passo a passo</b> da aplicação</li>
+          <li><span class="ck">✓</span>Segurança ocular, retenção e solução de problemas</li>
+          <li><span class="ck">✓</span>Precificação e posicionamento pra <b>cobrar mais</b></li>
+          <li><span class="ck">✓</span><b>Digital, seu pra sempre</b> — estude e consulte quando quiser</li>
+        </ul>
+        <div class="preco"><span class="cif">R$</span>67<span class="cent">,90</span></div>
+        <div class="um">pagamento único · acesso imediato</div>
+        <a href="#oferta" class="cta block"><span class="l1">Quero minha apostila <span>&rarr;</span></span><span class="l2">🔒 Pagamento seguro · Pix, cartão ou boleto</span></a>
+        <p class="mini">Você recebe o PDF no seu e-mail logo após a confirmação do pagamento.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ FAQ ============ -->
+  <section class="sec">
+    <div class="wrap center reveal">
+      <span class="eyebrow">Perguntas frequentes</span>
+      <h2>Ficou com <i>alguma dúvida?</i></h2>
+      <div class="faq" style="text-align:left">
+        <details><summary>A apostila é digital ou física?</summary><div class="a">É <b>100% digital</b> — um PDF que chega no seu e-mail logo após a compra. Você acessa no celular, tablet ou computador, quantas vezes quiser, pra sempre.</div></details>
+        <details><summary>É o curso completo?</summary><div class="a">É a <b>apostila</b>: o Método LED por escrito, pra estudar e consultar. O curso completo tem as videoaulas, as práticas e a mentoria; a apostila é a base teórica e prática em texto — perfeita pra quem quer começar ou ter um material de consulta.</div></details>
+        <details><summary>O LED não faz mal pros olhos?</summary><div class="a">Tem um tópico só sobre isso — os tipos de ultravioleta, a potência real do LED de cílios e a proteção ocular. Você entende por que é seguro e como fazer certo.</div></details>
+        <details><summary>Preciso já saber fazer extensão?</summary><div class="a">Não. A apostila começa pelos fundamentos e vai até o passo a passo da aplicação. Se você já atende, migra pro LED com segurança; se está começando, aprende o caminho certo.</div></details>
+        <details><summary>Como eu recebo?</summary><div class="a">Assim que o pagamento é confirmado, o link do PDF chega no e-mail que você cadastrar no checkout. Qualquer coisa, é só chamar no suporte.</div></details>
+      </div>
+      <div style="margin-top:30px"><a href="#oferta" class="cta"><span class="l1">Quero a apostila <span>&rarr;</span></span><span class="l2">Por R$67,90 · digital</span></a></div>
+    </div>
+  </section>
+
+  <footer>
+    <div class="wrap">
+      <div class="marca">Nataly Ribeiro</div>
+      <small>Apostila · O Método LED — Extensão de cílios com fotopolimerização</small>
+    </div>
+  </footer>
+
+  <script>
+    const io=new IntersectionObserver((es)=>es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('in');io.unobserve(e.target);}}),{threshold:.12});
+    document.querySelectorAll('.reveal').forEach(el=>io.observe(el));
+  </script>
+  <script src="/js/pixel.js"></script>
+  <script src="/js/analytics.js"></script>
+</body>
+</html>

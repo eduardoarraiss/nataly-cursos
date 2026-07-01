@@ -123,6 +123,7 @@ app.get('/lancamento-297', pagina('lancamento-297.html')); // LED online — ofe
 app.get('/curso', pagina('curso.html'));           // venda — perpétua (R$497)
 app.get('/oferta-secreta-vip', pagina('oferta-secreta-vip.html')); // SECRETA — grupo VIP (De R$497 por R$297 · 12x R$30,72 · checkout FfyBeg0)
 app.get('/oferta-especial', pagina('oferta-especial.html')); // PÚBLICO FRIO — educacional, tema claro+ouro, oferta R$297 revelada (checkout FfyBeg0). Destino dos anúncios de tráfego frio.
+app.get('/apostila', pagina('apostila.html')); // LOW TICKET — apostila digital do Método LED (PDF, R$67,90, IDV Atelier Sálvia). ⚠️ CTA #oferta até configurar checkout Kiwify.
 
 // Páginas de obrigado (pós-compra) — usar como URL de redirecionamento no checkout Kiwify
 app.get('/obrigado', pagina('obrigado.html'));                       // online — acesso chega no e-mail
