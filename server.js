@@ -55,22 +55,20 @@ const OFERTA_F2 = `<h2 class="titulo titulo--md mt-m">Tudo que você <span class
         <p class="f2-titulo-inclui">Está tudo incluso:</p>
         <ul class="f2-lista">
           <li class="f2-item"><span class="f2-ck">✓</span><span class="f2-txt">O <b>Método LED completo</b> em vídeo, nas 4 fases</span></li>
-          <li class="f2-item f2-novo"><span class="f2-ck">✓</span><span class="f2-txt"><b>Apostila completa</b> do Método LED (material de apoio)</span></li>
+          <li class="f2-item f2-novo"><span class="f2-ck">✓</span><span class="f2-txt"><b>Apostila completa</b> do Método LED</span></li>
           <li class="f2-item"><span class="f2-ck">✓</span><span class="f2-txt"><b>1 mentoria online por mês</b>, ao vivo comigo</span></li>
           <li class="f2-item"><span class="f2-ck">✓</span><span class="f2-txt"><b>Grupo de suporte</b> durante todo o aprendizado</span></li>
-          <li class="f2-item"><span class="f2-ck">✓</span><span class="f2-txt"><b>Acesso por 1 ano</b>, no seu ritmo, pelo celular</span></li>
+          <li class="f2-item"><span class="f2-ck">✓</span><span class="f2-txt"><b>Acesso por 1 ano</b></span></li>
           <li class="f2-item"><span class="f2-ck">✓</span><span class="f2-txt"><b>Garantia incondicional</b> de 7 dias</span></li>
         </ul>
         <div class="f2-preco-wrap">
           <div class="f2-em12">12× de</div>
           <div class="f2-num"><span class="cif">R$</span>54<span class="cent">,40</span></div>
           <div class="f2-cartao">no cartão de crédito</div>
-          <div class="f2-divisor"><span>ou</span></div>
-          <p class="f2-avista"><b>R$ 497</b> à vista no Pix</p>
+          <p class="f2-avista">ou <b>R$ 497</b> à vista no Pix</p>
         </div>
-        <a href="https://pay.kiwify.com.br/1EX5ICK" class="cta">Garantir minha vaga<small>Acesso imediato ao curso completo</small></a>
-        <p class="f2-pgto">Pix · Cartão · Boleto</p>
-        <p class="f2-garantia">Garantia incondicional de 7 dias</p>
+        <a href="https://pay.kiwify.com.br/1EX5ICK" class="cta"><span class="f2-cta-main">Quero garantir minha vaga <span class="f2-arw">&rarr;</span></span><small>&#128274; Pagamento seguro &middot; Pix, cartão ou boleto</small></a>
+        <p class="f2-garantia">&#128737; Garantia de 7 dias &mdash; risco zero</p>
       </div>`;
 
 // Linha de preço do HERO da Página B (fase 2 — sem ancoragem/riscado).
