@@ -9,6 +9,29 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Playfair+Display:ital,wght@1,600;1,700&display=swap" rel="stylesheet">
+
+<!-- ===== Meta Pixel · Nataly (pixel ÚNICO curso+ecommerce; LED Pro separado por content_category 'ecommerce' + Custom Conversion URL yampi) ===== -->
+<script>
+!function(f,b,e,v,n,t,s){if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+n.callMethod.apply(n,arguments):n.queue.push(arguments)};if(!f._fbq)f._fbq=n;
+n.push=n;n.loaded=!0;n.version='2.0';n.queue=[];t=b.createElement(e);t.async=!0;
+t.src=v;s=b.getElementsByTagName(e)[0];s.parentNode.insertBefore(t,s)}(window,document,'script',
+'https://connect.facebook.net/en_US/fbevents.js');
+fbq('init', '1511752107118676');
+fbq('track', 'PageView');
+fbq('track', 'ViewContent', {
+  content_name: 'LED Pro',
+  content_ids: ['LED-PRO'],
+  content_type: 'product',
+  content_category: 'ecommerce',
+  value: 347.00,
+  currency: 'BRL'
+});
+</script>
+<noscript><img height="1" width="1" style="display:none"
+  src="https://www.facebook.com/tr?id=1511752107118676&ev=PageView&noscript=1"/></noscript>
+<!-- ===== /Meta Pixel · Nataly ===== -->
+
 <style>
   :root{
     --black:#1d1d1f;--white:#ffffff;--smoke:#f5f5f7;--smoke2:#fafafa;
@@ -74,6 +97,9 @@
   .statement p{font-size:clamp(27px,4vw,44px);font-weight:700;letter-spacing:-0.03em;line-height:1.2;color:var(--black);max-width:940px;margin:0 auto;}
   .statement p b{color:var(--uv);font-weight:700;}
   .statement .small{font-size:18px;color:var(--gray);font-weight:400;margin-top:24px;letter-spacing:0;line-height:1.6;max-width:680px;}
+  .statement-hero{position:relative;max-width:400px;margin:44px auto 0;}
+  .statement-hero::before{content:"";position:absolute;left:50%;top:52%;transform:translate(-50%,-50%);width:78%;height:62%;background:radial-gradient(ellipse at center,rgba(123,92,255,.24),transparent 70%);filter:blur(26px);z-index:0;pointer-events:none;}
+  .statement-hero img{position:relative;z-index:1;width:100%;border-radius:var(--radius);box-shadow:0 26px 60px rgba(35,22,70,.16);}
 
   /* PAINS */
   .pains-head{text-align:center;margin-bottom:18px;}
@@ -159,13 +185,13 @@
   .auth .sig{font-size:17px;font-weight:700;margin-top:8px;}
   .auth .sig small{display:block;font-weight:500;color:var(--gray);font-size:14px;}
 
-  .faq{max-width:800px;margin:52px auto 0;}
+  .faq{max-width:800px;margin:52px auto 0;padding:0 24px;}
   .qa{border-bottom:1px solid var(--line);}
-  .qa button{width:100%;text-align:left;background:none;border:0;padding:24px 0;font-size:19px;font-weight:600;letter-spacing:-0.01em;color:var(--black);cursor:pointer;display:flex;justify-content:space-between;gap:20px;align-items:center;font-family:inherit;}
+  .qa button{width:100%;max-width:100%;text-align:left;background:none;border:0;padding:24px 0;font-size:19px;font-weight:600;letter-spacing:-0.01em;color:var(--black);cursor:pointer;display:flex;justify-content:space-between;gap:16px;align-items:center;font-family:inherit;overflow-wrap:break-word;word-break:break-word;hyphens:auto;}
   .qa button .plus{flex:0 0 auto;font-size:24px;color:var(--uv);transition:transform .3s;font-weight:400;}
   .qa.open button .plus{transform:rotate(45deg);}
   .qa .ans{max-height:0;overflow:hidden;transition:max-height .45s ease;}
-  .qa .ans p{padding:0 0 24px;font-size:16.5px;color:#555;max-width:720px;line-height:1.65;}
+  .qa .ans p{padding:0 0 24px;font-size:16.5px;color:#555;max-width:100%;line-height:1.65;overflow-wrap:break-word;word-break:break-word;hyphens:auto;}
   .qa .ans p b{color:var(--black);}
 
   .offer{background:var(--smoke);}
@@ -211,11 +237,6 @@
   .zoom-cap{position:relative;z-index:2;text-align:center;padding:0 24px;}
   .zoom-cap h2{font-size:clamp(34px,5.6vw,72px);color:#fff;}
   .count{font-variant-numeric:tabular-nums;}
-
-  /* Preço no hero */
-  .hero-preco{margin-top:20px;font-size:16px;color:#555;font-weight:500;}
-  .hero-preco s{color:var(--gray);}
-  .hero-preco b{color:var(--green-d);font-weight:800;}
 
   /* Seção de entrega */
   .entrega{background:var(--smoke);}
@@ -279,6 +300,14 @@
     .hero h1{font-size:clamp(34px,9vw,48px);}
     .ent-timeline{grid-template-columns:repeat(2,1fr);gap:14px;}
     nav .navchips{justify-content:flex-start;padding:0 14px 9px;}
+    .statement-hero{max-width:300px;margin-top:34px;}
+    .faq{padding:0 20px;}
+    .qa button{font-size:17px;gap:12px;padding:20px 0;}
+    .qa button .plus{font-size:22px;}
+    .qa .ans p{font-size:16px;}
+  }
+  @media(max-width:420px){
+    .qa button{font-size:16px;}
   }
 </style>
 </head>
@@ -301,7 +330,7 @@
 <!-- HERO -->
 <header class="hero">
   <div class="wrap">
-    <div class="badge-pre">● Pré-venda · preço especial · apenas 50 unidades</div>
+    <div class="badge-pre">● Pré-venda · lote de lançamento · apenas 50 unidades</div>
     <div class="eyebrow">Certificação CE · testado e aprovado pela Nataly Ribeiro</div>
     <div class="herostage reveal">
       <div class="floaty-wrap" id="floatwrap">
@@ -310,10 +339,9 @@
     </div>
     <h1>A cola seca antes<br>de você <em>soltar a pinça.</em></h1>
     <p class="sub">Acople o LED Pro na pinça que você já usa, aplique o fio e acione a luz: a cola fixa no mesmo movimento. O fim da espera pela secagem, do vapor que arde no olho da cliente e da retenção que caía nas primeiras horas.</p>
-    <p class="hero-preco">De <s>R$ 497</s> &nbsp;·&nbsp; <b>12x de R$ 37,34</b> &nbsp;ou R$ 347 à vista</p>
     <div class="ctas">
-      <a href="#oferta" class="btn btn-primary">Quero o meu por R$ 347 →</a>
-      <a href="#como" class="btn btn-ghost">Ver como funciona</a>
+      <a href="#como" class="btn btn-primary">Quero conhecer →</a>
+      <a href="#demo" class="btn btn-ghost">Ver a luz em ação</a>
     </div>
     <div class="trust">✓ Potência de 2W &nbsp;·&nbsp; ✓ Certificação CE &nbsp;·&nbsp; ✓ Envio p/ todo o Brasil</div>
   </div>
@@ -322,8 +350,11 @@
 <!-- STATEMENT -->
 <section class="statement">
   <div class="narrow">
-    <p class="reveal">Você já perdeu a conta de quantos minutos passou <b>esperando a cola secar</b> entre um fio e outro. O LED Pro acaba com essa espera — e com ela vão embora o vapor, a ardência e aquela retenção que despencava nas primeiras horas.</p>
+    <p class="reveal">Você já perdeu a conta de quantos minutos passou <b>esperando a cola secar</b> entre um fio e outro. O LED Pro acaba com essa espera. E, junto com ela, vão embora o vapor, a ardência e aquela retenção que caía nas primeiras horas.</p>
     <p class="small reveal">A mesma tecnologia que a Nataly ensina no Método LED, agora na ferramenta certa.</p>
+    <figure class="statement-hero reveal">
+      <img src="assets/img/real-produto-limpo.jpg" alt="LED Pro acoplado na pinça de aplicação" loading="lazy">
+    </figure>
   </div>
 </section>
 
@@ -732,6 +763,18 @@
       const qa=b.parentElement, ans=qa.querySelector('.ans'), open=qa.classList.contains('open');
       document.querySelectorAll('.qa').forEach(x=>{x.classList.remove('open');x.querySelector('.ans').style.maxHeight=null;});
       if(!open){qa.classList.add('open');ans.style.maxHeight=ans.scrollHeight+'px';}
+    });
+  });
+
+  // Meta Pixel · clique em "Comprar" → AddToCart (InitiateCheckout/AddPaymentInfo/Purchase vêm da Yampi)
+  document.querySelectorAll('a[href*="pay.yampi.com.br"]').forEach(a=>{
+    a.addEventListener('click',()=>{
+      if(window.fbq){
+        fbq('track','AddToCart',{
+          content_name:'LED Pro', content_ids:['LED-PRO'], content_type:'product',
+          content_category:'ecommerce', value:347.00, currency:'BRL'
+        });
+      }
     });
   });
 </script>
