@@ -10,7 +10,8 @@
   <meta property="og:type" content="website">
 
   <!-- Variante de página (teste A/B copy+design) — B = página enxuta -->
-  <script>window.PAGE_VARIANT = "B";</script>
+  <!-- LED_VALUE = preço da fase atual (injetado pelo server: 197 fase 1 / 497 fase 2) -->
+  <script>window.PAGE_VARIANT = "B"; window.LED_VALUE = @@LED_VALUE@@;</script>
   <!-- Meta Pixel + GA4 -->
   <script src="/js/pixel.js"></script>
   <script src="/js/analytics.js"></script>
@@ -68,6 +69,34 @@
     .preco-avista { font-size: clamp(15px, 1.9vw, 19px); }
     .preco-avista .peso { color: var(--argila); }
     .inclui { text-align:left; max-width:420px; margin: 24px auto 0; }
+
+    /* ---------- Oferta FASE 2 (card completo aprovado — verde vibrante LOCAL, não altera --salvia global) ---------- */
+    .oferta-card--f2 { --f2-verde:#79A85B; --f2-verde-claro:#9DBE85; background:var(--papel); border:1px solid var(--argila); text-align:center; }
+    .oferta-card--f2 .f2-selo { display:inline-flex; align-items:center; gap:9px; border:1px solid var(--f2-verde-claro); color:var(--f2-verde); font-family:var(--f-body); font-size:13px; font-weight:700; letter-spacing:.12em; text-transform:uppercase; padding:9px 20px; border-radius:100px; }
+    .oferta-card--f2 .f2-selo::before { content:""; width:7px; height:7px; border-radius:50%; background:var(--f2-verde-claro); }
+    .f2-titulo-inclui { font-family:var(--f-apoio); font-style:italic; font-size:22px; color:var(--chocolate); margin-top:24px; }
+    .f2-lista { list-style:none; text-align:left; max-width:430px; margin:16px auto 0; }
+    .f2-item { display:flex; align-items:flex-start; gap:13px; padding:12px 0; border-bottom:1px solid var(--filete); }
+    .f2-item:last-child { border-bottom:none; }
+    .f2-ck { flex:none; width:26px; height:26px; border-radius:50%; background:var(--f2-verde-claro); color:var(--papel); font-weight:800; font-size:15px; display:flex; align-items:center; justify-content:center; margin-top:1px; }
+    .f2-txt { font-family:var(--f-body); font-size:18px; line-height:1.4; color:var(--tinta); font-weight:500; }
+    .f2-txt b { font-weight:800; color:var(--chocolate); }
+    .f2-novo .f2-txt::after { content:"NOVO"; font-family:var(--f-body); font-size:10px; font-weight:800; letter-spacing:1px; color:var(--f2-verde); border:1px solid var(--f2-verde-claro); border-radius:4px; padding:2px 6px; margin-left:8px; vertical-align:middle; white-space:nowrap; }
+    .f2-preco-wrap { margin-top:30px; }
+    .f2-em12 { font-family:var(--f-body); font-weight:700; font-size:17px; letter-spacing:.16em; text-transform:uppercase; color:var(--chocolate); }
+    .f2-num { font-family:var(--f-impacto); font-weight:400; line-height:.9; color:var(--f2-verde); margin-top:6px; font-size:clamp(76px,16vw,116px); letter-spacing:-.01em; }
+    .f2-num .cif { font-size:.34em; vertical-align:.62em; margin-right:.05em; }
+    .f2-num .cent { font-size:.42em; vertical-align:.7em; }
+    .f2-cartao { font-family:var(--f-body); font-size:15px; font-weight:600; letter-spacing:.1em; text-transform:uppercase; color:var(--chocolate); margin-top:8px; }
+    .f2-divisor { display:flex; align-items:center; gap:16px; margin:22px auto; max-width:360px; }
+    .f2-divisor::before,.f2-divisor::after { content:""; flex:1; height:1px; background:var(--argila); }
+    .f2-divisor span { font-family:var(--f-apoio); font-style:italic; font-size:20px; color:var(--chocolate); }
+    .f2-avista { font-family:var(--f-display); font-style:italic; font-weight:500; font-size:clamp(24px,3.4vw,30px); color:var(--tinta); }
+    .f2-avista b { color:var(--f2-verde); font-weight:600; font-style:normal; }
+    .oferta-card--f2 .cta { display:flex; flex-direction:column; margin-top:28px; background:var(--pretinho); color:var(--branco-quente); border-radius:6px; padding:20px 24px; white-space:normal; text-align:center; }
+    .oferta-card--f2 .cta small { font-weight:500; font-size:12.5px; opacity:.78; letter-spacing:.06em; margin-top:5px; text-transform:uppercase; }
+    .f2-pgto { font-family:var(--f-body); font-size:14px; letter-spacing:.08em; text-transform:uppercase; color:var(--chocolate); margin-top:18px; font-weight:600; }
+    .f2-garantia { font-family:var(--f-apoio); font-style:italic; font-size:18px; color:var(--f2-verde); margin-top:10px; }
   </style>
 </head>
 <body>
@@ -81,9 +110,9 @@
           <h1 class="titulo mt-m">O LED vai ser o novo <span class="acento">padrão</span> da extensão de cílios.</h1>
           <p class="corpo--lg mt-m txt2" style="font-size:clamp(17px,1.9vw,21px); line-height:1.55;">Cura na hora, sem ardência e com retenção que dura. Aprenda a técnica antes da sua concorrência.</p>
           <div class="mt-l">
-            <a href="https://pay.kiwify.com.br/BMda0X4" class="cta">Quero o Método LED por R$197</a>
+            <a href="https://pay.kiwify.com.br/BMda0X4" class="cta">Quero o Método LED por @@CTA_PRECO@@</a>
           </div>
-          <p class="hero-preco mt-m txt2"><span class="risco">De R$497</span> &nbsp;·&nbsp; <span class="peso acento">12× de R$20,37</span> ou R$197 à vista</p>
+          <p class="hero-preco mt-m txt2"><!--HERO_F1--><span class="risco">De R$497</span> &nbsp;·&nbsp; <span class="peso acento">12× de R$20,37</span> ou R$197 à vista<!--/HERO_F1--></p>
           <p class="corpo mt-s txt2 micro">Acesso por 1 ano · Grupo de suporte · Garantia de 7 dias.</p>
         </div>
 
@@ -178,7 +207,7 @@
   <section class="secao bg-pretinho centro" id="oferta">
     <div class="wrap wrap--txt">
       <span class="eyebrow eyebrow-c">A oferta</span>
-      <h2 class="titulo titulo--md mt-m">Entre <span class="acento">hoje</span>, pelo preço de quem chega primeiro.</h2>
+      <!--OFERTA_F1--><h2 class="titulo titulo--md mt-m">Entre <span class="acento">hoje</span>, pelo preço de quem chega primeiro.</h2>
 
       <div class="oferta-card mt-l">
         <p class="apoio acento">Condição de lançamento</p>
@@ -188,6 +217,7 @@
 
         <div class="inclui">
           <div class="check"><span class="mk acento">✓</span><span class="corpo txt2">O Método LED completo em vídeo, nas 4 fases</span></div>
+          <div class="check"><span class="mk acento">✓</span><span class="corpo txt2">Apostila completa do Método LED (material de apoio)</span></div>
           <div class="check"><span class="mk acento">✓</span><span class="corpo txt2"><span class="peso">1 mentoria online por mês</span> comigo, ao vivo</span></div>
           <div class="check"><span class="mk acento">✓</span><span class="corpo txt2">Grupo de suporte durante o aprendizado</span></div>
           <div class="check"><span class="mk acento">✓</span><span class="corpo txt2">Acesso por 1 ano, no seu ritmo, pelo celular</span></div>
@@ -195,9 +225,9 @@
         </div>
 
         <div class="mt-l">
-          <a href="https://pay.kiwify.com.br/BMda0X4" class="cta">Garantir minha vaga por R$197</a>
+          <a href="https://pay.kiwify.com.br/BMda0X4" class="cta">Garantir minha vaga por @@CTA_PRECO@@</a>
         </div>
-      </div>
+      </div><!--/OFERTA_F1-->
 
       <p class="corpo mt-l txt2" style="max-width:480px;margin-inline:auto;font-size:15px;">Risco zero: se em 7 dias não for pra você, devolvo <span class="peso">100% do valor</span>. Sem perguntas.</p>
     </div>
@@ -210,7 +240,7 @@
       <h2 class="titulo titulo--md mt-m">Seja a primeira a <span class="acento">evoluir</span> na sua região.</h2>
       <p class="corpo--lg mt-m">O LED ainda é raro no Brasil. Quem aprende a técnica agora sai na frente.</p>
       <div class="mt-l">
-        <a href="https://pay.kiwify.com.br/BMda0X4" class="cta">Quero dominar o LED por R$197</a>
+        <a href="https://pay.kiwify.com.br/BMda0X4" class="cta">Quero dominar o LED por @@CTA_PRECO@@</a>
       </div>
       <p class="corpo mt-m txt2 micro">Acesso por 1 ano · Garantia de 7 dias.</p>
     </div>

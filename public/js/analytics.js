@@ -31,7 +31,7 @@ var GA_MEASUREMENT_ID = "G-MZS1VCZ89D"; // Nataly — GA4
   var isPresencial = path.indexOf("presencial") !== -1;
   var produto = isPresencial
     ? { id: "lash2-presencial", name: "Formação Presencial LED", value: 1197 }
-    : { id: "lash2-online",     name: "Lash 2.0 — Online",       value: 197 };
+    : { id: "lash2-online",     name: "Lash 2.0 — Online",       value: (window.LED_VALUE || 197) };
 
   // --- Variante de página (teste A/B de copy+design) ---
   // Cada HTML define window.PAGE_VARIANT ("A" = longa canônica, "B" = enxuta).
