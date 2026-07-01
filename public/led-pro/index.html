@@ -249,6 +249,11 @@
     .specs{grid-template-columns:repeat(2,1fr);}
     .step .n{margin-bottom:22px;}
     .cert{flex-direction:column;text-align:center;}
+    /* Hero mobile: separar produto da headline (sem sobreposição pesada) */
+    .hero .herostage{margin:4px auto 10px;}
+    .hero .herostage img{width:min(290px,64%);}
+    .hero .herostage::before{width:min(300px,64vw);height:150px;}
+    .hero h1{font-size:clamp(34px,9vw,48px);}
   }
 </style>
 </head>
@@ -581,7 +586,7 @@
       <div class="oc-name">LED Pro · by Nataly Ribeiro</div>
       <div class="oc-scarcity"><span class="big">50</span><span class="txt">🔥 unidades apenas<br>neste lote de lançamento</span></div>
       <div class="oc-from">de R$ 497</div>
-      <div class="oc-now"><span class="x">12x sem juros de</span><small>R$</small>28<span class="c">,92</span></div>
+      <div class="oc-now"><span class="x">12x de</span><small>R$</small>37<span class="c">,34</span></div>
       <div class="oc-cash">ou R$ 347 à vista</div>
       <div class="oc-save">💚 Você economiza R$ 150 (30% OFF)</div>
       <a href="https://metodo-led-lash-20.pay.yampi.com.br/r/TVSS74RYK5" class="btn-buy" id="cta-checkout">Garantir o meu agora →</a>
