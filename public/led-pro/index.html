@@ -30,6 +30,11 @@
   nav .brand small{display:block;font-family:-apple-system,BlinkMacSystemFont,"Inter",sans-serif;font-style:normal;font-size:10.5px;font-weight:500;color:var(--gray);letter-spacing:.02em;margin-top:0;}
   nav .navcta{background:var(--black);color:#fff;font-size:14px;font-weight:600;padding:9px 18px;border-radius:30px;text-decoration:none;transition:transform .2s,background .2s;}
   nav .navcta:hover{background:var(--uv);transform:translateY(-1px);}
+  nav .navchips{display:flex;gap:8px;overflow-x:auto;padding:0 20px 10px;scrollbar-width:none;justify-content:center;}
+  nav .navchips::-webkit-scrollbar{display:none;}
+  nav .navchips a{flex:0 0 auto;font-size:13.5px;font-weight:600;color:#444;background:var(--smoke);padding:8px 15px;border-radius:30px;text-decoration:none;white-space:nowrap;transition:background .2s,color .2s;}
+  nav .navchips a:hover{background:var(--uv);color:#fff;}
+  section[id],header[id]{scroll-margin-top:132px;}
 
   .hero{background:var(--smoke);text-align:center;padding:32px 0 0;overflow:hidden;}
   .eyebrow{font-size:14px;font-weight:600;color:var(--uv);letter-spacing:.02em;margin-bottom:14px;}
@@ -164,27 +169,24 @@
   .qa .ans p b{color:var(--black);}
 
   .offer{background:var(--smoke);}
-  .offercard{position:relative;max-width:540px;margin:0 auto;background:#fff;border-radius:30px;padding:52px 44px 38px;text-align:center;box-shadow:0 40px 90px rgba(15,80,45,.13);border:1px solid var(--line);overflow:hidden;}
-  .offercard::before{content:"";position:absolute;top:0;left:0;right:0;height:6px;background:linear-gradient(90deg,var(--green),#34d27f);}
-  .oc-ribbon{display:inline-block;background:var(--green-soft);color:var(--green-d);font-weight:800;font-size:13px;letter-spacing:.05em;text-transform:uppercase;padding:8px 16px;border-radius:30px;margin-bottom:16px;}
-  .oc-name{font-size:19px;font-weight:700;letter-spacing:-0.02em;color:#555;}
-  .oc-scarcity{display:flex;align-items:center;justify-content:center;gap:14px;background:#fdecea;border:1px solid #f2c2bd;border-radius:16px;padding:15px 22px;margin-top:16px;}
-  .oc-scarcity .big{font-size:50px;font-weight:800;color:var(--hot);line-height:.85;letter-spacing:-0.03em;}
-  .oc-scarcity .txt{text-align:left;font-size:13.5px;font-weight:800;color:var(--hot);line-height:1.22;text-transform:uppercase;letter-spacing:.03em;}
-  .oc-from{font-size:25px;color:#9a9aa2;text-decoration:line-through;text-decoration-thickness:2.5px;margin-top:18px;font-weight:600;}
-  .oc-now{font-size:clamp(46px,8.5vw,70px);font-weight:800;letter-spacing:-0.04em;line-height:.96;color:var(--green-d);margin-top:6px;}
-  .oc-now .x{display:block;font-size:.32em;font-weight:700;letter-spacing:.015em;margin-bottom:5px;color:var(--green-d);}
-  .oc-now small{font-size:.5em;font-weight:700;vertical-align:.42em;margin-right:5px;}
-  .oc-now .c{font-size:.62em;}
-  .oc-cash{font-size:17px;color:#555;font-weight:500;margin-top:10px;}
-  .oc-save{display:inline-block;background:var(--green);color:#fff;font-weight:700;font-size:15px;padding:9px 20px;border-radius:30px;margin-top:14px;box-shadow:0 10px 24px rgba(22,163,74,.30);}
-  .btn-buy{display:block;width:100%;margin:22px 0 18px;background:var(--green);color:#fff;font-weight:700;font-size:19px;padding:18px;border-radius:40px;text-decoration:none;transition:transform .2s,box-shadow .2s,background .2s;box-shadow:0 14px 32px rgba(22,163,74,.34);}
-  .btn-buy:hover{background:var(--green-d);transform:translateY(-2px);box-shadow:0 20px 44px rgba(22,163,74,.45);}
-  .oc-reassure{display:flex;flex-direction:column;gap:9px;margin-top:6px;}
-  .oc-reassure span{font-size:14.5px;color:#444;}
-  .oc-reassure b{color:var(--black);}
-  .oc-urgency{margin-top:20px;padding-top:18px;border-top:1px solid var(--line);font-size:13px;color:#8a6d2e;line-height:1.55;}
-  .oc-urgency b{color:#5f4a16;}
+  .offercard{position:relative;max-width:460px;margin:0 auto;background:linear-gradient(165deg,#1a1a20,#0b0b0d);border:1px solid #2a2a32;border-radius:30px;padding:0 40px 36px;text-align:center;box-shadow:0 40px 90px rgba(0,0,0,.42);}
+  .oc-foto{padding:30px 0 2px;}
+  .oc-foto img{width:min(290px,78%);margin:0 auto;filter:drop-shadow(0 20px 30px rgba(0,0,0,.5));}
+  .oc-badge{display:inline-block;font-size:13px;font-weight:600;color:var(--uv-soft);background:rgba(123,92,255,.18);padding:6px 15px;border-radius:30px;margin-bottom:16px;}
+  .oc-name{font-size:16px;font-weight:600;color:#9a9aa2;margin-bottom:18px;}
+  .oc-from{font-size:19px;color:#6a6a72;text-decoration:line-through;text-decoration-thickness:2px;}
+  .oc-now{font-size:clamp(56px,10vw,68px);font-weight:800;letter-spacing:-0.04em;line-height:1;color:#48e08a;margin:2px 0;}
+  .oc-now small{font-size:.4em;color:#6a6a72;font-weight:600;vertical-align:.55em;margin-right:3px;}
+  .oc-par{font-size:16.5px;color:#c8c8d0;margin-top:12px;}
+  .oc-par b{color:#e8e8ee;font-weight:700;}
+  .oc-eco{display:inline-block;font-size:13.5px;color:#48e08a;font-weight:700;border:1px solid rgba(72,224,138,.4);padding:7px 16px;border-radius:30px;margin-top:16px;}
+  .btn-buy{display:block;width:100%;margin:24px 0 14px;background:var(--green);color:#fff;font-weight:700;font-size:18px;padding:17px;border-radius:40px;text-decoration:none;transition:transform .2s,box-shadow .2s,background .2s;box-shadow:0 14px 34px rgba(22,163,74,.4);}
+  .btn-buy:hover{background:#18b552;transform:translateY(-2px);box-shadow:0 20px 46px rgba(22,163,74,.55);}
+  .oc-scar{font-size:14px;color:#ff6b63;font-weight:600;}
+  .oc-hr{border:0;border-top:1px solid #2a2a32;margin:22px 0;}
+  .oc-reassure{display:flex;flex-direction:column;gap:9px;margin-top:4px;}
+  .oc-reassure span{font-size:14.5px;color:#a8a8b0;}
+  .oc-reassure b{color:#fff;}
 
   .guarantee{text-align:center;}
   .gbox{max-width:700px;margin:0 auto;border:1px solid var(--line);border-radius:var(--radius);padding:44px;background:var(--smoke2);}
@@ -277,6 +279,7 @@
     .hero .herostage::before{width:min(300px,64vw);height:150px;}
     .hero h1{font-size:clamp(34px,9vw,48px);}
     .ent-timeline{grid-template-columns:repeat(2,1fr);gap:14px;}
+    nav .navchips{justify-content:flex-start;padding:0 14px 9px;}
   }
 </style>
 </head>
@@ -286,6 +289,13 @@
   <div class="bar">
     <div class="brand">LED <span>Pro</span><small>by Nataly Ribeiro</small></div>
     <a href="#oferta" class="navcta">Garantir o meu</a>
+  </div>
+  <div class="navchips">
+    <a href="#como">Como funciona</a>
+    <a href="#seguranca">É seguro?</a>
+    <a href="#entrega">Quando chega</a>
+    <a href="#faq">Dúvidas</a>
+    <a href="#oferta">Preço</a>
   </div>
 </nav>
 
@@ -306,7 +316,7 @@
       <a href="#oferta" class="btn btn-primary">Quero o meu por R$ 347 →</a>
       <a href="#como" class="btn btn-ghost">Ver como funciona</a>
     </div>
-    <div class="trust">✓ Potência de 2W &nbsp;·&nbsp; ✓ Certificação CE &nbsp;·&nbsp; ✓ Frete grátis</div>
+    <div class="trust">✓ Potência de 2W &nbsp;·&nbsp; ✓ Certificação CE &nbsp;·&nbsp; ✓ Envio p/ todo o Brasil</div>
   </div>
 </header>
 
@@ -383,7 +393,7 @@
 </section>
 
 <!-- POR QUE O NOSSO (VERSUS) -->
-<section>
+<section id="seguranca">
   <div class="wrap">
     <div class="center">
       <div class="kick reveal">Não é qualquer LED de marketplace</div>
@@ -581,7 +591,7 @@
 </section>
 
 <!-- FAQ -->
-<section style="background:#fff">
+<section style="background:#fff" id="faq">
   <div class="wrap center">
     <div class="kick reveal">Tirando suas dúvidas</div>
     <h2 class="reveal">Antes de você <em>perguntar.</em></h2>
@@ -600,7 +610,7 @@
 </section>
 
 <!-- ENTREGA -->
-<section class="entrega">
+<section class="entrega" id="entrega">
   <div class="wrap center">
     <div class="kick reveal">Como é pré-venda</div>
     <h2 class="reveal">Quando o seu <em>chega?</em></h2>
@@ -629,20 +639,21 @@
     <h2 class="reveal">Garanta o seu <em>LED Pro.</em></h2>
     <p class="dek reveal">Cada cliente que você atende cobrando de R$40 a R$70 a mais já paga uma fatia do aparelho. Em poucos atendimentos ele se paga — o resto é a sua agenda rendendo mais.</p>
     <div class="offercard reveal">
-      <div class="oc-ribbon">−30% OFF · só na pré-venda</div>
+      <div class="oc-foto"><img src="assets/img/hero-float.png" alt="LED Pro"></div>
+      <div class="oc-badge">● Pré-venda · só 50 unidades</div>
       <div class="oc-name">LED Pro · by Nataly Ribeiro</div>
-      <div class="oc-scarcity"><span class="big">50</span><span class="txt">🔥 unidades apenas<br>neste lote de lançamento</span></div>
       <div class="oc-from">de R$ 497</div>
-      <div class="oc-now"><span class="x">12x de</span><small>R$</small>37<span class="c">,34</span></div>
-      <div class="oc-cash">ou R$ 347 à vista</div>
-      <div class="oc-save">💚 Você economiza R$ 150 (30% OFF)</div>
-      <a href="https://metodo-led-lash-20.pay.yampi.com.br/r/TVSS74RYK5" class="btn-buy" id="cta-checkout">Garantir o meu agora →</a>
+      <div class="oc-now"><small>R$</small>347</div>
+      <div class="oc-par">à vista ou <b>12x de R$ 37,34</b></div>
+      <div class="oc-eco">💚 Economize R$ 150 (30%)</div>
+      <a href="https://metodo-led-lash-20.pay.yampi.com.br/r/TVSS74RYK5" class="btn-buy" id="cta-checkout">Comprar agora →</a>
+      <div class="oc-scar">🔥 Restam poucas unidades no lote</div>
+      <hr class="oc-hr">
       <div class="oc-reassure">
-        <span>🚚 <b>Frete grátis</b> para todo o Brasil</span>
-        <span>🛡️ <b>Certificação CE</b> de conformidade</span>
-        <span>↩️ <b>7 dias</b> de garantia de arrependimento</span>
+        <span>🚚 <b>Enviamos</b> para todo o Brasil</span>
+        <span>🛡️ <b>Certificação CE</b></span>
+        <span>↩️ <b>7 dias para devolver</b> após receber, se não gostar</span>
       </div>
-      <div class="oc-urgency">⏳ Lote de lançamento com apenas <b>50 unidades</b>. Quando acabarem, o preço volta para <b>R$ 497</b>.</div>
     </div>
   </div>
 </section>
@@ -653,7 +664,7 @@
     <div class="gbox reveal">
       <div class="seal">🛡️</div>
       <h3>Risco zero para você</h3>
-      <p>Se o LED Pro não for tudo o que você esperava, você tem <b>7 dias</b> para pedir reembolso — sem burocracia, sem letra miúda. E ainda conta com garantia contra defeito de fabricação. A decisão de experimentar é toda sua, sem risco nenhum.</p>
+      <p>Recebeu e não gostou? Você tem <b>7 dias após a entrega</b> para devolver e receber <b>100% do valor de volta</b> — sem burocracia, sem letra miúda. E ainda conta com <b>garantia de 12 meses</b> contra defeito de fabricação. A decisão de experimentar é toda sua, sem risco nenhum.</p>
     </div>
   </div>
 </section>
@@ -664,7 +675,7 @@
     <h2 class="reveal">A evolução da sua aplicação<br>cabe na palma da mão.</h2>
     <p class="dek reveal">Seque na hora. Atenda mais. Cobre mais. Trabalhe do seu jeito, com a segurança de quem usa a ferramenta certa.</p>
     <a href="#oferta" class="btn btn-primary reveal">Garantir o meu LED Pro →</a>
-    <p class="reveal" style="color:#6a6a72;font-size:14px;margin-top:18px;">Frete grátis · Certificação CE · Garantia de 7 dias</p>
+    <p class="reveal" style="color:#6a6a72;font-size:14px;margin-top:18px;">Envio para todo o Brasil · Certificação CE · 7 dias pra devolver</p>
   </div>
 </section>
 
