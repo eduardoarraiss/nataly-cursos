@@ -166,7 +166,15 @@
     .oferta-card--f2 .cta small { font-weight:600; font-size:11.5px; opacity:.94; letter-spacing:.05em; text-transform:uppercase; }
     .f2-pgto { display:none; }
     .f2-garantia { font-family:var(--f-body); font-weight:700; font-size:13.5px; color:var(--tinta); margin-top:12px; }
-  </style>
+  
+    /* bloco de preço em destaque — card claro c/ caixa marrom e preço verde iluminado */
+    .preco-box{ background:var(--pretinho); border-radius:16px; padding:24px 20px; margin-top:24px; text-align:center; }
+    .preco-box .preco-label{ font-family:var(--f-apoio); font-style:italic; font-size:20px; color:rgba(242,238,229,.72); }
+    .preco-box .preco-num{ font-family:var(--f-body); font-weight:800; font-size:clamp(60px,16vw,84px); line-height:1; letter-spacing:-.02em; color:#9DBE85; margin-top:4px; text-shadow:0 4px 26px rgba(157,190,133,.30); }
+    .preco-box .preco-num .cif{ font-size:.38em; vertical-align:.55em; margin-right:.04em; }
+    .preco-box .preco-num .cent{ font-size:.48em; vertical-align:.6em; }
+    .preco-box .preco-sub{ font-family:var(--f-body); font-weight:600; font-size:13px; letter-spacing:.08em; color:rgba(242,238,229,.6); margin-top:9px; text-transform:uppercase; }
+</style>
 </head>
 <body>
 
@@ -179,7 +187,7 @@
           <h1 class="titulo mt-m">O Método LED inteiro, <span class="acento">por escrito</span>.</h1>
           <p class="corpo--lg mt-m txt2" style="font-size:clamp(18px,1.9vw,22px); line-height:1.6;">Tudo o que você precisa pra entender, aplicar e cobrar mais pelo LED — do primeiro conceito ao seu atendimento. Pra estudar no seu ritmo e consultar na hora.</p>
           <div class="mt-l">
-            <a href="#oferta" class="cta">Quero a apostila por R$67,90</a>
+            <a href="#oferta" class="cta">Quero a apostila</a>
           </div>
           <p class="corpo mt-m txt2 micro">PDF · 26 páginas · acesso imediato · sua pra sempre.</p>
         </div>
@@ -567,9 +575,7 @@
 
       <div class="oferta-card mt-l">
         <p class="apoio acento">📄 Apostila digital · acesso imediato</p>
-        <p class="preco-grande acento" style="margin-top:14px;"><span class="cif">R$</span>67,90</p>
-        <p class="preco-avista mt-s txt2">pagamento único · sua pra sempre</p>
-        <p class="corpo mt-s txt2" style="font-size:16px;">Um PDF completo pra estudar e consultar quando quiser. Sem mensalidade.</p>
+        <p class="corpo mt-s txt2" style="font-size:16px;">Um PDF completo pra estudar e consultar quando quiser. Sem mensalidade — seu pra sempre.</p>
 
         <div class="inclui">
           <div class="check"><span class="mk acento">✓</span><span class="corpo txt2">A <span class="peso">apostila completa</span> do Método LED — 26 páginas, 4 módulos</span></div>
@@ -579,8 +585,14 @@
           <div class="check"><span class="mk acento">✓</span><span class="corpo txt2"><span class="peso">Digital, sua pra sempre</span> — no celular, tablet ou computador</span></div>
         </div>
 
+        <div class="preco-box">
+          <p class="preco-label">Tudo isso por</p>
+          <p class="preco-num"><span class="cif">R$</span>67<span class="cent">,90</span></p>
+          <p class="preco-sub">pagamento único · acesso imediato</p>
+        </div>
+
         <div class="mt-l">
-          <a href="#oferta" class="cta">Quero minha apostila por R$67,90</a>
+          <a href="#oferta" class="cta">Quero minha apostila</a>
         </div>
         <p class="corpo mt-m txt2 micro">Você recebe o PDF no seu e-mail logo após o pagamento.</p>
       </div><!--/OFERTA_F1-->
