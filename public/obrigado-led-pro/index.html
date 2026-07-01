@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="robots" content="noindex">
+  <title>Compra confirmada · uma oportunidade única · Nataly Ribeiro</title>
+  <meta name="description" content="Sua matrícula no Método LED está confirmada. E temos uma oportunidade única de pré-venda do nosso LED Pro pra você.">
+
+  <!-- Teste A/B: lê o cookie do split (led_ab) ANTES do pixel/GA4, pra atribuir esta compra à variante vista. -->
+  <script>
+    (function () {
+      var m = (document.cookie || "").match(/(?:^|;\s*)led_ab=([^;]*)/);
+      var v = m ? decodeURIComponent(m[1]) : null;
+      if (v === "A" || v === "B") window.PAGE_VARIANT = v;
+    })();
+  </script>
+  <!-- Meta Pixel (1511752107118676) + GA4 — mesmo pixel do curso/ecommerce -->
+  <script src="/js/pixel.js"></script>
+  <script src="/js/analytics.js"></script>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Abril+Fatface&family=Cormorant+Garamond:ital,wght@0,500;1,400;1,500&family=Hanken+Grotesk:wght@400;500;600;700&family=Playfair+Display:ital,wght@0,500;1,400;1,500;1,600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/css/atelier.css?v=20260701a">
+  <style>
+    :root { --uv:#7b5cff; --uv-soft:#a78bff; }
+    .ty { padding: 72px 0 40px; }
+    .ty-grid { max-width: 760px; margin: 0 auto; }
+
+    .selo { width: 78px; height: 78px; border-radius: 50%; background: var(--salvia); color: var(--verde-tinta);
+      display: flex; align-items: center; justify-content: center; margin: 0 auto 24px; }
+    .selo svg { width: 38px; height: 38px; }
+    .sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0,0,0,0); white-space: nowrap; border: 0; }
+
+    /* ===== Bloco de oportunidade (upsell LED Pro) ===== */
+    .oport { margin-top: 40px; border-radius: 26px; overflow: hidden;
+      background: linear-gradient(180deg,#12121a 0%, #0b0b12 100%); color: #fff;
+      border: 1px solid rgba(167,139,255,.28); box-shadow: 0 30px 80px rgba(20,10,60,.28); }
+    .oport-in { padding: clamp(28px,5vw,52px); }
+    .oport .kick { display:inline-flex; align-items:center; gap:8px; font-family:var(--f-apoio),serif;
+      font-size:13.5px; font-weight:700; letter-spacing:.14em; text-transform:uppercase; color:var(--uv-soft);
+      background:rgba(123,92,255,.14); border:1px solid rgba(167,139,255,.3); padding:7px 15px; border-radius:30px; }
+    .oport h2 { font-family:'Playfair Display',serif; font-weight:600; font-size:clamp(27px,4.4vw,42px);
+      line-height:1.1; letter-spacing:-0.01em; margin-top:18px; color:#fff; }
+    .oport h2 em { font-style:italic; color:var(--uv-soft); }
+    .oport p { font-size:clamp(16px,1.9vw,18px); line-height:1.66; color:#d9d7e6; margin-top:18px; }
+    .oport p b { color:#fff; font-weight:700; }
+
+    .media { margin: 28px 0 6px; border-radius:18px; overflow:hidden; border:1px solid rgba(167,139,255,.22); background:#000; }
+    .media video { display:block; width:100%; height:auto; }
+    .shots { display:grid; grid-template-columns:repeat(3,1fr); gap:10px; margin-top:12px; }
+    .shots img { width:100%; aspect-ratio:1/1; object-fit:cover; border-radius:14px; border:1px solid rgba(167,139,255,.18); }
+    @media (max-width:520px){ .shots{ grid-template-columns:repeat(3,1fr); gap:7px; } }
+
+    /* Como funciona a pré-venda */
+    .como { display:grid; grid-template-columns:repeat(3,1fr); gap:12px; margin-top:30px; }
+    @media (max-width:640px){ .como{ grid-template-columns:1fr; } }
+    .como .item { background:rgba(255,255,255,.04); border:1px solid rgba(167,139,255,.16); border-radius:16px; padding:20px; }
+    .como .item .n { font-family:'Playfair Display',serif; font-style:italic; font-size:26px; color:var(--uv-soft); }
+    .como .item h4 { font-size:16px; font-weight:700; margin-top:6px; color:#fff; }
+    .como .item p { font-size:14px; line-height:1.55; color:#c7c5d6; margin-top:5px; }
+
+    /* Oferta + CTA */
+    .oferta-box { margin-top:30px; text-align:center; background:rgba(123,92,255,.08);
+      border:1px solid rgba(167,139,255,.3); border-radius:20px; padding:clamp(24px,4vw,38px); }
+    .badge-off { display:inline-block; background:var(--uv); color:#fff; font-weight:800; font-size:14px;
+      letter-spacing:.04em; padding:8px 18px; border-radius:30px; }
+    .preco { margin-top:16px; }
+    .preco .de { color:#a7a4bb; text-decoration:line-through; font-size:16px; }
+    .preco .por { font-family:'Playfair Display',serif; font-weight:700; font-size:clamp(34px,6vw,52px); color:#fff; line-height:1; margin-top:4px; }
+    .preco .par { color:#c7c5d6; font-size:14px; margin-top:8px; }
+    .escassez { margin-top:14px; font-size:14.5px; color:var(--uv-soft); font-weight:600; }
+    .cta-led { display:inline-block; margin-top:22px; background:var(--uv); color:#fff; font-weight:700;
+      font-size:clamp(16px,2.2vw,19px); padding:18px 34px; border-radius:40px; text-decoration:none;
+      box-shadow:0 16px 40px rgba(123,92,255,.45); transition:transform .2s, box-shadow .2s, background .2s; }
+    .cta-led:hover { background:#6b4cf5; transform:translateY(-2px); box-shadow:0 22px 52px rgba(123,92,255,.6); }
+    .cta-nota { font-size:13px; color:#a7a4bb; margin-top:14px; }
+    @media (max-width:360px){ .cta-led{ white-space:normal; line-height:1.25; text-align:center; } }
+  </style>
+</head>
+<body class="bg-claro">
+
+  <main class="ty">
+    <div class="wrap ty-grid centro">
+
+      <!-- Parabenização (curto) -->
+      <div class="selo">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg>
+      </div>
+      <span class="eyebrow eyebrow-c">Compra confirmada</span>
+      <h1 class="titulo titulo--md mt-m">Parabéns, sua vaga no <span class="acento">Método&nbsp;LED</span> está garantida.</h1>
+      <p class="corpo mt-m">Seu acesso chega no seu <b class="peso">e-mail</b> em alguns minutos — confira também o <b class="peso">spam</b> e a aba "Promoções". Agora, antes de começar, leia com atenção: isso aqui é pra poucas.</p>
+
+      <div class="filete filete--curto mt-l" style="margin-left:auto;margin-right:auto;"></div>
+
+      <!-- ===== Oportunidade única: pré-venda LED Pro ===== -->
+      <section class="oport" aria-labelledby="oport-h">
+        <div class="oport-in centro">
+          <span class="kick">✦ Atenção · oportunidade única</span>
+          <h2 id="oport-h">Uma chance de aproveitar <em>ainda mais</em> o curso.</h2>
+
+          <p>É <b>muito difícil</b> achar aparelhos de LED no Brasil com todas as certificações e a segurança que a sua saúde e a da sua cliente exigem. E, pra importar, você depende de pedir o certificado direto ao fornecedor — um risco que quase ninguém quer correr.</p>
+          <p>Foi <b>exatamente por isso</b> que eu criei o meu próprio LED e coloquei na <b>pré-venda</b>: o <b>LED Pro</b>, com a curadoria e a certificação que eu ensino no método. <b>Mais da metade do lote já foi garantida</b> pelas alunas — mas ainda sobraram <b>algumas unidades pra você</b>.</p>
+
+          <!-- Vídeo de detalhe do LED -->
+          <div class="media">
+            <video controls preload="none" playsinline poster="/led-pro/assets/video/detalhe-poster.jpg">
+              <source src="/led-pro/assets/video/detalhe.mp4" type="video/mp4">
+            </video>
+          </div>
+          <div class="shots">
+            <img src="/led-pro/assets/img/real-luz-acesa.jpg" alt="LED Pro com a luz acesa" loading="lazy">
+            <img src="/led-pro/assets/img/real-encaixe.jpg" alt="LED Pro acoplado" loading="lazy">
+            <img src="/led-pro/assets/img/produto-detalhe.jpg" alt="Detalhe do LED Pro" loading="lazy">
+          </div>
+
+          <!-- Como funciona a pré-venda -->
+          <div class="como" aria-label="Como funciona a pré-venda">
+            <div class="item"><div class="n">1</div><h4>Você garante hoje</h4><p>Reserva a sua unidade agora, na condição de pré-venda com <b>30% de desconto</b>.</p></div>
+            <div class="item"><div class="n">2</div><h4>O lote chega</h4><p>Assim que o lote desembarca (previsão de julho), a sua unidade fica reservada no seu nome.</p></div>
+            <div class="item"><div class="n">3</div><h4>Enviamos ou você retira</h4><p>Despachamos com código de rastreio pra todo o Brasil — ou você retira pessoalmente, se for da região.</p></div>
+          </div>
+
+          <!-- Oferta + CTA -->
+          <div class="oferta-box">
+            <span class="badge-off">Pré-venda · 30% OFF</span>
+            <div class="preco">
+              <div class="de">de R$ 497</div>
+              <div class="por">R$ 347</div>
+              <div class="par">à vista ou em até 12x</div>
+            </div>
+            <div class="escassez">🔥 Mais da metade do lote já foi garantida</div>
+            <a href="/led-pro/?utm_source=obrigado-curso&utm_medium=upsell&utm_campaign=led-pro-prevenda&utm_content=botao-obrigado" id="cta-upsell" class="cta-led" rel="noopener">Tenho interesse em garantir o meu por um valor especial →</a>
+            <p class="cta-nota">Você vai pra página do LED Pro pra ver todos os detalhes e finalizar a reserva.</p>
+          </div>
+        </div>
+      </section>
+
+      <p class="corpo mt-l aviso" style="font-size:14px;">Não recebeu o e-mail do curso em alguns minutos? Verifique spam/promoções. Se ainda assim não chegar, responda o e-mail de confirmação que a gente te ajuda.</p>
+
+    </div>
+  </main>
+
+  <!-- ===== Tracking ===== -->
+  <script>
+  (function () {
+    // 1) COMPRADORA DO CURSO (audiência/funil) — NÃO é Purchase (a Kiwify dispara o Purchase).
+    var v = (window.PAGE_VARIANT === "A" || window.PAGE_VARIANT === "B") ? window.PAGE_VARIANT : null;
+    var prod = { id: "lash2-online", name: "Lash 2.0 — Online" };
+    if (window.fbq) {
+      var base = { content_name: prod.name, content_ids: [prod.id], content_type: "product" };
+      if (v) base.page_variant = v;
+      fbq("trackCustom", "CompraConfirmada", base);
+      if (v) { fbq("trackCustom", "Obrigado_" + v, { page_variant: v }); fbq("trackCustom", "CompraConfirmada_" + v, base); }
+    }
+    if (window.gtag) {
+      var g = { item_id: prod.id, item_name: prod.name, destino: "obrigado-led-pro" };
+      if (v) g.page_variant = v;
+      gtag("event", "compra_confirmada", g);
+    }
+
+    // 2) UPSELL LED PRO — viu a oferta (público de remarketing: comprador do curso que viu o LED Pro)
+    var led = { content_name: "LED Pro", content_ids: ["LED-PRO"], content_type: "product", content_category: "ecommerce" };
+    if (window.fbq) fbq("trackCustom", "ViuUpsellLedPro", led);
+    if (window.gtag) gtag("event", "viu_upsell_led_pro", { item_id: "LED-PRO", item_name: "LED Pro", origem: "obrigado-curso" });
+
+    // 3) CLIQUE no upsell → evento + preserva UTMs/params já existentes na URL rumo à /led-pro
+    var btn = document.getElementById("cta-upsell");
+    if (btn) {
+      // se a compradora chegou com params (ex.: do anúncio), repassa junto dos UTMs do upsell
+      try {
+        var incoming = new URLSearchParams(location.search);
+        if ([...incoming.keys()].length) {
+          var u = new URL(btn.getAttribute("href"), location.origin);
+          incoming.forEach(function (val, k) { if (!u.searchParams.has(k)) u.searchParams.set(k, val); });
+          btn.setAttribute("href", u.pathname + u.search);
+        }
+      } catch (e) {}
+      btn.addEventListener("click", function () {
+        if (window.fbq) fbq("trackCustom", "CliqueUpsellLedPro", led);
+        if (window.gtag) gtag("event", "clique_upsell_led_pro", { item_id: "LED-PRO", item_name: "LED Pro", origem: "obrigado-curso" });
+      });
+    }
+  })();
+  </script>
+
+  <footer class="rodape bg-pretinho centro">
+    <div class="wrap">
+      <p class="logo acento">Nataly Ribeiro</p>
+      <p class="corpo txt2 mt-s" style="font-size:13px;">Lash 2.0 · O Método LED · Extensão de cílios com fotopolimerização</p>
+      <p class="txt2 mt-m" style="font-size:12px;">© 2026 Nataly Ribeiro. Todos os direitos reservados.</p>
+    </div>
+  </footer>
+
+</body>
+</html>

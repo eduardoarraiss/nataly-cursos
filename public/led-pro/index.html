@@ -766,6 +766,19 @@ fbq('track', 'ViewContent', {
     });
   });
 
+  // Propaga UTMs/params da URL (ex.: vindo do upsell da página de obrigado) para o checkout Yampi,
+  // preservando a atribuição da jornada de compra até a venda.
+  try {
+    const _q = new URLSearchParams(location.search);
+    if ([..._q.keys()].length) {
+      document.querySelectorAll('a[href*="pay.yampi.com.br"]').forEach(a=>{
+        const yu = new URL(a.getAttribute('href'));
+        _q.forEach((val,k)=>{ if(!yu.searchParams.has(k)) yu.searchParams.set(k,val); });
+        a.setAttribute('href', yu.toString());
+      });
+    }
+  } catch(e){}
+
   // Meta Pixel · clique em "Comprar" → AddToCart (InitiateCheckout/AddPaymentInfo/Purchase vêm da Yampi)
   document.querySelectorAll('a[href*="pay.yampi.com.br"]').forEach(a=>{
     a.addEventListener('click',()=>{
