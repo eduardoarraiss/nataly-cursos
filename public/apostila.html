@@ -85,7 +85,9 @@
   .ocard{background:var(--papel);color:var(--tinta);border-radius:18px;padding:34px 26px 30px;text-align:center;margin-top:26px;border:1px solid rgba(0,0,0,.06)}
   .ocard .selo{display:inline-flex;align-items:center;gap:8px;border:1px solid var(--linha);color:var(--salvia-d);font-size:11.5px;font-weight:800;letter-spacing:.12em;text-transform:uppercase;padding:7px 16px;border-radius:100px;margin-bottom:18px}
   .ocard .inc{list-style:none;text-align:left;max-width:400px;margin:0 auto 20px}
-  .ocard .inc li{display:flex;gap:10px;padding:7px 0;border-bottom:1px solid var(--linha);font-size:15.5px}
+  .ocard .inc li{display:flex;gap:10px;padding:8px 0;border-bottom:1px solid var(--linha);font-size:15.5px;line-height:1.4}
+  .ocard .inc .ck{flex:none;margin-top:1px}
+  .ocard .inc .t{flex:1}
   .ocard .inc li:last-child{border-bottom:none}
   .ocard .inc .ck{color:var(--salvia-d);font-weight:800}
   .ocard .preco{font-family:var(--f-body);font-weight:800;color:var(--tinta);letter-spacing:-.02em;font-size:clamp(56px,15vw,78px);line-height:1;margin-top:6px}
@@ -191,11 +193,11 @@
       <div class="ocard reveal">
         <span class="selo">📄 PDF · acesso imediato</span>
         <ul class="inc">
-          <li><span class="ck">✓</span>A <b>apostila completa</b> do Método LED — 26 páginas, 4 módulos</li>
-          <li><span class="ck">✓</span>Do <b>fundamento</b> ao <b>passo a passo</b> da aplicação</li>
-          <li><span class="ck">✓</span>Segurança ocular, retenção e solução de problemas</li>
-          <li><span class="ck">✓</span>Precificação e posicionamento pra <b>cobrar mais</b></li>
-          <li><span class="ck">✓</span><b>Digital, seu pra sempre</b> — estude e consulte quando quiser</li>
+          <li><span class="ck">✓</span><span class="t">A <b>apostila completa</b> do Método LED — 26 páginas, 4 módulos</span></li>
+          <li><span class="ck">✓</span><span class="t">Do <b>fundamento</b> ao <b>passo a passo</b> da aplicação</span></li>
+          <li><span class="ck">✓</span><span class="t">Segurança ocular, retenção e solução de problemas</span></li>
+          <li><span class="ck">✓</span><span class="t">Precificação e posicionamento pra <b>cobrar mais</b></span></li>
+          <li><span class="ck">✓</span><span class="t"><b>Digital, seu pra sempre</b> — estude e consulte quando quiser</span></li>
         </ul>
         <div class="preco"><span class="cif">R$</span>67<span class="cent">,90</span></div>
         <div class="um">pagamento único · acesso imediato</div>
