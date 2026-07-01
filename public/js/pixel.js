@@ -62,6 +62,8 @@ var META_PIXEL_ID = "1511752107118676"; // Pixel da Nataly
     var href = (a.getAttribute("href") || "").toLowerCase();
     if (href.indexOf("pay.kiwify") !== -1) {
       fbq("track", "InitiateCheckout", dados());
+      // Evento EXCLUSIVO da variante (nome próprio) — Conversão Personalizada no Meta.
+      if (VARIANT) fbq("trackCustom", "InitiateCheckout_" + VARIANT, dados());
     }
   });
 
@@ -70,6 +72,8 @@ var META_PIXEL_ID = "1511752107118676"; // Pixel da Nataly
     if (!document.querySelector('a[href*="pay.kiwify"]')) return; // não é página de venda
 
     fbq("track", "ViewContent", dados());
+    // PageView EXCLUSIVO da variante (topo do funil A/B) — nome próprio no Meta.
+    if (VARIANT) fbq("trackCustom", "PageView_" + VARIANT, { page_variant: VARIANT });
 
     // ScrollOferta: dispara 1x quando a seção de preço entra na tela.
     var oferta = document.getElementById("oferta");

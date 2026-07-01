@@ -13,14 +13,39 @@ app.get('/', pagina('home.html'));              // home oficial (placeholder; fu
 app.get('/vip', pagina('index.html'));          // atalho captação
 app.get('/lash-grupo-vip', pagina('index.html')); // URL dos anúncios → captação
 app.get('/entrar', pagina('entrar.html'));     // redireciona pro grupo + dispara Lead
-// ⭐ PÁGINA OFICIAL DOS ANÚNCIOS — URL FIXA. Trocar só o preço por dentro, nunca a URL.
-//    Variante A do teste A/B (página longa). page_variant=A · UTM utm_content=pv_a
-app.get('/lash-2-metodo-led', pagina('lash-2-metodo-led.html'));
-app.get('/metodo-led', pagina('lash-2-metodo-led.html')); // alias curto
-// Variante B do teste A/B — página ENXUTA (mesma oferta R$197 / BMda0X4).
-//    page_variant=B · UTM utm_content=pv_b · gestor aponta conjuntos próprios pra cá.
-app.get('/lash-2-metodo-led-b', pagina('lash-2-metodo-led-b.html'));
-app.get('/metodo-led-b', pagina('lash-2-metodo-led-b.html')); // alias curto
+// ============================================================
+//  TESTE A/B — SPLIT SERVER-SIDE STICKY na URL canônica.
+//  A URL /lash-2-metodo-led continua ÚNICA (a campanha NÃO troca o link).
+//  1ª visita: sorteia 50/50 A (página longa) x B (enxuta) e grava cookie
+//  led_ab (30 dias). Visitas seguintes respeitam o cookie (mesma variante).
+//  Serve o HTML na MESMA URL (sendFile, sem redirect). A página /obrigado
+//  lê o mesmo cookie pra atribuir a VENDA à variante servida.
+// ============================================================
+const AB_ARQUIVOS = { A: 'lash-2-metodo-led.html', B: 'lash-2-metodo-led-b.html' };
+const AB_MAXAGE = 30 * 24 * 60 * 60 * 1000; // 30 dias
+
+function leCookie(req, nome) {
+  const raw = req.headers.cookie || '';
+  const m = raw.match(new RegExp('(?:^|;\\s*)' + nome + '=([^;]*)'));
+  return m ? decodeURIComponent(m[1]) : null;
+}
+
+function splitAB(req, res) {
+  let v = leCookie(req, 'led_ab');
+  if (v !== 'A' && v !== 'B') {
+    v = Math.random() < 0.5 ? 'A' : 'B';
+    res.cookie('led_ab', v, { maxAge: AB_MAXAGE, path: '/', sameSite: 'lax' });
+  }
+  res.sendFile(path.join(PUBLIC, AB_ARQUIVOS[v]));
+}
+
+// ⭐ PÁGINA OFICIAL DOS ANÚNCIOS — URL FIXA E ÚNICA. Split A/B sticky por dentro.
+app.get('/lash-2-metodo-led', splitAB);
+app.get('/metodo-led', splitAB); // alias curto — mesmo split
+// Acesso DIRETO às variantes (QA/preview manual) — NÃO gravam o cookie de split.
+app.get('/lash-2-metodo-led-b', pagina('lash-2-metodo-led-b.html')); // B direto
+app.get('/metodo-led-b', pagina('lash-2-metodo-led-b.html'));        // alias B direto
+app.get('/lash-2-metodo-led-a', pagina('lash-2-metodo-led.html'));   // A direto (QA)
 
 app.get('/lancamento-197', pagina('lancamento.html')); // venda — lançamento (R$197, dia 30/06) · link direto, escondido da home
 app.get('/lancamento', pagina('lancamento.html'));     // alias interno (mesma página)

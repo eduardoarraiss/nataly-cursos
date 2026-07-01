@@ -7,6 +7,15 @@
   <title>Compra confirmada · Lash 2.0 — O Método LED · Nataly Ribeiro</title>
   <meta name="description" content="Sua matrícula no Lash 2.0 — O Método LED está confirmada. Seu acesso chega no e-mail.">
 
+  <!-- Teste A/B: lê o cookie do split (led_ab) e define a variante ANTES do pixel/GA4,
+       pra atribuir esta compra à página (A/B) que a compradora realmente viu. -->
+  <script>
+    (function () {
+      var m = (document.cookie || "").match(/(?:^|;\s*)led_ab=([^;]*)/);
+      var v = m ? decodeURIComponent(m[1]) : null;
+      if (v === "A" || v === "B") window.PAGE_VARIANT = v;
+    })();
+  </script>
   <!-- Meta Pixel + GA4 (PageView — público de compradoras. Purchase é disparado pela Kiwify) -->
   <script src="/js/pixel.js"></script>
   <script src="/js/analytics.js"></script>
@@ -124,21 +133,35 @@
       ? { id: "lash2-presencial", name: "Formação Presencial LED" }
       : { id: "lash2-online",     name: "Lash 2.0 — Online" };
 
+    // Variante do teste A/B, lida do cookie led_ab (definida no <head>).
+    // Só existe pra compradoras do LED online (a página /presencial não faz split).
+    var v = (window.PAGE_VARIANT === "A" || window.PAGE_VARIANT === "B") ? window.PAGE_VARIANT : null;
+
     // META: custom event só de audiência, SEM value/currency (não infla conversão)
     if (window.fbq) {
-      fbq("trackCustom", "CompraConfirmada", {
-        content_name: prod.name,
-        content_ids: [prod.id],
-        content_type: "product"
-      });
+      var base = { content_name: prod.name, content_ids: [prod.id], content_type: "product" };
+      if (v) base.page_variant = v;
+      fbq("trackCustom", "CompraConfirmada", base);
+      // Eventos EXCLUSIVOS da variante (nome próprio) — Conversão Personalizada + Público no Meta.
+      if (v) {
+        fbq("trackCustom", "Obrigado_" + v, { page_variant: v });               // visitou obrigado vindo da variante
+        fbq("trackCustom", "CompraConfirmada_" + v, base);                       // compra confirmada da variante
+      }
     }
     // GA4: evento não-monetário, só pra funil/Key Event (SEM value/currency)
     if (window.gtag) {
-      gtag("event", "compra_confirmada", {
+      var g = {
         item_id: prod.id,
         item_name: prod.name,
         destino: isPresencial ? "obrigado-presencial" : "obrigado-online"
-      });
+      };
+      if (v) g.page_variant = v;
+      gtag("event", "compra_confirmada", g);
+      // Eventos EXCLUSIVOS da variante — filtro fácil no relatório diário.
+      if (v) {
+        gtag("event", "obrigado_" + v.toLowerCase(), { page_variant: v });
+        gtag("event", "compra_confirmada_" + v.toLowerCase(), { item_id: prod.id, item_name: prod.name, page_variant: v });
+      }
     }
   })();
   </script>

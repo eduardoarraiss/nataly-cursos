@@ -65,6 +65,8 @@ var GA_MEASUREMENT_ID = "G-MZS1VCZ89D"; // Nataly — GA4
       gtag("event", "begin_checkout", ev_extra({
         currency: "BRL", value: produto.value, items: itens()
       }));
+      // Evento EXCLUSIVO da variante (nome próprio) — filtro fácil no relatório.
+      if (VARIANT) gtag("event", "begin_checkout_" + VARIANT.toLowerCase(), { page_variant: VARIANT });
     }
   });
 
@@ -75,6 +77,8 @@ var GA_MEASUREMENT_ID = "G-MZS1VCZ89D"; // Nataly — GA4
     gtag("event", "view_item", ev_extra({
       currency: "BRL", value: produto.value, items: itens()
     }));
+    // PageView EXCLUSIVO da variante (topo do funil A/B).
+    if (VARIANT) gtag("event", "page_view_" + VARIANT.toLowerCase(), { page_variant: VARIANT });
 
     var oferta = document.getElementById("oferta");
     if (oferta && "IntersectionObserver" in window) {
