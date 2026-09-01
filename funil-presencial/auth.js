@@ -22,9 +22,46 @@ const HORAS_SESSAO = 12;
 const MAX_ERROS = 8;          // por IP
 const JANELA_MIN = 15;
 
-const USUARIO = () => process.env.CRM_USUARIO || 'nataly';
+/* CONTAS: cada pessoa com a SUA senha.
+   Formato de `CRM_CONTAS`: "email:senha,email:senha".
+   A senha nao pode conter virgula (o separador) — se contiver, use `;` como
+   separador de contas, que tambem e aceito.
+   `CRM_USUARIOS`+`CRM_SENHA` (senha unica) e `CRM_USUARIO` continuam valendo,
+   para nao quebrar quem ja estava configurado. */
+function CONTAS() {
+  const cru = String(process.env.CRM_CONTAS || '').trim();
+  if (cru) {
+    const mapa = new Map();
+    cru.split(cru.includes(';') ? ';' : ',').forEach((par) => {
+      const i = par.indexOf(':');
+      if (i < 1) return;
+      const email = par.slice(0, i).trim().toLowerCase();
+      const senha = par.slice(i + 1).trim();
+      if (email && senha) mapa.set(email, senha);
+    });
+    if (mapa.size) return mapa;
+  }
+  // Retrocompatibilidade: lista de usuarios com uma senha so.
+  const unica = process.env.CRM_SENHA || '';
+  const mapa = new Map();
+  String(process.env.CRM_USUARIOS || process.env.CRM_USUARIO || 'nataly')
+    .split(',').map((u) => u.trim().toLowerCase()).filter(Boolean)
+    .forEach((u) => mapa.set(u, unica));
+  return mapa;
+}
+const USUARIOS = () => [...CONTAS().keys()];
+const USUARIO = () => USUARIOS()[0];
 const SENHA = () => process.env.CRM_SENHA || '';
-const configurado = () => SENHA().length >= 12;
+/* O painel so abre se houver conta com senha de verdade. Piso de 8 quando as
+   contas trazem senha propria (o Edu definiu senhas de 10), e 12 no modo de
+   senha unica, que era a regra original. O freio de forca bruta segura o resto. */
+const configurado = () => {
+  const contas = CONTAS();
+  if (!contas.size) return false;
+  const piso = process.env.CRM_CONTAS ? 8 : 12;
+  for (const senha of contas.values()) if (!senha || senha.length < piso) return false;
+  return true;
+};
 
 /* Comparação em tempo constante. Os dois lados passam por SHA-256 antes
    para que o comprimento da senha digitada não vaze pelo tempo da comparação. */
@@ -91,7 +128,14 @@ async function tentaLogin(req, usuario, senha) {
     return { ok: false, motivo: 'bloqueado' };
   }
 
-  const certo = mesmaSenha(usuario || '', USUARIO()) && mesmaSenha(senha || '', SENHA());
+    // Percorre TODAS as contas sem sair do laco cedo: parar no primeiro acerto
+  // vazaria, pelo tempo de resposta, qual e-mail existe.
+  const informado = String(usuario || '').trim().toLowerCase();
+  const tentada = String(senha || '');
+  let certo = false;
+  for (const [email, senhaDaConta] of CONTAS()) {
+    if (mesmaSenha(informado, email) && mesmaSenha(tentada, senhaDaConta)) certo = true;
+  }
   await registraTentativa(ip, certo);
   if (!certo) return { ok: false, motivo: 'credenciais' };
 
@@ -144,6 +188,6 @@ function exige(opts = {}) {
 }
 
 module.exports = {
-  COOKIE, USUARIO, configurado, tentaLogin, sessaoValida, encerraSessao,
+  COOKIE, USUARIO, USUARIOS, CONTAS, configurado, tentaLogin, sessaoValida, encerraSessao,
   limpaExpiradas, poeCookie, tiraCookie, exige, leCookie, ipDe, MAX_ERROS,
 };
