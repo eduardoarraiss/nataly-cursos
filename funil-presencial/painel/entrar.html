@@ -30,6 +30,18 @@
          background:#F7E4DE;border:1px solid var(--erro);color:#7E2C13}
   .aviso[hidden]{display:none}
   .rodape{margin:20px 0 0;font-size:13px;color:var(--tinta-2);text-align:center}
+
+  /* Olho para revelar a senha. Existe porque as senhas daqui tem simbolo e
+     maiuscula no meio ($ e nAty...), e digitar as cegas no celular erra. */
+  .campo-senha{position:relative}
+  .campo-senha input{padding-right:48px}
+  .olho{
+    position:absolute; right:4px; top:50%; transform:translateY(-50%);
+    width:40px; height:40px; display:flex; align-items:center; justify-content:center;
+    background:none; border:0; cursor:pointer; color:#7A695A; border-radius:8px;
+  }
+  .olho:hover{color:var(--tinta)}
+  .olho:focus-visible{outline:3px solid rgba(205,76,40,.35); outline-offset:1px}
 </style>
 </head>
 <body>
@@ -45,7 +57,17 @@
              autocapitalize="none" spellcheck="false" required>
 
       <label for="senha">Senha</label>
-      <input id="senha" name="senha" type="password" autocomplete="current-password" required>
+      <div class="campo-senha">
+        <input id="senha" name="senha" type="password" autocomplete="current-password" required>
+        <button type="button" id="olho" class="olho" aria-label="Mostrar senha" aria-pressed="false">
+          <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor"
+               stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path id="olho-forma" d="M1.5 12S5 5.5 12 5.5 22.5 12 22.5 12 19 18.5 12 18.5 1.5 12 1.5 12Z"/>
+            <circle cx="12" cy="12" r="3.2"/>
+            <line id="olho-corte" x1="3.5" y1="20.5" x2="20.5" y2="3.5" style="display:none"/>
+          </svg>
+        </button>
+      </div>
 
       <button type="submit" id="botao">Entrar</button>
     </form>
@@ -70,9 +92,13 @@
     fetch('/crm/entrar', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
+      /* .trim() nos dois: espaco colado sem querer no inicio ou no fim e a
+         causa mais comum de "senha incorreta" com a senha certa — e o teclado
+         do celular acrescenta espaco depois de colar. Aparar aqui, no envio,
+         e nao enquanto digita, para nao atrapalhar quem esta escrevendo. */
       body: JSON.stringify({
-        usuario: document.getElementById('usuario').value,
-        senha: document.getElementById('senha').value
+        usuario: document.getElementById('usuario').value.trim(),
+        senha: document.getElementById('senha').value.trim()
       })
     })
       .then(function (r) { return r.json().then(function (j) { return { ok: r.ok, j: j }; }); })
@@ -93,6 +119,27 @@
       });
   });
 })();
+</script>
+
+<script>
+  /* Revela a senha. Devolve o foco ao campo e mantem o cursor no fim, senao
+     quem clica no olho no meio da digitacao perde a posicao. */
+  (function () {
+    var b = document.getElementById('olho');
+    var c = document.getElementById('senha');
+    var corte = document.getElementById('olho-corte');
+    if (!b || !c) return;
+    b.addEventListener('click', function () {
+      var mostrando = c.type === 'text';
+      c.type = mostrando ? 'password' : 'text';
+      b.setAttribute('aria-pressed', String(!mostrando));
+      b.setAttribute('aria-label', mostrando ? 'Mostrar senha' : 'Ocultar senha');
+      if (corte) corte.style.display = mostrando ? 'none' : '';
+      var fim = c.value.length;
+      c.focus();
+      try { c.setSelectionRange(fim, fim); } catch (e) {}
+    });
+  })();
 </script>
 </body>
 </html>
