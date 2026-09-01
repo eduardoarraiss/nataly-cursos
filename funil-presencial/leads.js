@@ -198,11 +198,14 @@ async function historico(id) {
 }
 
 async function apaga(id) {
-  // Ordem importa: filhos primeiro, senao a chave estrangeira barra.
-  await bd.executar('DELETE FROM avisos WHERE lead_id = $1', [id]);
-  await bd.executar('DELETE FROM leads_historico WHERE lead_id = $1', [id]);
-  const r = await bd.executar('DELETE FROM leads WHERE id = $1', [id]);
-  return (r && (r.rowCount || r.changes)) > 0;
+  /* `executar` NAO aceita parametros (so recebe SQL) — usar ela aqui deixava o
+     $1 sem valor e a rota devolvia 503. O certo e `consulta`.
+     E o rowCount de `consulta` vem do numero de linhas devolvidas, entao o
+     DELETE precisa de RETURNING para dizer se apagou de fato. */
+  await db.consulta('DELETE FROM avisos WHERE lead_id = $1', [id]);
+  await db.consulta('DELETE FROM leads_historico WHERE lead_id = $1', [id]);
+  const r = await db.consulta('DELETE FROM leads WHERE id = $1 RETURNING id', [id]);
+  return r.rows.length > 0;
 }
 
 async function avisosDo(id) {
