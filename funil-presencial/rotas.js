@@ -215,6 +215,19 @@ router.post('/crm/api/lead/:id/status', auth.exige({ api: true }),
     }
   });
 
+/* Apagar lead. Existe para limpar teste e para atender pedido de exclusao
+   (LGPD) — a politica de privacidade promete exclusao em 15 dias.
+   Apaga em cascata: avisos e historico saem junto, senao sobra dado pessoal
+   orfao no banco, que e exatamente o que a promessa diz que nao acontece. */
+router.delete('/crm/api/lead/:id', auth.exige({ api: true }), async (req, res) => {
+  semRastro(res);
+  const id = parseInt(req.params.id, 10);
+  if (!Number.isInteger(id)) return res.status(400).json({ erro: 'id-invalido' });
+  const apagado = await L.apaga(id);
+  if (!apagado) return res.status(404).json({ erro: 'nao-encontrado' });
+  res.json({ ok: true, id });
+});
+
 router.get('/crm/api/avisos', auth.exige({ api: true }), async (req, res) => {
   semRastro(res);
   res.json({ avisos: await L.avisosProblema(), driver: N.CFG().driver });

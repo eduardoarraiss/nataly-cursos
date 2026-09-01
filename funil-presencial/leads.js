@@ -197,6 +197,14 @@ async function historico(id) {
   return r.rows;
 }
 
+async function apaga(id) {
+  // Ordem importa: filhos primeiro, senao a chave estrangeira barra.
+  await bd.executar('DELETE FROM avisos WHERE lead_id = $1', [id]);
+  await bd.executar('DELETE FROM leads_historico WHERE lead_id = $1', [id]);
+  const r = await bd.executar('DELETE FROM leads WHERE id = $1', [id]);
+  return (r && (r.rowCount || r.changes)) > 0;
+}
+
 async function avisosDo(id) {
   const r = await db.consulta(
     'SELECT * FROM avisos WHERE lead_id = $1 ORDER BY criado_em DESC', [id]);
@@ -280,7 +288,7 @@ async function avisosProblema() {
   return r.rows;
 }
 
-module.exports = {
+module.exports = { apaga,
   OPCOES, STATUS,
   valida, atribuicao, qualifica, ipDe,
   normalizaTelefone, formataTelefone, normalizaInstagram, normalizaEmail,

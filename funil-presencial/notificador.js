@@ -46,34 +46,63 @@ const ROTULO = {
   qualificacao: { quente:'🔥 QUENTE', morno:'🟡 MORNO', frio:'🔵 FRIO' },
 };
 
+/* Origem em portugues, nao em jargao de UTM: quem le no celular as 23h
+   nao deve precisar decifrar "utm_content". Mostra o anuncio quando existe,
+   e diz o canal por extenso. */
+function descreveOrigem(l) {
+  const canal = {
+    facebook: 'Facebook Ads', fb: 'Facebook Ads', ig: 'Instagram Ads',
+    instagram: 'Instagram', google: 'Google', bio: 'link da bio',
+  }[String(l.utm_source || '').toLowerCase()] || l.utm_source;
+
+  const partes = [];
+  if (canal) partes.push(canal);
+  if (l.utm_content) partes.push('anuncio: ' + l.utm_content);
+  else if (l.utm_campaign) partes.push('campanha: ' + l.utm_campaign);
+
+  if (!partes.length) return 'Entrou direto no site (sem anuncio)';
+  return partes.join(' · ');
+}
+
 function montaMensagem(l) {
   const linha = [];
+
+  // Cabecalho: em UM olhar a Nataly sabe o que e, quao quente esta e quem e.
+  linha.push('🔔 *LEAD NOVO* · Profissao Lash');
   linha.push(ROTULO.qualificacao[l.qualificacao] + '  ·  ' + l.pontuacao + '/100');
+  linha.push('━━━━━━━━━━━━━━━');
   linha.push('');
+
   linha.push('*' + l.nome + '*');
-  linha.push('📍 ' + l.cidade + (l.estado ? '/' + l.estado : ''));
+  linha.push('📍 ' + l.cidade + (l.estado ? ', ' + l.estado : ''));
   linha.push('📱 ' + L.formataTelefone(l.telefone));
   linha.push('📷 instagram.com/' + l.instagram);
   if (l.email) linha.push('✉️ ' + l.email);
   linha.push('');
+
+  // As respostas dela, em topicos curtos.
   if (l.situacao)        linha.push('• ' + ROTULO.situacao[l.situacao]);
   if (l.faixa_idade)     linha.push('• ' + l.faixa_idade + ' anos');
   if (l.meta_renda)      linha.push('• meta: ' + ROTULO.meta_renda[l.meta_renda]);
   if (l.quando_comecar)  linha.push('• ' + ROTULO.quando_comecar[l.quando_comecar]);
   linha.push('• ' + ROTULO.disponibilidade[l.disponibilidade]);
   linha.push('• ' + ROTULO.aceita_valor[l.aceita_valor]);
-  if (l.objetivo) { linha.push(''); linha.push('_"' + l.objetivo.slice(0, 400) + '"_'); }
 
-  const origem = l.utm_content || l.utm_campaign || l.utm_source;
+  if (l.objetivo) {
+    linha.push('');
+    linha.push('💬 _"' + l.objetivo.slice(0, 400) + '"_');
+  }
+
   linha.push('');
-  linha.push('📢 ' + (origem ? 'veio de: ' + origem : 'origem não identificada (tráfego direto)'));
+  linha.push('━━━━━━━━━━━━━━━');
+  linha.push('📢 ' + descreveOrigem(l));
+  linha.push('');
 
-  // Link para a Nataly responder com um toque só. A saudação já vai escrita.
+  // Link para responder com um toque. A saudacao ja vai escrita.
   const saudacao = encodeURIComponent(
-    'Oi, ' + primeiroNome(l.nome) + '! Aqui é a Nataly. Vi que você se inscreveu ' +
-    'para o curso presencial em Cambuí 💛');
-  linha.push('');
-  linha.push('👉 Responder: https://wa.me/' + l.telefone + '?text=' + saudacao);
+    'Oi, ' + primeiroNome(l.nome) + '! Aqui e a Nataly. Vi que voce se inscreveu ' +
+    'para o curso presencial em Cambui 💛');
+  linha.push('👉 *Responder:* https://wa.me/' + l.telefone + '?text=' + saudacao);
 
   const corpo = linha.join('\n');
   return CFG().teste ? PREFIXO_TESTE + '\n\n' + corpo : corpo;
