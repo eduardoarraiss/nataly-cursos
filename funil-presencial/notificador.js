@@ -98,11 +98,13 @@ function montaMensagem(l) {
   linha.push('📢 ' + descreveOrigem(l));
   linha.push('');
 
-  // Link para responder com um toque. A saudacao ja vai escrita.
-  const saudacao = encodeURIComponent(
-    'Oi, ' + primeiroNome(l.nome) + '! Aqui e a Nataly. Vi que voce se inscreveu ' +
-    'para o curso presencial em Cambui 💛');
-  linha.push('👉 *Responder:* https://wa.me/' + l.telefone + '?text=' + saudacao);
+  /* 🔴 O link abre a conversa VAZIA, de proposito.
+     Nao escrever mensagem na voz da Nataly: quem fala com a aluna e ela, e o
+     texto e dela. Ja houve uma versao daqui que mandava a saudacao pronta
+     ("Oi, Fulana! Aqui e a Nataly...") — o Edu barrou, e com razao: assinar
+     palavras no nome de outra pessoa nao e decisao de quem escreve o codigo.
+     Se um dia houver mensagem padrao, ela vem escrita e aprovada por eles. */
+  linha.push('👉 *Responder:* https://wa.me/' + l.telefone);
 
   const corpo = linha.join('\n');
   return CFG().teste ? PREFIXO_TESTE + '\n\n' + corpo : corpo;
