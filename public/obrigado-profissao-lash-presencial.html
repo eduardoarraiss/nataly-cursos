@@ -1,0 +1,566 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<title>Compra confirmada · Profissão Lash Online + Presencial · Nataly Ribeiro</title>
+<meta name="description" content="A sua vaga na prática presencial está garantida e o curso online já está liberado no seu e-mail.">
+
+<!-- Meta Pixel 1511752107118676 + GA4 G-MZS1VCZ89D.
+     ⚠️ NUNCA disparar Purchase aqui. Quem dispara a compra com valor é a própria
+     Kiwify (Pixel + API de Conversões, com deduplicação). Duplicar aqui repete o
+     erro que inflou as compras em 4,75x. O que esta página dispara é um evento de
+     AUDIÊNCIA, sem value e sem currency. -->
+<script src="/js/pixel.js"></script>
+<script src="/js/analytics.js"></script>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Abril+Fatface&family=Cormorant+Garamond:ital,wght@1,400;1,500&family=Hanken+Grotesk:wght@400;500;600;700;800;900&family=Playfair+Display:ital,wght@1,500;1,600&display=swap" rel="stylesheet">
+
+<style>
+/* ============================================================
+   OBRIGADO — Profissão Lash (online + presencial)
+   Mesmo motor da /profissao-lash-curso e da /profissao-lash-presencial:
+   mesma paleta, mesma régua de espaço e a mesma escala de tipo.
+   CSS próprio e local, sem folha de estilo compartilhada.
+   ============================================================ */
+/* ============================================================
+   PROFISSÃO LASH — página de vendas
+   Paleta e fontes da Nataly. Construção nova: blocos empilhados,
+   pílulas, checklists, números grandes, caixa alta pesada.
+   O Playfair itálico virou momento pontual, não o motor da página.
+   ============================================================ */
+
+:root{
+  /* ---- cor ---- */
+  --creme:#F2EEE5;  --papel:#FAF7F0;  --pedra:#E2D8C8;
+  --argila:#C9A48B; --salvia:#A5B59A; --salvia-prof:#7E9072;
+  --chocolate:#6B4F3A; --tinta:#463729; --tinta-2:#7A695A;
+  --filete:#DED3C2; --pretinho:#241C15; --verde-tinta:#2C3724;
+  --carvao:#3A2E24;                 /* superficie DENTRO do bloco escuro */
+  --destaque:#CD4C28; --destaque-esc:#A93C1E;
+  --verde:#27874E;
+
+  /* ---- RÉGUA DE ESPAÇO: só estes valores, nada entre eles ---- */
+  --e1:4px; --e2:8px; --e3:12px; --e4:16px; --e5:24px;
+  --e6:32px; --e7:48px; --e8:64px; --e9:96px;
+
+  /* ---- RÉGUA DE TIPO: 7 degraus, nada fora deles ---- */
+  --t1:13px;   /* rotulo */
+  --t2:15px;   /* apoio, legenda */
+  --t3:17px;   /* corpo */
+  --t4:20px;   /* corpo destaque */
+  --t5:26px;   /* titulo pequeno */
+  --t6:34px;   /* titulo */
+  --t7:44px;   /* titulo grande */
+
+  --f:'Hanken Grotesk',system-ui,-apple-system,sans-serif;
+  --f-serif:'Playfair Display',Georgia,serif;
+  --f-apoio:'Cormorant Garamond',Georgia,serif;
+  --f-num:'Abril Fatface',Georgia,serif;
+
+  --r1:12px; --r2:20px; --r3:28px;
+  --max:660px;
+}
+@media(min-width:900px){:root{--max:1040px}}
+
+*{box-sizing:border-box}
+body{
+  margin:0; background:var(--creme); color:var(--tinta);
+  font-family:var(--f); font-size:var(--t3); line-height:1.6;
+  -webkit-font-smoothing:antialiased;
+}
+img,video{max-width:100%; display:block}
+img{height:auto}   /* sem isso o atributo height do HTML atropela o aspect-ratio */
+
+.wrap{width:100%; max-width:var(--max); margin:0 auto; padding:0 var(--e5)}
+.faixa{padding:var(--e8) 0}
+@media(min-width:900px){.faixa{padding:var(--e9) 0}}
+.faixa--curta{padding:var(--e7) 0}
+.estreito{max-width:600px; margin-left:auto; margin-right:auto}
+
+/* ---------- A PÁGINA É CENTRADA ----------
+   Titulo, rotulo, paragrafo e botao ficam no eixo do meio, no celular e no
+   desktop. As listas sao a excecao util: o BLOCO da lista fica centrado, mas
+   o item continua alinhado a esquerda, senao o marcador solta do texto. */
+body{text-align:center}
+.rot{justify-content:center}
+.cta{max-width:440px; margin-left:auto; margin-right:auto}
+.itens,.check,.inclui{text-align:center; margin-left:auto; margin-right:auto}
+@media(min-width:900px){.check--2{grid-template-columns:1fr 1fr}}
+/* ---------- DENTRO DE CARD ----------
+   Título, rótulo e CTA continuam centrados (é a âncora visual da seção).
+   Parágrafo corrido, lista e marco vão para a ESQUERDA: centralizar texto
+   longo faz cada linha começar num ponto diferente e cansa a leitura. */
+.mod__corpo,.faq__r{text-align:left}
+.bloco p,.bloco .apoio,.oferta .inclui,
+.bloco .itens,.bloco .check,.marco__l{text-align:left}
+.bloco .centro p,.bloco.centro p{text-align:center}
+.bio{text-align:center}
+
+/* o marco vira rótulo à esquerda + texto, com filete separando */
+.marco__l{display:grid; grid-template-columns:1fr; gap:var(--e2)}
+@media(min-width:700px){
+  .marco__l{grid-template-columns:150px 1fr; gap:var(--e5); align-items:start}
+  .marco__a{margin-bottom:0; padding-top:3px}
+}
+
+/* o parágrafo de um card não deve esticar até a borda em telas largas */
+.bloco p,.bloco .itens,.bloco .check{max-width:56ch}
+.bloco.centro p{max-width:none}
+
+/* ---------- TIPO: 7 degraus, sem nada no meio ---------- */
+.h1,.h2,.h3{
+  font-family:var(--f); font-weight:800; text-transform:uppercase;
+  line-height:1.08; letter-spacing:-.02em; margin:0 0 var(--e4);
+  text-wrap:balance;
+}
+.h1{font-size:var(--t6)}
+.h2{font-size:var(--t5)}
+.h3{font-size:var(--t4); letter-spacing:-.01em}
+@media(min-width:900px){ .h1{font-size:var(--t7)} .h2{font-size:var(--t6)} }
+.h1 em,.h2 em,.h3 em{font-style:normal; color:var(--chocolate)}
+.escuro .h1 em,.escuro .h2 em,.escuro .h3 em,
+.bloco .h1 em,.bloco .h2 em,.bloco .h3 em{color:var(--argila)}
+
+.serif{
+  font-family:var(--f-serif); font-style:italic; font-weight:500;
+  font-size:var(--t5); line-height:1.2; letter-spacing:-.01em;
+  margin:0 0 var(--e4); text-transform:none; text-wrap:balance;
+}
+.apoio{
+  font-family:var(--f-apoio); font-style:italic;
+  font-size:var(--t4); line-height:1.45; color:var(--tinta);
+  margin:0; text-wrap:balance;
+}
+.escuro .apoio,.bloco .apoio{color:rgba(242,238,229,.78)}
+
+.rot{
+  font-family:var(--f); font-weight:700; font-size:var(--t1);
+  letter-spacing:.16em; text-transform:uppercase; color:var(--chocolate);
+  display:flex; align-items:center; gap:var(--e2); margin:0 0 var(--e4);
+}
+.rot::before{content:""; width:6px; height:6px; border-radius:50%;
+  background:var(--salvia-prof); flex:0 0 auto}
+.rot--c{justify-content:center}
+.escuro .rot,.bloco .rot{color:var(--argila)}
+.escuro .rot::before,.bloco .rot::before{background:var(--salvia)}
+
+p{margin:0 0 var(--e4); font-size:var(--t3); line-height:1.65}
+p:last-child{margin-bottom:0}
+.lead{font-size:var(--t4); line-height:1.5}
+.p2{color:var(--tinta-2)}
+.escuro p,.bloco p{color:rgba(242,238,229,.84)}
+.escuro .p2,.bloco .p2{color:rgba(242,238,229,.64)}
+b,strong{font-weight:700}
+.centro{text-align:center}
+
+/* ---------- BLOCOS ---------- */
+.bloco{
+  background:var(--pretinho); color:var(--creme);
+  border-radius:var(--r3); padding:var(--e6);
+  /* 'auto' nas laterais: sem isso esta regra zerava o margin-left/right:auto
+     do .estreito (ela vem depois na cascata) e a caixa encostava a esquerda */
+  margin:0 auto var(--e3);
+}
+@media(min-width:900px){.bloco{padding:var(--e7)}}
+.bloco:last-child{margin-bottom:0}
+.par>.bloco{margin-left:0; margin-right:0}
+.bloco--claro{background:var(--papel); color:var(--tinta); border:1px solid var(--filete)}
+.bloco--claro p,.bloco--claro .p2,.bloco--claro .apoio{color:var(--tinta-2)}
+.bloco--claro .rot{color:var(--chocolate)}
+.bloco--claro .rot::before{background:var(--salvia-prof)}
+.bloco--claro .h1 em,.bloco--claro .h2 em,.bloco--claro .h3 em{color:var(--chocolate)}
+.bloco--salvia{background:var(--salvia); color:var(--verde-tinta)}
+.bloco--salvia p,.bloco--salvia .apoio{color:#33402A}
+.bloco--salvia .rot{color:var(--verde-tinta)}
+.bloco--salvia .rot::before{background:var(--verde-tinta)}
+.bloco--salvia .h1 em,.bloco--salvia .h2 em{color:var(--creme)}
+.escuro{background:var(--pretinho); color:var(--creme)}
+
+.par{display:grid; gap:var(--e3); grid-template-columns:1fr}
+@media(min-width:900px){
+  .par{grid-template-columns:1fr 1fr; align-items:stretch}
+  .par>.bloco{margin-bottom:0}
+}
+
+/* ---------- LISTAS ----------
+   Nada de pilula com duas linhas: pilula so para rotulo de UMA linha.
+   Item de texto vira linha com marcador, que respira e alinha. */
+.itens{list-style:none; margin:0; padding:0; display:grid; gap:var(--e1)}
+.itens li{
+  padding:var(--e3) 0; font-size:var(--t3); line-height:1.5;
+  border-bottom:1px solid rgba(242,238,229,.14);
+}
+.itens li:last-child{border-bottom:0; padding-bottom:0}
+.bloco--claro .itens li{border-color:var(--filete); color:var(--tinta-2)}
+.bloco--claro .itens li::before{background:var(--chocolate)}
+
+.check{list-style:none; margin:0; padding:0; display:grid; gap:var(--e3)}
+.check li{font-size:var(--t3); line-height:1.5}
+/* marcador INLINE: assim a linha inteira, marcador junto, centraliza */
+.check li::before{
+  content:"✓"; display:inline-flex; align-items:center; justify-content:center;
+  width:22px; height:22px; border-radius:50%; margin-right:var(--e2);
+  vertical-align:-5px;
+  background:var(--salvia); color:var(--verde-tinta);
+  font-size:12px; font-weight:800;
+}
+.check--x li::before{content:"✕"; background:var(--pedra); color:var(--tinta)}
+.bloco--claro .check li{color:var(--tinta-2)}
+@media(min-width:900px){.check--2{grid-template-columns:1fr 1fr; gap:var(--e3) var(--e6)}}
+
+/* ---------- NÚMEROS ---------- */
+.nums{display:grid; gap:var(--e3); grid-template-columns:repeat(3,1fr)}
+.num{
+  background:var(--carvao); border-radius:var(--r2);
+  padding:var(--e5) var(--e3); text-align:center;
+}
+/* no card claro, o número ganha filete em vez de fundo quase igual ao card */
+.bloco--claro .num{
+  background:transparent; border:1px solid var(--filete); border-radius:var(--r2);
+}
+@media(max-width:559px){
+  .num{padding:var(--e4) var(--e2)}
+  .num span{font-size:13px; line-height:1.35}
+}
+.num b{
+  display:block; font-family:var(--f-num); font-weight:400;
+  font-size:var(--t6); line-height:1; color:var(--argila); margin-bottom:var(--e1);
+}
+@media(min-width:700px){.num b{font-size:var(--t7)}}
+.bloco--claro .num b{color:var(--chocolate)}
+.num span{font-size:var(--t2); line-height:1.45; color:rgba(242,238,229,.7); display:block}
+.bloco--claro .num span{color:var(--tinta-2)}
+
+/* ---------- CTA ---------- */
+.cta{
+  display:flex; align-items:center; justify-content:center;
+  width:100%; text-align:center; text-decoration:none; cursor:pointer;
+  font-family:var(--f); font-weight:800; font-size:var(--t3);
+  text-transform:uppercase; letter-spacing:.04em;
+  padding:var(--e5) var(--e6); border-radius:100px; border:0;
+  background:var(--chocolate); color:var(--creme);
+  transition:transform .18s ease;
+}
+.cta:active{transform:scale(.985)}
+.escuro .cta,.bloco .cta{background:var(--creme); color:var(--tinta)}
+.bloco--salvia .cta{background:var(--chocolate); color:var(--creme)}
+.cta-nota{font-size:var(--t2); color:var(--tinta-2); text-align:center;
+  margin:var(--e3) 0 0; line-height:1.5}
+.escuro .cta-nota,.bloco .cta-nota{color:rgba(242,238,229,.62)}
+/* ============================================================
+   IMAGENS
+   ============================================================ */
+.galeria{display:grid; gap:var(--e2); grid-template-columns:repeat(2,1fr)}
+@media(min-width:640px){.galeria{grid-template-columns:repeat(4,1fr)}}
+.galeria img{width:100%; aspect-ratio:3/4; object-fit:cover;
+  border-radius:var(--r2); background:var(--pedra)}
+.retrato{
+  width:100%; aspect-ratio:4/5; object-fit:cover; object-position:center 20%;
+  border-radius:var(--r3); background:var(--pedra); margin-bottom:var(--e5);
+}
+@media(min-width:900px){.retrato{max-width:400px; aspect-ratio:3/4; margin:0 auto var(--e5)}}
+.depos{display:grid; gap:var(--e2); grid-template-columns:repeat(2,1fr)}
+@media(max-width:639px){.depos>*:nth-child(3){grid-column:1/-1; max-width:50%; margin:0 auto}}
+@media(min-width:640px){.depos{grid-template-columns:repeat(3,1fr)}}
+.depo{
+  position:relative; border:0; padding:0; cursor:pointer; width:100%;
+  border-radius:var(--r2); overflow:hidden; background:var(--pretinho); aspect-ratio:9/16;
+}
+.depo video{position:absolute; inset:0; width:100%; height:100%; object-fit:cover}
+.depo__play{
+  position:absolute; left:50%; top:50%; transform:translate(-50%,-50%);
+  width:48px; height:48px; border-radius:50%; background:rgba(242,238,229,.92);
+  pointer-events:none; display:flex; align-items:center; justify-content:center;
+  transition:opacity .2s;
+}
+.depo__play::after{content:""; border-style:solid; border-width:8px 0 8px 13px;
+  border-color:transparent transparent transparent var(--tinta); margin-left:3px}
+.depo.on .depo__play{opacity:0}
+
+/* ============================================================
+   GRADE
+   ============================================================ */
+.mod{border-bottom:1px solid rgba(242,238,229,.14)}
+.mod:first-child{border-top:1px solid rgba(242,238,229,.16)}
+/* Dentro dos cards o texto é ALINHADO À ESQUERDA: lista centralizada faz
+   cada linha começar num lugar diferente e fica impossível de varrer. */
+.mod__cab{
+  width:100%; background:none; border:0; cursor:pointer; color:inherit;
+  display:grid; grid-template-columns:auto 1fr auto auto; align-items:start;
+  gap:var(--e4); text-align:left; padding:var(--e5) 0; font-family:var(--f);
+}
+.mod__n{
+  font-weight:800; font-size:var(--t1); letter-spacing:.08em;
+  color:var(--argila); padding-top:4px;   /* alinha com a 1ª linha do título */
+  font-variant-numeric:tabular-nums;
+}
+.mod__t{
+  font-weight:700; font-size:var(--t3); line-height:1.3;
+  text-transform:uppercase; letter-spacing:-.005em;
+}
+.mod__q{
+  font-size:var(--t1); color:rgba(242,238,229,.5); white-space:nowrap;
+  padding-top:5px; font-variant-numeric:tabular-nums;
+}
+.mod__s{position:relative; width:16px; height:16px; margin-top:5px}
+.mod__s::before,.mod__s::after{content:""; position:absolute; background:var(--argila);
+  left:50%; top:50%; transform:translate(-50%,-50%)}
+.mod__s::before{width:12px; height:2px}
+.mod__s::after{width:2px; height:12px; transition:opacity .25s}
+.mod__cab[aria-expanded=true] .mod__s::after{opacity:0}
+.mod__corpo{display:none; padding:0 0 var(--e5) calc(var(--e6) + var(--e2))}
+.mod__cab[aria-expanded=true]+.mod__corpo{display:block}
+.mod__corpo ol{margin:0; padding:0; list-style:none}
+.mod__corpo li{
+  position:relative; font-size:var(--t2); line-height:1.55;
+  color:rgba(242,238,229,.74); padding:var(--e2) 0 var(--e2) var(--e5);
+}
+.mod__corpo li::before{
+  content:""; position:absolute; left:0; top:calc(var(--e2) + 11px);
+  width:12px; height:1px; background:var(--salvia); opacity:.7;
+}
+/* ============================================================
+   OFERTA
+   ============================================================ */
+.oferta{background:var(--pretinho); color:var(--creme); margin:0 auto;
+  border-radius:var(--r3); padding:var(--e6); text-align:center}
+@media(min-width:900px){.oferta{padding:var(--e7)}}
+.de{font-size:var(--t3); color:rgba(242,238,229,.62); margin-bottom:var(--e1)}
+.de s{text-decoration:line-through}
+.por{font-family:var(--f-num); font-size:72px; line-height:1;
+  color:var(--creme); margin-bottom:var(--e2)}
+@media(min-width:900px){.por{font-size:96px}}
+.parcela{font-weight:800; font-size:var(--t4); margin-bottom:var(--e1)}
+.avista{font-size:var(--t2); color:rgba(242,238,229,.64); margin-bottom:var(--e5)}
+.inclui{list-style:none; margin:var(--e5) 0 0; padding:var(--e5) 0 0; text-align:center;
+  border-top:1px solid rgba(242,238,229,.2); display:grid; gap:var(--e3)}
+@media(min-width:900px){.inclui{grid-template-columns:1fr 1fr; gap:var(--e3) var(--e6)}}
+.inclui li{font-size:var(--t2); line-height:1.5; color:rgba(242,238,229,.86)}
+.inclui li::before{content:"✓ "; color:var(--salvia); font-weight:800}
+
+.selo{
+  width:150px; height:150px; border-radius:50%; margin:0 auto var(--e5);
+  background:var(--verde); color:#fff; position:relative;
+  display:flex; flex-direction:column; align-items:center; justify-content:center;
+}
+.selo__escudo{
+  position:absolute; top:-14px; width:44px; height:44px; border-radius:50%;
+  background:#fff; color:var(--verde);
+  display:flex; align-items:center; justify-content:center;
+}
+.selo__escudo svg{width:26px; height:26px}
+.selo b{font-family:var(--f-num); font-size:52px; line-height:1; margin-top:var(--e3)}
+.selo span{font-size:11px; font-weight:800; letter-spacing:.16em;
+  text-transform:uppercase; margin-top:var(--e1)}
+
+/* ============================================================
+   FAQ
+   ============================================================ */
+.faq{border-bottom:1px solid var(--filete)}
+.faq:first-of-type{border-top:1px solid var(--filete)}
+.faq__c{
+  width:100%; background:none; border:0; cursor:pointer; color:var(--tinta);
+  display:grid; grid-template-columns:1fr auto; align-items:start; gap:var(--e4);
+  text-align:left; padding:var(--e5) 0; font-family:var(--f); font-weight:700;
+  font-size:var(--t3); line-height:1.4;
+}
+.faq__s{position:relative; width:16px; height:16px; margin-top:5px}
+.faq__s::before,.faq__s::after{content:""; position:absolute; background:var(--chocolate);
+  left:50%; top:50%; transform:translate(-50%,-50%)}
+.faq__s::before{width:12px; height:2px}
+.faq__s::after{width:2px; height:12px; transition:opacity .25s}
+.faq__c[aria-expanded=true] .faq__s::after{opacity:0}
+.faq__r{display:none; padding:0 var(--e6) var(--e5) 0; text-align:left}
+.faq__c[aria-expanded=true]+.faq__r{display:block}
+.faq__r p{font-size:var(--t3); line-height:1.65; color:var(--tinta-2)}
+
+.bio{display:grid; gap:var(--e5); grid-template-columns:1fr; align-items:center}
+@media(min-width:900px){
+  /* a coluna de texto precisa de largura de leitura, senão o título quebra
+     em 7 linhas e o parágrafo vira um tubo de 12 caracteres */
+  .bio{grid-template-columns:300px minmax(420px,1fr); gap:var(--e7); align-items:center}
+  .bio>div{text-align:left}
+  .bio .rot{justify-content:flex-start}
+  .bio .h2{font-size:var(--t5)}   /* menor aqui: divide a linha com a foto */
+}
+.bio img{
+  /* mesma foto e mesmo enquadramento da pagina do Metodo LED:
+     proporcao nativa 1000x1500, sem recorte nenhum */
+  width:100%; max-width:280px; height:auto; margin:0 auto;
+  border-radius:var(--r3); border:1px solid var(--filete);
+  background:var(--pedra);
+}
+@media(min-width:900px){ .bio img{max-width:300px; margin:0} }
+.marco{display:grid; gap:var(--e3); margin:var(--e5) 0 0}
+.marco__l{padding:var(--e5) 0; border-top:1px solid var(--filete)}
+.marco__l:last-child{border-bottom:1px solid rgba(242,238,229,.16)}
+.marco__a{
+  font-weight:800; font-size:var(--t1); color:var(--chocolate);
+  letter-spacing:.06em; text-transform:uppercase; margin-bottom:var(--e2);
+  line-height:1.35;
+}
+.marco__t{font-size:var(--t3); line-height:1.65; color:var(--tinta-2); max-width:56ch}
+.bloco--claro .marco__l{border-color:var(--filete)}
+.bloco--claro .marco__a{color:var(--chocolate)}
+.bloco--claro .marco__t{color:var(--tinta-2)}
+
+.rodape{padding:var(--e7) 0; text-align:center; font-size:var(--t2); color:var(--tinta-2)}
+.rodape a{color:var(--tinta-2)}
+.rodape p{margin-bottom:var(--e2)}
+
+/* ============================================================
+   OBRIGADO — passos e selo de confirmação
+   ============================================================ */
+.ty{min-height:100svh; display:flex; align-items:center}
+.passos{display:grid; gap:var(--e3); margin:0; padding:0; list-style:none; text-align:left}
+.passo{
+  display:grid; grid-template-columns:auto 1fr; gap:var(--e4); align-items:start;
+  background:var(--papel); border:1px solid var(--filete);
+  border-radius:var(--r2); padding:var(--e5); text-align:left;
+}
+.passo__n{
+  width:34px; height:34px; border-radius:50%; flex:0 0 auto;
+  border:1px solid var(--chocolate); color:var(--chocolate);
+  display:flex; align-items:center; justify-content:center;
+  font-weight:800; font-size:var(--t2); font-variant-numeric:tabular-nums;
+}
+.passo h3{
+  margin:0 0 var(--e2); font-size:var(--t4); font-weight:800;
+  text-transform:uppercase; letter-spacing:-.01em; line-height:1.2;
+}
+.passo p{margin:0; font-size:var(--t3); line-height:1.6; color:var(--tinta-2); max-width:56ch}
+
+/* o selo aqui é confirmação, não garantia: verde do respiro, sem escudo e sem número */
+.selo--ok{
+  width:96px; height:96px; background:var(--salvia); color:var(--verde-tinta);
+  margin:0 auto var(--e5);
+}
+.selo--ok svg{width:44px; height:44px}
+
+/* ícone dentro do botão — o CTA continua sendo o da paleta, sem verde do WhatsApp */
+.cta svg{width:22px; height:22px; margin-right:var(--e2); flex:0 0 auto}
+
+.sr-only{
+  position:absolute; width:1px; height:1px; padding:0; margin:-1px;
+  overflow:hidden; clip:rect(0,0,0,0); white-space:nowrap; border:0;
+}
+</style>
+</head>
+<body>
+
+<main class="ty faixa">
+  <div class="wrap">
+    <div class="estreito centro">
+
+      <div class="selo selo--ok">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"
+             stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M20 6 9 17l-5-5"></path>
+        </svg>
+      </div>
+
+      <p class="rot rot--c">Compra confirmada</p>
+      <h1 class="h1">A sua vaga na <em>prática</em> está garantida</h1>
+      <p class="lead p2">Você levou as duas partes: o curso online, que já está liberado
+      agora, e o dia de prática comigo em Cambuí, que a gente vai marcar junto.</p>
+
+      <h2 class="sr-only">Os seus próximos passos</h2>
+      <ul class="passos" style="margin-top:var(--e6)">
+        <li class="passo">
+          <span class="passo__n">1</span>
+          <div>
+            <h3>O curso online já é seu, começa hoje</h3>
+            <p>Em alguns minutos chega no seu e-mail o link para criar a sua senha e entrar
+            na área de alunas. <b>Confira também a caixa de spam e a aba Promoções</b>,
+            porque o primeiro e-mail costuma cair por lá. Não espere o dia presencial para
+            começar: quanto mais teoria você tiver na cabeça, mais o dia rende.</p>
+          </div>
+        </li>
+        <li class="passo">
+          <span class="passo__n">2</span>
+          <div>
+            <h3>A data da prática a gente marca junto</h3>
+            <p>Não existe turma com data fechada. Eu falo com você <b>pelo WhatsApp</b>
+            para escolhermos um dia que caiba na sua rotina e na minha agenda. Se você
+            trabalha durante a semana, a gente procura um dia que dê para você.</p>
+          </div>
+        </li>
+        <li class="passo">
+          <span class="passo__n">3</span>
+          <div>
+            <h3>O que você faz agora</h3>
+            <p>Entra no grupo de suporte aqui embaixo e <b>me manda uma mensagem dizendo
+            que você fechou o presencial</b>. É por ali que eu te chamo para combinar a
+            data. Depois disso, é só começar as aulas.</p>
+          </div>
+        </li>
+      </ul>
+
+      <!-- Grupo de suporte: o MESMO link do menu da área de membros
+           (area-membros/automacao-kiwify/mat-blocos.mjs). -->
+      <div class="bloco centro" style="margin-top:var(--e5)">
+        <p class="rot rot--c">Comunidade das alunas</p>
+        <h2 class="h2">Entra agora no grupo de <em>suporte</em></h2>
+        <p>É por ali que a gente combina a data da sua prática e é ali que você tira dúvida
+        das aulas enquanto o dia não chega. Entra, se apresenta e me avisa que o seu é o
+        online com presencial.</p>
+        <div style="margin-top:var(--e5)">
+          <a href="https://chat.whatsapp.com/GDIAtWgrck1HzkwCL008Tv?s=cl&amp;p=i&amp;mlu=4"
+             target="_blank" rel="noopener" class="cta">
+            <svg viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><path d="M16 3C9 3 3.4 8.6 3.4 15.6c0 2.4.7 4.7 1.9 6.7L3 29l6.9-2.2c1.9 1 4 1.6 6.1 1.6 7 0 12.6-5.6 12.6-12.6S23 3 16 3zm0 22.8c-1.9 0-3.7-.5-5.3-1.5l-.4-.2-4.1 1.3 1.3-4-.3-.4a10.2 10.2 0 0 1-1.6-5.4C5.6 9.9 10.2 5.3 16 5.3s10.4 4.6 10.4 10.3S21.8 25.8 16 25.8zm5.7-7.7c-.3-.2-1.8-.9-2.1-1s-.5-.2-.7.2-.8 1-1 1.2-.4.3-.7.1a8.4 8.4 0 0 1-4.2-3.7c-.3-.5.3-.5.8-1.6.1-.2 0-.4 0-.6s-.7-1.7-1-2.3c-.3-.6-.5-.5-.7-.5h-.6c-.2 0-.6.1-.9.4-.3.4-1.2 1.2-1.2 2.8s1.2 3.3 1.4 3.5c.2.2 2.4 3.7 5.9 5.1 2.2.9 3 1 4.1.9.7-.1 1.8-.7 2.1-1.5.3-.7.3-1.4.2-1.5-.1-.2-.3-.3-.6-.4z"></path></svg>
+            Entrar no grupo de suporte
+          </a>
+        </div>
+      </div>
+
+      <div class="bloco bloco--claro" style="margin-top:var(--e3)">
+        <p class="rot">Para o dia da prática</p>
+        <p>Você não precisa levar material nenhum. <b>Todo o material da prática está
+        incluso</b> e vai estar montado na bancada, e a apostila impressa é sua. Quando a
+        gente fechar a data, eu te passo o endereço em Cambuí e as referências da cidade
+        para você se organizar.</p>
+      </div>
+
+      <p class="cta-nota" style="margin-top:var(--e6)">O e-mail não chegou em alguns minutos?
+      Olhe o spam e a aba Promoções. Se ainda assim não aparecer, escreva para
+      <a href="mailto:natalysamribeiro@gmail.com" style="color:inherit">natalysamribeiro@gmail.com</a>
+      que a gente resolve.</p>
+
+    </div>
+  </div>
+</main>
+
+<!-- Evento de COMPRADORA (audiência e funil) — NÃO é Purchase.
+     O Purchase com value e order_id é responsabilidade da Kiwify (Pixel + CAPI). -->
+<script>
+(function () {
+  var prod = { id: "profissao-lash-presencial", name: "Profissão Lash — Online + Presencial" };
+
+  // META: evento próprio, SEM value e SEM currency (não infla conversão nenhuma)
+  if (window.fbq) {
+    fbq("trackCustom", "CompraConfirmada", {
+      content_name: prod.name, content_ids: [prod.id], content_type: "product"
+    });
+  }
+  // GA4: evento não monetário, só para funil e público
+  if (window.gtag) {
+    gtag("event", "compra_confirmada", {
+      item_id: prod.id, item_name: prod.name, destino: "obrigado-profissao-lash-presencial"
+    });
+  }
+})();
+</script>
+
+<footer class="rodape">
+  <div class="wrap">
+    <p>Nataly Ribeiro · Lash Designer</p>
+    <p><a href="/politica-de-privacidade">Política de privacidade</a></p>
+  </div>
+</footer>
+
+</body>
+</html>

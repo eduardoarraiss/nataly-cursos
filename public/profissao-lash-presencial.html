@@ -1,0 +1,1945 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Curso de extensão de cílios presencial em Cambuí, MG · Nataly Ribeiro</title>
+<meta name="description" content="Curso de extensão de cílios do zero: o curso online completo mais um dia de prática presencial comigo em Cambuí, MG. Material incluso, apostila impressa, grupo de suporte e certificado.">
+<meta name="robots" content="index,follow">
+<meta property="og:title" content="Curso de extensão de cílios presencial · Cambuí, MG">
+<meta property="og:description" content="Online completo mais um dia com a sua mão corrigida ao vivo. Material incluso e apostila impressa.">
+<meta property="og:image" content="https://natalyribeiro.com.br/img/iniciante/vsl-poster.jpg">
+<meta property="og:type" content="website">
+
+<!-- Tracking: Meta Pixel 1511752107118676 + GA4 G-MZS1VCZ89D.
+     Os dois detectam "Profissão Lash — Online + Presencial" pela rota.
+     ⚠️ A rota contém "presencial": o ramo próprio no pixel.js e no analytics.js é
+     testado ANTES do ramo da Formação Presencial LED. Sem ele o valor enviado ao
+     Meta seria de outro produto.
+     ⚠️ O VALOR NÃO APARECE NESTA PÁGINA, nem em comentário. Ele vive só na
+     /inscricao-presencial, numa etapa própria do formulário. O gate reprova
+     qualquer preço que reapareça aqui.
+     ⚠️ Purchase é disparado pela PRÓPRIA Kiwify (pixel + CAPI). Nunca disparar
+     Purchase aqui, senão a compra conta duas vezes.
+     IC_UNICO: a página tem vários CTAs; sem a trava, cada clique contaria um
+     InitiateCheckout e inflaria a métrica. -->
+<script>window.IC_UNICO = true;</script>
+<script src="/js/pixel.js"></script>
+<script src="/js/analytics.js"></script>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Abril+Fatface&family=Cormorant+Garamond:ital,wght@1,400;1,500&family=Hanken+Grotesk:wght@400;500;600;700;800;900&family=Playfair+Display:ital,wght@1,500;1,600&display=swap" rel="stylesheet">
+
+<style>
+/* ============================================================
+   PROFISSÃO LASH — ONLINE + PRESENCIAL — página de vendas
+   Mesmo motor da /profissao-lash-curso: mesma paleta, mesma régua de
+   espaço (4/8/12/16/24/32/48/64/96) e a mesma escala de tipo de 7 degraus.
+   O CSS é próprio e local, como na página irmã: nada de folha compartilhada.
+   ============================================================ */
+/* ============================================================
+   PROFISSÃO LASH — página de vendas
+   Paleta e fontes da Nataly. Construção nova: blocos empilhados,
+   pílulas, checklists, números grandes, caixa alta pesada.
+   O Playfair itálico virou momento pontual, não o motor da página.
+   ============================================================ */
+
+:root{
+  /* ---- cor ---- */
+  --creme:#F2EEE5;  --papel:#FAF7F0;  --pedra:#E2D8C8;
+  --argila:#C9A48B; --salvia:#A5B59A; --salvia-prof:#7E9072;
+  --chocolate:#6B4F3A; --tinta:#463729; --tinta-2:#7A695A;
+  --filete:#DED3C2; --pretinho:#241C15; --verde-tinta:#2C3724;
+  --carvao:#3A2E24;                 /* superficie DENTRO do bloco escuro */
+  --destaque:#CD4C28; --destaque-esc:#A93C1E;
+  --verde:#27874E;
+
+  /* ---- RÉGUA DE ESPAÇO: só estes valores, nada entre eles ---- */
+  --e1:4px; --e2:8px; --e3:12px; --e4:16px; --e5:24px;
+  --e6:32px; --e7:48px; --e8:64px; --e9:96px;
+
+  /* ---- RÉGUA DE TIPO: 7 degraus, nada fora deles ---- */
+  --t1:13px;   /* rotulo */
+  --t2:15px;   /* apoio, legenda */
+  --t3:17px;   /* corpo */
+  --t4:20px;   /* corpo destaque */
+  --t5:26px;   /* titulo pequeno */
+  --t6:34px;   /* titulo */
+  --t7:44px;   /* titulo grande */
+
+  --f:'Hanken Grotesk',system-ui,-apple-system,sans-serif;
+  --f-serif:'Playfair Display',Georgia,serif;
+  --f-apoio:'Cormorant Garamond',Georgia,serif;
+  --f-num:'Abril Fatface',Georgia,serif;
+
+  --r1:12px; --r2:20px; --r3:28px;
+  --max:660px;
+}
+@media(min-width:900px){:root{--max:1040px}}
+
+*{box-sizing:border-box}
+body{
+  margin:0; background:var(--creme); color:var(--tinta);
+  font-family:var(--f); font-size:var(--t3); line-height:1.6;
+  -webkit-font-smoothing:antialiased;
+}
+img,video{max-width:100%; display:block}
+img{height:auto}   /* sem isso o atributo height do HTML atropela o aspect-ratio */
+
+.wrap{width:100%; max-width:var(--max); margin:0 auto; padding:0 var(--e5)}
+.faixa{padding:var(--e8) 0}
+@media(min-width:900px){.faixa{padding:var(--e9) 0}}
+.faixa--curta{padding:var(--e7) 0}
+.estreito{max-width:600px; margin-left:auto; margin-right:auto}
+/* Cartao da bio: foto + texto lado a lado nao cabem em 600px.
+   300 de foto + 48 de intervalo + 420 de texto = 768, contra 536 de caixa util.
+   A grade transbordava o cartao e o texto era pintado FORA do fundo creme. */
+.largo{max-width:920px; margin-left:auto; margin-right:auto}
+
+/* ---------- A PÁGINA É CENTRADA ----------
+   Titulo, rotulo, paragrafo e botao ficam no eixo do meio, no celular e no
+   desktop. As listas sao a excecao util: o BLOCO da lista fica centrado, mas
+   o item continua alinhado a esquerda, senao o marcador solta do texto. */
+body{text-align:center}
+.rot{justify-content:center}
+.cta{max-width:440px; margin-left:auto; margin-right:auto}
+.itens,.check,.inclui{text-align:center; margin-left:auto; margin-right:auto}
+@media(min-width:900px){.check--2{grid-template-columns:1fr 1fr}}
+/* ---------- DENTRO DE CARD ----------
+   Título, rótulo e CTA continuam centrados (é a âncora visual da seção).
+   Parágrafo corrido, lista e marco vão para a ESQUERDA: centralizar texto
+   longo faz cada linha começar num ponto diferente e cansa a leitura. */
+.mod__corpo,.faq__r{text-align:left}
+.bloco p,.bloco .apoio,.oferta .inclui,
+.bloco .itens,.bloco .check,.marco__l{text-align:left}
+.bloco .centro p,.bloco.centro p{text-align:center}
+.bio{text-align:center}
+
+/* o marco vira rótulo à esquerda + texto, com filete separando */
+.marco__l{display:grid; grid-template-columns:1fr; gap:var(--e2)}
+@media(min-width:700px){
+  .marco__l{grid-template-columns:150px 1fr; gap:var(--e5); align-items:start}
+  .marco__a{margin-bottom:0; padding-top:3px}
+}
+
+/* o parágrafo de um card não deve esticar até a borda em telas largas */
+.bloco p,.bloco .itens,.bloco .check{max-width:56ch}
+.bloco.centro p{max-width:none}
+
+/* ---------- TIPO: 7 degraus, sem nada no meio ---------- */
+.h1,.h2,.h3{
+  font-family:var(--f); font-weight:800; text-transform:uppercase;
+  line-height:1.08; letter-spacing:-.02em; margin:0 0 var(--e4);
+  text-wrap:balance;
+}
+.h1{font-size:var(--t6)}
+.h2{font-size:var(--t5)}
+.h3{font-size:var(--t4); letter-spacing:-.01em}
+@media(min-width:900px){ .h1{font-size:var(--t7)} .h2{font-size:var(--t6)} }
+.h1 em,.h2 em,.h3 em{font-style:normal; color:var(--chocolate)}
+.escuro .h1 em,.escuro .h2 em,.escuro .h3 em,
+.bloco .h1 em,.bloco .h2 em,.bloco .h3 em{color:var(--argila)}
+
+.serif{
+  font-family:var(--f-serif); font-style:italic; font-weight:500;
+  font-size:var(--t5); line-height:1.2; letter-spacing:-.01em;
+  margin:0 0 var(--e4); text-transform:none; text-wrap:balance;
+}
+.apoio{
+  font-family:var(--f-apoio); font-style:italic;
+  font-size:var(--t4); line-height:1.45; color:var(--tinta);
+  margin:0; text-wrap:balance;
+}
+.escuro .apoio,.bloco .apoio{color:rgba(242,238,229,.78)}
+
+.rot{
+  font-family:var(--f); font-weight:700; font-size:var(--t1);
+  letter-spacing:.16em; text-transform:uppercase; color:var(--chocolate);
+  display:flex; align-items:center; gap:var(--e2); margin:0 0 var(--e4);
+}
+.rot::before{content:""; width:6px; height:6px; border-radius:50%;
+  background:var(--salvia-prof); flex:0 0 auto}
+.rot--c{justify-content:center}
+.escuro .rot,.bloco .rot{color:var(--argila)}
+.escuro .rot::before,.bloco .rot::before{background:var(--salvia)}
+
+p{margin:0 0 var(--e4); font-size:var(--t3); line-height:1.65}
+p:last-child{margin-bottom:0}
+.lead{font-size:var(--t4); line-height:1.5}
+.p2{color:var(--tinta-2)}
+.escuro p,.bloco p{color:rgba(242,238,229,.84)}
+.escuro .p2,.bloco .p2{color:rgba(242,238,229,.64)}
+b,strong{font-weight:700}
+.centro{text-align:center}
+
+/* ---------- BLOCOS ---------- */
+.bloco{
+  background:var(--pretinho); color:var(--creme);
+  border-radius:var(--r3); padding:var(--e6);
+  /* 'auto' nas laterais: sem isso esta regra zerava o margin-left/right:auto
+     do .estreito (ela vem depois na cascata) e a caixa encostava a esquerda */
+  margin:0 auto var(--e3);
+}
+@media(min-width:900px){.bloco{padding:var(--e7)}}
+.bloco:last-child{margin-bottom:0}
+.par>.bloco{margin-left:0; margin-right:0}
+.bloco--claro{background:var(--papel); color:var(--tinta); border:1px solid var(--filete)}
+.bloco--claro p,.bloco--claro .p2,.bloco--claro .apoio{color:var(--tinta-2)}
+.bloco--claro .rot{color:var(--chocolate)}
+.bloco--claro .rot::before{background:var(--salvia-prof)}
+.bloco--claro .h1 em,.bloco--claro .h2 em,.bloco--claro .h3 em{color:var(--chocolate)}
+.bloco--salvia{background:var(--salvia); color:var(--verde-tinta)}
+.bloco--salvia p,.bloco--salvia .apoio{color:#33402A}
+.bloco--salvia .rot{color:var(--verde-tinta)}
+.bloco--salvia .rot::before{background:var(--verde-tinta)}
+.bloco--salvia .h1 em,.bloco--salvia .h2 em{color:var(--creme)}
+.escuro{background:var(--pretinho); color:var(--creme)}
+
+.par{display:grid; gap:var(--e3); grid-template-columns:1fr}
+@media(min-width:900px){
+  .par{grid-template-columns:1fr 1fr; align-items:stretch}
+  .par>.bloco{margin-bottom:0}
+}
+
+/* ---------- LISTAS ----------
+   Nada de pilula com duas linhas: pilula so para rotulo de UMA linha.
+   Item de texto vira linha com marcador, que respira e alinha. */
+.itens{list-style:none; margin:0; padding:0; display:grid; gap:var(--e1)}
+.itens li{
+  padding:var(--e3) 0; font-size:var(--t3); line-height:1.5;
+  border-bottom:1px solid rgba(242,238,229,.14);
+}
+.itens li:last-child{border-bottom:0; padding-bottom:0}
+.bloco--claro .itens li{border-color:var(--filete); color:var(--tinta-2)}
+.bloco--claro .itens li::before{background:var(--chocolate)}
+
+.check{list-style:none; margin:0; padding:0; display:grid; gap:var(--e3)}
+.check li{font-size:var(--t3); line-height:1.5}
+/* marcador INLINE: assim a linha inteira, marcador junto, centraliza */
+.check li::before{
+  content:"✓"; display:inline-flex; align-items:center; justify-content:center;
+  width:22px; height:22px; border-radius:50%; margin-right:var(--e2);
+  vertical-align:-5px;
+  background:var(--salvia); color:var(--verde-tinta);
+  font-size:12px; font-weight:800;
+}
+.check--x li::before{content:"✕"; background:var(--pedra); color:var(--tinta)}
+.bloco--claro .check li{color:var(--tinta-2)}
+@media(min-width:900px){.check--2{grid-template-columns:1fr 1fr; gap:var(--e3) var(--e6)}}
+
+/* ---------- NÚMEROS ---------- */
+.nums{display:grid; gap:var(--e3); grid-template-columns:repeat(3,1fr)}
+.num{
+  background:var(--carvao); border-radius:var(--r2);
+  padding:var(--e5) var(--e3); text-align:center;
+}
+/* no card claro, o número ganha filete em vez de fundo quase igual ao card */
+.bloco--claro .num{
+  background:transparent; border:1px solid var(--filete); border-radius:var(--r2);
+}
+@media(max-width:559px){
+  .num{padding:var(--e4) var(--e2)}
+  .num span{font-size:13px; line-height:1.35}
+}
+.num b{
+  display:block; font-family:var(--f-num); font-weight:400;
+  font-size:var(--t6); line-height:1; color:var(--argila); margin-bottom:var(--e1);
+}
+@media(min-width:700px){.num b{font-size:var(--t7)}}
+.bloco--claro .num b{color:var(--chocolate)}
+.num span{font-size:var(--t2); line-height:1.45; color:rgba(242,238,229,.7); display:block}
+.bloco--claro .num span{color:var(--tinta-2)}
+
+/* ---------- CTA ---------- */
+.cta{
+  display:flex; align-items:center; justify-content:center;
+  width:100%; text-align:center; text-decoration:none; cursor:pointer;
+  font-family:var(--f); font-weight:800; font-size:var(--t3);
+  text-transform:uppercase; letter-spacing:.04em;
+  padding:var(--e5) var(--e6); border-radius:100px; border:0;
+  background:var(--chocolate); color:var(--creme);
+  transition:transform .18s ease;
+}
+.cta:active{transform:scale(.985)}
+.escuro .cta,.bloco .cta{background:var(--creme); color:var(--tinta)}
+.bloco--salvia .cta{background:var(--chocolate); color:var(--creme)}
+.cta-nota{font-size:var(--t2); color:var(--tinta-2); text-align:center;
+  margin:var(--e3) 0 0; line-height:1.5}
+.escuro .cta-nota,.bloco .cta-nota{color:rgba(242,238,229,.62)}
+/* ---------- FOTO DO HERO ----------
+   A foto entra DEPOIS da headline e do parágrafo, nunca antes: assim o que
+   a pessoa lê primeiro continua sendo o que a página é, e a foto não empurra
+   a headline para fora da dobra no celular.
+   Como ela não fica atrás de texto nenhum, não precisa de véu escuro nem de
+   text-shadow: o contraste do hero continua vindo do fundo pretinho chapado. */
+.hero-foto{margin:var(--e6) 0 0}
+.hero-foto img{
+  width:100%; height:auto;
+  border-radius:var(--r3); background:var(--pretinho);
+}
+.hero-foto figcaption{
+  margin:var(--e3) 0 0; font-size:var(--t2); line-height:1.5;
+  color:rgba(242,238,229,.72);
+}
+
+/* ============================================================
+   IMAGENS
+   ============================================================ */
+.galeria{display:grid; gap:var(--e2); grid-template-columns:repeat(2,1fr)}
+@media(min-width:640px){.galeria{grid-template-columns:repeat(4,1fr)}}
+.galeria img{width:100%; aspect-ratio:3/4; object-fit:cover;
+  border-radius:var(--r2); background:var(--pedra)}
+.retrato{
+  width:100%; aspect-ratio:4/5; object-fit:cover; object-position:center 20%;
+  border-radius:var(--r3); background:var(--pedra); margin-bottom:var(--e5);
+}
+@media(min-width:900px){.retrato{max-width:400px; aspect-ratio:3/4; margin:0 auto var(--e5)}}
+.depos{display:grid; gap:var(--e2); grid-template-columns:repeat(2,1fr)}
+@media(max-width:639px){.depos>*:nth-child(3){grid-column:1/-1; max-width:50%; margin:0 auto}}
+@media(min-width:640px){.depos{grid-template-columns:repeat(3,1fr)}}
+.depo{
+  position:relative; border:0; padding:0; cursor:pointer; width:100%;
+  border-radius:var(--r2); overflow:hidden; background:var(--pretinho); aspect-ratio:9/16;
+}
+.depo video{position:absolute; inset:0; width:100%; height:100%; object-fit:cover}
+.depo__play{
+  position:absolute; left:50%; top:50%; transform:translate(-50%,-50%);
+  width:48px; height:48px; border-radius:50%; background:rgba(242,238,229,.92);
+  pointer-events:none; display:flex; align-items:center; justify-content:center;
+  transition:opacity .2s;
+}
+.depo__play::after{content:""; border-style:solid; border-width:8px 0 8px 13px;
+  border-color:transparent transparent transparent var(--tinta); margin-left:3px}
+.depo.on .depo__play{opacity:0}
+
+/* ============================================================
+   GRADE
+   ============================================================ */
+.mod{border-bottom:1px solid rgba(242,238,229,.14)}
+.mod:first-child{border-top:1px solid rgba(242,238,229,.16)}
+/* Dentro dos cards o texto é ALINHADO À ESQUERDA: lista centralizada faz
+   cada linha começar num lugar diferente e fica impossível de varrer. */
+.mod__cab{
+  width:100%; background:none; border:0; cursor:pointer; color:inherit;
+  display:grid; grid-template-columns:auto 1fr auto auto; align-items:start;
+  gap:var(--e4); text-align:left; padding:var(--e5) 0; font-family:var(--f);
+}
+.mod__n{
+  font-weight:800; font-size:var(--t1); letter-spacing:.08em;
+  color:var(--argila); padding-top:4px;   /* alinha com a 1ª linha do título */
+  font-variant-numeric:tabular-nums;
+}
+.mod__t{
+  font-weight:700; font-size:var(--t3); line-height:1.3;
+  text-transform:uppercase; letter-spacing:-.005em;
+}
+.mod__q{
+  font-size:var(--t1); color:rgba(242,238,229,.5); white-space:nowrap;
+  padding-top:5px; font-variant-numeric:tabular-nums;
+}
+.mod__s{position:relative; width:16px; height:16px; margin-top:5px}
+.mod__s::before,.mod__s::after{content:""; position:absolute; background:var(--argila);
+  left:50%; top:50%; transform:translate(-50%,-50%)}
+.mod__s::before{width:12px; height:2px}
+.mod__s::after{width:2px; height:12px; transition:opacity .25s}
+.mod__cab[aria-expanded=true] .mod__s::after{opacity:0}
+.mod__corpo{display:none; padding:0 0 var(--e5) calc(var(--e6) + var(--e2))}
+.mod__cab[aria-expanded=true]+.mod__corpo{display:block}
+.mod__corpo ol{margin:0; padding:0; list-style:none}
+.mod__corpo li{
+  position:relative; font-size:var(--t2); line-height:1.55;
+  color:rgba(242,238,229,.74); padding:var(--e2) 0 var(--e2) var(--e5);
+}
+.mod__corpo li::before{
+  content:""; position:absolute; left:0; top:calc(var(--e2) + 11px);
+  width:12px; height:1px; background:var(--salvia); opacity:.7;
+}
+/* ============================================================
+   OFERTA
+   ============================================================ */
+.oferta{background:var(--pretinho); color:var(--creme); margin:0 auto;
+  border-radius:var(--r3); padding:var(--e6); text-align:center}
+@media(min-width:900px){.oferta{padding:var(--e7)}}
+.de{font-size:var(--t3); color:rgba(242,238,229,.62); margin-bottom:var(--e1)}
+.de s{text-decoration:line-through}
+.por{font-family:var(--f-num); font-size:72px; line-height:1;
+  color:var(--creme); margin-bottom:var(--e2)}
+@media(min-width:900px){.por{font-size:96px}}
+/* Ocupa o lugar que era do preço no bloco escuro. O número saiu da página:
+   agora o que abre o bloco é o que ela leva, não quanto custa. */
+.leva{
+  font-family:var(--f-serif); font-style:italic; font-size:var(--t6);
+  line-height:1.1; color:var(--creme); margin-bottom:var(--e4);
+}
+@media(min-width:900px){.leva{font-size:var(--t7)}}
+.parcela{font-weight:800; font-size:var(--t4); margin-bottom:var(--e1)}
+.avista{font-size:var(--t2); color:rgba(242,238,229,.64); margin-bottom:var(--e5)}
+.inclui{list-style:none; margin:var(--e5) 0 0; padding:var(--e5) 0 0; text-align:center;
+  border-top:1px solid rgba(242,238,229,.2); display:grid; gap:var(--e3)}
+@media(min-width:900px){.inclui{grid-template-columns:1fr 1fr; gap:var(--e3) var(--e6)}}
+.inclui li{font-size:var(--t2); line-height:1.5; color:rgba(242,238,229,.86)}
+.inclui li::before{content:"✓ "; color:var(--salvia); font-weight:800}
+
+.selo{
+  width:150px; height:150px; border-radius:50%; margin:0 auto var(--e5);
+  background:var(--verde); color:#fff; position:relative;
+  display:flex; flex-direction:column; align-items:center; justify-content:center;
+}
+.selo__escudo{
+  position:absolute; top:-14px; width:44px; height:44px; border-radius:50%;
+  background:#fff; color:var(--verde);
+  display:flex; align-items:center; justify-content:center;
+}
+.selo__escudo svg{width:26px; height:26px}
+.selo b{font-family:var(--f-num); font-size:52px; line-height:1; margin-top:var(--e3)}
+.selo span{font-size:11px; font-weight:800; letter-spacing:.16em;
+  text-transform:uppercase; margin-top:var(--e1)}
+
+/* ============================================================
+   FAQ
+   ============================================================ */
+.faq{border-bottom:1px solid var(--filete)}
+.faq:first-of-type{border-top:1px solid var(--filete)}
+.faq__c{
+  width:100%; background:none; border:0; cursor:pointer; color:var(--tinta);
+  display:grid; grid-template-columns:1fr auto; align-items:start; gap:var(--e4);
+  text-align:left; padding:var(--e5) 0; font-family:var(--f); font-weight:700;
+  font-size:var(--t3); line-height:1.4;
+}
+.faq__s{position:relative; width:16px; height:16px; margin-top:5px}
+.faq__s::before,.faq__s::after{content:""; position:absolute; background:var(--chocolate);
+  left:50%; top:50%; transform:translate(-50%,-50%)}
+.faq__s::before{width:12px; height:2px}
+.faq__s::after{width:2px; height:12px; transition:opacity .25s}
+.faq__c[aria-expanded=true] .faq__s::after{opacity:0}
+.faq__r{display:none; padding:0 var(--e6) var(--e5) 0; text-align:left}
+.faq__c[aria-expanded=true]+.faq__r{display:block}
+.faq__r p{font-size:var(--t3); line-height:1.65; color:var(--tinta-2)}
+
+.bio{display:grid; gap:var(--e5); grid-template-columns:1fr; align-items:center}
+@media(min-width:900px){
+  /* a coluna de texto precisa de largura de leitura, senão o título quebra
+     em 7 linhas e o parágrafo vira um tubo de 12 caracteres */
+  .bio{grid-template-columns:300px minmax(0,1fr); gap:var(--e7); align-items:center}
+  .bio>div{text-align:left}
+  .bio .rot{justify-content:flex-start}
+  .bio .h2{font-size:var(--t5)}   /* menor aqui: divide a linha com a foto */
+}
+.bio img{
+  /* mesma foto e mesmo enquadramento da pagina do Metodo LED:
+     proporcao nativa 1000x1500, sem recorte nenhum */
+  width:100%; max-width:280px; height:auto; margin:0 auto;
+  border-radius:var(--r3); border:1px solid var(--filete);
+  background:var(--pedra);
+}
+@media(min-width:900px){ .bio img{max-width:300px; margin:0} }
+.marco{display:grid; gap:var(--e3); margin:var(--e5) 0 0}
+.marco__l{padding:var(--e5) 0; border-top:1px solid var(--filete)}
+.marco__l:last-child{border-bottom:1px solid rgba(242,238,229,.16)}
+.marco__a{
+  font-weight:800; font-size:var(--t1); color:var(--chocolate);
+  letter-spacing:.06em; text-transform:uppercase; margin-bottom:var(--e2);
+  line-height:1.35;
+}
+.marco__t{font-size:var(--t3); line-height:1.65; color:var(--tinta-2); max-width:56ch}
+.bloco--claro .marco__l{border-color:var(--filete)}
+.bloco--claro .marco__a{color:var(--chocolate)}
+.bloco--claro .marco__t{color:var(--tinta-2)}
+
+.rodape{padding:var(--e7) 0; text-align:center; font-size:var(--t2); color:var(--tinta-2)}
+.rodape a{color:var(--tinta-2)}
+.rodape p{margin-bottom:var(--e2)}
+/* ============================================================
+   SIMULADOR
+   ============================================================ */
+.sim label{display:block; font-weight:700; font-size:var(--t1); letter-spacing:.16em;
+  text-transform:uppercase; color:var(--argila); margin-bottom:var(--e3)}
+.sim-campo{margin-bottom:var(--e5)}
+.sim input[type=range]{width:100%; -webkit-appearance:none; appearance:none;
+  height:3px; background:rgba(242,238,229,.3); border-radius:3px; outline:none}
+.sim input[type=range]::-webkit-slider-thumb{-webkit-appearance:none; appearance:none;
+  width:28px; height:28px; border-radius:50%; background:var(--creme); cursor:pointer}
+.sim input[type=range]::-moz-range-thumb{width:28px; height:28px; border-radius:50%;
+  background:var(--creme); cursor:pointer; border:0}
+.sim-v{font-weight:700; font-size:var(--t3); margin-top:var(--e3); color:var(--creme)}
+.sim-op{display:flex; gap:var(--e2)}
+.sim-op button{
+  flex:1; font-family:var(--f); font-weight:700; font-size:var(--t3);
+  padding:var(--e3) var(--e1); border-radius:100px; cursor:pointer;
+  border:1px solid rgba(242,238,229,.3); background:transparent;
+  color:rgba(242,238,229,.72); transition:all .18s;
+}
+.sim-op button[aria-pressed=true]{background:var(--creme); border-color:var(--creme); color:var(--tinta)}
+.sim-saida{margin-top:var(--e5); padding-top:var(--e5);
+  border-top:1px solid rgba(242,238,229,.2); text-align:center}
+.sim-saida .r{font-size:var(--t1); letter-spacing:.16em; text-transform:uppercase;
+  color:rgba(242,238,229,.62); margin-bottom:var(--e2); font-weight:700}
+.sim-saida .t{font-family:var(--f-num); font-size:var(--t7); line-height:1; color:var(--argila)}
+@media(min-width:900px){.sim-saida .t{font-size:64px}}
+.sim-saida .d{font-size:var(--t2); color:rgba(242,238,229,.68);
+  margin-top:var(--e3); line-height:1.5}
+.sim-alerta{
+  margin-top:var(--e3); font-size:var(--t2); line-height:1.5;
+  color:var(--argila); display:none;
+}
+.sim-alerta.ver{display:block}
+.sim-av{font-size:var(--t2); line-height:1.55; color:rgba(242,238,229,.52);
+  margin:var(--e5) 0 0; text-align:center}
+
+
+/* ============================================================
+   TARJA DE AVISO — a prática é PRESENCIAL, e isso não pode depender de rolagem
+   ============================================================ */
+/* sticky, não fixed: ela ocupa o espaço dela no fluxo, então não cobre conteúdo
+   nem exige padding de compensação no body — e continua colada no topo quando a
+   pessoa rola. O vermelho é o --destaque-esc, que já é token desta família de
+   páginas. Medido: creme sobre #A93C1E dá 5,27:1, acima dos 4,5:1 exigidos para
+   texto pequeno. O --destaque claro (#CD4C28) daria 3,90:1 e reprovaria.
+   O tamanho por largura é medido, não chutado: o texto tem de caber em UMA
+   linha até em 320px, senão a tarja vira um bloco amontoado. */
+.tarja{
+  position:sticky; top:0; z-index:60;
+  background:var(--destaque-esc); color:var(--creme);
+  font-family:var(--f); font-weight:900; font-size:var(--t1);
+  text-transform:uppercase; line-height:1.2; letter-spacing:.02em;
+  padding:var(--e3) var(--e3); text-align:center;
+  border-bottom:1px solid rgba(242,238,229,.22);
+}
+/* em 320px o t2 quebrava em duas linhas: nessa faixa o tamanho cai um degrau,
+   mas o peso 900 e o respiro do padding continuam — segue maior que a versão
+   anterior (41px de altura contra os 47px daqui). */
+@media(max-width:359px){.tarja{letter-spacing:0}}
+@media(min-width:560px){.tarja{font-size:var(--t3); letter-spacing:.06em; padding:var(--e3) var(--e5)}}
+@media(min-width:900px){.tarja{font-size:var(--t4)}}
+
+/* ============================================================
+   CORREÇÕES DE CONTRASTE (medidas, não estimadas)
+   ============================================================ */
+/* O acento creme sobre o fundo verde mede 1,87:1 e reprova em qualquer
+   tamanho. O chocolate é a cor que esse mesmo bloco já usa no CTA e passa de
+   3:1 no tamanho de título, então é ele que faz o destaque aqui. */
+.bloco--salvia .h1 em,.bloco--salvia .h2 em,.bloco--salvia .h3 em{color:var(--chocolate)}
+
+/* A .oferta é pretinho mas não é .escuro nem .bloco, então a nota abaixo do
+   botão herdava a cor de texto do fundo claro e caía para 3,19:1. */
+.oferta .cta-nota{color:rgba(242,238,229,.72)}
+
+/* aviso de local dentro da caixa preta da oferta: o argila é o acento desta
+   receita de fundo e mede acima de 4,5:1 sobre o pretinho. */
+.aviso-local{
+  color:var(--argila); font-size:var(--t2); font-weight:700; line-height:1.5;
+  margin:0 0 var(--e5); text-align:center;
+}
+
+/* repeat(3,1fr) não encolhe abaixo do min-content da coluna: medido em 320px,
+   os três números somavam 219px numa caixa de 208 e a PÁGINA INTEIRA rolava de
+   lado. minmax(0,1fr) deixa a coluna encolher e o texto quebrar dentro dela. */
+.nums{grid-template-columns:repeat(3,minmax(0,1fr))}
+.num span{overflow-wrap:break-word}
+
+/* ============================================================
+   COMPARATIVO — as duas formas de fazer o curso
+   ============================================================ */
+.formato-col{
+  font-family:var(--f); font-weight:800; font-size:var(--t5); line-height:1.15;
+  color:var(--argila); margin:0 0 var(--e2); text-align:left;
+}
+.bloco--claro .formato-col{color:var(--chocolate)}
+.formato-nota{font-size:var(--t2); color:rgba(242,238,229,.72);
+  margin:0 0 var(--e5); text-align:left}
+.bloco--claro .formato-nota{color:var(--tinta-2)}
+
+/* ============================================================
+   PROVA SOCIAL
+   ============================================================ */
+/* Duas coisas OPOSTAS foram pedidas: "enxurrada de fotos comprovando tudo" e
+   "dar para ler os prints". Grade densa prova volume mas é ilegível; print
+   grande é legível mas mata o volume. Por isso são DOIS blocos separados:
+   o mosaico prova o volume (nada para ler) e os prints ficam maiores, com
+   toque para ampliar. Vídeo é cartão com play MANUAL — autoplay em massa
+   derruba o carregamento no celular, e essa página recebe tráfego pago. */
+/* auto-fit: com poucas fotos elas ESTICAM e fecham a linha (nada de fileira pela
+   metade); quando a enxurrada chegar, o mesmo CSS quebra em várias linhas densas
+   sem precisar de ajuste. */
+.mosaico{display:grid; gap:var(--e1);
+  grid-template-columns:repeat(auto-fit,minmax(92px,1fr))}
+@media(min-width:640px){.mosaico{grid-template-columns:repeat(auto-fit,minmax(128px,1fr))}}
+.mosaico img{
+  width:100%; aspect-ratio:3/4; object-fit:cover; object-position:center 22%;
+  border-radius:var(--r1); background:var(--pedra);
+}
+
+.prints{display:grid; gap:var(--e3); grid-template-columns:repeat(2,minmax(0,1fr))}
+@media(min-width:700px){.prints{grid-template-columns:repeat(3,minmax(0,1fr))}}
+.print{
+  display:block; width:100%; padding:0; cursor:zoom-in; text-align:left;
+  background:var(--papel); border:1px solid var(--filete);
+  border-radius:var(--r2); overflow:hidden; font-family:var(--f);
+}
+.print img{width:100%; height:auto; display:block; background:var(--pedra)}
+.print span{
+  display:block; padding:var(--e3) var(--e4); font-size:var(--t1);
+  font-weight:700; letter-spacing:.08em; text-transform:uppercase;
+  color:var(--chocolate);
+}
+
+/* lupa: o print pequeno existe para caber; o grande existe para ler */
+.lupa{
+  position:fixed; inset:0; z-index:100; display:none;
+  align-items:center; justify-content:center; flex-direction:column;
+  gap:var(--e4); padding:var(--e5);
+  /* fundo OPACO de propósito: com véu translúcido o creme da legenda ficava
+     sobre um fundo indefinido e o contraste deixava de ser garantido. */
+  background:var(--pretinho);
+}
+.lupa.ver{display:flex}
+.lupa img{
+  max-width:min(100%,720px); max-height:74vh; width:auto; height:auto;
+  border-radius:var(--r2); background:var(--pedra);
+}
+.lupa p{
+  color:var(--creme); font-size:var(--t3); line-height:1.5; margin:0;
+  max-width:56ch; text-align:center;
+}
+.lupa__x{
+  position:absolute; top:var(--e5); right:var(--e5);
+  width:44px; height:44px; border-radius:50%; cursor:pointer;
+  background:var(--creme); color:var(--tinta); border:0;
+  font-family:var(--f); font-size:var(--t4); font-weight:800; line-height:1;
+}
+
+/* 4 cartões de vídeo: 2 colunas no celular, 4 no desktop */
+.depos--4{grid-template-columns:repeat(2,minmax(0,1fr))}
+@media(min-width:640px){.depos--4{grid-template-columns:repeat(4,minmax(0,1fr))}}
+.depos--4>*:nth-child(3){grid-column:auto; max-width:none; margin:0}
+
+/* enquanto as listas do script estiverem vazias, é isso que aparece — nunca
+   uma grade quebrada nem uma caixa vazia fingindo conteúdo */
+.vazio{
+  border:1px dashed var(--filete); border-radius:var(--r2);
+  padding:var(--e5); color:var(--tinta-2); font-size:var(--t2); line-height:1.55;
+}
+.bloco .vazio{border-color:rgba(242,238,229,.24); color:rgba(242,238,229,.64)}
+
+/* ============================================================
+   PLAYER DA VSL
+   Mesmo player da /profissao-lash-curso, que já passou pela iteração do Edu:
+   laço mudo antes do clique, overlay de retenção na pausa, controles sem
+   linha do tempo e barra de progresso de percepção acelerada.
+   ============================================================ */
+.player{
+  position:relative; width:100%; max-width:400px; margin:0 auto;
+  aspect-ratio:9/16; background:var(--pretinho);
+  border-radius:var(--r3); overflow:hidden;
+}
+.player video{position:absolute; inset:0; width:100%; height:100%; object-fit:cover}
+.veu{
+  position:absolute; inset:0; z-index:3; cursor:pointer; width:100%;
+  display:flex; flex-direction:column; align-items:center; justify-content:flex-end;
+  gap:var(--e3); padding:0 var(--e5) var(--e6);
+  background:linear-gradient(to top,rgba(36,28,21,.88) 0%,rgba(36,28,21,.3) 42%,rgba(36,28,21,0) 72%);
+  border:0; font-family:var(--f); text-align:center;
+}
+.veu__icone{
+  width:104px; height:104px; border-radius:50%;
+  background:var(--destaque); color:#fff;
+  display:flex; align-items:center; justify-content:center; margin-bottom:var(--e1);
+}
+.veu__icone svg{width:48px; height:48px; stroke-width:2.2}
+.veu__t{color:var(--creme); font-weight:800; font-size:var(--t4);
+  line-height:1.2; text-transform:uppercase}
+/* branco sobre o --destaque mede 4,51:1 — passa nos 4,5:1 de texto pequeno,
+   mas passa raspando: se alguém clarear o --destaque, esta pílula reprova. */
+.veu__s{
+  color:#fff; font-weight:800; font-size:var(--t3); letter-spacing:.03em;
+  text-transform:uppercase; background:var(--destaque);
+  border-radius:100px; padding:var(--e3) var(--e5);
+}
+.pulso{animation:pulso 2.1s ease-in-out infinite}
+@keyframes pulso{0%,100%{transform:scale(1)}50%{transform:scale(1.09)}}
+@media(prefers-reduced-motion:reduce){.pulso{animation:none}}
+
+.retencao{
+  position:absolute; inset:0; z-index:4; display:none;
+  flex-direction:column; align-items:center; justify-content:center;
+  gap:var(--e4); padding:var(--e5); text-align:center; background:rgba(36,28,21,.95);
+}
+.retencao.ver{display:flex}
+.retencao__t{color:var(--creme); font-weight:800; font-size:var(--t5);
+  line-height:1.15; text-transform:uppercase; margin:0}
+.retencao__p{color:rgba(242,238,229,.82); font-size:var(--t3); line-height:1.5; margin:0}
+.retencao__b{
+  margin-top:var(--e1); background:var(--destaque); color:#fff; border:0;
+  border-radius:100px; padding:var(--e4) var(--e6); cursor:pointer;
+  font-family:var(--f); font-weight:800; font-size:var(--t3);
+  text-transform:uppercase; letter-spacing:.03em;
+}
+.retencao__b:active{background:var(--destaque-esc)}
+
+.controles{
+  position:absolute; z-index:5; left:0; right:0; bottom:12px; display:none;
+  align-items:center; gap:var(--e3); padding:var(--e4);
+  background:linear-gradient(to top,rgba(36,28,21,.82),rgba(36,28,21,0));
+}
+.controles.ver{display:flex}
+.ctrl{
+  width:44px; height:44px; border-radius:50%; cursor:pointer; padding:0;
+  border:1px solid rgba(242,238,229,.34); background:rgba(36,28,21,.5);
+  color:var(--creme); display:flex; align-items:center; justify-content:center;
+}
+.ctrl svg{width:20px; height:20px}
+
+.retomada{
+  position:absolute; z-index:7; left:50%; top:var(--e5);
+  transform:translateX(-50%) translateY(-8px);
+  background:rgba(36,28,21,.92); color:var(--creme);
+  font-size:var(--t2); font-weight:600; white-space:nowrap;
+  padding:var(--e3) var(--e5); border-radius:100px;
+  opacity:0; pointer-events:none; transition:opacity .3s, transform .3s;
+}
+.retomada.ver{opacity:1; transform:translateX(-50%) translateY(0)}
+
+/* Sem linha do tempo clicável de propósito: a barra é indicador, não controle.
+   12px de altura para ser vista no celular. */
+.progresso{
+  position:absolute; z-index:6; left:0; right:0; bottom:0;
+  height:12px; background:rgba(242,238,229,.22);
+}
+.progresso__b{
+  height:100%; width:0; background:var(--destaque);
+  transition:width .25s linear;
+}
+.controles.ver ~ .progresso{bottom:0}
+
+.volume{
+  flex:1; -webkit-appearance:none; appearance:none; height:3px;
+  background:rgba(242,238,229,.34); border-radius:3px; outline:none;
+}
+.volume::-webkit-slider-thumb{-webkit-appearance:none; appearance:none;
+  width:18px; height:18px; border-radius:50%; background:var(--creme); cursor:pointer}
+.volume::-moz-range-thumb{width:18px; height:18px; border-radius:50%;
+  background:var(--creme); cursor:pointer; border:0}
+
+</style>
+</head>
+<body>
+
+<!-- 0. TARJA — ninguém pode comprar achando que é só online ---- -->
+<p class="tarja">Aula prática presencial em Cambuí, MG</p>
+
+<!-- 1. HERO — o que é, onde é, o que vem junto ---------------- -->
+<section class="faixa escuro">
+  <div class="wrap">
+    <div class="estreito">
+      <p class="rot rot--c">Profissão Lash · Online + presencial</p>
+      <h1 class="h1">Curso de extensão de cílios do zero, com um dia
+      <em>presencial</em> em que eu corrijo a sua mão</h1>
+      <p class="lead p2">Você recebe o curso online completo hoje e marca comigo
+      um dia de prática em Cambuí, MG. <b>Todo o material incluso</b>, apostila impressa na
+      mão, grupo de suporte no WhatsApp e certificado no fim.</p>
+
+      <!-- A FOTO DO ARGUMENTO. Esta página vende PRÁTICA, então o hero mostra a
+           bancada de verdade: a Nataly de luva, a lâmpada LED e a cliente deitada.
+           É a cena que a headline promete. Formato nativo 16:9, sem recorte: é a
+           proporção mais baixa possível para esta foto, para custar pouca altura.
+           MEDIDO em 320/390/430px: a headline continua inteira acima da dobra
+           (base em 446/390/354px). O botão do hero, esse sim, desceu — a 390px
+           saiu de 582 para 900px. Foi uma troca consciente: o pedido era a foto
+           no hero, e logo abaixo vem a VSL, que é o próximo passo natural.
+           A foto NÃO fica atrás do texto: fundo pretinho chapado continua sendo o
+           que garante o contraste da headline, sem véu e sem text-shadow. -->
+      <figure class="hero-foto">
+        <img src="/img/nataly-hero-presencial.jpg" width="1200" height="675"
+             alt="Nataly Ribeiro, de luva e máscara, aplicando extensão de cílios numa cliente deitada na maca, sob a lâmpada de LED, no espaço dela"
+             fetchpriority="high" decoding="async">
+        <figcaption>Sou eu na bancada, no dia a dia. É essa mesa que vai estar montada
+        na sua frente.</figcaption>
+      </figure>
+
+      <div style="margin-top:var(--e6)">
+        <a href="/inscricao-presencial" class="cta" data-intencao="hero">Quero a minha vaga no presencial</a>
+        <p class="cta-nota">A data da sua prática a gente combina junto,
+        conforme a sua disponibilidade.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 2. VSL — SEGUNDA DOBRA -----------------------------------
+     O vídeo de apresentação da profissão e do curso sobe para logo depois do
+     hero, com a mecânica completa da /profissao-lash-curso: laço mudo antes do
+     clique, retenção na pausa, controles sem linha do tempo e barra de
+     percepção acelerada. A marca de "onde parou" usa CHAVE PRÓPRIA desta
+     página — quem já viu a VSL na PV do online não pode chegar aqui com o
+     vídeo pulando para o meio.
+     ------------------------------------------------------------ -->
+<section class="faixa faixa--curta">
+  <div class="wrap">
+    <div class="estreito centro" style="margin-bottom:var(--e5)">
+      <p class="rot rot--c">Se você quiser me ouvir explicando</p>
+      <h2 class="h1">Eu gravei uma <em>apresentação</em> da profissão e do curso</h2>
+      <p class="lead p2">São cinco minutos. Toca no vídeo para ouvir.</p>
+    </div>
+
+    <div class="estreito">
+      <div class="player" id="player">
+        <video id="vsl" src="/video/vsl-profissao-lash.mp4"
+               poster="/img/iniciante/vsl-poster.jpg" muted loop playsinline autoplay preload="metadata"></video>
+
+        <button class="veu" id="veu" type="button" aria-label="Clique para ouvir o vídeo">
+          <span class="veu__icone pulso">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                 stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <path d="M11 5 6 9H2v6h4l5 4V5z"></path>
+              <line x1="23" y1="9" x2="17" y2="15"></line>
+              <line x1="17" y1="9" x2="23" y2="15"></line>
+            </svg>
+          </span>
+          <span class="veu__t">Seu vídeo já começou</span>
+          <span class="veu__s">Clique para ouvir</span>
+        </button>
+
+        <div class="retencao" id="retencao">
+          <p class="retencao__t">Esse vídeo sai do ar em breve</p>
+          <p class="retencao__p">Essa é a sua última chance de assistir até o final.</p>
+          <button class="retencao__b" id="continuar" type="button">Continuar assistindo</button>
+        </div>
+
+        <div class="retomada" id="retomada">Voltamos de onde você parou</div>
+
+        <div class="progresso"><div class="progresso__b" id="progresso"></div></div>
+
+        <div class="controles" id="controles">
+          <button class="ctrl" id="btn-pausa" type="button" aria-label="Pausar">
+            <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><rect x="6" y="5" width="4" height="14" rx="1"></rect><rect x="14" y="5" width="4" height="14" rx="1"></rect></svg>
+          </button>
+          <button class="ctrl" id="btn-som" type="button" aria-label="Desligar o som">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                 stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <path d="M11 5 6 9H2v6h4l5 4V5z"></path><path d="M15.5 8.5a5 5 0 0 1 0 7"></path>
+              <path d="M18.5 5.5a9 9 0 0 1 0 13"></path>
+            </svg>
+          </button>
+          <input class="volume" id="volume" type="range" min="0" max="1" step="0.05" value="1" aria-label="Volume">
+        </div>
+      </div>
+
+      <!-- honestidade obrigatória: esse vídeo foi gravado para o curso ONLINE.
+           Quem compra aqui leva ele inteiro MAIS o dia presencial. -->
+      <p class="cta-nota" style="margin-top:var(--e4)">Esse vídeo é a apresentação do
+      <b>curso online</b>, que é a parte teórica desta oferta. Comprando aqui você recebe
+      ele inteiro <b>mais o dia de prática presencial comigo em Cambuí</b>, que é o que o
+      vídeo não cobre.</p>
+    </div>
+  </div>
+</section>
+
+<!-- 3. A PROFISSÃO ------------------------------------------- -->
+<section class="faixa">
+  <div class="wrap">
+    <div class="estreito centro" style="margin-bottom:var(--e6)">
+      <p class="rot rot--c">Antes de falar do curso</p>
+      <h2 class="h1">Duas horas de trabalho podem valer mais que o seu
+      <em>dia inteiro</em> hoje</h2>
+      <p class="lead p2">Se você nunca pensou em ser lash designer, é essa conta que costuma
+      mudar a ideia. Ela não pede faculdade, não pede sala comercial e não pede que você
+      largue o que faz hoje.</p>
+    </div>
+
+    <div class="bloco estreito">
+      <p class="rot">A conta da extensão de cílios</p>
+      <div class="nums" style="margin-bottom:var(--e5)">
+        <div class="num"><b>180</b><span>reais é o que eu cobro por atendimento hoje</span></div>
+        <div class="num"><b>120</b><span>a 140 é o que cobra quem está começando</span></div>
+        <div class="num"><b>2h</b><span>é o tempo médio de um atendimento</span></div>
+      </div>
+      <p><b>Pega o seu salário e divide pelas horas que você trabalha no mês.</b>
+      Agora compara com 120 reais em duas horas. Essa é a diferença que faz gente
+      pedir demissão sem medo.</p>
+    </div>
+
+    <div class="bloco bloco--claro estreito">
+      <p class="rot">E tem uma parte que quase ninguém explica</p>
+      <h3 class="h2">A cliente que gostou não é uma venda. É uma
+      <em>cadeira ocupada todo mês</em>.</h3>
+      <p>O cílio natural cresce e cai o tempo todo, então a cada 15 a 25 dias ela volta para a
+      manutenção. É por isso que isso vira profissão e não bico: <b>dez clientes fiéis já são
+      dez atendimentos garantidos</b>, sem você procurar mais ninguém.</p>
+      <p class="p2">É também por isso que o trabalho malfeito custa caro. A cliente que não
+      gostou não deixa de comprar uma vez, ela deixa de voltar doze.</p>
+    </div>
+
+    <div class="bloco bloco--salvia estreito centro">
+      <h2 class="h2">O que muda não é só o dinheiro. É de quem é o
+      <em>seu tempo</em>.</h2>
+      <p>Se você é mãe, é escolher atender enquanto o seu filho está na escola e estar em
+      casa quando ele chega. Se você tem dezoito anos, é pagar a sua faculdade com o seu
+      dinheiro, sem pedir em casa. Se você já trabalha, é começar atendendo no fim do dia
+      até a agenda justificar sair.</p>
+    </div>
+  </div>
+</section>
+
+<!-- 4. CALCULADORA ------------------------------------------- -->
+<section class="faixa faixa--curta">
+  <div class="wrap">
+    <div class="estreito centro" style="margin-bottom:var(--e5)">
+      <p class="rot rot--c">Faz a conta com os seus números</p>
+      <h2 class="h1">Quanto isso dá <em>no seu mês</em></h2>
+    </div>
+
+    <div class="bloco sim estreito">
+      <div class="sim-campo">
+        <label for="sim-clientes">Clientes fiéis na sua agenda</label>
+        <input type="range" id="sim-clientes" min="3" max="140" value="10" step="1">
+        <div class="sim-v"><span id="sim-n">10</span> clientes voltando todo mês</div>
+      </div>
+      <div class="sim-campo">
+        <label>Quanto você pretende cobrar</label>
+        <div class="sim-op" role="group" aria-label="Valor por atendimento">
+          <button type="button" data-v="120" aria-pressed="true">R$ 120</button>
+          <button type="button" data-v="140" aria-pressed="false">R$ 140</button>
+          <button type="button" data-v="180" aria-pressed="false">R$ 180</button>
+        </div>
+      </div>
+      <div class="sim-saida">
+        <div class="r">Por mês, em atendimentos</div>
+        <div class="t" id="sim-total">R$ 1.200</div>
+        <div class="d" id="sim-det">10 atendimentos por mês, cerca de 20 horas de trabalho.</div>
+        <p class="sim-alerta" id="sim-alerta"></p>
+      </div>
+      <p class="sim-av">A conta considera uma manutenção por mês para cada cliente, que é o
+      cenário mais conservador. É simulação com os valores que se cobra hoje, não promessa
+      de ganho.</p>
+    </div>
+
+    <div class="bloco bloco--claro estreito centro">
+      <p><b>Só que esse número não depende do curso.</b> Depende de a sua mão estar boa o
+      bastante para a cliente voltar. É aí que o dia presencial entra.</p>
+      <div style="margin-top:var(--e5)"><a href="/inscricao-presencial" class="cta" data-intencao="calculadora">Quero aprender na prática</a></div>
+    </div>
+  </div>
+</section>
+
+<!-- 5. PROVA SOCIAL ------------------------------------------ -->
+<section class="faixa faixa--curta">
+  <div class="wrap">
+    <div class="estreito centro" style="margin-bottom:var(--e5)">
+      <p class="rot rot--c">Não sou só eu falando</p>
+      <h2 class="h1">Elas já passaram por aqui <em>antes de você</em></h2>
+      <p class="lead p2">Mulheres que começaram do zero comigo e hoje atendem. Toca nos
+      vídeos para ouvir com as palavras delas.</p>
+    </div>
+
+    <!-- mosaico: prova de VOLUME, nada para ler -->
+    <div class="mosaico" id="prova-fotos" aria-label="Alunas formadas"></div>
+
+    <!-- vídeos: play manual, nunca autoplay -->
+    <div class="depos depos--4" id="prova-videos" style="margin-top:var(--e5)"></div>
+
+    <!-- prints: MAIORES, toque para ampliar e ler -->
+    <div class="estreito centro" style="margin:var(--e8) 0 var(--e5)">
+      <p class="rot rot--c">As mensagens que elas me mandam</p>
+      <h2 class="h2">Toca para <em>ler</em> por inteiro</h2>
+    </div>
+    <div class="prints" id="prova-prints"></div>
+  </div>
+</section>
+
+<!-- 6. POR QUE PRESENCIAL ------------------------------------ -->
+<section class="faixa">
+  <div class="wrap">
+    <div class="estreito centro" style="margin-bottom:var(--e6)">
+      <p class="rot rot--c">Agora a parte que eu não vou esconder</p>
+      <h2 class="h1">Assistir dez vezes não é a mesma coisa que ter a
+      <em>cliente deitada</em> na sua frente</h2>
+      <p class="lead p2">Porque o que trava não é o conteúdo. É meio segundo depois dela deitar.</p>
+    </div>
+
+    <div class="par">
+      <div class="bloco">
+        <p class="rot">O que trava não é o conteúdo</p>
+        <p>Você vai saber a curvatura, a espessura, o pH e o mapeamento. Vai saber de cabeça,
+        porque o curso te dá isso na ordem certa. Aí a cliente deita, você abre a pinça e a
+        mão treme, porque agora é o olho de uma pessoa e não a tela do celular.</p>
+        <p class="p2">Não é falta de estudo. É a primeira vez, e a primeira vez é assim
+        para todo mundo.</p>
+      </div>
+      <div class="bloco">
+        <p class="rot">E o vídeo não te responde na hora</p>
+        <p>Você isola um fio e fica na dúvida se pegou dois. Encosta na cola e não sabe se
+        foi gota demais. Olha o resultado e acha estranho, mas não sabe dizer o que está
+        estranho.</p>
+        <p class="p2">São dúvidas de meio segundo, e meio segundo não cabe numa mensagem
+        respondida três horas depois.</p>
+      </div>
+    </div>
+
+    <div class="bloco bloco--salvia estreito centro" style="margin-top:var(--e5)">
+      <h2 class="h2">Eu consigo te explicar tudo. Eu não consigo corrigir a sua mão
+      <em>por vídeo</em>.</h2>
+      <p>Posso repetir mil vezes o que é para fazer, e repito. Mas olhar a sua pinça de perto
+      e dizer gira dois milímetros, no segundo em que você está girando, isso só acontece
+      com nós duas na mesma sala.</p>
+    </div>
+  </div>
+</section>
+
+<!-- 7. O DIA ------------------------------------------------- -->
+<section class="faixa faixa--curta">
+  <div class="wrap">
+    <div class="estreito centro" style="margin-bottom:var(--e5)">
+      <p class="rot rot--c">Como é o dia em Cambuí</p>
+      <h2 class="h1">Você não vai me ver aplicando. Você <em>aplica</em>.</h2>
+    </div>
+
+    <div class="bloco estreito">
+      <p class="rot">O que acontece na bancada</p>
+      <ul class="itens" style="margin-bottom:var(--e5)">
+        <li>A gente revisa o que você já viu no curso, com a bancada montada na sua frente</li>
+        <li>Eu monto o mapeamento com você e explico cada escolha em voz alta</li>
+        <li>Você aplica, e eu corrijo o ângulo, a pega e a gota enquanto acontece</li>
+        <li>Você erra ali, comigo do lado, e não na cadeira da sua primeira cliente</li>
+      </ul>
+      <p><b>Todo o material da prática está incluso.</b> Você chega com a sua mão e a sua
+      vontade, o resto já está na mesa esperando por você.</p>
+
+      <div class="nums" style="margin-top:var(--e6)">
+        <div class="num"><b>1</b><span>dia inteiro de prática ao vivo, em Cambuí</span></div>
+        <div class="num"><b>0</b><span>reais de material para você levar</span></div>
+        <div class="num"><b>12</b><span>meses de curso online para rever</span></div>
+      </div>
+    </div>
+
+    <div class="bloco bloco--claro estreito">
+      <p class="rot">A apostila</p>
+      <h3 class="h2">Você sai de lá com o conteúdo <em>na mão</em></h3>
+      <p>A apostila impressa vai com você. É onde estão as tabelas que você vai querer
+      consultar no meio de um atendimento, quando não dá para parar e procurar uma aula.</p>
+    </div>
+  </div>
+</section>
+
+<!-- 8. AS DUAS FORMAS ---------------------------------------- -->
+<section class="faixa faixa--curta">
+  <div class="wrap">
+    <div class="estreito centro" style="margin-bottom:var(--e5)">
+      <p class="rot rot--c">As duas formas de aprender comigo</p>
+      <h2 class="h1">As duas ensinam a profissão inteira. Uma delas
+      <em>corrige a sua mão</em>.</h2>
+      <p class="lead p2">Eu prefiro te mostrar as duas lado a lado e deixar você escolher,
+      em vez de empurrar uma delas.</p>
+    </div>
+
+    <div class="par">
+      <div class="bloco bloco--claro">
+        <p class="rot">Só o curso online</p>
+        <div class="formato-col">No seu ritmo, de casa</div>
+        <p class="formato-nota">Você assiste, aplica e corrige sozinha.</p>
+        <ul class="check">
+          <li><b>39 aulas teóricas</b> na ordem certa</li>
+          <li><b>A aula prática completa</b>, com as 10 técnicas que mais vendem</li>
+          <li>Bônus de precificação, marketing e fidelização</li>
+          <li>Um ano de acesso, no seu ritmo</li>
+          <li>Grupo de suporte comigo</li>
+          <li>Um encontro ao vivo por mês</li>
+          <li>Certificado no fim</li>
+        </ul>
+        <p class="apoio" style="margin-top:var(--e5)">É o curso inteiro, e ele se sustenta
+        sozinho. Muita aluna começa por aqui e vai bem.</p>
+      </div>
+
+      <div class="bloco">
+        <p class="rot">Curso online + um dia presencial</p>
+        <div class="formato-col">Um dia comigo, ao vivo</div>
+        <p class="formato-nota">Você aplica na minha frente e eu corrijo a sua mão.</p>
+        <ul class="check">
+          <li><b>Tudo o que está aqui do lado</b>, sem tirar nada</li>
+          <li><b>Um dia de prática comigo</b>, ao vivo, em Cambuí, MG</li>
+          <li><b>Todo o material da prática incluso</b>, você não leva nada</li>
+          <li><b>Apostila impressa</b> na sua mão</li>
+          <li>Grupo de suporte no WhatsApp</li>
+          <li>Certificado</li>
+        </ul>
+        <p class="apoio" style="margin-top:var(--e5)">A diferença é o dia em que você aplica
+        na minha frente e eu corrijo enquanto você faz.</p>
+      </div>
+    </div>
+
+    <p class="cta-nota" style="margin-top:var(--e5)">Você recebe o curso online exatamente
+    como ele é vendido. O presencial entra em cima, não no lugar dele.</p>
+  </div>
+</section>
+
+<!-- 9. A DATA ------------------------------------------------ -->
+<section class="faixa faixa--curta">
+  <div class="wrap">
+    <div class="bloco bloco--salvia estreito centro">
+      <p class="rot rot--c">A data é combinada com você</p>
+      <h2 class="h1">Não tem turma com data fechada. A gente <em>marca</em> a sua.</h2>
+      <p>Depois que você garante a sua vaga, a gente conversa pelo WhatsApp e escolhe um dia
+      que caiba na sua rotina e na minha agenda. Se você trabalha durante a semana, a gente
+      procura um dia que dê para você.</p>
+      <p>E enquanto esse dia não chega, o curso online já está liberado. Você chega em Cambuí
+      com a teoria na cabeça, e aí o dia inteiro rende muito mais.</p>
+    </div>
+  </div>
+</section>
+
+<!-- 10. NATALY COMO REFERÊNCIA -------------------------------- -->
+<section class="faixa">
+  <div class="wrap">
+    <div class="estreito centro" style="margin-bottom:var(--e5)">
+      <p class="rot rot--c">Quem vai estar do seu lado</p>
+      <h2 class="h1">Você vai passar o dia com quem <em>nunca saiu da cadeira</em></h2>
+    </div>
+
+    <div class="bloco bloco--claro largo">
+      <div class="bio">
+        <img src="/img/nataly-bio-led.jpg" alt="Nataly Ribeiro no estúdio dela"
+             width="1000" height="1500" loading="lazy">
+        <div>
+          <p class="rot">Quem te ensina</p>
+          <h2 class="h2">Eu montei o curso que eu queria ter <em>feito</em></h2>
+          <p>Sou a Nataly, de Cambuí, em Minas. Comecei aos dezessete anos e extensão de
+          cílios é a única profissão que eu já tive. Continuo atendendo até hoje, e é por
+          isso que eu ensino o que está funcionando agora, não o que funcionava.</p>
+        </div>
+      </div>
+
+      <div class="nums" style="margin-top:var(--e6)">
+        <div class="num"><b>9</b><span>anos na extensão de cílios</span></div>
+        <div class="num"><b>6</b><span>anos formando profissionais</span></div>
+        <div class="num"><b>300</b><span>mulheres já formadas</span></div>
+      </div>
+
+      <div class="marco" style="margin-top:var(--e6)">
+        <div class="marco__l">
+          <div class="marco__a">O nome do estúdio</div>
+          <div class="marco__t">Na minha cidade eu fiquei conhecida <b>consertando o trabalho
+          dos outros</b>. Cliente que chegava com aplicação errada, eu removia e refazia
+          certo. Meu estúdio se chama Arte com Responsabilidade por causa disso.</div>
+        </div>
+        <div class="marco__l">
+          <div class="marco__a">Quando não durava</div>
+          <div class="marco__t">Em vez de aceitar, eu fui atrás do porquê. Estudei o pH do
+          fio, procurei uma farmácia de manipulação e <b>desenvolvi um produto</b> para
+          resolver a retenção. Passei a ser conhecida por durabilidade.</div>
+        </div>
+        <div class="marco__l">
+          <div class="marco__a">Por que eu insisto na prática</div>
+          <div class="marco__t">O meu primeiro curso foi péssimo. Saí de lá sem saber fazer
+          uma manutenção, fazendo tudo errado, e <b>quase larguei a profissão por isso</b>.
+          Ninguém olhou a minha mão uma única vez.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="bloco bloco--claro estreito">
+      <p class="rot">Onde isso me levou</p>
+      <h2 class="h2">Uma profissão que cabe na sua vida, e não o <em>contrário</em></h2>
+      <p style="margin-bottom:var(--e5)">Quando a agenda é sua, o mês é seu. Você escolhe
+      quando atender, quantas clientes pegar e quando parar.</p>
+      <div class="galeria">
+        <img src="/img/iniciante/viagem-fusca.jpg" alt="Nataly numa estrada à beira-mar" width="900" height="1200" loading="lazy">
+        <img src="/img/iniciante/viagem-coliseu.jpg" alt="Nataly em Roma" width="900" height="1200" loading="lazy">
+        <img src="/img/iniciante/viagem-praia.jpg" alt="Nataly numa praia de água turquesa" width="900" height="1200" loading="lazy">
+        <img src="/img/iniciante/viagem-cidade.jpg" alt="Nataly numa cidade histórica" width="900" height="1200" loading="lazy">
+      </div>
+      <p class="apoio centro" style="margin-top:var(--e5)">Isso não vem no primeiro mês, e eu
+      não vou te prometer prazo nenhum. Vem de cliente que volta, uma de cada vez.</p>
+    </div>
+  </div>
+</section>
+
+<!-- 11. OFERTA ----------------------------------------------- -->
+<section class="faixa" id="oferta">
+  <div class="wrap">
+    <div class="estreito centro" style="margin-bottom:var(--e5)">
+      <p class="rot rot--c">As inscrições estão abertas</p>
+      <h2 class="h1">Entra hoje no <em>online mais presencial</em></h2>
+    </div>
+    <div class="oferta estreito">
+      <!-- NENHUM PREÇO NESTA PÁGINA (decisão do Eduardo, 01/09/2026).
+           O valor só aparece dentro do formulário, numa etapa própria, depois
+           que ela já respondeu o fácil. Aqui a página constrói o desejo.
+           O produto na Kiwify (VluGxKq) continua ativo e é enviado à mão pela
+           Nataly a quem ela qualificar. Não apagar. -->
+      <div class="leva">O que você leva</div>
+      <!-- quem chega aqui pela âncora #oferta pula a tarja e o hero: a cidade
+           tem de estar colada no botão também. -->
+      <p class="aviso-local">A aula prática é presencial, em Cambuí, MG.
+      Só se inscreva se você puder vir até aqui.</p>
+      <a href="/inscricao-presencial" class="cta" id="botao-inscricao"
+         data-intencao="oferta">Quero a minha vaga</a>
+      <ul class="inclui">
+        <li>Um dia de prática ao vivo em Cambuí, MG</li>
+        <li>Todo o material da prática incluso</li>
+        <li>Apostila impressa</li>
+        <li>O curso online completo, com as 39 aulas teóricas</li>
+        <li>A aula prática completa e as 10 técnicas</li>
+        <li>Bônus de precificação, marketing e fidelização</li>
+        <li>Grupo de suporte no WhatsApp</li>
+        <li>Certificado</li>
+      </ul>
+      <p class="cta-nota">São nove perguntas rápidas. Na última eu te mostro o
+      investimento e as condições. Depois eu te chamo no WhatsApp para combinar a data
+      da sua prática.</p>
+    </div>
+  </div>
+</section>
+
+<!-- 12. GARANTIA --------------------------------------------- -->
+<section class="faixa faixa--curta">
+  <div class="wrap">
+    <div class="bloco bloco--claro estreito centro">
+      <div class="selo">
+        <span class="selo__escudo">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6"
+               stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M12 2 4 5.5v6c0 4.6 3.4 8.9 8 10.5 4.6-1.6 8-5.9 8-10.5v-6L12 2z"></path>
+            <path d="m8.6 11.8 2.3 2.4 4.5-4.6"></path>
+          </svg>
+        </span>
+        <b>7</b><span>dias de garantia</span>
+      </div>
+      <h2 class="h2">Eu quero tirar todo o <em>risco</em> de cima de você</h2>
+      <p>O seu acesso ao curso online sai na hora, então você tem sete dias para entrar,
+      assistir, olhar tudo por dentro e sentir se o meu jeito de ensinar combina com você.</p>
+      <p><b>Se achar que não é para você, me pede o dinheiro de volta que a gente devolve.</b>
+      Sem pergunta, sem burocracia, sem justificar nada.</p>
+      <p class="apoio" style="margin-top:var(--e5)">Quem corre risco aqui sou eu, não você.</p>
+    </div>
+  </div>
+</section>
+
+<!-- 13. PARA QUEM É ------------------------------------------ -->
+<section class="faixa faixa--curta">
+  <div class="wrap">
+    <div class="estreito centro" style="margin-bottom:var(--e5)">
+      <p class="rot rot--c">Antes de você decidir</p>
+      <h2 class="h1">O presencial não é para <em>todo mundo</em></h2>
+    </div>
+    <div class="par">
+      <div class="bloco">
+        <p class="rot">É para você</p>
+        <ul class="check">
+          <li>que está começando do zero e quer aprender de verdade</li>
+          <li>que já assistiu curso e continua sem confiança na própria mão</li>
+          <li>que consegue reservar um dia para vir até Cambuí, em Minas</li>
+          <li>que quer sair com a mão testada antes da primeira cliente pagante</li>
+        </ul>
+      </div>
+      <div class="bloco bloco--claro">
+        <p class="rot">Não é para você</p>
+        <ul class="check check--x">
+          <li>que não tem como se deslocar até Cambuí, e aí o online resolve muito bem</li>
+          <li>que quer só o certificado, sem treinar</li>
+          <li>que espera ficar pronta em um dia sem repetir depois em casa</li>
+        </ul>
+        <p class="apoio" style="margin-top:var(--e5)">Se a viagem não cabe agora,
+        <a href="/profissao-lash-curso" style="color:inherit">começa pelo curso online</a>.
+        Ele é completo de verdade.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 14. OS MÓDULOS ------------------------------------------- -->
+<section class="faixa faixa--curta">
+  <div class="wrap">
+    <div class="estreito centro" style="margin-bottom:var(--e5)">
+      <p class="rot rot--c">O curso online vem junto, inteiro</p>
+      <h2 class="h1">Cada aula aqui é um buraco que eu <em>tive</em></h2>
+      <p class="lead p2">39 aulas teóricas na ordem certa, mais a aula prática e os bônus.
+      Toca em cada módulo para ver por dentro.</p>
+    </div>
+
+    <div class="bloco estreito">
+      <div id="grade">
+<div class="mod">
+          <button class="mod__cab" aria-expanded="true">
+            <span class="mod__n">01</span>
+            <span class="mod__t">Onde você está entrando</span>
+            <span class="mod__q">7 aulas</span><span class="mod__s"></span>
+          </button>
+          <div class="mod__corpo"><ol>
+            <li>Boas-vindas</li><li>A história da extensão de cílios</li><li>Minha história</li>
+            <li>Como está o mercado de lash</li><li>Equipamentos para começar</li>
+            <li>Quais possibilidades ser extensionista te entrega</li>
+            <li>Muito além de extensionista: ser uma empreendedora</li>
+          </ol></div>
+        </div>
+
+        <div class="mod">
+          <button class="mod__cab" aria-expanded="false">
+            <span class="mod__n">02</span>
+            <span class="mod__t">Postura, segurança e o seu espaço</span>
+            <span class="mod__q">4 aulas</span><span class="mod__s"></span>
+          </button>
+          <div class="mod__corpo"><ol>
+            <li>Postura profissional na área</li><li>Normas sanitárias</li>
+            <li>Responsabilidade com a cliente</li><li>Organização do ambiente de trabalho</li>
+          </ol></div>
+        </div>
+
+        <div class="mod">
+          <button class="mod__cab" aria-expanded="false">
+            <span class="mod__n">03</span>
+            <span class="mod__t">A ciência do cílio</span>
+            <span class="mod__q">6 aulas</span><span class="mod__s"></span>
+          </button>
+          <div class="mod__corpo"><ol>
+            <li>Ciclo de crescimento</li><li>Fases do cílio</li><li>Fatores que influenciam</li>
+            <li>pH, primer e finalizador</li><li>A importância do pH</li><li>O pH dos produtos</li>
+          </ol></div>
+        </div>
+
+        <div class="mod">
+          <button class="mod__cab" aria-expanded="false">
+            <span class="mod__n">04</span>
+            <span class="mod__t">Os produtos, sem gastar errado</span>
+            <span class="mod__q">7 aulas</span><span class="mod__s"></span>
+          </button>
+          <div class="mod__corpo"><ol>
+            <li>Conhecendo os produtos</li><li>Fios tecnológicos</li><li>Cola e cianoacrilato</li>
+            <li>Adesivo para extensão</li><li>Tempo de secagem</li><li>Pinças e equipamentos</li>
+            <li>Demonstração dos materiais de apoio</li>
+          </ol></div>
+        </div>
+
+        <div class="mod">
+          <button class="mod__cab" aria-expanded="false">
+            <span class="mod__n">05</span>
+            <span class="mod__t">O design do olhar</span>
+            <span class="mod__q">5 aulas</span><span class="mod__s"></span>
+          </button>
+          <div class="mod__corpo"><ol>
+            <li>Curvaturas e espessuras</li><li>O que é o mapeamento</li>
+            <li>Mapeamentos boneca, gatinho e esquilo</li><li>Visagismo e tipos de olho</li>
+            <li>Como escolher curvatura e tamanho dos fios</li>
+          </ol></div>
+        </div>
+
+        <div class="mod">
+          <button class="mod__cab" aria-expanded="false">
+            <span class="mod__n">06</span>
+            <span class="mod__t">O atendimento inteiro</span>
+            <span class="mod__q">9 aulas</span><span class="mod__s"></span>
+          </button>
+          <div class="mod__corpo"><ol>
+            <li>Avaliação da cliente</li><li>Quando não realizar o procedimento</li>
+            <li>O que fazer numa reação alérgica</li><li>Solução para a cliente</li>
+            <li>Erros comuns</li><li>Avaliação para manutenção</li>
+            <li>Prazo ideal para manutenção</li><li>Orientações para a cliente depois</li>
+            <li>Removedores e como fazer a remoção</li>
+          </ol></div>
+        </div>
+
+        <div class="mod">
+          <button class="mod__cab" aria-expanded="false">
+            <span class="mod__n">07</span>
+            <span class="mod__t">O negócio, que quase nenhum curso dá</span>
+            <span class="mod__q">1 + 3 bônus</span><span class="mod__s"></span>
+          </button>
+          <div class="mod__corpo"><ol>
+            <li>Como fazer a precificação</li><li>Bônus: primeiros passos para começar a atender</li>
+            <li>Bônus: marketing e posicionamento</li><li>Bônus: fidelização de clientes</li>
+          </ol></div>
+        </div>
+
+        <div class="mod">
+          <button class="mod__cab" aria-expanded="false">
+            <span class="mod__n">08</span>
+            <span class="mod__t">A aula prática</span>
+            <span class="mod__q">completa</span><span class="mod__s"></span>
+          </button>
+          <div class="mod__corpo"><ol>
+            <li>A aplicação inteira, do início ao fim, na câmera</li>
+            <li>As 10 técnicas que mais vendem hoje em dia</li>
+          </ol></div>
+        </div>
+      </div>
+      <p class="apoio centro" style="margin-top:var(--e5)">Você assiste tudo isso antes do
+      dia presencial, e chega em Cambuí sabendo o porquê de cada coisa.</p>
+    </div>
+  </div>
+</section>
+
+<!-- 15. FAQ -------------------------------------------------- -->
+<section class="faixa faixa--curta">
+  <div class="wrap">
+    <div class="estreito centro" style="margin-bottom:var(--e5)">
+      <p class="rot rot--c">Perguntas que sempre chegam</p>
+      <h2 class="h1">Vou tirar as suas <em>dúvidas</em> agora</h2>
+    </div>
+    <div id="faq" class="estreito">
+      <div class="faq">
+        <button class="faq__c" aria-expanded="false"><span>Onde e quando acontece a prática presencial?</span><span class="faq__s"></span></button>
+        <div class="faq__r"><p>A prática acontece em Cambuí, no sul de Minas, que é onde eu atendo. A data não é fixa: depois da compra a gente conversa pelo WhatsApp e marca um dia conforme a sua disponibilidade e a minha agenda.</p></div>
+      </div>
+      <div class="faq">
+        <button class="faq__c" aria-expanded="false"><span>Eu preciso levar material?</span><span class="faq__s"></span></button>
+        <div class="faq__r"><p>Não precisa levar nada. Todo o material da prática está incluso e já vai estar montado na bancada. A apostila impressa também é sua e vai embora com você.</p></div>
+      </div>
+      <div class="faq">
+        <button class="faq__c" aria-expanded="false"><span>A passagem e a hospedagem estão incluídas?</span><span class="faq__s"></span></button>
+        <div class="faq__r"><p>Não. O que está incluso é o dia de aula, a apostila impressa, todo o material da prática e o curso online completo. O deslocamento até Cambuí fica por sua conta, e quando a gente marcar a data eu te passo as referências da cidade para você se organizar.</p></div>
+      </div>
+      <div class="faq">
+        <button class="faq__c" aria-expanded="false"><span>Eu nunca encostei num fio. Dá para fazer o presencial mesmo assim?</span><span class="faq__s"></span></button>
+        <div class="faq__r"><p>Dá, e é exatamente para quem está começando. O curso online é liberado na hora da compra, então você chega no dia já sabendo o porquê de cada coisa. A prática entra em cima disso, e não no lugar disso.</p></div>
+      </div>
+      <div class="faq">
+        <button class="faq__c" aria-expanded="false"><span>Eu já vou receber o curso online agora ou só no dia?</span><span class="faq__s"></span></button>
+        <div class="faq__r"><p>Agora. O acesso ao curso online chega no seu e-mail assim que o pagamento é confirmado, e você já pode começar a estudar hoje, muito antes do dia presencial.</p></div>
+      </div>
+      <div class="faq">
+        <button class="faq__c" aria-expanded="false"><span>Quanto eu vou gastar de material para começar a atender?</span><span class="faq__s"></span></button>
+        <div class="faq__r"><p>Tem uma aula só sobre os equipamentos para começar e outra sobre conhecer os produtos, para você não gastar errado na largada. E no dia presencial você usa os produtos na mão, que é a melhor forma de entender o que vale a pena comprar.</p></div>
+      </div>
+      <div class="faq">
+        <button class="faq__c" aria-expanded="false"><span>Eu recebo certificado?</span><span class="faq__s"></span></button>
+        <div class="faq__r"><p>Recebe. O certificado é emitido quando você termina, e é o mesmo que comprova a sua capacitação para atender.</p></div>
+      </div>
+      <div class="faq">
+        <button class="faq__c" aria-expanded="false"><span>Em quanto tempo eu consigo a minha primeira cliente?</span><span class="faq__s"></span></button>
+        <div class="faq__r"><p>Eu não vou te dar prazo, porque seria mentira. Depende do seu treino, da sua região e do quanto você se movimenta. O que eu faço é te entregar a profissão inteira, a parte de negócio e um dia com a sua mão corrigida ao vivo, que é onde quase todo curso para.</p></div>
+      </div>
+      <div class="faq">
+        <button class="faq__c" aria-expanded="false"><span>Como eu pago?</span><span class="faq__s"></span></button>
+        <div class="faq__r"><p>No Pix ou no cartão, e no cartão dá para parcelar em até 12 vezes. O acesso ao curso online chega no seu e-mail assim que o pagamento é confirmado.</p></div>
+      </div>
+      <div class="faq">
+        <button class="faq__c" aria-expanded="false"><span>E se eu não gostar?</span><span class="faq__s"></span></button>
+        <div class="faq__r"><p>Você tem sete dias para olhar tudo por dentro. Se achar que não é para você, me pede o dinheiro de volta nesse prazo que a gente devolve, sem pergunta e sem burocracia.</p></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 16. FECHAMENTO ------------------------------------------- -->
+<section class="faixa">
+  <div class="wrap">
+    <div class="bloco bloco--salvia estreito centro">
+      <p class="rot rot--c">Para terminar</p>
+      <h2 class="h1">A distância entre saber e fazer é uma cliente
+      <em>deitada</em> na sua frente</h2>
+      <p>Esse dia vai chegar de qualquer jeito. A única escolha que você tem é se ele
+      acontece comigo do seu lado, corrigindo a sua mão, ou sozinha, torcendo para
+      dar certo.</p>
+      <p class="apoio" style="margin:var(--e5) 0">Eu prefiro estar junto na primeira vez.</p>
+      <a href="/inscricao-presencial" class="cta" data-intencao="fechamento">Quero a minha vaga no presencial</a>
+    </div>
+  </div>
+</section>
+
+<footer class="rodape">
+  <div class="wrap">
+    <p>Nataly Ribeiro · Lash Designer</p>
+    <p><a href="/politica-de-privacidade">Política de privacidade</a></p>
+  </div>
+</footer>
+
+<!-- lupa dos prints: só existe depois que alguém toca num print -->
+<div class="lupa" id="lupa" role="dialog" aria-modal="true" aria-label="Mensagem ampliada">
+  <button class="lupa__x" id="lupa-x" type="button" aria-label="Fechar">✕</button>
+  <img id="lupa-img" src="" alt="">
+  <p id="lupa-txt"></p>
+</div>
+
+<script>
+(function(){
+  "use strict";
+
+  /* ============================================================
+     PROVA SOCIAL — a ÚNICA coisa a preencher quando os arquivos chegarem
+     ------------------------------------------------------------
+     Destino dos arquivos:
+       fotos e prints  ->  public/img/prova-social/
+       vídeos e poster ->  public/video/prova-social/
+     Regras que valem na hora de preencher:
+       • fotos  = mosaico denso, prova de VOLUME. Nada para ler ali.
+       • prints = conversas. Vão MAIORES e abrem na lupa. O "alt" tem de
+                  carregar o TEOR da mensagem, senão quem usa leitor de tela
+                  (e o Google) não recebe prova nenhuma.
+       • videos = cartão com play manual. Sempre com poster, nunca autoplay.
+       • NÃO repetir o mesmo rosto entre as três listas: o efeito de volume
+         morre na hora em que alguém reconhece a mesma pessoa duas vezes.
+       • w/h são as dimensões reais do arquivo. Elas evitam o pulo de layout
+         enquanto a imagem carrega, que é o que mais irrita em tráfego pago.
+     ============================================================ */
+  var PROVA = {
+    fotos: [
+      {src:"/img/prova-social/aluna-01-maria-eduarda-certificado.jpg", alt:"Maria Eduarda, formada por mim, com o certificado", w:700, h:932},
+      {src:"/img/prova-social/aluna-02-ana-careline-certificado.jpg", alt:"Ana Careline, formada por mim, com o certificado", w:700, h:932},
+      {src:"/img/prova-social/aluna-03-angela-marcela-certificado.jpg", alt:"Ângela Marcela, formada por mim, com o certificado", w:700, h:934},
+      {src:"/img/prova-social/aluna-04-daniely-alessandra-certificado.jpg", alt:"Daniely Alessandra, formada por mim, com o certificado", w:700, h:934},
+      {src:"/img/prova-social/aluna-05-sueli-cristina-certificado.jpg", alt:"Sueli Cristina, formada por mim, com o certificado", w:700, h:932},
+      {src:"/img/prova-social/aluna-06-kimberly-certificado.jpg", alt:"Kimberly, formada por mim, com o certificado", w:700, h:932},
+      {src:"/img/prova-social/aluna-07-ester-cristina-certificado.jpg", alt:"Ester Cristina, formada por mim, com o certificado", w:700, h:932},
+      {src:"/img/prova-social/aluna-08-tassiane-certificado.jpg", alt:"Tassiane, formada por mim, com o certificado", w:700, h:932},
+      {src:"/img/prova-social/aluna-09-julia-gabriely-certificado.jpg", alt:"Júlia Gabriely, formada por mim, com o certificado", w:700, h:932},
+      {src:"/img/prova-social/aluna-10-juliana-conceicao-certificado.jpg", alt:"Juliana Conceição, formada por mim, com o certificado", w:700, h:932},
+      {src:"/img/prova-social/aluna-11-veronica-faria-sofa.jpg", alt:"Aluna formada por mim, com o certificado", w:700, h:878},
+      {src:"/img/prova-social/aluna-12-ana-carolina-lemos-sofa.jpg", alt:"Ana Carolina, formada por mim, com o certificado", w:700, h:878},
+      {src:"/img/prova-social/aluna-13-sofa.jpg", alt:"Aluna formada por mim, com o certificado", w:700, h:878},
+      {src:"/img/prova-social/aluna-14-sofa.jpg", alt:"Aluna formada por mim, com o certificado", w:700, h:878},
+      {src:"/img/prova-social/aluna-15-camily-vitoria-sofa.jpg", alt:"Camily Vitória, formada por mim, com o certificado", w:700, h:878},
+      {src:"/img/prova-social/turma-01-workshop-loucas-por-esmalte.jpg", alt:"Turma no fim do curso, com os certificados", w:700, h:934},
+      {src:"/img/prova-social/turma-02-especializacao-com-selo.jpg", alt:"Turma no fim do curso, com os certificados", w:700, h:874},
+      {src:"/img/prova-social/turma-03-resnichka-9-alunas.jpg", alt:"Turma de 9 alunas no fim do curso, com os certificados", w:700, h:876},
+      {src:"/img/prova-social/turma-04-resnichka-8-alunas.jpg", alt:"Turma de 8 alunas no fim do curso, com os certificados", w:700, h:876},
+      {src:"/img/prova-social/turma-05-4-alunas-certificados.jpg", alt:"Turma de 4 alunas no fim do curso, com os certificados", w:700, h:934},
+      {src:"/img/prova-social/turma-06-5-alunas-ceu-azul.jpg", alt:"Turma de 5 alunas no fim do curso, com os certificados", w:700, h:934},
+      {src:"/img/prova-social/turma-07-6-alunas-certificados.jpg", alt:"Turma de 6 alunas no fim do curso, com os certificados", w:700, h:934},
+      {src:"/img/prova-social/turma-08-7-alunas-por-do-sol.jpg", alt:"Turma de 7 alunas no fim do curso, com os certificados", w:700, h:934},
+      {src:"/img/prova-social/turma-09-9-alunas-por-do-sol-lilas.jpg", alt:"Turma de 9 alunas no fim do curso, com os certificados", w:700, h:892},
+      {src:"/img/prova-social/turma-10-duas-alunas-sofa.jpg", alt:"Turma no fim do curso, com os certificados", w:700, h:858},
+      {src:"/img/prova-social/turma-11-6-alunas-por-do-sol.jpg", alt:"Turma de 6 alunas no fim do curso, com os certificados", w:700, h:916},
+      {src:"/img/prova-social/turma-12-3-alunas-certificados.jpg", alt:"Turma de 3 alunas no fim do curso, com os certificados", w:700, h:916},
+      {src:"/img/prova-social/turma-13-trio-certificados-por-do-sol.jpg", alt:"Turma no fim do curso, com os certificados", w:700, h:900},
+      {src:"/img/prova-social/turma-14-trio-certificados-noite.jpg", alt:"Turma no fim do curso, com os certificados", w:700, h:860},
+      {src:"/img/prova-social/sala-de-aula-tres-macas-led.jpg", alt:"A sala de aula, com as três macas prontas para a prática", w:700, h:916}
+    ],
+    prints: [
+      {src:"/img/prova-social/print-04-brenda-silva-direct.jpg", alt:"Brenda Silva conta que voltou para um segundo curso e chama a Nataly de melhor mentora", w:1000, h:1334},
+      {src:"/img/prova-social/print-07-comentarios-e-direct.jpg", alt:"Aluna conta que já atendeu três clientes depois do curso, mesmo com medo", w:1000, h:1250},
+      {src:"/img/prova-social/print-01-stefany-whatsapp.jpg", alt:"Stefany agradece pelo curso e diz que vai levar a técnica para o studio dela", w:1000, h:1334},
+      {src:"/img/prova-social/print-06-comentarios-instagram.jpg", alt:"Três alunas comentam o quanto aprenderam no fim de semana de curso", w:1000, h:1250},
+      {src:"/img/prova-social/print-03-studio-julia-andrade.jpg", alt:"Dona do Studio Julia Andrade agradece e diz que o próximo passo é a mentoria", w:1000, h:1334},
+      {src:"/img/prova-social/print-02-multiplas-mensagens-carro.jpg", alt:"Camila e outras alunas contam no grupo que o curso superou o que esperavam", w:1000, h:1334}
+    ],
+    videos: [
+      {src:"/video/prova-social/video-01-aula-pratica-nataly-orienta.mp4", poster:"/video/prova-social/video-01-aula-pratica-nataly-orienta.jpg", alt:"Eu corrigindo a mão de uma aluna durante a prática"},
+      {src:"/video/prova-social/video-17-nataly-ensinando-turma.mp4", poster:"/video/prova-social/video-17-nataly-ensinando-turma.jpg", alt:"Aula teórica com a turma, antes de ir para a bancada"},
+      {src:"/video/prova-social/video-03-aluna-aplicando-cilios.mp4", poster:"/video/prova-social/video-03-aluna-aplicando-cilios.jpg", alt:"Aluna aplicando os cílios na prática, no dia do curso"},
+      {src:"/video/prova-social/video-19-entrega-certificados-emocao.mp4", poster:"/video/prova-social/video-19-entrega-certificados-emocao.jpg", alt:"A entrega dos certificados no fim do dia"},
+      {src:"/video/prova-social/video-15-premiacao-100-mais-influentes.mp4", poster:"/video/prova-social/video-15-premiacao-100-mais-influentes.jpg", alt:"Premiação das 100 Mais Influentes do Sul de Minas"}
+    ]
+  };
+
+  function esc(s){
+    return String(s == null ? "" : s)
+      .replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;");
+  }
+  function vazio(caixa, texto){
+    caixa.className = "vazio";
+    caixa.textContent = texto;
+  }
+
+  /* ---- mosaico ---- */
+  var elFotos = document.getElementById("prova-fotos");
+  if (elFotos) {
+    if (!PROVA.fotos.length) {
+      vazio(elFotos, "As fotos das alunas entram aqui.");
+    } else {
+      elFotos.innerHTML = PROVA.fotos.map(function(f){
+        return '<img src="' + esc(f.src) + '" alt="' + esc(f.alt) + '"' +
+               (f.w ? ' width="' + f.w + '"' : '') + (f.h ? ' height="' + f.h + '"' : '') +
+               ' loading="lazy" decoding="async">';
+      }).join("");
+    }
+  }
+
+  /* ---- vídeos: cartão com play MANUAL ---- */
+  var elVideos = document.getElementById("prova-videos");
+  if (elVideos) {
+    if (!PROVA.videos.length) {
+      vazio(elVideos, "Os depoimentos em vídeo entram aqui.");
+    } else {
+      elVideos.innerHTML = PROVA.videos.map(function(v){
+        return '<button class="depo" type="button" aria-label="' + esc(v.alt) + '">' +
+               '<video src="' + esc(v.src) + '" poster="' + esc(v.poster) + '"' +
+               ' preload="none" playsinline></video>' +
+               '<span class="depo__play"></span></button>';
+      }).join("");
+      elVideos.querySelectorAll(".depo").forEach(function(caixa){
+        var v = caixa.querySelector("video");
+        caixa.addEventListener("click", function(){
+          document.querySelectorAll(".depo video").forEach(function(o){
+            if (o !== v) { o.pause(); o.closest(".depo").classList.remove("on"); }
+          });
+          if (v.paused) { v.controls = true; v.play(); caixa.classList.add("on"); }
+          else { v.pause(); caixa.classList.remove("on"); }
+        });
+      });
+    }
+  }
+
+  /* ---- prints + lupa ---- */
+  var elPrints = document.getElementById("prova-prints");
+  var lupa = document.getElementById("lupa");
+  var lupaImg = document.getElementById("lupa-img");
+  var lupaTxt = document.getElementById("lupa-txt");
+  var lupaX = document.getElementById("lupa-x");
+  var voltarPara = null;
+
+  function abrirLupa(src, alt, origem){
+    lupaImg.src = src; lupaImg.alt = alt;
+    lupaTxt.textContent = alt;
+    lupa.classList.add("ver");
+    document.body.style.overflow = "hidden";
+    voltarPara = origem || null;
+    lupaX.focus();
+  }
+  function fecharLupa(){
+    lupa.classList.remove("ver");
+    lupaImg.src = "";
+    document.body.style.overflow = "";
+    if (voltarPara) { voltarPara.focus(); voltarPara = null; }
+  }
+  lupaX.addEventListener("click", fecharLupa);
+  lupa.addEventListener("click", function(ev){ if (ev.target === lupa) fecharLupa(); });
+  document.addEventListener("keydown", function(ev){
+    if (ev.key === "Escape" && lupa.classList.contains("ver")) fecharLupa();
+  });
+
+  if (elPrints) {
+    if (!PROVA.prints.length) {
+      vazio(elPrints, "Os prints das conversas entram aqui, em tamanho que dá para ler.");
+    } else {
+      elPrints.innerHTML = PROVA.prints.map(function(p){
+        return '<button class="print" type="button">' +
+               '<img src="' + esc(p.src) + '" alt="' + esc(p.alt) + '"' +
+               (p.w ? ' width="' + p.w + '"' : '') + (p.h ? ' height="' + p.h + '"' : '') +
+               ' loading="lazy" decoding="async">' +
+               '<span>Toque para ler</span></button>';
+      }).join("");
+      elPrints.querySelectorAll(".print").forEach(function(b){
+        b.addEventListener("click", function(){
+          var img = b.querySelector("img");
+          abrirLupa(img.getAttribute("src"), img.getAttribute("alt"), b);
+        });
+      });
+    }
+  }
+
+  /* ================= PLAYER DA VSL =================
+     Mesmo motor da /profissao-lash-curso. A ÚNICA diferença de propósito é a
+     chave do localStorage: aqui ela é `pl_vsl_presencial_ponto`. Se as duas
+     páginas dividissem a chave, quem assistiu a VSL na PV do online chegaria
+     nesta com o vídeo pulando para o meio.
+     ================================================= */
+  var vsl       = document.getElementById("vsl");
+  var veu       = document.getElementById("veu");
+  var controles = document.getElementById("controles");
+  var retencao  = document.getElementById("retencao");
+  var btnPausa  = document.getElementById("btn-pausa");
+  var btnSom    = document.getElementById("btn-som");
+  var volume    = document.getElementById("volume");
+  var continuar = document.getElementById("continuar");
+  var ligado    = false;
+
+  var ICONE_PAUSA = '<svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><rect x="6" y="5" width="4" height="14" rx="1"></rect><rect x="14" y="5" width="4" height="14" rx="1"></rect></svg>';
+  var ICONE_PLAY  = '<svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M8 5v14l11-7z"></path></svg>';
+  var ICONE_SOM   = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M11 5 6 9H2v6h4l5 4V5z"></path><path d="M15.5 8.5a5 5 0 0 1 0 7"></path><path d="M18.5 5.5a9 9 0 0 1 0 13"></path></svg>';
+  var ICONE_MUDO  = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M11 5 6 9H2v6h4l5 4V5z"></path><line x1="23" y1="9" x2="17" y2="15"></line><line x1="17" y1="9" x2="23" y2="15"></line></svg>';
+
+  if (vsl && veu) {
+    /* RETOMAR DE ONDE PAROU — chave PRÓPRIA desta página.
+       Só vale depois que ela ligou o som (antes disso o vídeo é laço mudo de
+       fundo). Ignora marca com mais de 7 dias e zera quando o vídeo termina. */
+    var CHAVE = 'pl_vsl_presencial_ponto';
+    var guardado = null;
+    try {
+      var bruto = localStorage.getItem(CHAVE);
+      if (bruto) {
+        var o = JSON.parse(bruto);
+        var idade = Date.now() - (o.em || 0);
+        if (idade < 7 * 24 * 3600 * 1000 && o.t > 5) guardado = o.t;
+      }
+    } catch (e) {}
+
+    /* O vídeo roda MUDO e em laço até alguém pedir o som.
+       Se o navegador recusar (o Modo de Baixo Consumo do iPhone e o Economia de
+       Dados do Android bloqueiam autoplay mesmo mudo), o véu passa a dizer
+       "toque para assistir" em vez de "seu vídeo já começou", que seria mentira,
+       e a gente tenta de novo no primeiro toque em qualquer lugar da página. */
+    var tocouSozinho = false;
+
+    function tentarMudo(){
+      var pr = vsl.play();
+      if (pr && pr.then) {
+        pr.then(function(){ tocouSozinho = true; })
+          .catch(function(){ avisarBloqueio(); });
+      }
+    }
+
+    function avisarBloqueio(){
+      if (tocouSozinho) return;
+      var t   = veu.querySelector('.veu__t');
+      var sub = veu.querySelector('.veu__s');
+      if (t)   t.textContent = 'Assista antes de decidir';
+      if (sub) sub.textContent = 'Toque para assistir';
+      veu.querySelector('.veu__icone').innerHTML =
+        '<svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M8 5v14l11-7z"></path></svg>';
+    }
+
+    /* primeiro toque em qualquer lugar destrava, se o autoplay foi negado */
+    ['touchstart','click'].forEach(function(evt){
+      document.addEventListener(evt, function destrava(){
+        if (!tocouSozinho && vsl.paused && !ligado) tentarMudo();
+        document.removeEventListener(evt, destrava);
+      }, {once:true, passive:true});
+    });
+
+    tentarMudo();
+
+    function avisarRetomada(){
+      var aviso = document.getElementById('retomada');
+      if (!aviso) return;
+      aviso.classList.add('ver');
+      setTimeout(function(){ aviso.classList.remove('ver'); }, 4200);
+    }
+
+    veu.addEventListener('click', function(){
+      ligado = true;
+      vsl.loop = false;
+      vsl.muted = false;
+      vsl.volume = 1;
+      /* se ela já tinha assistido um pedaço, volta de onde parou */
+      var dur = vsl.duration;
+      if (guardado && (!dur || guardado < dur - 10)) {
+        vsl.currentTime = guardado;
+        avisarRetomada();
+      } else {
+        vsl.currentTime = 0;
+      }
+      vsl.play().catch(function(){});
+      veu.style.display = 'none';
+      controles.classList.add('ver');
+    });
+
+    btnPausa.addEventListener('click', function(){
+      if (vsl.paused) {
+        retencao.classList.remove('ver');
+        vsl.play().catch(function(){});
+      } else {
+        vsl.pause();
+      }
+    });
+
+    /* pausou: entra o aviso de retenção */
+    vsl.addEventListener('pause', function(){
+      if (!ligado || vsl.ended) return;
+      btnPausa.innerHTML = ICONE_PLAY;
+      btnPausa.setAttribute('aria-label','Continuar');
+      retencao.classList.add('ver');
+    });
+
+    vsl.addEventListener('play', function(){
+      btnPausa.innerHTML = ICONE_PAUSA;
+      btnPausa.setAttribute('aria-label','Pausar');
+      retencao.classList.remove('ver');
+    });
+
+    continuar.addEventListener('click', function(){
+      retencao.classList.remove('ver');
+      vsl.play().catch(function(){});
+    });
+
+    btnSom.addEventListener('click', function(){
+      vsl.muted = !vsl.muted;
+      btnSom.innerHTML = vsl.muted ? ICONE_MUDO : ICONE_SOM;
+      btnSom.setAttribute('aria-label', vsl.muted ? 'Ligar o som' : 'Desligar o som');
+      volume.value = vsl.muted ? 0 : (vsl.volume || 1);
+    });
+
+    volume.addEventListener('input', function(){
+      vsl.volume = parseFloat(volume.value);
+      vsl.muted = (vsl.volume === 0);
+      btnSom.innerHTML = vsl.muted ? ICONE_MUDO : ICONE_SOM;
+    });
+
+    /* Barra de progresso com percepção acelerada.
+       progresso = (t/T)^0,5 — anda rápido no começo (aos 30s mostra 30%,
+       quando o real é 8,9%) e desacelera, encontrando o real em 100% no fim.
+       A sensação é de vídeo curto, sem mentir sobre o fim. */
+    var barra = document.getElementById('progresso');
+    var EXPO  = 0.50;
+
+    function pintaBarra(){
+      var dur = vsl.duration;
+      if (!dur || !isFinite(dur)) return;
+      var frac = Math.min(vsl.currentTime / dur, 1);
+      barra.style.width = (Math.pow(frac, EXPO) * 100).toFixed(2) + '%';
+    }
+
+    function guardaPonto(){
+      if (!ligado) return;
+      try {
+        localStorage.setItem(CHAVE, JSON.stringify({t: vsl.currentTime, em: Date.now()}));
+      } catch (e) {}
+    }
+    function limpaPonto(){ try { localStorage.removeItem(CHAVE); } catch (e) {} }
+
+    vsl.addEventListener('timeupdate', guardaPonto);
+    window.addEventListener('pagehide', guardaPonto);
+    document.addEventListener('visibilitychange', function(){
+      if (document.visibilityState === 'hidden') guardaPonto();
+    });
+
+    vsl.addEventListener('timeupdate', pintaBarra);
+    vsl.addEventListener('seeked', pintaBarra);
+
+    vsl.addEventListener('ended', function(){
+      retencao.classList.remove('ver');
+      btnPausa.innerHTML = ICONE_PLAY;
+      limpaPonto();
+    });
+  }
+
+  /* ================= ACORDEÕES ================= */
+  document.querySelectorAll(".mod__cab, .faq__c").forEach(function(b){
+    b.addEventListener("click", function(){
+      b.setAttribute("aria-expanded", b.getAttribute("aria-expanded") === "true" ? "false" : "true");
+    });
+  });
+
+  /* ================= CALCULADORA ================= */
+  var slider = document.getElementById("sim-clientes");
+  var contaN = document.getElementById("sim-n");
+  var total  = document.getElementById("sim-total");
+  var det    = document.getElementById("sim-det");
+  var alerta = document.getElementById("sim-alerta");
+  var opcoes = document.querySelectorAll(".sim-op button");
+  var valor  = 120;
+
+  function recalcula(){
+    var c = parseInt(slider.value, 10);
+    var horas = c * 2;
+    contaN.textContent = c;
+    total.textContent  = "R$ " + (c * valor).toLocaleString("pt-BR", {maximumFractionDigits:0});
+    det.textContent    = c + " atendimentos por mês, cerca de " + horas + " horas de trabalho.";
+
+    /* a partir de certo ponto não cabe mais numa agenda sozinha, e dizer isso
+       vale mais do que deixar o número subir como se fosse de graça */
+    if (horas > 176) {
+      alerta.textContent = "Aí já passa do que cabe numa agenda sozinha. Nesse ponto o caminho "
+                         + "é atender menos e cobrar mais, ou montar equipe.";
+      alerta.classList.add("ver");
+    } else if (horas > 120) {
+      alerta.textContent = "Isso já é agenda cheia, perto de um mês inteiro de trabalho.";
+      alerta.classList.add("ver");
+    } else {
+      alerta.classList.remove("ver");
+    }
+  }
+
+  if (slider) {
+    slider.addEventListener("input", recalcula);
+    opcoes.forEach(function(b){
+      b.addEventListener("click", function(){
+        opcoes.forEach(function(o){ o.setAttribute("aria-pressed","false"); });
+        b.setAttribute("aria-pressed","true");
+        valor = parseInt(b.dataset.v, 10);
+        recalcula();
+      });
+    });
+    recalcula();
+  }
+
+  /* ================= ROLAGEM ================= */
+  document.querySelectorAll('a[href^="#"]').forEach(function(a){
+    a.addEventListener("click", function(e){
+      var alvo = document.querySelector(a.getAttribute("href"));
+      if (!alvo) return;
+      e.preventDefault();
+      alvo.scrollIntoView({behavior:"smooth", block:"start"});
+    });
+  });
+})();
+</script>
+
+<script>
+/* ============================================================
+   INTENÇÃO DE INSCRIÇÃO — clique num CTA que leva ao formulário
+   ============================================================
+   A página tem QUATRO CTAs para /inscricao-presencial. Contar um evento por
+   clique infla a métrica — foi exatamente isso que deixou o A/B do Método LED
+   ilegível. Por isso: no máximo UM por sessão.
+
+   POR QUE O META E O GA4 SÃO TRATADOS DIFERENTE (medido, não suposto):
+   o evento acontece ANTES de sair da página. Medindo pelo CDP, o `fbq`
+   sobrevive ao unload — a requisição sai. O `gtag` NÃO: ele AGRUPA os
+   eventos e só descarrega o lote alguns segundos depois, então o hit morre
+   junto com a página. O `event_callback` do GA4 não salva: ele é chamado em
+   ~3ms, quando o evento foi ENFILEIRADO, não quando foi enviado.
+
+   Solução: o Meta recebe o evento aqui; o GA4 recebe na CHEGADA, na própria
+   /inscricao-presencial, que carrega ?cta= dizendo qual botão trouxe a
+   pessoa. Em funil de navegação os dois passos são o mesmo, e assim o
+   número do GA4 nunca se perde.
+   ============================================================ */
+(function () {
+  var CHAVE = 'nr_intencao_presencial';
+
+  function jaContou() {
+    try { return !!sessionStorage.getItem(CHAVE); } catch (e) { return false; }
+  }
+
+  function origem() {
+    var q = {}, g = {};
+    try {
+      new URLSearchParams(location.search).forEach(function (v, k) { q[k.toLowerCase()] = v; });
+    } catch (e) {}
+    try { g = JSON.parse(localStorage.getItem('nr_attrib') || '{}'); } catch (e) {}
+    return {
+      content_name: 'Profissao Lash — Online + Presencial',
+      content_category: 'qualificacao-presencial',
+      origem: q.utm_source || g.utm_source || null,
+      campanha: q.utm_campaign || g.utm_campaign || null,
+      criativo: q.utm_content || g.utm_content || null
+    };
+  }
+
+  /* Carimba ?cta= em todo link do formulário, para o GA4 saber, lá na
+     chegada, qual botão trouxe a pessoa. Feito no load e reforçado no
+     clique (links reescritos depois pelo repasse de UTM). */
+  function carimba(a) {
+    try {
+      var u = new URL(a.getAttribute('href'), location.origin);
+      if (!u.searchParams.get('cta')) {
+        u.searchParams.set('cta', a.getAttribute('data-intencao') || 'desconhecido');
+        a.setAttribute('href', u.pathname + u.search + u.hash);
+      }
+    } catch (e) {}
+  }
+
+  function carimbaTodos() {
+    var l = document.querySelectorAll('a[href*="inscricao-presencial"]');
+    for (var i = 0; i < l.length; i++) carimba(l[i]);
+  }
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', carimbaTodos);
+  } else { carimbaTodos(); }
+
+  document.addEventListener('click', function (ev) {
+    var a = ev.target.closest && ev.target.closest('a');
+    if (!a) return;
+    if ((a.getAttribute('href') || '').indexOf('inscricao-presencial') === -1) return;
+    carimba(a);
+
+    if (jaContou()) return;                 /* já contou: navega normal, sem atraso */
+    try { sessionStorage.setItem(CHAVE, '1'); } catch (e) {}
+
+    var dados = origem();
+    dados.cta = a.getAttribute('data-intencao') || 'desconhecido';
+
+    /* Meta: nome próprio, para virar Conversão Personalizada.
+       NÃO é InitiateCheckout — ninguém entra em checkout aqui. */
+    try { if (window.fbq) fbq('trackCustom', 'IniciouInscricao', dados); } catch (e) {}
+
+    /* 300ms de folga para o pixel sair antes do unload. É imperceptível e,
+       medido no CDP, é o que garante a requisição no celular. */
+    ev.preventDefault();
+    var foi = false;
+    function segue() { if (foi) return; foi = true; window.location.href = a.href; }
+    setTimeout(segue, 300);
+  }, true);
+})();
+</script>
+</body>
+</html>

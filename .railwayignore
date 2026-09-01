@@ -1,2 +1,14 @@
 node_modules
 .DS_Store
+.git
+_backups
+_backups-deploy
+logs
+*.bak-*
+*.bak-pre-*
+
+# Bancos locais de desenvolvimento (PGlite). Em produção o funil usa o
+# Postgres do Railway via DATABASE_URL — subir estes diretórios só
+# engordaria o deploy com dados de teste.
+funil-presencial/.dados-dev
+funil-presencial/.dados-teste

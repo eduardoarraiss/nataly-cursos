@@ -1,2 +1,14 @@
 node_modules
 .DS_Store
+
+# Segredos — NUNCA commitar. Já houve vazamento aqui (webhook-kiwify.js).
+.env
+.env.*
+!.env.exemplo
+
+# Banco local de desenvolvimento (PGlite) — dados de teste, não vão para o repo
+funil-presencial/.dados-dev/
+funil-presencial/.dados-teste/
+
+# Backups datados
+*.bak-*

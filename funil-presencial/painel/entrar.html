@@ -1,0 +1,98 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow, noarchive">
+<title>Entrar · Painel de leads</title>
+<style>
+  :root{
+    --creme:#F2EEE5; --papel:#FAF7F0; --tinta:#463729; --tinta-2:#7A695A;
+    --filete:#DED3C2; --chocolate:#6B4F3A; --destaque:#CD4C28; --erro:#A93C1E;
+    --f:'Hanken Grotesk',system-ui,-apple-system,'Segoe UI',sans-serif;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;min-height:100vh;display:grid;place-items:center;padding:24px;
+       background:var(--creme);color:var(--tinta);font-family:var(--f);font-size:17px;line-height:1.6}
+  .caixa{width:100%;max-width:380px;background:var(--papel);border:1px solid var(--filete);
+         border-radius:20px;padding:32px}
+  h1{margin:0 0 4px;font-size:26px;line-height:1.2}
+  .sub{margin:0 0 24px;color:var(--tinta-2);font-size:15px}
+  label{display:block;font-size:15px;font-weight:600;margin-bottom:6px}
+  input{width:100%;padding:13px 14px;font:inherit;font-size:16px;color:var(--tinta);
+        background:#fff;border:1px solid var(--filete);border-radius:12px;margin-bottom:16px}
+  input:focus{outline:3px solid rgba(205,76,40,.35);outline-offset:1px;border-color:var(--chocolate)}
+  button{width:100%;padding:14px;font:inherit;font-size:17px;font-weight:700;color:#fff;
+         background:var(--chocolate);border:0;border-radius:999px;cursor:pointer}
+  button:hover{background:#5a4230}
+  button[disabled]{opacity:.6;cursor:progress}
+  .aviso{margin:0 0 16px;padding:11px 13px;border-radius:12px;font-size:15px;
+         background:#F7E4DE;border:1px solid var(--erro);color:#7E2C13}
+  .aviso[hidden]{display:none}
+  .rodape{margin:20px 0 0;font-size:13px;color:var(--tinta-2);text-align:center}
+</style>
+</head>
+<body>
+  <main class="caixa">
+    <h1>Painel de leads</h1>
+    <p class="sub">Curso presencial · Cambuí, MG</p>
+
+    <p class="aviso" id="aviso" role="alert" aria-live="assertive" hidden></p>
+
+    <form id="form" novalidate>
+      <label for="usuario">Usuário</label>
+      <input id="usuario" name="usuario" type="text" autocomplete="username"
+             autocapitalize="none" spellcheck="false" required>
+
+      <label for="senha">Senha</label>
+      <input id="senha" name="senha" type="password" autocomplete="current-password" required>
+
+      <button type="submit" id="botao">Entrar</button>
+    </form>
+
+    <p class="rodape">Esta página trata dados pessoais de terceiros.<br>Não compartilhe o acesso.</p>
+  </main>
+
+<script>
+(function () {
+  var form = document.getElementById('form');
+  var aviso = document.getElementById('aviso');
+  var botao = document.getElementById('botao');
+
+  document.getElementById('usuario').focus();
+
+  form.addEventListener('submit', function (ev) {
+    ev.preventDefault();
+    aviso.hidden = true;
+    botao.disabled = true;
+    botao.textContent = 'Entrando...';
+
+    fetch('/crm/entrar', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        usuario: document.getElementById('usuario').value,
+        senha: document.getElementById('senha').value
+      })
+    })
+      .then(function (r) { return r.json().then(function (j) { return { ok: r.ok, j: j }; }); })
+      .then(function (res) {
+        if (res.ok && res.j.ok) { window.location.replace('/crm'); return; }
+        aviso.textContent = res.j.mensagem || 'Não consegui entrar.';
+        aviso.hidden = false;
+        botao.disabled = false;
+        botao.textContent = 'Entrar';
+        document.getElementById('senha').value = '';
+        document.getElementById('senha').focus();
+      })
+      .catch(function () {
+        aviso.textContent = 'Sem conexão com o servidor. Tente de novo.';
+        aviso.hidden = false;
+        botao.disabled = false;
+        botao.textContent = 'Entrar';
+      });
+  });
+})();
+</script>
+</body>
+</html>

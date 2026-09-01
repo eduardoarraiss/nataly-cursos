@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="robots" content="noindex">
+  <title>Entrando no grupo…</title>
+
+  <!-- ===================================================================
+       REDIRECT + CONVERSÃO · PROFISSÃO LASH (iniciantes)
+       Rota: /entrar-profissao-lash · vem de /profissao-lash
+
+       Dispara, nesta ordem:
+         1. PageView  (automático, via /js/pixel.js)
+         2. Lead      (Meta Pixel 1511752107118676) + Lead_ProfissaoLash custom
+                      — UMA VEZ POR PESSOA, travado por localStorage + eventID
+         3. generate_lead (GA4 G-MZS1VCZ89D) com event_callback
+         4. redirect para o grupo de WhatsApp
+
+       Na REVISITA: nada de Lead, nada de generate_lead. Dispara só o custom
+       Lead_ProfissaoLash_Revisita (que serve pra medir o tamanho da
+       recontagem) e redireciona na hora.
+
+       ✅ DESTRAVADA em 07/08/2026 — GRUPO_WHATSAPP aponta para o grupo
+       "Curso INICIANTE on-line".
+
+       O bloqueio continua ARMADO no código: se alguém apagar o convite ou
+       trocar por algo que não seja um link de convite válido, a página
+       volta a NÃO redirecionar e a NÃO disparar Lead, em vez de mandar o
+       lead pra lugar nenhum e registrar conversão que não aconteceu.
+
+       ⚠️ NÃO reaproveitar o link LK3Y8mAc72L2WkTJFNb72I: aquele é o grupo
+       VIP do Lash 2.0 / Método LED, produto e público diferentes.
+       =================================================================== -->
+
+  <link rel="preconnect" href="https://www.googletagmanager.com">
+  <link rel="preconnect" href="https://connect.facebook.net">
+  <link rel="dns-prefetch" href="https://region1.google-analytics.com">
+
+  <script src="/js/pixel.js"></script>
+  <script src="/js/analytics.js"></script>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@400;600&family=Playfair+Display:ital@1&display=swap" rel="stylesheet">
+  <style>
+    :root{ --pretinho:#241C15; --creme:#F2EEE5; --argila:#C9A48B; }
+    *{margin:0;box-sizing:border-box}
+    body{background:var(--pretinho);color:var(--creme);font-family:'Hanken Grotesk',sans-serif;
+      min-height:100vh;min-height:100svh;display:flex;align-items:center;justify-content:center;text-align:center;padding:24px}
+    .box{max-width:440px}
+    .tit{font-family:'Playfair Display',serif;font-style:italic;font-size:clamp(26px,7vw,38px);line-height:1.15;margin-bottom:14px}
+    .sub{color:rgba(242,238,229,.7);font-size:16px;line-height:1.6}
+    .spin{width:34px;height:34px;border:2px solid rgba(242,238,229,.25);border-top-color:var(--argila);
+      border-radius:50%;margin:0 auto 22px;animation:r 0.8s linear infinite}
+    @keyframes r{to{transform:rotate(360deg)}}
+    a.fb{display:inline-block;margin-top:22px;color:var(--argila);font-weight:600;font-size:15px}
+    #bloqueio{display:none}
+    #bloqueio .tit{color:#E8B4A0}
+  </style>
+</head>
+<body>
+
+  <!-- estado normal -->
+  <div class="box" id="indo">
+    <div class="spin"></div>
+    <p class="tit">Te levando pro <span style="color:var(--argila)">grupo</span>…</p>
+    <p class="sub">Se não abrir em instantes, toque no botão abaixo.</p>
+    <a class="fb" id="link" href="#">Abrir o grupo no WhatsApp →</a>
+  </div>
+
+  <!-- estado bloqueado: link do grupo ainda não configurado -->
+  <div class="box" id="bloqueio">
+    <p class="tit">Configuração pendente</p>
+    <p class="sub">O convite do grupo do Profissão Lash ainda não foi preenchido nesta página, então o redirecionamento está travado de propósito. Nenhuma conversão foi registrada.</p>
+    <p class="sub" style="margin-top:14px;opacity:.55;font-size:14px;">entrar-profissao-lash.html · constante GRUPO_WHATSAPP</p>
+  </div>
+
+  <script>
+    // ================================================================
+    // Grupo de WhatsApp do PROFISSÃO LASH — "Curso INICIANTE on-line".
+    // Convite passado pelo Eduardo em 07/08/2026. Validado por conteúdo:
+    // o link base responde com o nome do grupo, sem os parâmetros
+    // ?s=sh&p=i&ilr=0&amv=1, que são só do compartilhamento do app.
+    // Trocar de grupo = trocar esta linha.
+    // ================================================================
+    var GRUPO_WHATSAPP = "https://chat.whatsapp.com/C8FoQJe9C2E0VNRULbRK6S";
+
+    var CONFIGURADO = /^https:\/\/chat\.whatsapp\.com\/[A-Za-z0-9]{10,}$/.test(GRUPO_WHATSAPP);
+
+    if (!CONFIGURADO) {
+      // BLOQUEIA de verdade: nada de Lead, nada de redirect.
+      document.getElementById('indo').style.display = 'none';
+      document.getElementById('bloqueio').style.display = 'block';
+      if (window.console) {
+        console.error('[Profissão Lash] GRUPO_WHATSAPP não configurado — redirect e evento Lead bloqueados.');
+      }
+    } else {
+      document.getElementById('link').setAttribute('href', GRUPO_WHATSAPP);
+
+      // ---- origem do anúncio (URL desta página ou localStorage do analytics.js) ----
+      var atribuicao = (function () {
+        var CHAVES = ["utm_source", "utm_medium", "utm_campaign", "utm_content", "utm_term", "src", "fbclid", "gclid"];
+        var out = {}, tem = false;
+        try {
+          var qs = new URLSearchParams(location.search);
+          CHAVES.forEach(function (k) { var v = qs.get(k); if (v) { out[k] = v; tem = true; } });
+        } catch (e) {}
+        if (tem) return out;
+        try { return JSON.parse(localStorage.getItem("nr_attrib") || "null") || {}; } catch (e) { return {}; }
+      })();
+
+      var dados = {
+        content_name: "Grupo VIP Profissão Lash",
+        content_category: "captacao-iniciante",
+        source: "pagina-entrar-profissao-lash"
+      };
+      if (atribuicao.utm_source)   dados.utm_source   = atribuicao.utm_source;
+      if (atribuicao.utm_medium)   dados.utm_medium   = atribuicao.utm_medium;
+      if (atribuicao.utm_campaign) dados.utm_campaign = atribuicao.utm_campaign;
+      if (atribuicao.utm_content)  dados.utm_content  = atribuicao.utm_content;
+      if (atribuicao.utm_term)     dados.utm_term     = atribuicao.utm_term;
+
+      // redirect idempotente — só vai uma vez
+      var jaFoi = false;
+      function irPraGrupo() { if (jaFoi) return; jaFoi = true; window.location.replace(GRUPO_WHATSAPP); }
+
+      // ---- trava de recontagem: 1 Lead por pessoa, por navegador ----
+      // Auditoria de 18/08/2026: a campanha marcava 359 leads com ~200 pessoas
+      // no grupo. Uma das causas era esta página não ter trava nenhuma —
+      // 3 aberturas da MESMA pessoa contavam 3 Leads (refresh, voltar, reabrir
+      // o link do anúncio). A outra causa é o vazamento entre chegar no convite
+      // e tocar "Join Chat", que acontece no domínio do WhatsApp e NÃO tem
+      // como ser medido daqui.
+      var CHAVE_LEAD = "nr_lead_profissao_lash";
+      var registro = null;
+      try { registro = JSON.parse(localStorage.getItem(CHAVE_LEAD) || "null"); } catch (e) {}
+      var jaContou = !!(registro && registro.id);
+
+      // eventID estável por pessoa: a Meta deduplica pelo par (nome do evento,
+      // eventID), então se o localStorage for limpo o disparo repetido ainda
+      // cai na deduplicação dela. O localStorage é a trava forte; o eventID
+      // é a segunda linha.
+      var eventID = (jaContou && registro.id) || (function () {
+        try { if (window.crypto && crypto.randomUUID) return "pl-" + crypto.randomUUID(); } catch (e) {}
+        return "pl-" + Date.now().toString(36) + "-" + Math.random().toString(36).slice(2, 10);
+      })();
+
+      // 1) Meta Pixel — Lead padrão + evento próprio para separar do Lead do Método LED
+      if (!jaContou) {
+        try {
+          if (window.fbq) {
+            fbq('track', 'Lead', dados, { eventID: eventID });
+            fbq('trackCustom', 'Lead_ProfissaoLash', dados, { eventID: eventID + "-pl" });
+          }
+        } catch (e) {}
+        try {
+          localStorage.setItem(CHAVE_LEAD, JSON.stringify({ id: eventID, ts: Date.now() }));
+        } catch (e) {}
+      } else {
+        // Já contou antes. Não infla o Lead, mas registra a revisita num evento
+        // próprio — é o que passa a MEDIR o tamanho da recontagem, que na
+        // auditoria só deu pra estimar por proxy (1,26 disparos por pessoa
+        // vindo de link_click, que não é fator medido de Lead).
+        try { if (window.fbq) fbq('trackCustom', 'Lead_ProfissaoLash_Revisita', dados); } catch (e) {}
+      }
+
+      // 2) GA4 — generate_lead via beacon, e só redireciona quando o GA confirmar o envio
+      try {
+        if (window.gtag && !jaContou) {
+          gtag('event', 'generate_lead', {
+            content_name: "Grupo VIP Profissão Lash",
+            campanha: atribuicao.utm_campaign || null,
+            origem: atribuicao.utm_source || null,
+            criativo: atribuicao.utm_content || null,
+            transport_type: 'beacon',
+            event_callback: irPraGrupo
+          });
+        }
+      } catch (e) {}
+
+      // 3) Fallback: se GA estiver bloqueado (adblock) ou o callback não vier, vai em 3s.
+      //    No caminho normal o event_callback acima já redireciona bem antes disso.
+      //    Mesmo mecanismo da /entrar do Método LED, que roda em produção há meses.
+      // Quem já contou não espera o callback do GA (que não vai disparar): vai direto.
+      if (jaContou) irPraGrupo();
+
+      setTimeout(irPraGrupo, 3000);
+    }
+  </script>
+</body>
+</html>

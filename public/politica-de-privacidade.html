@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <!-- ===================================================================
+       POLÍTICA DE PRIVACIDADE · Nataly Ribeiro
+       Rota: /politica-de-privacidade (aliases /privacidade e /privacy)
+
+       POR QUE ESTA PÁGINA EXISTE: os formulários instantâneos do Meta
+       (Lead Ads) EXIGEM a URL de uma política de privacidade válida. Sem
+       ela o formulário não pode ser veiculado, e o anúncio é reprovado.
+
+       ⚠️ ANTES DESTA PÁGINA, /politica-de-privacidade caía no fallback
+       `app.use((_req,res) => res.redirect('/'))` e devolvia a home com
+       HTTP 200 — parecia existir e não existia.
+
+       CONTROLADOR: razão social, CNPJ e e-mail vieram do contrato de
+       coprodução assinado. CPF, RG e endereço residencial foram
+       DELIBERADAMENTE deixados de fora — não são exigidos pela LGPD numa
+       política pública e expor endereço de casa é risco à segurança dela.
+       =================================================================== -->
+
+  <title>Política de Privacidade · Nataly Ribeiro</title>
+  <meta name="description" content="Como os dados pessoais são coletados, usados, compartilhados e protegidos nos cursos e páginas da Nataly Ribeiro.">
+  <meta name="robots" content="index, follow">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@400;500;600;700&family=Playfair+Display:ital,wght@0,500;1,400;1,500&display=swap" rel="stylesheet">
+
+  <style>
+    :root{
+      --branco-quente:#F2EEE5; --tinta:#463729; --chocolate:#6B4F3A;
+      --argila:#C9A48B; --pretinho:#241C15; --linha:#E0D8C9;
+    }
+    *{box-sizing:border-box}
+    body{
+      margin:0; background:var(--branco-quente); color:var(--tinta);
+      font-family:'Hanken Grotesk',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
+      font-size:17px; line-height:1.7; -webkit-font-smoothing:antialiased;
+    }
+    .wrap{max-width:720px; margin:0 auto; padding:0 24px}
+    header{padding:64px 0 40px; border-bottom:1px solid var(--linha)}
+    header .wrap{display:flex; flex-direction:column; gap:14px}
+    .marca{
+      font-family:'Playfair Display',Georgia,serif; font-style:italic; font-weight:500;
+      font-size:15px; letter-spacing:.02em; color:var(--chocolate); margin:0;
+    }
+    h1{
+      font-family:'Playfair Display',Georgia,serif; font-weight:500; font-style:italic;
+      font-size:clamp(32px,5.5vw,46px); line-height:1.15; margin:0; color:var(--pretinho);
+    }
+    .atualizado{font-size:14px; color:var(--chocolate); margin:0}
+    main{padding:44px 0 72px}
+    main .wrap{display:flex; flex-direction:column; gap:38px}
+    section{display:flex; flex-direction:column; gap:12px}
+    h2{
+      font-family:'Hanken Grotesk',sans-serif; font-weight:700; font-size:19px;
+      line-height:1.35; margin:0; color:var(--pretinho);
+    }
+    h2 .n{color:var(--argila); margin-right:9px; font-variant-numeric:tabular-nums}
+    p{margin:0}
+    ul{margin:0; padding-left:22px; display:flex; flex-direction:column; gap:8px}
+    li::marker{color:var(--argila)}
+    a{color:var(--chocolate); text-decoration:underline; text-underline-offset:3px}
+    a:hover{color:var(--pretinho)}
+    a:focus-visible{outline:2px solid var(--chocolate); outline-offset:3px}
+    .destaque{
+      border-left:2px solid var(--argila); padding:4px 0 4px 18px;
+      font-size:16px; color:var(--chocolate);
+    }
+    footer{border-top:1px solid var(--linha); padding:34px 0 60px}
+    footer .wrap{display:flex; flex-direction:column; gap:10px}
+    footer p{font-size:14px; color:var(--chocolate)}
+    @media(max-width:640px){ body{font-size:16px} header{padding:44px 0 30px} }
+  </style>
+</head>
+<body>
+
+<header>
+  <div class="wrap">
+    <p class="marca">Nataly Ribeiro</p>
+    <h1>Política de Privacidade</h1>
+    <p class="atualizado">Atualizada em 1º de setembro de 2026</p>
+  </div>
+</header>
+
+<main>
+  <div class="wrap">
+
+    <section>
+      <p class="destaque">Esta política explica quais dados pessoais são coletados nas
+        páginas e nos cursos da Nataly Ribeiro, para que eles são usados, com quem são
+        compartilhados e quais são os seus direitos sobre eles. Ela segue a Lei Geral de
+        Proteção de Dados Pessoais, a Lei nº 13.709 de 2018.</p>
+    </section>
+
+    <section>
+      <h2><span class="n">1</span>Quem é responsável pelos seus dados</h2>
+      <p>Os dados tratados aqui são de responsabilidade de
+        <strong>43.975.843 NATALY SAMIRA RIBEIRO</strong>, empresária individual inscrita no
+        CNPJ sob o número <strong>43.975.843/0001-16</strong>, responsável pelos cursos de
+        extensão de cílios divulgados neste site. Ela é a controladora dos dados, ou seja,
+        é quem decide para que eles são usados.</p>
+      <p>Contato para assuntos de privacidade:
+        <a href="mailto:natalysamribeiro@gmail.com">natalysamribeiro@gmail.com</a>.</p>
+    </section>
+
+    <section>
+      <h2><span class="n">2</span>Quais dados são coletados</h2>
+      <p>Só são coletados os dados necessários para entrar em contato com você e entregar o
+        que foi combinado.</p>
+      <ul>
+        <li><strong>Dados que você informa</strong>: nome, endereço de e-mail e número de
+          telefone ou WhatsApp, quando você preenche um formulário, entra em um grupo de
+          WhatsApp de aviso de aula ou realiza uma compra.</li>
+        <li><strong>Dados do formulário de inscrição no curso presencial</strong>: na página
+          do curso presencial de Cambuí, o formulário de inscrição pergunta o seu nome, o seu
+          WhatsApp, o seu e-mail (opcional), o seu perfil do Instagram, a sua cidade e estado,
+          a sua faixa de idade, a sua situação profissional hoje, quanto você quer ganhar por
+          mês, quando pretende começar, o que você espera do curso, se você consegue vir até
+          Cambuí e o que acha do valor do investimento. Essas respostas servem para eu
+          entender se o curso faz sentido para você antes de conversarmos.</li>
+        <li><strong>Dados de origem do seu acesso</strong>: junto com o formulário são
+          guardados os parâmetros de campanha do link que você usou (os chamados UTM), o
+          identificador de clique de anúncio do Facebook e Instagram (fbclid) e do Google
+          (gclid), a página de onde você veio, o seu navegador e o seu endereço de IP. Isso
+          serve para eu saber por qual anúncio ou conteúdo você chegou até aqui.</li>
+        <li><strong>Dados de navegação</strong>: páginas visitadas, tempo de permanência,
+          origem do acesso, tipo de dispositivo e navegador, coletados por cookies e
+          tecnologias semelhantes.</li>
+        <li><strong>Dados de compra</strong>: quando você adquire um curso, os dados de
+          pagamento são tratados diretamente pela plataforma de checkout. Nós não recebemos
+          nem armazenamos o número do seu cartão.</li>
+      </ul>
+    </section>
+
+    <section>
+      <h2><span class="n">3</span>Como os dados são coletados</h2>
+      <ul>
+        <li>Formulários preenchidos neste site, incluindo o formulário de inscrição do
+          curso presencial.</li>
+        <li>Formulários preenchidos dentro do Instagram ou do Facebook, quando você responde
+          a um anúncio sem sair do aplicativo.</li>
+        <li>Entrada em grupos de WhatsApp divulgados nas nossas páginas e anúncios.</li>
+        <li>Navegação nas páginas, por meio de cookies e ferramentas de medição.</li>
+      </ul>
+    </section>
+
+    <section>
+      <h2><span class="n">4</span>Para que os dados são usados</h2>
+      <ul>
+        <li>Avisar você sobre aulas ao vivo, turmas, materiais e conteúdos gratuitos.</li>
+        <li>Enviar informações sobre os cursos e as condições de inscrição.</li>
+        <li><strong>Entrar em contato com você pelo WhatsApp</strong> depois que você preenche
+          o formulário de inscrição do curso presencial, para conversar sobre a sua inscrição,
+          tirar dúvidas, combinar a data da aula prática e enviar o link de pagamento.</li>
+        <li>Organizar e priorizar os atendimentos, para que ninguém fique sem resposta.</li>
+        <li>Entregar o acesso ao curso adquirido e prestar suporte.</li>
+        <li>Entender quais conteúdos e anúncios funcionam melhor, de forma agregada, para
+          melhorar o que é oferecido.</li>
+        <li>Cumprir obrigações legais e fiscais.</li>
+      </ul>
+      <p>Os seus dados <strong>não são vendidos</strong> a terceiros em nenhuma hipótese.</p>
+    </section>
+
+    <section>
+      <h2><span class="n">5</span>Com que base legal</h2>
+      <p>O envio de comunicações e conteúdos promocionais tem como base o <strong>seu
+        consentimento</strong>, dado quando você preenche um formulário ou entra em um grupo.
+        A entrega de um curso comprado tem como base a <strong>execução do contrato</strong>.
+        A medição de audiência e a melhoria das páginas têm como base o <strong>legítimo
+        interesse</strong>, sempre de forma agregada e sem expor você individualmente.</p>
+      <p>As respostas do formulário de inscrição do curso presencial são tratadas com base no
+        <strong>seu consentimento</strong> e nos <strong>procedimentos preliminares
+        relacionados a um contrato</strong> — ou seja, a conversa que antecede a sua eventual
+        matrícula, feita a seu pedido. Você pode retirar esse consentimento quando quiser,
+        pelo canal indicado no item 10.</p>
+    </section>
+
+    <section>
+      <h2><span class="n">6</span>Com quem os dados são compartilhados</h2>
+      <p>Os dados são compartilhados apenas com os serviços necessários para o funcionamento
+        das aulas, dos anúncios e das vendas, e cada um deles tem a sua própria política de
+        privacidade:</p>
+      <ul>
+        <li><strong>Meta Platforms</strong>, responsável pelo Facebook, Instagram e WhatsApp,
+          para veicular e medir anúncios e para os grupos de aviso de aula.</li>
+        <li><strong>Google</strong>, para medição de audiência das páginas.</li>
+        <li><strong>Plataformas de checkout e pagamento</strong>, para processar compras e
+          liberar o acesso aos cursos.</li>
+        <li><strong>Serviços de hospedagem e envio de mensagens</strong>, para manter o site
+          no ar e falar com você. As respostas do formulário de inscrição ficam guardadas em
+          um banco de dados privado, hospedado na Railway, com acesso protegido por senha.</li>
+      </ul>
+      <p><strong>Quem enxerga as suas respostas:</strong> apenas a Nataly Ribeiro e o Eduardo
+        Arrais, que cuida da parte técnica e da divulgação dos cursos. Ninguém mais tem acesso
+        ao painel onde essas respostas ficam. Os seus dados <strong>não são vendidos, alugados
+        nem repassados</strong> a nenhuma outra pessoa ou empresa fora do que está listado
+        acima.</p>
+    </section>
+
+    <section>
+      <h2><span class="n">7</span>Cookies e medição</h2>
+      <p>Este site usa cookies e ferramentas de medição, incluindo o pixel da Meta e o Google
+        Analytics, para entender como as pessoas chegam às páginas e o que elas fazem por lá.
+        Essas ferramentas trabalham com dados agregados e ajudam a mostrar anúncios mais
+        relevantes. Você pode bloquear ou apagar cookies nas configurações do seu navegador,
+        e também ajustar as preferências de anúncios dentro da sua conta do Facebook, do
+        Instagram e do Google.</p>
+    </section>
+
+    <section>
+      <h2><span class="n">8</span>Por quanto tempo os dados ficam guardados</h2>
+      <p>Os dados de contato ficam guardados enquanto durar o relacionamento com você e
+        enquanto forem necessários para as finalidades acima. Se você pedir a exclusão, os
+        dados são apagados, com exceção do que a lei obriga a manter, como registros fiscais
+        de compras.</p>
+      <p>As respostas do formulário de inscrição do curso presencial ficam guardadas por
+        <strong>até dois anos</strong> a contar do envio, para o caso de você voltar a
+        procurar o curso mais adiante. Se você não quiser esperar esse prazo, é só pedir a
+        exclusão pelo e-mail do item 10 — os dados são apagados em até quinze dias, e você
+        recebe a confirmação.</p>
+    </section>
+
+    <section>
+      <h2><span class="n">9</span>Os seus direitos</h2>
+      <p>A Lei Geral de Proteção de Dados garante a você o direito de:</p>
+      <ul>
+        <li>Confirmar se existe algum tratamento dos seus dados e acessar esses dados.</li>
+        <li>Corrigir dados incompletos, desatualizados ou incorretos.</li>
+        <li>Pedir a exclusão dos dados tratados com base no seu consentimento.</li>
+        <li>Revogar o consentimento a qualquer momento, sem custo.</li>
+        <li>Saber com quais entidades os seus dados foram compartilhados.</li>
+        <li>Se opor a um tratamento feito com base no legítimo interesse.</li>
+      </ul>
+      <p>Para sair da lista de avisos basta sair do grupo de WhatsApp ou usar o link de
+        descadastro no rodapé dos e-mails. Para qualquer outro pedido, fale com a gente pelo
+        canal abaixo.</p>
+    </section>
+
+    <section>
+      <h2><span class="n">10</span>Como falar com a gente</h2>
+      <p>Para exercer qualquer um dos direitos acima, ou para tirar dúvidas sobre esta
+        política, escreva para
+        <a href="mailto:natalysamribeiro@gmail.com">natalysamribeiro@gmail.com</a>.
+        Você também pode falar com a gente pelo Instagram oficial
+        <a href="https://www.instagram.com/nataly.estetica/" rel="noopener" target="_blank">@nataly.estetica</a>.
+        Os pedidos são respondidos em até quinze dias.</p>
+    </section>
+
+    <section>
+      <h2><span class="n">11</span>Segurança</h2>
+      <p>São adotadas medidas técnicas e organizacionais para proteger os seus dados contra
+        acesso não autorizado, perda ou divulgação indevida. O painel onde as respostas do
+        formulário são consultadas exige usuário e senha, fica fora dos buscadores e registra
+        quem acessou. Nenhum sistema é totalmente
+        imune a incidentes, mas em caso de qualquer evento relevante que possa gerar risco a
+        você, a comunicação é feita conforme exige a lei.</p>
+    </section>
+
+    <section>
+      <h2><span class="n">12</span>Alterações nesta política</h2>
+      <p>Esta política pode ser atualizada para refletir mudanças nos serviços ou na
+        legislação. A data no topo da página sempre indica a versão vigente. Mudanças
+        relevantes são comunicadas pelos canais em que você já fala com a gente.</p>
+    </section>
+
+  </div>
+</main>
+
+<footer>
+  <div class="wrap">
+    <p>© 2026 Nataly Ribeiro. Todos os direitos reservados.</p>
+    <p><a href="/captacao-iniciante-online">Voltar para a página principal</a></p>
+  </div>
+</footer>
+
+</body>
+</html>

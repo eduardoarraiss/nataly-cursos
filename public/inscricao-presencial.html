@@ -1,0 +1,876 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex, nofollow">
+<title>Inscrição · Curso presencial em Cambuí — Nataly Ribeiro</title>
+<meta name="description" content="Nove perguntas rápidas para a Nataly entender se o curso presencial em Cambuí faz sentido para você.">
+
+<!-- Tracking: Meta Pixel 1511752107118676 + GA4 G-MZS1VCZ89D.
+     ⚠️ A rota contém "presencial": o ramo próprio no pixel.js e no analytics.js
+     é testado ANTES do ramo da Formação Presencial LED.
+     ⚠️ Esta página dispara Lead no envio. NUNCA Purchase (quem dispara é a
+     Kiwify) e NUNCA InitiateCheckout (ninguém entra em checkout aqui). -->
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@400;600;700;800;900&family=Playfair+Display:ital,wght@1,600;1,700&display=swap" rel="stylesheet">
+
+<style>
+/* ============================================================
+   INSCRIÇÃO — PROFISSÃO LASH ONLINE + PRESENCIAL
+   Página própria, só o formulário. Uma pergunta por tela, como o
+   formulário de referência que o Eduardo mandou: barra de progresso
+   fina no topo, pergunta numerada, campo só com filete embaixo,
+   botão "Avançar" e setas de navegação.
+   Paleta, régua de espaço e régua de tipo: as mesmas da página de venda.
+   ============================================================ */
+:root{
+  --creme:#F2EEE5;  --papel:#FAF7F0;  --pedra:#E2D8C8;
+  --argila:#C9A48B; --salvia-prof:#7E9072;
+  --chocolate:#6B4F3A; --tinta:#463729; --tinta-2:#7A695A;
+  --filete:#DED3C2; --pretinho:#241C15;
+  --destaque:#CD4C28; --destaque-esc:#A93C1E;
+
+  --e1:4px; --e2:8px; --e3:12px; --e4:16px; --e5:24px;
+  --e6:32px; --e7:48px; --e8:64px;
+
+  --t1:13px; --t2:15px; --t3:17px; --t4:20px; --t5:26px; --t6:34px; --t7:44px;
+
+  --f:'Hanken Grotesk',system-ui,-apple-system,'Segoe UI',sans-serif;
+  --f-serif:'Playfair Display',Georgia,serif;
+  --r1:12px; --r2:20px;
+}
+*{box-sizing:border-box}
+html,body{margin:0; padding:0}
+body{
+  background:var(--creme); color:var(--tinta);
+  font-family:var(--f); font-size:var(--t3); line-height:1.55;
+  -webkit-font-smoothing:antialiased;
+  min-height:100svh; display:flex; flex-direction:column;
+}
+img{max-width:100%; display:block; height:auto}
+
+/* ---------- barra de progresso, colada no topo ---------- */
+.prog{
+  position:fixed; inset:0 0 auto 0; height:5px; z-index:20;
+  background:var(--pedra);
+}
+.prog__b{
+  height:100%; width:0%; background:var(--chocolate);
+  transition:width .3s ease;
+}
+
+/* ---------- palco ---------- */
+.palco{
+  flex:1; display:flex; align-items:center; justify-content:center;
+  padding:var(--e7) var(--e5) 110px;   /* 110px = folga para as setas fixas */
+}
+@media(min-width:700px){.palco{padding:var(--e8) var(--e6) 120px}}
+.tela{width:100%; max-width:620px}
+
+/* ---------- boas-vindas ---------- */
+.abertura{text-align:center}
+.abertura__foto{
+  width:100%; max-width:340px; margin:0 auto var(--e5);
+  /* limita pela ALTURA da tela também: em celular curto a foto quadrada
+     empurrava o botão para fora e a pessoa não via por onde começar. */
+  max-height:34svh; object-fit:cover; object-position:center 15%;
+  border-radius:var(--r2); aspect-ratio:1/1; border:1px solid var(--filete);
+}
+@media(min-width:700px){.abertura__foto{max-height:40svh}}
+.rot{
+  display:flex; align-items:center; justify-content:center; gap:var(--e2);
+  font-size:var(--t1); font-weight:800; letter-spacing:.14em;
+  text-transform:uppercase; color:var(--salvia-prof); margin:0 0 var(--e3);
+}
+.rot::before{content:""; width:6px; height:6px; border-radius:50%; background:var(--argila)}
+.abertura h1{
+  font-size:var(--t6); line-height:1.12; font-weight:900;
+  margin:0 0 var(--e4); letter-spacing:-.01em;
+}
+@media(min-width:700px){.abertura h1{font-size:var(--t7)}}
+.abertura h1 em{font-family:var(--f-serif); font-style:italic; font-weight:700}
+.abertura p{margin:0 auto var(--e5); max-width:460px; color:var(--tinta-2)}
+
+/* ---------- pergunta ---------- */
+.etapa{border:0; margin:0; padding:0; min-width:0}
+.etapa[hidden]{display:none}
+/* ⚠️ Contador em --argila media 1,98:1 sobre o creme. A regra do design
+   system é clara: argila NUNCA como cor de texto, só como filete ou fundo
+   de pílula. Aqui vai --tinta-2, medido acima de 4,5:1. */
+.n{
+  display:block;
+  font-size:var(--t1); font-weight:800; letter-spacing:.12em;
+  text-transform:uppercase; color:var(--tinta-2); margin:0 0 var(--e3);
+}
+.q{
+  display:block; font-size:var(--t5); line-height:1.2; font-weight:800;
+  color:var(--tinta); margin:0 0 var(--e3); padding:0;
+}
+@media(min-width:700px){.q{font-size:var(--t6); line-height:1.15}}
+.ajuda{font-size:var(--t2); color:var(--tinta-2); margin:0 0 var(--e5); max-width:520px}
+
+/* ---------- campo: só um filete embaixo, como na referência ---------- */
+.campo{margin-bottom:var(--e5)}
+.campo label{
+  display:block; font-size:var(--t1); font-weight:800; letter-spacing:.08em;
+  text-transform:uppercase; color:var(--tinta-2); margin-bottom:var(--e2);
+}
+.campo input,.campo textarea{
+  width:100%; font:inherit; font-size:20px;   /* ≥16px trava o zoom do iOS */
+  color:var(--tinta); background:transparent;
+  border:0; border-bottom:2px solid var(--filete);
+  border-radius:0; padding:10px 2px; min-height:52px;
+}
+.campo textarea{min-height:110px; resize:vertical; font-size:18px; line-height:1.5}
+/* Placeholder também é texto e também precisa dos 4,5:1. #8A7565 media
+   3,77:1 sobre o creme e reprovava. */
+.campo input::placeholder,.campo textarea::placeholder{color:var(--tinta-2)}
+.campo input:focus,.campo textarea:focus{
+  outline:none; border-bottom-color:var(--chocolate);
+  box-shadow:0 2px 0 0 var(--chocolate);
+}
+.campo input:focus-visible,.campo textarea:focus-visible{
+  outline:3px solid rgba(107,79,58,.4); outline-offset:4px;
+}
+.campo input[aria-invalid="true"],.campo textarea[aria-invalid="true"]{
+  border-bottom-color:var(--destaque-esc);
+}
+.dupla{display:grid; gap:var(--e4); grid-template-columns:1fr}
+@media(min-width:560px){.dupla{grid-template-columns:1fr 110px}}
+
+/* ---------- escolhas ---------- */
+.ops{display:grid; gap:var(--e2); margin:0 0 var(--e5)}
+.op{
+  display:flex; align-items:flex-start; gap:var(--e3);
+  padding:14px var(--e4); min-height:56px; cursor:pointer;
+  background:var(--papel); border:1px solid var(--filete); border-radius:var(--r1);
+  font-size:var(--t3); line-height:1.4; color:var(--tinta);
+}
+.op input{position:absolute; opacity:0; width:1px; height:1px; margin:0}
+.op .marca{
+  flex:0 0 22px; width:22px; height:22px; margin-top:1px; border-radius:50%;
+  border:2px solid var(--argila); background:#fff;
+}
+.op input:checked ~ .marca{
+  border-color:var(--creme); background:var(--creme);
+  box-shadow:inset 0 0 0 4px var(--chocolate);
+}
+.op:hover{border-color:var(--chocolate)}
+.op:has(input:checked){background:var(--chocolate); color:var(--creme); border-color:var(--chocolate)}
+.op:has(input:checked) .marca{border-color:var(--creme); background:var(--creme); box-shadow:inset 0 0 0 4px var(--chocolate)}
+.op input:focus-visible ~ .marca{outline:3px solid rgba(107,79,58,.55); outline-offset:3px}
+.op .sub{display:block; font-size:var(--t2); opacity:.8; margin-top:2px}
+.sub-rot{font-size:var(--t2); color:var(--tinta-2); margin:var(--e5) 0 var(--e3)}
+
+/* ---------- a etapa do investimento ---------- */
+.valor{
+  background:var(--pretinho); color:var(--creme);
+  border-radius:var(--r2); padding:var(--e6) var(--e5); margin:0 0 var(--e5);
+}
+.valor__n{
+  font-family:var(--f-serif); font-style:italic; font-weight:700;
+  font-size:var(--t7); line-height:1; margin:0 0 var(--e2);
+}
+@media(min-width:700px){.valor__n{font-size:56px}}
+.valor__p{font-size:var(--t4); font-weight:800; margin:0 0 var(--e1)}
+.valor__a{font-size:var(--t2); color:rgba(242,238,229,.68); margin:0 0 var(--e5)}
+.valor__l{
+  list-style:none; margin:0; padding:var(--e5) 0 0;
+  border-top:1px solid rgba(242,238,229,.2); display:grid; gap:var(--e2);
+}
+.valor__l li{font-size:var(--t2); line-height:1.45; color:rgba(242,238,229,.9);
+  display:flex; gap:var(--e2)}
+.valor__l li::before{content:"✓"; color:var(--argila); font-weight:900; flex:0 0 auto}
+
+/* ---------- erro ---------- */
+.erro{
+  margin:0 0 var(--e4); padding:11px var(--e3);
+  font-size:var(--t2); font-weight:700; color:#7E2C13;
+  background:#F7E4DE; border:1px solid var(--destaque-esc); border-radius:var(--r1);
+}
+.erro[hidden]{display:none}
+
+/* ---------- navegação ---------- */
+.acoes{display:flex; align-items:center; gap:var(--e3); flex-wrap:wrap}
+.btn{
+  font:inherit; font-weight:800; font-size:var(--t3);
+  color:var(--creme); background:var(--chocolate);
+  border:0; border-radius:999px; padding:0 var(--e6); min-height:56px;
+  cursor:pointer; letter-spacing:.02em;
+}
+.btn:hover{background:#5a4230}
+.btn:active{transform:scale(.985)}
+.btn[disabled]{opacity:.6; cursor:progress}
+.btn:focus-visible,.setas button:focus-visible{outline:3px solid rgba(107,79,58,.55); outline-offset:3px}
+.enter{font-size:var(--t1); color:var(--tinta-2)}
+@media(max-width:559px){.enter{display:none}}
+
+/* ⚠️ Estas setas eram position:fixed no canto, como na referência. Medido em
+   390px, elas cobriam o aviso de privacidade e passavam por cima das opções
+   durante a rolagem. No fluxo, ao lado do "Avançar", não tapam nada e o
+   caminho de volta fica visível — que é o que importa num formulário longo. */
+.voltar{
+  flex:0 0 auto; width:56px; min-height:56px; border-radius:999px; cursor:pointer;
+  background:transparent; border:1px solid var(--filete); color:var(--chocolate);
+  display:grid; place-items:center;
+}
+.voltar:hover:not([disabled]){border-color:var(--chocolate); background:var(--papel)}
+.voltar[hidden]{display:none}
+.voltar svg{width:20px; height:20px}
+
+/* ⚠️ Este aviso era position:fixed e COBRIA o botão "Começar" na abertura,
+   que é a tela mais alta. No fluxo normal ele nunca tapa nada e ainda fica
+   logo abaixo do botão, que é onde o consentimento tem de ser lido. */
+.rodape{
+  margin:var(--e6) 0 0; max-width:520px;
+  font-size:var(--t1); line-height:1.45; color:var(--tinta-2); text-align:left;
+}
+.rodape a{color:var(--chocolate)}
+
+/* ---------- tela final ---------- */
+.fim{text-align:center}
+.fim[hidden]{display:none}
+.fim__selo{
+  width:68px; height:68px; margin:0 auto var(--e5); border-radius:50%;
+  background:var(--salvia-prof); color:#fff; display:grid; place-items:center;
+}
+.fim__selo svg{width:34px; height:34px}
+.fim h2{font-size:var(--t6); line-height:1.12; margin:0 0 var(--e3); font-weight:900}
+@media(min-width:700px){.fim h2{font-size:var(--t7)}}
+.fim > p{margin:0 auto var(--e5); max-width:460px; color:var(--tinta-2)}
+.passos{
+  list-style:none; margin:0 auto; padding:var(--e5) 0 0; max-width:480px;
+  border-top:1px solid var(--filete); text-align:left; display:grid; gap:var(--e4);
+}
+.passos li{display:flex; gap:var(--e3); font-size:var(--t2); line-height:1.5}
+.passos b{
+  flex:0 0 28px; width:28px; height:28px; border-radius:50%;
+  background:var(--chocolate); color:var(--creme); font-size:var(--t1);
+  display:grid; place-items:center;
+}
+.mel{position:absolute; left:-9999px; width:1px; height:1px; overflow:hidden}
+</style>
+</head>
+<body>
+
+<div class="prog" role="presentation" aria-hidden="true"><div class="prog__b" id="barra"></div></div>
+
+<main class="palco">
+  <div class="tela">
+
+    <!-- ============ 0. BOAS-VINDAS ============ -->
+    <section class="abertura etapa" data-etapa="0">
+      <img class="abertura__foto" src="/img/nataly-smile-shoulder.jpg"
+           width="1400" height="1400" fetchpriority="high"
+           alt="Nataly Ribeiro, que lê e responde pessoalmente cada inscrição">
+      <p class="rot">Sou eu que vou te responder</p>
+      <h1>Me conta de você antes de <em>garantir a sua vaga</em></h1>
+      <p>São nove perguntas rápidas, menos de dois minutos. Eu leio uma por uma e te
+      chamo no WhatsApp para combinar a data da sua prática em Cambuí.</p>
+      <div class="acoes" style="justify-content:center">
+        <button type="button" class="btn" id="comecar">Começar &rarr;</button>
+      </div>
+    </section>
+
+    <form id="insc-form" novalidate autocomplete="on">
+
+      <div class="mel" aria-hidden="true">
+        <label for="sobrenome_confirmacao">Deixe este campo em branco</label>
+        <input type="text" id="sobrenome_confirmacao" name="sobrenome_confirmacao"
+               tabindex="-1" autocomplete="off">
+      </div>
+
+      <!-- ============ 1. NOME ============ -->
+      <fieldset class="etapa" data-etapa="1" hidden>
+        <legend class="q"><span class="n">Pergunta 1 de 9</span>Qual é o seu nome?</legend>
+        <p class="ajuda">Nome e sobrenome, do jeito que você quer que eu te chame.</p>
+        <p class="erro" id="e-nome" role="alert" hidden></p>
+        <div class="campo">
+          <label for="f-nome">Seu nome completo</label>
+          <input type="text" id="f-nome" name="nome" autocomplete="name"
+                 autocapitalize="words" enterkeyhint="next"
+                 placeholder="Sua resposta..." aria-describedby="e-nome">
+        </div>
+      </fieldset>
+
+      <!-- ============ 2. CIDADE ============ -->
+      <fieldset class="etapa" data-etapa="2" hidden>
+        <legend class="q"><span class="n">Pergunta 2 de 9</span>De onde você é?</legend>
+        <p class="ajuda">A prática é em Cambuí, no sul de Minas. Quero saber de quão
+        longe você viria.</p>
+        <p class="erro" id="e-cidade" role="alert" hidden></p>
+        <div class="campo dupla">
+          <div>
+            <label for="f-cidade">Sua cidade</label>
+            <input type="text" id="f-cidade" name="cidade" autocomplete="address-level2"
+                   autocapitalize="words" enterkeyhint="next"
+                   placeholder="Sua resposta..." aria-describedby="e-cidade">
+          </div>
+          <div>
+            <label for="f-estado">Estado</label>
+            <input type="text" id="f-estado" name="estado" autocomplete="address-level1"
+                   maxlength="2" autocapitalize="characters" spellcheck="false"
+                   enterkeyhint="next" placeholder="MG">
+          </div>
+        </div>
+      </fieldset>
+
+      <!-- ============ 3. WHATSAPP ============ -->
+      <fieldset class="etapa" data-etapa="3" hidden>
+        <legend class="q"><span class="n">Pergunta 3 de 9</span>Qual é o seu WhatsApp?</legend>
+        <p class="ajuda">É por aí que eu te respondo. Confere o DDD.</p>
+        <p class="erro" id="e-telefone" role="alert" hidden></p>
+        <div class="campo">
+          <label for="f-telefone">WhatsApp com DDD</label>
+          <input type="tel" id="f-telefone" name="telefone" inputmode="numeric"
+                 autocomplete="tel-national" enterkeyhint="next" maxlength="16"
+                 placeholder="(35) 99716-4668" aria-describedby="e-telefone">
+        </div>
+        <div class="campo">
+          <label for="f-email">Seu e-mail <span style="text-transform:none;letter-spacing:0;font-weight:400">(opcional)</span></label>
+          <input type="email" id="f-email" name="email" inputmode="email"
+                 autocomplete="email" autocapitalize="none" spellcheck="false"
+                 enterkeyhint="next" placeholder="Sua resposta..." aria-describedby="e-email">
+          <p class="erro" id="e-email" role="alert" hidden style="margin-top:var(--e3)"></p>
+        </div>
+      </fieldset>
+
+      <!-- ============ 4. INSTAGRAM ============ -->
+      <fieldset class="etapa" data-etapa="4" hidden>
+        <legend class="q"><span class="n">Pergunta 4 de 9</span>E o seu Instagram?</legend>
+        <p class="ajuda">Eu gosto de ver quem está do outro lado antes de conversar.</p>
+        <p class="erro" id="e-instagram" role="alert" hidden></p>
+        <div class="campo">
+          <label for="f-instagram">Seu @ do Instagram</label>
+          <input type="text" id="f-instagram" name="instagram" autocapitalize="none"
+                 spellcheck="false" autocomplete="off" enterkeyhint="next"
+                 placeholder="@seuperfil" aria-describedby="e-instagram">
+        </div>
+      </fieldset>
+
+      <!-- ============ 5. SITUAÇÃO ============ -->
+      <fieldset class="etapa" data-etapa="5" hidden>
+        <legend class="q"><span class="n">Pergunta 5 de 9</span>Hoje, você está mais para qual delas?</legend>
+        <p class="ajuda">Não existe resposta errada. Eu já formei mulheres vindas dos
+        três caminhos.</p>
+        <p class="erro" id="e-situacao" role="alert" hidden></p>
+        <div class="ops" role="radiogroup" aria-label="Sua situação hoje">
+          <label class="op"><input type="radio" name="situacao" value="ja-lash"><span class="marca" aria-hidden="true"></span><span class="txt">Já trabalho com extensão de cílios<span class="sub">Quero melhorar a técnica e a durabilidade</span></span></label>
+          <label class="op"><input type="radio" name="situacao" value="area-beleza"><span class="marca" aria-hidden="true"></span><span class="txt">Já sou da área da beleza<span class="sub">Unhas, cabelo, sobrancelha, maquiagem</span></span></label>
+          <label class="op"><input type="radio" name="situacao" value="outra-area"><span class="marca" aria-hidden="true"></span><span class="txt">Venho de outra área<span class="sub">Quero começar do zero nessa profissão</span></span></label>
+        </div>
+        <p class="sub-rot" id="rot-idade">E a sua idade:</p>
+        <p class="erro" id="e-faixa_idade" role="alert" hidden></p>
+        <div class="ops" role="radiogroup" aria-labelledby="rot-idade">
+          <label class="op"><input type="radio" name="faixa_idade" value="18-24"><span class="marca" aria-hidden="true"></span><span class="txt">18 a 24 anos</span></label>
+          <label class="op"><input type="radio" name="faixa_idade" value="25-34"><span class="marca" aria-hidden="true"></span><span class="txt">25 a 34 anos</span></label>
+          <label class="op"><input type="radio" name="faixa_idade" value="35-44"><span class="marca" aria-hidden="true"></span><span class="txt">35 a 44 anos</span></label>
+          <label class="op"><input type="radio" name="faixa_idade" value="45+"><span class="marca" aria-hidden="true"></span><span class="txt">45 anos ou mais</span></label>
+        </div>
+      </fieldset>
+
+      <!-- ============ 6. META ============ -->
+      <fieldset class="etapa" data-etapa="6" hidden>
+        <legend class="q"><span class="n">Pergunta 6 de 9</span>Quanto você quer ganhar por mês com cílios?</legend>
+        <p class="ajuda">Isso me ajuda a te mostrar quantas clientes por semana fecham
+        essa conta.</p>
+        <p class="erro" id="e-meta_renda" role="alert" hidden></p>
+        <div class="ops" role="radiogroup" aria-label="Sua meta de renda">
+          <label class="op"><input type="radio" name="meta_renda" value="ate-2k"><span class="marca" aria-hidden="true"></span><span class="txt">Até R$ 2 mil<span class="sub">Uma renda extra, no meu tempo livre</span></span></label>
+          <label class="op"><input type="radio" name="meta_renda" value="2k-5k"><span class="marca" aria-hidden="true"></span><span class="txt">Entre R$ 2 e R$ 5 mil<span class="sub">Quero que seja a minha renda principal</span></span></label>
+          <label class="op"><input type="radio" name="meta_renda" value="5k-10k"><span class="marca" aria-hidden="true"></span><span class="txt">Entre R$ 5 e R$ 10 mil</span></label>
+          <label class="op"><input type="radio" name="meta_renda" value="mais-10k"><span class="marca" aria-hidden="true"></span><span class="txt">Mais de R$ 10 mil<span class="sub">Quero montar estúdio e ter equipe</span></span></label>
+          <label class="op"><input type="radio" name="meta_renda" value="nao-sei"><span class="marca" aria-hidden="true"></span><span class="txt">Ainda não sei</span></label>
+        </div>
+        <p class="sub-rot" id="rot-quando">E quando você quer começar:</p>
+        <p class="erro" id="e-quando_comecar" role="alert" hidden></p>
+        <div class="ops" role="radiogroup" aria-labelledby="rot-quando">
+          <label class="op"><input type="radio" name="quando_comecar" value="agora"><span class="marca" aria-hidden="true"></span><span class="txt">O quanto antes</span></label>
+          <label class="op"><input type="radio" name="quando_comecar" value="30-dias"><span class="marca" aria-hidden="true"></span><span class="txt">Nos próximos 30 dias</span></label>
+          <label class="op"><input type="radio" name="quando_comecar" value="90-dias"><span class="marca" aria-hidden="true"></span><span class="txt">Nos próximos três meses</span></label>
+          <label class="op"><input type="radio" name="quando_comecar" value="so-olhando"><span class="marca" aria-hidden="true"></span><span class="txt">Só estou pesquisando</span></label>
+        </div>
+      </fieldset>
+
+      <!-- ============ 7. OBJETIVO ============ -->
+      <fieldset class="etapa" data-etapa="7" hidden>
+        <legend class="q"><span class="n">Pergunta 7 de 9</span>O que faria esse curso valer a pena para você?</legend>
+        <p class="ajuda">Escreve do seu jeito. É o que eu leio primeiro quando o seu
+        nome chega aqui.</p>
+        <div class="campo">
+          <label for="f-objetivo">Seu objetivo <span style="text-transform:none;letter-spacing:0;font-weight:400">(opcional)</span></label>
+          <textarea id="f-objetivo" name="objetivo" maxlength="1000"
+                    placeholder="Ex.: quero sair do meu emprego e atender em casa"></textarea>
+        </div>
+      </fieldset>
+
+      <!-- ============ 8. CAMBUÍ ============ -->
+      <fieldset class="etapa" data-etapa="8" hidden>
+        <legend class="q"><span class="n">Pergunta 8 de 9</span>A prática é presencial, em Cambuí, MG. Você consegue vir?</legend>
+        <p class="ajuda">É um dia só, e a data a gente marca junto, conforme a sua agenda.
+        Mas você precisa vir até aqui.</p>
+        <p class="erro" id="e-disponibilidade" role="alert" hidden></p>
+        <div class="ops" role="radiogroup" aria-label="Disponibilidade de vir a Cambuí">
+          <label class="op"><input type="radio" name="disponibilidade" value="sim"><span class="marca" aria-hidden="true"></span><span class="txt">Sim, eu consigo ir até Cambuí<span class="sub">É longe, mas eu me organizo</span></span></label>
+          <label class="op"><input type="radio" name="disponibilidade" value="talvez"><span class="marca" aria-hidden="true"></span><span class="txt">Talvez, preciso ver como<span class="sub">Quero conversar sobre isso</span></span></label>
+          <label class="op"><input type="radio" name="disponibilidade" value="nao"><span class="marca" aria-hidden="true"></span><span class="txt">Não, eu não consigo ir<span class="sub">Nesse caso, eu te indico o curso online</span></span></label>
+        </div>
+      </fieldset>
+
+      <!-- ============ 9. O INVESTIMENTO ============
+           A ÚNICA página do site onde o valor aparece. Fica aqui, no fim,
+           porque quem já respondeu oito perguntas responde esta; quem vê o
+           número na primeira tela some. -->
+      <fieldset class="etapa" data-etapa="9" hidden>
+        <legend class="q"><span class="n">Pergunta 9 de 9 · a última</span>Agora sim: o investimento</legend>
+        <div class="valor">
+          <p class="valor__n">R$ 1.497</p>
+          <p class="valor__p">ou 12x de R$ 154,82</p>
+          <p class="valor__a">à vista no Pix ou no cartão</p>
+          <ul class="valor__l">
+            <li>Um dia de prática ao vivo comigo, em Cambuí, MG</li>
+            <li>Todo o material da prática incluso, você não leva nada</li>
+            <li>Apostila impressa na sua mão</li>
+            <li>O curso online completo, com as 39 aulas teóricas</li>
+            <li>A aula prática completa e as 10 técnicas</li>
+            <li>Bônus de precificação, marketing e fidelização</li>
+            <li>Grupo de suporte no WhatsApp</li>
+            <li>Certificado</li>
+          </ul>
+        </div>
+        <p class="ajuda">Prefiro te falar o valor agora do que fazer você perder tempo.
+        Pode ser sincera comigo:</p>
+        <p class="erro" id="e-aceita_valor" role="alert" hidden></p>
+        <div class="ops" role="radiogroup" aria-label="Sobre o valor do investimento">
+          <label class="op"><input type="radio" name="aceita_valor" value="sim"><span class="marca" aria-hidden="true"></span><span class="txt">Sim, está dentro do que eu posso investir<span class="sub">Quero garantir a minha vaga</span></span></label>
+          <label class="op"><input type="radio" name="aceita_valor" value="preciso-parcelar"><span class="marca" aria-hidden="true"></span><span class="txt">Sim, mas eu preciso parcelar<span class="sub">Quero entender as condições</span></span></label>
+          <label class="op"><input type="radio" name="aceita_valor" value="nao"><span class="marca" aria-hidden="true"></span><span class="txt">Agora não cabe no meu bolso<span class="sub">Prefiro ser avisada de outras opções</span></span></label>
+        </div>
+      </fieldset>
+
+      <p class="erro" id="e-geral" role="alert" hidden></p>
+
+      <div class="acoes">
+        <button type="button" class="voltar" id="subir" aria-label="Voltar para a pergunta anterior">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
+               stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+        </button>
+        <button type="submit" class="btn" id="avancar">Avançar</button>
+        <span class="enter">ou aperte <b>Enter &crarr;</b></span>
+      </div>
+    </form>
+
+    <!-- ============ TELA FINAL ============ -->
+    <section class="fim" id="obrigado" hidden tabindex="-1">
+      <div class="fim__selo" aria-hidden="true">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"
+             stroke-linecap="round" stroke-linejoin="round"><path d="m5 13 4.5 4.5L19 7"></path></svg>
+      </div>
+      <h2>Pronto, <span id="nome-fim">recebi a sua inscrição</span>!</h2>
+      <p>A sua inscrição chegou aqui e eu já fui avisada.</p>
+      <ul class="passos">
+        <li><b>1</b><span>Eu leio as suas respostas pessoalmente. Não é robô, sou eu mesma.</span></li>
+        <li><b>2</b><span>Te chamo no WhatsApp <strong>em até 24 horas</strong>, de segunda a sábado.
+        Salva o meu número: <strong>(35) 99716-4668</strong>.</span></li>
+        <li><b>3</b><span>A gente combina a data da sua prática em Cambuí conforme a sua
+        disponibilidade, e eu te mando o link para garantir a vaga.</span></li>
+      </ul>
+      <p style="margin-top:var(--e6);font-size:var(--t2)">Se eu demorar, me chama: estou no
+      <a href="https://wa.me/5535997164668" target="_blank" rel="noopener"
+         style="color:var(--chocolate)">(35) 99716-4668</a>.</p>
+    </section>
+
+    <p class="rodape" id="rodape"><span>Ao enviar, você concorda que a Nataly entre em contato
+pelo WhatsApp sobre o curso presencial. Os seus dados não são vendidos nem repassados a
+terceiros. <a href="/politica-de-privacidade" target="_blank" rel="noopener">Política de
+privacidade</a>.</span></p>
+  </div>
+</main>
+
+
+
+<script src="/js/pixel.js"></script>
+<script src="/js/analytics.js"></script>
+
+<script>
+/* ============================================================
+   INSCRIÇÃO — uma pergunta por tela
+   ============================================================
+   Etapa 0 é a abertura; 1 a 9 são as perguntas; a 9 é o investimento
+   — a ÚNICA tela do site onde o valor aparece.
+
+   Eventos disparados aqui (o mapa completo está no LEIA-ME):
+     · ViuInvestimento  — quando a etapa 9 aparece, uma vez por sessão.
+       É o funil mais valioso: diz quantas desistem ao ver o número.
+     · Lead             — no envio, com eventID e SEM valor de compra.
+   Nunca Purchase (quem dispara é a Kiwify) e nunca InitiateCheckout
+   (ninguém entra em checkout por aqui).
+   ============================================================ */
+(function () {
+  var form = document.getElementById('insc-form');
+  if (!form) return;
+
+  var CHAVE = 'nr_insc_presencial';
+  var TOTAL = 9;                 /* perguntas; a abertura é a etapa 0 */
+  var ETAPA_VALOR = 9;
+
+  var etapas   = [].slice.call(document.querySelectorAll('.etapa'));
+  var barra    = document.getElementById('barra');
+  var btAvanca = document.getElementById('avancar');
+  var btComeca = document.getElementById('comecar');
+  var btSubir  = document.getElementById('subir');
+  var erroGeral= document.getElementById('e-geral');
+  var obrigado = document.getElementById('obrigado');
+  var rodape   = document.getElementById('rodape');
+  var atual    = 0;
+  var enviando = false;
+
+  var REGRAS = [
+    { campos: [] },                                  /* 0 — abertura */
+    { campos: ['nome'] },
+    { campos: ['cidade'] },
+    { campos: ['telefone', 'email'] },
+    { campos: ['instagram'] },
+    { campos: ['situacao', 'faixa_idade'] },
+    { campos: ['meta_renda', 'quando_comecar'] },
+    { campos: [] },                                  /* 7 — objetivo é opcional */
+    { campos: ['disponibilidade'] },
+    { campos: ['aceita_valor'] }
+  ];
+
+  var MENSAGENS = {
+    nome:            'Me diz o seu nome para eu saber como te chamar.',
+    cidade:          'Escreve a sua cidade — é assim que eu sei de onde você viria.',
+    telefone:        'Confere o WhatsApp: precisa ter o DDD e o número, como (35) 99716-4668.',
+    email:           'Esse e-mail parece incompleto. Confere se tem o @ e o ponto.',
+    instagram:       'Coloca só o seu @ do Instagram, sem espaço.',
+    situacao:        'Escolhe a opção que mais parece com você hoje.',
+    faixa_idade:     'Escolhe a sua faixa de idade.',
+    meta_renda:      'Escolhe quanto você quer ganhar por mês.',
+    quando_comecar:  'Escolhe quando você quer começar.',
+    disponibilidade: 'Preciso saber se você consegue vir até Cambuí.',
+    aceita_valor:    'Me diz o que você acha do valor — pode ser sincera.'
+  };
+
+  /* ---------- utilidades ---------- */
+  function campo(n) { return form.querySelector('[name="' + n + '"]'); }
+  function valorDe(n) {
+    var m = form.querySelector('[name="' + n + '"]:checked');
+    if (m) return m.value;
+    var el = campo(n);
+    return el && el.type !== 'radio' ? el.value.trim() : '';
+  }
+  function elErro(n) { return document.getElementById('e-' + n); }
+  function mostraErro(n, msg) {
+    var e = elErro(n); if (e) { e.textContent = msg; e.hidden = false; }
+    var el = campo(n); if (el && el.type !== 'radio') el.setAttribute('aria-invalid', 'true');
+  }
+  function limpaErro(n) {
+    var e = elErro(n); if (e) { e.hidden = true; e.textContent = ''; }
+    var el = campo(n); if (el) el.removeAttribute('aria-invalid');
+  }
+  function digitos(v) { return String(v || '').replace(/\D/g, ''); }
+
+  /* ---------- validação (mesmo critério do servidor) ---------- */
+  function valida(n) {
+    var v = valorDe(n);
+    switch (n) {
+      case 'nome':   return v.length >= 2;
+      case 'cidade': return v.length >= 2;
+      case 'telefone':
+        var d = digitos(v);
+        if (d.length > 11 && d.indexOf('55') === 0) d = d.slice(2);
+        if (d.length !== 10 && d.length !== 11) return false;
+        return parseInt(d.slice(0, 2), 10) >= 11;
+      case 'email':
+        if (!v) return true;
+        return /^[^\s@]+@[^\s@]+\.[a-zA-Z]{2,}$/.test(v);
+      case 'instagram':
+        var s = v.replace(/^https?:\/\/(www\.)?instagram\.com\//, '')
+                 .replace(/[?#].*$/, '').replace(/\/+$/, '').replace(/^@+/, '');
+        return /^[A-Za-z0-9._]{1,30}$/.test(s);
+      default: return !!v;
+    }
+  }
+
+  function validaEtapa(i) {
+    var ok = true, primeiro = null;
+    REGRAS[i].campos.forEach(function (n) {
+      if (valida(n)) { limpaErro(n); return; }
+      mostraErro(n, MENSAGENS[n]); ok = false;
+      if (!primeiro) primeiro = n;
+    });
+    if (!ok && primeiro) {
+      var alvo = form.querySelector('[name="' + primeiro + '"]');
+      if (alvo) { try { alvo.focus({ preventScroll: false }); } catch (e) { alvo.focus(); } }
+    }
+    return ok;
+  }
+
+  /* ---------- máscara de telefone ---------- */
+  var elTel = document.getElementById('f-telefone');
+  if (elTel) {
+    elTel.addEventListener('input', function () {
+      var d = digitos(this.value).slice(0, 11), s = d;
+      if (d.length > 2) s = '(' + d.slice(0, 2) + ') ' + d.slice(2);
+      if (d.length > 6) {
+        var c = d.length > 10 ? 7 : 6;
+        s = '(' + d.slice(0, 2) + ') ' + d.slice(2, c) + '-' + d.slice(c);
+      }
+      this.value = s;
+    });
+  }
+
+  /* ---------- rascunho ---------- */
+  var TEXTOS = ['nome','cidade','estado','telefone','email','instagram','objetivo'];
+  var ESCOLHAS = ['situacao','faixa_idade','meta_renda','quando_comecar','disponibilidade','aceita_valor'];
+
+  function salvaRascunho() {
+    try {
+      var d = {};
+      TEXTOS.forEach(function (n) { var el = campo(n); if (el) d[n] = el.value; });
+      ESCOLHAS.forEach(function (n) { var v = valorDe(n); if (v) d[n] = v; });
+      d._etapa = atual;
+      localStorage.setItem(CHAVE, JSON.stringify(d));
+    } catch (e) {}
+  }
+  function leRascunho() {
+    try {
+      var d = JSON.parse(localStorage.getItem(CHAVE) || '{}');
+      Object.keys(d).forEach(function (n) {
+        if (n === '_etapa') return;
+        var r = form.querySelector('[name="' + n + '"][value="' + d[n] + '"]');
+        if (r) { r.checked = true; return; }
+        var el = campo(n);
+        if (el && el.type !== 'radio') el.value = d[n];
+      });
+      if (typeof d._etapa === 'number' && d._etapa > 0 && d._etapa <= TOTAL) return d._etapa;
+    } catch (e) {}
+    return 0;
+  }
+  form.addEventListener('input', salvaRascunho);
+  form.addEventListener('change', salvaRascunho);
+
+  /* validação em tempo real: o erro some assim que a pessoa corrige */
+  function aoCorrigir(ev) {
+    var n = ev.target.name;
+    if (n && MENSAGENS[n] && valida(n)) limpaErro(n);
+  }
+  form.addEventListener('input', aoCorrigir);
+  form.addEventListener('change', aoCorrigir);
+
+  /* ---------- navegação ---------- */
+  function vaiPara(i, focar) {
+    atual = Math.max(0, Math.min(TOTAL, i));
+    etapas.forEach(function (f) {
+      f.hidden = (parseInt(f.getAttribute('data-etapa'), 10) !== atual);
+    });
+    form.hidden = (atual === 0);
+    barra.style.width = Math.round((atual / TOTAL) * 100) + '%';
+    btSubir.hidden = (atual <= 1);   /* da pergunta 1 não há para onde voltar */
+    btAvanca.textContent = (atual === TOTAL) ? 'Enviar a minha inscrição' : 'Avançar';
+    erroGeral.hidden = true;
+    if (atual === ETAPA_VALOR) viuInvestimento();
+    if (focar) {
+      var alvo = etapas.filter(function (f) { return !f.hidden; })[0];
+      var pri = alvo && alvo.querySelector('input:not([type=radio]):not([tabindex="-1"]), textarea, input[type=radio]');
+      if (pri) { try { pri.focus({ preventScroll: true }); } catch (e) { pri.focus(); } }
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+    salvaRascunho();
+  }
+
+  function avanca() {
+    if (atual === TOTAL) { enviar(); return; }
+    if (validaEtapa(atual)) vaiPara(atual + 1, true);
+  }
+
+  btComeca.addEventListener('click', function () { vaiPara(1, true); });
+  btSubir.addEventListener('click', function () { if (atual > 1) vaiPara(atual - 1, true); });
+
+  /* Enter avança — menos no textarea, onde Enter é quebra de linha */
+  document.addEventListener('keydown', function (ev) {
+    if (ev.key !== 'Enter') return;
+    if (ev.target.tagName === 'TEXTAREA') return;
+    if (ev.target.tagName === 'BUTTON') return;
+    ev.preventDefault();
+    avanca();
+  });
+
+  form.addEventListener('submit', function (ev) { ev.preventDefault(); avanca(); });
+
+  /* ---------- atribuição ---------- */
+  function atribuicao() {
+    var q = {};
+    location.search.slice(1).split('&').forEach(function (p) {
+      if (!p) return;
+      var i = p.indexOf('='), k = i < 0 ? p : p.slice(0, i);
+      q[k.toLowerCase()] = i < 0 ? '' : decodeURIComponent(p.slice(i + 1).replace(/\+/g, ' '));
+    });
+    var g = {};
+    try { g = JSON.parse(localStorage.getItem('nr_attrib') || '{}'); } catch (e) {}
+    var pega = function (k) { return q[k] || g[k] || null; };
+    return {
+      utm_source: pega('utm_source'), utm_medium: pega('utm_medium'),
+      utm_campaign: pega('utm_campaign'), utm_content: pega('utm_content'),
+      utm_term: pega('utm_term'), fbclid: pega('fbclid'), gclid: pega('gclid'),
+      referrer: document.referrer || null, pagina: location.pathname
+    };
+  }
+  function uid() {
+    try { if (window.crypto && crypto.randomUUID) return crypto.randomUUID(); } catch (e) {}
+    return Date.now().toString(36) + '-' + Math.random().toString(36).slice(2, 10);
+  }
+
+  var ATRIB = atribuicao();
+  var COMUNS = {
+    content_name: 'Profissao Lash — Online + Presencial',
+    content_category: 'qualificacao-presencial',
+    origem: ATRIB.utm_source || null,
+    campanha: ATRIB.utm_campaign || null,
+    criativo: ATRIB.utm_content || null
+  };
+
+  /* ---------- chegada: o evento de INTENÇÃO do GA4 ----------
+     A página de venda dispara o IniciouInscricao no Meta, no clique. O GA4
+     não consegue: ele agrupa os eventos e o hit morre no unload (medido no
+     CDP). Então o GA4 recebe aqui, na chegada, com ?cta= dizendo qual botão
+     trouxe a pessoa. Numa navegação os dois passos são o mesmo, e assim o
+     número nunca se perde. Uma vez por sessão. */
+  (function () {
+    var cta = null;
+    try { cta = new URLSearchParams(location.search).get('cta'); } catch (e) {}
+    if (!cta) return;
+    try {
+      if (sessionStorage.getItem('nr_intencao_ga')) return;
+      sessionStorage.setItem('nr_intencao_ga', '1');
+    } catch (e) {}
+    try {
+      if (window.gtag) gtag('event', 'select_item', {
+        content_name: 'Profissao Lash — Online + Presencial',
+        content_category: 'qualificacao-presencial',
+        cta: cta
+      });
+    } catch (e) {}
+  })();
+
+  /* ---------- evento da etapa do preço ----------
+     Uma vez por sessão. É o número que diz quantas desistem ao ver o valor —
+     contar mais de uma vez (ela volta e avança de novo) inflaria a métrica,
+     que é o mesmo erro que deixou o A/B do Método LED ilegível. */
+  var valorJaContado = false;
+  function viuInvestimento() {
+    if (valorJaContado) return;
+    valorJaContado = true;
+    try {
+      if (sessionStorage.getItem('nr_viu_investimento')) return;
+      sessionStorage.setItem('nr_viu_investimento', '1');
+    } catch (e) {}
+    try { if (window.fbq) fbq('trackCustom', 'ViuInvestimento', COMUNS); } catch (e) {}
+    try {
+      if (window.gtag) gtag('event', 'view_price_step', Object.assign({}, COMUNS, {
+        transport_type: 'beacon'
+      }));
+    } catch (e) {}
+  }
+
+  /* ---------- envio ---------- */
+  function enviar() {
+    if (enviando) return;
+    for (var i = 1; i <= TOTAL; i++) {
+      if (!validaEtapa(i)) { vaiPara(i, true); return; }
+    }
+    enviando = true;
+    btAvanca.disabled = true;
+    btAvanca.textContent = 'Enviando...';
+    erroGeral.hidden = true;
+
+    var dados = {
+      nome: valorDe('nome'), telefone: valorDe('telefone'), email: valorDe('email'),
+      instagram: valorDe('instagram'), cidade: valorDe('cidade'), estado: valorDe('estado'),
+      faixa_idade: valorDe('faixa_idade'), situacao: valorDe('situacao'),
+      meta_renda: valorDe('meta_renda'), objetivo: valorDe('objetivo'),
+      quando_comecar: valorDe('quando_comecar'),
+      disponibilidade: valorDe('disponibilidade'), aceita_valor: valorDe('aceita_valor'),
+      sobrenome_confirmacao: valorDe('sobrenome_confirmacao'),
+      lead_uid: uid(), atribuicao: ATRIB
+    };
+
+    fetch('/api/lead-presencial', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(dados)
+    })
+      .then(function (r) { return r.json().then(function (j) { return { http: r.status, j: j }; }); })
+      .then(function (res) {
+        if (res.j && res.j.ok) { sucesso(dados); return; }
+        if (res.j && res.j.erros) {
+          var pri = Object.keys(res.j.erros)[0];
+          Object.keys(res.j.erros).forEach(function (n) { mostraErro(n, res.j.erros[n]); });
+          for (var i = 1; i <= TOTAL; i++) {
+            if (REGRAS[i].campos.indexOf(pri) !== -1) { vaiPara(i, true); break; }
+          }
+        } else {
+          erroGeral.textContent = (res.j && res.j.mensagem) ||
+            'Não consegui enviar agora. Tenta de novo em instantes.';
+          erroGeral.hidden = false;
+        }
+        reabilita();
+      })
+      .catch(function () {
+        erroGeral.textContent = 'Parece que a sua internet caiu. Confere a conexão e ' +
+          'tenta de novo — as suas respostas continuam aqui.';
+        erroGeral.hidden = false;
+        reabilita();
+      });
+  }
+
+  function reabilita() {
+    enviando = false;
+    btAvanca.disabled = false;
+    btAvanca.textContent = (atual === TOTAL) ? 'Enviar a minha inscrição' : 'Avançar';
+  }
+
+  /* ---------- sucesso ----------
+     Mesmo mecanismo da /entrar: função idempotente chamada tanto pelo
+     event_callback do GA quanto por um setTimeout de segurança. Sem isso,
+     em celular com rede ruim o evento não sai. */
+  function sucesso(dados) {
+    var jaMostrou = false;
+    function mostra() {
+      if (jaMostrou) return;
+      jaMostrou = true;
+      form.hidden = true;
+      etapas.forEach(function (f) { f.hidden = true; });
+      rodape.hidden = true;
+      barra.style.width = '100%';
+      var pn = String(dados.nome || '').trim().split(/\s+/)[0];
+      if (pn) document.getElementById('nome-fim').textContent = pn;
+      obrigado.hidden = false;
+      obrigado.focus();
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+      try { localStorage.removeItem(CHAVE); } catch (e) {}
+    }
+
+    try {
+      if (window.fbq) fbq('track', 'Lead', COMUNS, { eventID: dados.lead_uid });
+    } catch (e) {}
+    try {
+      if (window.gtag) gtag('event', 'generate_lead', Object.assign({}, COMUNS, {
+        transport_type: 'beacon',
+        event_callback: mostra
+      }));
+    } catch (e) {}
+    setTimeout(mostra, 1200);
+  }
+
+  /* ---------- início ---------- */
+  vaiPara(leRascunho(), false);
+})();
+</script>
+
+</body>
+</html>

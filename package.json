@@ -4,12 +4,22 @@
   "description": "Site de cursos da Nataly Ribeiro — captação VIP + páginas de venda Método Evolução LED",
   "main": "server.js",
   "scripts": {
-    "start": "node server.js"
+    "start": "node server.js",
+    "teste": "npm run teste:unidade && npm run teste:aviso",
+    "teste:unidade": "FUNIL_DEV_DIR=.dados-teste node funil-presencial/teste-unidade.js",
+    "teste:aviso": "FUNIL_DEV_DIR=.dados-teste node funil-presencial/teste-aviso.js",
+    "teste:formulario": "node funil-presencial/teste-formulario.js",
+    "teste:rastreamento": "node funil-presencial/teste-rastreamento.js",
+    "senha": "node funil-presencial/gerar-senha.js"
   },
   "engines": {
     "node": ">=18"
   },
   "dependencies": {
-    "express": "^4.19.2"
+    "express": "^4.22.2",
+    "pg": "^8.23.0"
+  },
+  "devDependencies": {
+    "@electric-sql/pglite": "^0.5.8"
   }
 }

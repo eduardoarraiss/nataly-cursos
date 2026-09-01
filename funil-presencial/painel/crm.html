@@ -1,0 +1,1352 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex, nofollow, noarchive">
+<meta name="referrer" content="no-referrer">
+<title>Leads · Curso presencial</title>
+<style>
+:root{
+  --creme:#F2EEE5; --papel:#FAF7F0; --pedra:#E2D8C8; --filete:#DED3C2;
+  --argila:#C9A48B; --salvia:#A5B59A; --salvia-prof:#7E9072;
+  --chocolate:#6B4F3A; --tinta:#463729; --tinta-2:#7A695A; --pretinho:#241C15;
+  --destaque:#CD4C28; --destaque-esc:#A93C1E; --verde:#27874E; --verde-esc:#1B6338;
+  --e1:4px; --e2:8px; --e3:12px; --e4:16px; --e5:24px; --e6:32px; --e7:48px;
+  --f:'Hanken Grotesk',system-ui,-apple-system,'Segoe UI',sans-serif;
+  --r1:12px; --r2:20px;
+}
+*,*::before,*::after{box-sizing:border-box}
+html,body{margin:0;padding:0;max-width:100%;overflow-x:hidden}
+body{
+  background:var(--creme); color:var(--tinta); font-family:var(--f);
+  font-size:15px; line-height:1.5; -webkit-text-size-adjust:100%;
+}
+h1,h2,h3{margin:0; font-weight:700; letter-spacing:-.01em}
+p{margin:0}
+button,input,select,textarea{font:inherit; color:inherit}
+a{color:var(--destaque-esc)}
+:focus-visible{outline:3px solid var(--pretinho); outline-offset:2px; border-radius:var(--e1)}
+.oculto{display:none !important}
+.sr{position:absolute;width:1px;height:1px;margin:-1px;padding:0;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap;border:0}
+
+/* ---------- estrutura ---------- */
+.envolve{max-width:1280px; margin:0 auto; padding:0 var(--e4) var(--e7)}
+@media (max-width:479px){ .envolve{padding:0 var(--e3) var(--e7)} }
+
+/* ---------- cabeçalho ---------- */
+.topo{
+  position:sticky; top:0; z-index:40; background:var(--papel);
+  border-bottom:1px solid var(--filete);
+}
+.topo-in{
+  max-width:1280px; margin:0 auto; padding:var(--e3) var(--e4);
+  display:flex; flex-wrap:wrap; gap:var(--e3); align-items:center;
+}
+@media (max-width:479px){ .topo-in{padding:var(--e3)} }
+.marca{flex:1 1 220px; min-width:0}
+.marca h1{font-size:clamp(17px,4vw,22px)}
+.marca .sub{font-size:12px; color:var(--tinta-2); letter-spacing:.08em; text-transform:uppercase}
+.acoes-topo{display:flex; gap:var(--e2); flex-wrap:wrap}
+.contadores{
+  flex:1 1 100%; display:flex; gap:var(--e2); flex-wrap:wrap;
+  border-top:1px solid var(--filete); padding-top:var(--e3);
+}
+.cont{
+  border:1px solid var(--filete); border-radius:var(--r1);
+  padding:var(--e2) var(--e3); background:var(--creme); min-width:82px;
+}
+.cont .n{display:block; font-size:19px; font-weight:700; line-height:1.15}
+.cont .r{display:block; font-size:11px; color:var(--tinta-2); text-transform:uppercase; letter-spacing:.06em}
+.cont.total{background:var(--pretinho); border-color:var(--pretinho); color:#fff}
+.cont.total .r{color:#E8E0D4}
+
+/* ---------- botões ---------- */
+.bt{
+  display:inline-flex; align-items:center; justify-content:center; gap:var(--e2);
+  min-height:44px; padding:var(--e2) var(--e4); border-radius:var(--r1);
+  border:1px solid var(--filete); background:var(--papel); color:var(--tinta);
+  font-weight:600; font-size:14px; cursor:pointer; text-decoration:none;
+}
+.bt:hover{background:var(--pedra)}
+.bt-forte{background:var(--pretinho); border-color:var(--pretinho); color:#fff}
+.bt-forte:hover{background:var(--tinta)}
+.bt-destaque{background:var(--destaque-esc); border-color:var(--destaque-esc); color:#fff}
+.bt-destaque:hover{background:var(--destaque)}
+.bt-peq{min-height:36px; padding:var(--e1) var(--e3); font-size:13px}
+.bt[disabled],.bt[aria-disabled="true"]{opacity:.75; cursor:default}
+
+/* ---------- faixa de avisos ---------- */
+.faixa{
+  background:var(--destaque); color:#fff; border-radius:var(--r1);
+  padding:var(--e3) var(--e4); margin:var(--e4) 0 0;
+  display:flex; gap:var(--e3); align-items:center; flex-wrap:wrap;
+}
+.faixa p{flex:1 1 240px; font-weight:600; min-width:0}
+.faixa .bt{background:#fff; border-color:#fff; color:var(--destaque-esc)}
+
+/* ---------- filtros ---------- */
+.filtros{
+  margin-top:var(--e4); background:var(--papel); border:1px solid var(--filete);
+  border-radius:var(--r2); padding:var(--e4);
+  display:grid; gap:var(--e3);
+  grid-template-columns:repeat(auto-fit,minmax(190px,1fr));
+}
+.campo{display:flex; flex-direction:column; gap:var(--e1); min-width:0}
+.campo label{font-size:12px; font-weight:700; letter-spacing:.05em; text-transform:uppercase; color:var(--tinta-2)}
+.campo input,.campo select{
+  min-height:44px; width:100%; max-width:100%; padding:var(--e2) var(--e3);
+  border:1px solid var(--filete); border-radius:var(--r1);
+  background:var(--creme); color:var(--tinta);
+}
+.filtros .fim{display:flex; align-items:flex-end}
+.filtros .fim .bt{width:100%}
+
+/* ---------- abas ---------- */
+.abas{
+  display:flex; gap:var(--e2); margin:var(--e5) 0 var(--e4);
+  border-bottom:1px solid var(--filete); overflow-x:auto; padding-bottom:2px;
+}
+.aba{
+  min-height:44px; padding:var(--e2) var(--e4); border:1px solid var(--filete);
+  border-bottom:none; border-radius:var(--r1) var(--r1) 0 0; background:transparent;
+  color:var(--tinta-2); font-weight:700; cursor:pointer; white-space:nowrap;
+}
+.aba[aria-selected="true"]{background:var(--papel); color:var(--tinta); border-color:var(--filete)}
+
+/* ---------- pílulas ---------- */
+.pil{
+  display:inline-block; padding:2px var(--e2); border-radius:999px;
+  font-size:12px; font-weight:700; border:1px solid transparent; white-space:nowrap;
+}
+.q-quente{background:#F6DDD2; color:var(--destaque-esc); border-color:#E9C2B2}
+.q-morno{background:#F0E4D3; color:var(--chocolate); border-color:var(--pedra)}
+.q-frio{background:#E7EBE3; color:var(--tinta); border-color:#D2DACB}
+.s-novo{background:var(--pedra); color:var(--tinta)}
+.s-contatado{background:#E6DFF0; color:#4A3A66}
+.s-em-conversa{background:#E1E8EE; color:#2F4A5E}
+.s-proposta-enviada{background:#F0E4D3; color:var(--chocolate)}
+.s-ganho{background:#DCEEE2; color:var(--verde-esc)}
+.s-perdido{background:#F1E0DA; color:var(--destaque-esc)}
+
+/* ---------- cartões / mensagens ---------- */
+.cartao{background:var(--papel); border:1px solid var(--filete); border-radius:var(--r2); padding:var(--e4)}
+.msg{background:var(--papel); border:1px solid var(--filete); border-radius:var(--r2); padding:var(--e6) var(--e4); text-align:center}
+.msg p{color:var(--tinta-2)}
+.msg .bt{margin-top:var(--e3)}
+.erro{border-color:var(--destaque); }
+.erro strong{color:var(--destaque-esc)}
+
+/* ---------- tabela ---------- */
+.rolagem{overflow-x:auto; -webkit-overflow-scrolling:touch; border:1px solid var(--filete); border-radius:var(--r2); background:var(--papel)}
+table{border-collapse:collapse; width:100%; min-width:820px}
+thead th{
+  text-align:left; font-size:11px; text-transform:uppercase; letter-spacing:.06em;
+  color:var(--tinta-2); padding:var(--e3); border-bottom:1px solid var(--filete); white-space:nowrap;
+}
+tbody td{padding:var(--e3); border-bottom:1px solid var(--filete); vertical-align:middle}
+tbody tr{cursor:pointer}
+tbody tr:hover{background:var(--creme)}
+tbody tr:focus-visible{outline:3px solid var(--pretinho); outline-offset:-3px}
+.td-nome{font-weight:700}
+.td-sub{display:block; font-size:12px; color:var(--tinta-2); overflow-wrap:anywhere}
+
+@media (max-width:759px){
+  .rolagem{overflow-x:visible; border:none; background:transparent; border-radius:0}
+  table{min-width:0; width:100%; display:block}
+  thead{display:none}
+  tbody{display:block}
+  tbody tr{
+    display:block; background:var(--papel); border:1px solid var(--filete);
+    border-radius:var(--r2); padding:var(--e3); margin-bottom:var(--e3);
+  }
+  tbody td{
+    display:flex; gap:var(--e3); justify-content:space-between; align-items:baseline;
+    border:none; padding:var(--e1) 0; min-width:0;
+  }
+  tbody td::before{
+    content:attr(data-rot); font-size:11px; text-transform:uppercase; letter-spacing:.06em;
+    color:var(--tinta-2); flex:0 0 auto; font-weight:700;
+  }
+  tbody td>*{min-width:0; text-align:right; overflow-wrap:anywhere}
+}
+
+/* ---------- kanban ---------- */
+.kanban{display:flex; gap:var(--e3); overflow-x:auto; -webkit-overflow-scrolling:touch; padding-bottom:var(--e3)}
+.coluna{
+  flex:0 0 264px; max-width:264px; background:var(--papel);
+  border:1px solid var(--filete); border-radius:var(--r2); padding:var(--e3);
+  display:flex; flex-direction:column; gap:var(--e2);
+}
+.coluna.alvo{border-color:var(--chocolate); background:var(--creme)}
+.coluna h3{font-size:13px; text-transform:uppercase; letter-spacing:.06em; color:var(--tinta-2)}
+.coluna h3 span{color:var(--tinta)}
+.kcard{
+  width:100%; text-align:left; background:var(--creme); border:1px solid var(--filete);
+  border-radius:var(--r1); padding:var(--e3); cursor:pointer; display:block;
+}
+.kcard:hover{background:var(--pedra)}
+.kcard .nome{font-weight:700; display:block; overflow-wrap:anywhere}
+.kcard .meta{display:block; font-size:12px; color:var(--tinta-2); overflow-wrap:anywhere; margin-top:2px}
+.kvazio{font-size:13px; color:var(--tinta-2); padding:var(--e2) 0}
+
+/* ---------- drawer ---------- */
+.fundo{position:fixed; inset:0; background:rgba(36,28,21,.55); z-index:50}
+.painel{
+  position:fixed; top:0; right:0; bottom:0; z-index:60; width:min(560px,100%);
+  background:var(--papel); border-left:1px solid var(--filete);
+  overflow-y:auto; overscroll-behavior:contain; padding:var(--e4) var(--e4) var(--e7);
+}
+@media (max-width:479px){ .painel{padding:var(--e3) var(--e3) var(--e7)} }
+.painel-topo{
+  position:sticky; top:calc(var(--e4) * -1); background:var(--papel); z-index:2;
+  display:flex; gap:var(--e3); align-items:flex-start; padding:var(--e3) 0;
+  border-bottom:1px solid var(--filete); margin-bottom:var(--e4);
+}
+.painel-topo h2{font-size:clamp(19px,5vw,26px); overflow-wrap:anywhere; flex:1 1 auto; min-width:0}
+.bloco{margin-bottom:var(--e5)}
+.bloco h3{
+  font-size:12px; text-transform:uppercase; letter-spacing:.08em; color:var(--tinta-2);
+  border-bottom:1px solid var(--filete); padding-bottom:var(--e2); margin-bottom:var(--e3);
+}
+.linhas{display:grid; gap:var(--e2)}
+.linha{display:grid; grid-template-columns:minmax(96px,34%) 1fr; gap:var(--e3); align-items:baseline}
+.linha dt{font-size:12px; color:var(--tinta-2); text-transform:uppercase; letter-spacing:.05em}
+.linha dd{margin:0; overflow-wrap:anywhere; word-break:break-word}
+dl{margin:0}
+.status-botoes{display:flex; flex-wrap:wrap; gap:var(--e2); margin-bottom:var(--e3)}
+.status-botoes .bt{flex:1 1 auto; min-width:120px}
+textarea{
+  width:100%; max-width:100%; min-height:88px; padding:var(--e3);
+  border:1px solid var(--filete); border-radius:var(--r1); background:var(--creme); resize:vertical;
+}
+.tempo{
+  border-left:2px solid var(--filete); padding-left:var(--e3);
+  display:grid; gap:var(--e3);
+}
+.tempo li{list-style:none}
+.tempo .quando{display:block; font-size:12px; color:var(--tinta-2)}
+.tempo .nota{display:block; overflow-wrap:anywhere; margin-top:2px}
+ul{margin:0; padding:0}
+.aviso-item{
+  border:1px solid var(--filete); border-radius:var(--r1); padding:var(--e3);
+  background:var(--creme); display:grid; gap:var(--e2); list-style:none;
+}
+.aviso-item .erro-txt{font-size:13px; color:var(--tinta); overflow-wrap:anywhere}
+.nota-driver{
+  border:1px solid var(--filete); border-left:4px solid var(--chocolate);
+  background:var(--papel); border-radius:var(--r1); padding:var(--e3); margin-bottom:var(--e4);
+}
+code{background:var(--pedra); border-radius:var(--e1); padding:0 4px; font-size:.92em; overflow-wrap:anywhere}
+.aviso-erro-form{color:var(--destaque-esc); font-weight:600; margin-top:var(--e2)}
+</style>
+</head>
+<body>
+
+<header class="topo">
+  <div class="topo-in">
+    <div class="marca">
+      <span class="sub">Nataly Ribeiro</span>
+      <h1>Leads · Curso presencial</h1>
+    </div>
+    <div class="acoes-topo">
+      <a class="bt" id="btCsv" href="/crm/exportar.csv">Exportar CSV</a>
+      <button type="button" class="bt bt-forte" id="btSair">Sair</button>
+    </div>
+    <div class="contadores" id="contadores" aria-live="polite" aria-label="Resumo dos leads">
+      <span class="cont"><span class="n">…</span><span class="r">Carregando</span></span>
+    </div>
+  </div>
+</header>
+
+<main class="envolve">
+  <div id="faixaAvisos" class="faixa oculto" role="status"></div>
+
+  <form class="filtros" id="filtros" role="search" autocomplete="off">
+    <div class="campo">
+      <label for="fBusca">Buscar</label>
+      <input type="search" id="fBusca" name="busca" placeholder="Nome, telefone ou Instagram">
+    </div>
+    <div class="campo">
+      <label for="fStatus">Status</label>
+      <select id="fStatus" name="status"></select>
+    </div>
+    <div class="campo">
+      <label for="fQualif">Qualificação</label>
+      <select id="fQualif" name="qualificacao"></select>
+    </div>
+    <div class="campo">
+      <label for="fCidade">Cidade</label>
+      <input type="text" id="fCidade" name="cidade" placeholder="Ex.: Cambuí">
+    </div>
+    <div class="campo">
+      <label for="fAnuncio">Anúncio de origem</label>
+      <select id="fAnuncio" name="utm_content"></select>
+    </div>
+    <div class="campo fim">
+      <button type="button" class="bt" id="btLimpar">Limpar filtros</button>
+    </div>
+  </form>
+
+  <div class="abas" role="tablist" aria-label="Visões do painel">
+    <button type="button" class="aba" role="tab" id="abaLista" aria-controls="pLista" aria-selected="true">Lista</button>
+    <button type="button" class="aba" role="tab" id="abaKanban" aria-controls="pKanban" aria-selected="false" tabindex="-1">Kanban</button>
+    <button type="button" class="aba" role="tab" id="abaAvisos" aria-controls="pAvisos" aria-selected="false" tabindex="-1">Avisos</button>
+  </div>
+
+  <section id="pLista" role="tabpanel" aria-labelledby="abaLista" tabindex="0"></section>
+  <section id="pKanban" role="tabpanel" aria-labelledby="abaKanban" tabindex="0" hidden></section>
+  <section id="pAvisos" role="tabpanel" aria-labelledby="abaAvisos" tabindex="0" hidden></section>
+
+  <p id="anuncio" class="sr" role="status" aria-live="polite"></p>
+</main>
+
+<div id="fundo" class="fundo oculto"></div>
+<aside id="painel" class="painel oculto" role="dialog" aria-modal="true" aria-labelledby="painelTitulo" tabindex="-1"></aside>
+
+<script>
+(function () {
+  'use strict';
+
+  /* ============================================================
+     Rótulos — nada de código cru na tela
+     ============================================================ */
+  var STATUS = ['novo', 'contatado', 'em-conversa', 'proposta-enviada', 'ganho', 'perdido'];
+
+  var ROT = {
+    status: {
+      'novo': 'Novo', 'contatado': 'Contatado', 'em-conversa': 'Em conversa',
+      'proposta-enviada': 'Proposta enviada', 'ganho': 'Ganho', 'perdido': 'Perdido'
+    },
+    qualificacao: { 'quente': 'Quente', 'morno': 'Morno', 'frio': 'Frio' },
+    situacao: {
+      'ja-lash': 'Já trabalha com cílios',
+      'area-beleza': 'Já é da área da beleza',
+      'outra-area': 'Vem de outra área'
+    },
+    disponibilidade: {
+      'sim': 'Pode vir a Cambuí', 'talvez': 'Talvez consiga vir', 'nao': 'Não pode vir'
+    },
+    aceita_valor: {
+      'sim': 'Aceita o valor', 'preciso-parcelar': 'Aceita, quer parcelar', 'nao': 'Não aceita o valor'
+    },
+    quando_comecar: {
+      'agora': 'Quer começar agora', '30-dias': 'Em até 30 dias',
+      '90-dias': 'Em até 90 dias', 'so-olhando': 'Só olhando'
+    },
+    meta_renda: {
+      'ate-2k': 'Até R$ 2 mil', '2k-5k': 'R$ 2 a 5 mil', '5k-10k': 'R$ 5 a 10 mil',
+      'mais-10k': 'Mais de R$ 10 mil', 'nao-sei': 'Ainda não sabe'
+    },
+    aviso: { 'enviado': 'Enviado', 'pendente': 'Pendente', 'falhou': 'Falhou', 'erro': 'Falhou' }
+  };
+
+  function rot(campo, valor) {
+    if (valor === null || valor === undefined || valor === '') return '—';
+    var m = ROT[campo];
+    if (m && m[valor]) return m[valor];
+    return String(valor);
+  }
+
+  function texto(v) {
+    if (v === null || v === undefined) return '—';
+    var s = String(v).trim();
+    return s === '' || s === 'null' || s === 'undefined' ? '—' : s;
+  }
+
+  function idade(v) {
+    if (!v) return '—';
+    return String(v) + ' anos';
+  }
+
+  /* ============================================================
+     DOM sem innerHTML — tudo por createElement/textContent
+     ============================================================ */
+  function el(tag, classe, conteudo) {
+    var n = document.createElement(tag);
+    if (classe) n.className = classe;
+    if (conteudo !== undefined && conteudo !== null) n.textContent = String(conteudo);
+    return n;
+  }
+  function limpa(no) { while (no.firstChild) no.removeChild(no.firstChild); }
+  function poe(pai) {
+    for (var i = 1; i < arguments.length; i++) {
+      var f = arguments[i];
+      if (f) pai.appendChild(f);
+    }
+    return pai;
+  }
+
+  function pilulaQualif(q, pontuacao) {
+    var t = rot('qualificacao', q);
+    if (pontuacao !== null && pontuacao !== undefined && pontuacao !== '') {
+      t += ' · ' + pontuacao + '/100';
+    }
+    var p = el('span', 'pil q-' + (q || 'frio'), t);
+    return p;
+  }
+  function pilulaStatus(s) {
+    return el('span', 'pil s-' + (s || 'novo'), rot('status', s));
+  }
+
+  /* ============================================================
+     Datas — pt-BR, fuso de São Paulo
+     ============================================================ */
+  var FUSO = { timeZone: 'America/Sao_Paulo' };
+
+  function dataAbsoluta(iso) {
+    if (!iso) return '—';
+    var d = new Date(iso);
+    if (isNaN(d.getTime())) return '—';
+    return d.toLocaleString('pt-BR', {
+      timeZone: 'America/Sao_Paulo', day: '2-digit', month: '2-digit', year: 'numeric',
+      hour: '2-digit', minute: '2-digit'
+    });
+  }
+
+  function diaDe(d) {
+    var s = d.toLocaleDateString('pt-BR', {
+      timeZone: FUSO.timeZone, day: '2-digit', month: '2-digit', year: 'numeric'
+    });
+    return s;
+  }
+
+  function dataRelativa(iso) {
+    if (!iso) return '—';
+    var d = new Date(iso);
+    if (isNaN(d.getTime())) return '—';
+    var seg = Math.round((Date.now() - d.getTime()) / 1000);
+    if (seg < 0) seg = 0;
+    if (seg < 60) return 'agora há pouco';
+    if (seg < 3600) return 'há ' + Math.floor(seg / 60) + ' min';
+    if (seg < 86400) {
+      var h = Math.floor(seg / 3600);
+      return 'há ' + h + ' h';
+    }
+    var ontem = new Date(Date.now() - 86400000);
+    if (diaDe(d) === diaDe(ontem)) return 'ontem';
+    var dias = Math.floor(seg / 86400);
+    if (dias < 30) return 'há ' + dias + ' d';
+    var meses = Math.floor(dias / 30);
+    if (meses < 12) return 'há ' + meses + (meses === 1 ? ' mês' : ' meses');
+    var anos = Math.floor(dias / 365);
+    return 'há ' + anos + (anos === 1 ? ' ano' : ' anos');
+  }
+
+  /* ============================================================
+     Rede
+     ============================================================ */
+  function paraLogin() { window.location.href = '/crm/entrar'; }
+
+  function api(caminho, opcoes) {
+    var o = opcoes || {};
+    o.credentials = 'same-origin';
+    o.headers = o.headers || {};
+    o.headers['Accept'] = 'application/json';
+    if (o.body) o.headers['Content-Type'] = 'application/json';
+    return fetch(caminho, o).then(function (r) {
+      if (r.status === 401) { paraLogin(); throw new Error('sessao'); }
+      return r.json().catch(function () { return {}; }).then(function (dados) {
+        if (!r.ok) {
+          var e = new Error(dados && dados.erro ? String(dados.erro) : 'Erro ' + r.status);
+          e.dados = dados;
+          throw e;
+        }
+        return dados;
+      });
+    });
+  }
+
+  function anuncia(msg) {
+    var n = document.getElementById('anuncio');
+    n.textContent = '';
+    window.setTimeout(function () { n.textContent = msg; }, 60);
+  }
+
+  /* ============================================================
+     Estado
+     ============================================================ */
+  var estado = {
+    resumo: null,
+    leads: [],
+    filtros: { busca: '', status: '', qualificacao: '', cidade: '', utm_content: '' },
+    aba: 'lista',
+    carregando: false,
+    erro: null,
+    avisos: null,
+    driver: null,
+    abridor: null,
+    arrastando: null
+  };
+
+  var pLista = document.getElementById('pLista');
+  var pKanban = document.getElementById('pKanban');
+  var pAvisos = document.getElementById('pAvisos');
+  var painel = document.getElementById('painel');
+  var fundo = document.getElementById('fundo');
+
+  function filtrosAtivos() {
+    var q = {};
+    Object.keys(estado.filtros).forEach(function (k) {
+      if (estado.filtros[k]) q[k] = estado.filtros[k];
+    });
+    return q;
+  }
+
+  function queryString() {
+    var q = filtrosAtivos();
+    var partes = Object.keys(q).map(function (k) {
+      return encodeURIComponent(k) + '=' + encodeURIComponent(q[k]);
+    });
+    return partes.length ? '?' + partes.join('&') : '';
+  }
+
+  function atualizaLinkCsv() {
+    document.getElementById('btCsv').setAttribute('href', '/crm/exportar.csv' + queryString());
+  }
+
+  /* ============================================================
+     Cabeçalho: contadores e faixa de avisos
+     ============================================================ */
+  function desenhaResumo() {
+    var alvo = document.getElementById('contadores');
+    limpa(alvo);
+    var r = estado.resumo;
+    if (!r) {
+      poe(alvo, poe(el('span', 'cont'), el('span', 'n', '…'), el('span', 'r', 'Carregando')));
+      return;
+    }
+    var total = el('span', 'cont total');
+    poe(total, el('span', 'n', r.total), el('span', 'r', 'Leads'));
+    alvo.appendChild(total);
+
+    var mapa = {};
+    (r.porStatus || []).forEach(function (linha) { mapa[linha.status] = linha.n; });
+    STATUS.forEach(function (s) {
+      var c = el('span', 'cont');
+      poe(c, el('span', 'n', mapa[s] || 0), el('span', 'r', rot('status', s)));
+      alvo.appendChild(c);
+    });
+
+    var faixa = document.getElementById('faixaAvisos');
+    limpa(faixa);
+    if (r.avisosFalhos > 0) {
+      faixa.classList.remove('oculto');
+      var n = r.avisosFalhos;
+      var txt = n === 1
+        ? '1 aviso de WhatsApp não saiu.'
+        : n + ' avisos de WhatsApp não saíram.';
+      var b = el('button', 'bt bt-peq', 'Ver avisos');
+      b.type = 'button';
+      b.addEventListener('click', function () { trocaAba('avisos', true); });
+      poe(faixa, el('p', null, txt), b);
+    } else {
+      faixa.classList.add('oculto');
+    }
+  }
+
+  function preencheSelects() {
+    var s = document.getElementById('fStatus');
+    limpa(s);
+    s.appendChild(opcao('', 'Todos os status'));
+    STATUS.forEach(function (v) { s.appendChild(opcao(v, rot('status', v))); });
+    s.value = estado.filtros.status;
+
+    var q = document.getElementById('fQualif');
+    limpa(q);
+    q.appendChild(opcao('', 'Todas'));   /* o rótulo acima já diz "Qualificação" */
+    ['quente', 'morno', 'frio'].forEach(function (v) {
+      q.appendChild(opcao(v, rot('qualificacao', v)));
+    });
+    q.value = estado.filtros.qualificacao;
+  }
+
+  function opcao(valor, rotulo) {
+    var o = document.createElement('option');
+    o.value = valor;
+    o.textContent = rotulo;
+    return o;
+  }
+
+  function preencheAnuncios() {
+    var a = document.getElementById('fAnuncio');
+    var atual = estado.filtros.utm_content;
+    limpa(a);
+    a.appendChild(opcao('', 'Todos os anúncios'));
+    var lista = (estado.resumo && estado.resumo.porAnuncio) || [];
+    lista.forEach(function (linha) {
+      var origem = linha.origem === null || linha.origem === undefined ? '' : String(linha.origem);
+      a.appendChild(opcao(origem, texto(origem) + ' (' + linha.n + ')'));
+    });
+    a.value = atual;
+    if (a.value !== atual) {
+      // valor filtrado não está entre os 20 primeiros: mantém como opção avulsa
+      a.appendChild(opcao(atual, texto(atual)));
+      a.value = atual;
+    }
+  }
+
+  /* ============================================================
+     Carregamento
+     ============================================================ */
+  function carregaResumo() {
+    return api('/crm/api/resumo').then(function (r) {
+      estado.resumo = r;
+      desenhaResumo();
+      preencheAnuncios();
+    }).catch(function (e) {
+      if (e.message === 'sessao') return;
+      console.error('resumo:', e);
+    });
+  }
+
+  function carregaLeads() {
+    estado.carregando = true;
+    estado.erro = null;
+    desenhaConteudo();
+    return api('/crm/api/leads' + queryString()).then(function (r) {
+      estado.leads = (r && r.leads) || [];
+      estado.carregando = false;
+      desenhaConteudo();
+      anuncia(estado.leads.length + ' leads na lista.');
+    }).catch(function (e) {
+      if (e.message === 'sessao') return;
+      estado.carregando = false;
+      estado.erro = 'Não consegui carregar os leads. Verifique a conexão.';
+      desenhaConteudo();
+    });
+  }
+
+  function carregaAvisos() {
+    return api('/crm/api/avisos').then(function (r) {
+      estado.avisos = (r && r.avisos) || [];
+      estado.driver = r ? r.driver : null;
+      if (estado.aba === 'avisos') desenhaAvisos();
+    }).catch(function (e) {
+      if (e.message === 'sessao') return;
+      estado.avisos = null;
+      if (estado.aba === 'avisos') {
+        desenhaErro(pAvisos, 'Não consegui carregar os avisos.', carregaAvisos);
+      }
+    });
+  }
+
+  /* ============================================================
+     Estados de tela
+     ============================================================ */
+  function desenhaCarregando(alvo) {
+    limpa(alvo);
+    poe(alvo, poe(el('div', 'msg'), el('p', null, 'Carregando...')));
+  }
+
+  function desenhaVazio(alvo, msg) {
+    limpa(alvo);
+    poe(alvo, poe(el('div', 'msg'), el('p', null, msg)));
+  }
+
+  function desenhaErro(alvo, msg, tentaDeNovo) {
+    limpa(alvo);
+    var caixa = el('div', 'msg erro');
+    caixa.setAttribute('role', 'alert');
+    var b = el('button', 'bt bt-forte', 'Tentar de novo');
+    b.type = 'button';
+    b.addEventListener('click', tentaDeNovo);
+    poe(caixa, el('strong', null, msg), b);
+    alvo.appendChild(caixa);
+  }
+
+  /* ============================================================
+     Lista
+     ============================================================ */
+  var COLUNAS = [
+    { rot: 'Nome', campo: 'nome' },
+    { rot: 'WhatsApp', campo: 'telefone' },
+    { rot: 'Cidade', campo: 'cidade' },
+    { rot: 'Qualificação', campo: 'qualificacao' },
+    { rot: 'Origem', campo: 'utm_content' },
+    { rot: 'Status', campo: 'status' },
+    { rot: 'Quando', campo: 'criado_em' }
+  ];
+
+  function telefoneBonito(lead) {
+    /* Formata a partir do telefone CANÔNICO, nunca do telefone_exibicao:
+       aquele guarda o texto cru que a pessoa digitou, e quem colou o número
+       sem máscara apareceria aqui como "31977776655". O canônico já foi
+       normalizado pelo servidor e sempre rende o mesmo formato. */
+    var t = lead.telefone ? String(lead.telefone) : '';
+    var d = t.replace(/\D/g, '');
+    if (d.length === 13 && d.indexOf('55') === 0) {
+      return '(' + d.slice(2, 4) + ') ' + d.slice(4, 9) + '-' + d.slice(9);
+    }
+    if (d.length === 12 && d.indexOf('55') === 0) {
+      return '(' + d.slice(2, 4) + ') ' + d.slice(4, 8) + '-' + d.slice(8);
+    }
+    return lead.telefone_exibicao || t || '—';
+  }
+
+  function celula(rotulo, filho) {
+    var td = document.createElement('td');
+    td.setAttribute('data-rot', rotulo);
+    td.appendChild(filho);
+    return td;
+  }
+
+  function desenhaLista() {
+    var alvo = pLista;
+    if (estado.carregando) return desenhaCarregando(alvo);
+    if (estado.erro) return desenhaErro(alvo, estado.erro, carregaLeads);
+    if (!estado.leads.length) {
+      var temFiltro = Object.keys(filtrosAtivos()).length > 0;
+      return desenhaVazio(alvo, temFiltro
+        ? 'Nenhum lead com esses filtros. Tente limpar a busca.'
+        : 'Nenhum lead ainda. Assim que alguém preencher o formulário, aparece aqui.');
+    }
+
+    limpa(alvo);
+    var caixa = el('div', 'rolagem');
+    var tabela = document.createElement('table');
+    var cap = el('caption', 'sr', 'Leads do curso presencial. Clique numa linha para abrir o detalhe.');
+    tabela.appendChild(cap);
+
+    var thead = document.createElement('thead');
+    var trh = document.createElement('tr');
+    COLUNAS.forEach(function (c) {
+      var th = el('th', null, c.rot);
+      th.setAttribute('scope', 'col');
+      trh.appendChild(th);
+    });
+    thead.appendChild(trh);
+    tabela.appendChild(thead);
+
+    var tbody = document.createElement('tbody');
+    estado.leads.forEach(function (lead) {
+      var tr = document.createElement('tr');
+      tr.setAttribute('tabindex', '0');
+      tr.setAttribute('role', 'button');
+      tr.setAttribute('aria-label', 'Abrir detalhe de ' + texto(lead.nome));
+
+      var nome = el('span', 'td-nome', texto(lead.nome));
+      var envNome = document.createElement('span');
+      poe(envNome, nome);
+      if (lead.instagram) envNome.appendChild(el('span', 'td-sub', '@' + lead.instagram));
+      tr.appendChild(celula('Nome', envNome));
+
+      tr.appendChild(celula('WhatsApp', el('span', null, telefoneBonito(lead))));
+      tr.appendChild(celula('Cidade', el('span', null,
+        texto(lead.cidade) + (lead.estado ? ' · ' + lead.estado : ''))));
+      tr.appendChild(celula('Qualificação', pilulaQualif(lead.qualificacao, lead.pontuacao)));
+      tr.appendChild(celula('Origem', el('span', null, texto(lead.utm_content))));
+      tr.appendChild(celula('Status', pilulaStatus(lead.status)));
+
+      var quando = el('span', null, dataRelativa(lead.criado_em));
+      quando.setAttribute('title', dataAbsoluta(lead.criado_em));
+      tr.appendChild(celula('Quando', quando));
+
+      tr.addEventListener('click', function () { abreLead(lead.id, tr); });
+      tr.addEventListener('keydown', function (ev) {
+        if (ev.key === 'Enter' || ev.key === ' ' || ev.key === 'Spacebar') {
+          ev.preventDefault();
+          abreLead(lead.id, tr);
+        }
+      });
+      tbody.appendChild(tr);
+    });
+    tabela.appendChild(tbody);
+    caixa.appendChild(tabela);
+    alvo.appendChild(caixa);
+  }
+
+  /* ============================================================
+     Kanban
+     ============================================================ */
+  function desenhaKanban() {
+    var alvo = pKanban;
+    if (estado.carregando) return desenhaCarregando(alvo);
+    if (estado.erro) return desenhaErro(alvo, estado.erro, carregaLeads);
+
+    limpa(alvo);
+    var aviso = el('p', 'kvazio', 'Arraste um cartão para mudar o status, ou abra o lead e use os botões de status.');
+    alvo.appendChild(aviso);
+
+    var faixa = el('div', 'kanban');
+    faixa.setAttribute('role', 'group');
+    faixa.setAttribute('aria-label', 'Pipeline de leads');
+
+    STATUS.forEach(function (s) {
+      var doStatus = estado.leads.filter(function (l) { return l.status === s; });
+      var col = el('div', 'coluna');
+      col.setAttribute('data-status', s);
+
+      var h = el('h3', null, rot('status', s) + ' ');
+      h.appendChild(el('span', null, '(' + doStatus.length + ')'));
+      col.appendChild(h);
+
+      if (!doStatus.length) {
+        col.appendChild(el('p', 'kvazio', 'Nenhum lead aqui.'));
+      }
+
+      doStatus.forEach(function (lead) {
+        var c = el('button', 'kcard');
+        c.type = 'button';
+        c.setAttribute('draggable', 'true');
+        c.setAttribute('aria-label', 'Abrir detalhe de ' + texto(lead.nome));
+        c.appendChild(el('span', 'nome', texto(lead.nome)));
+        var meta = el('span', 'meta',
+          texto(lead.cidade) + ' · ' + texto(lead.utm_content));
+        c.appendChild(meta);
+        var pil = pilulaQualif(lead.qualificacao, lead.pontuacao);
+        var linhaPil = document.createElement('span');
+        linhaPil.style.display = 'block';
+        linhaPil.style.marginTop = '8px';
+        linhaPil.appendChild(pil);
+        c.appendChild(linhaPil);
+
+        c.addEventListener('click', function () { abreLead(lead.id, c); });
+        c.addEventListener('dragstart', function (ev) {
+          estado.arrastando = lead.id;
+          if (ev.dataTransfer) {
+            ev.dataTransfer.effectAllowed = 'move';
+            try { ev.dataTransfer.setData('text/plain', String(lead.id)); } catch (e) { /* IE */ }
+          }
+        });
+        c.addEventListener('dragend', function () { estado.arrastando = null; });
+        col.appendChild(c);
+      });
+
+      col.addEventListener('dragover', function (ev) {
+        if (estado.arrastando === null) return;
+        ev.preventDefault();
+        col.classList.add('alvo');
+      });
+      col.addEventListener('dragleave', function () { col.classList.remove('alvo'); });
+      col.addEventListener('drop', function (ev) {
+        ev.preventDefault();
+        col.classList.remove('alvo');
+        var id = estado.arrastando;
+        estado.arrastando = null;
+        if (id === null) return;
+        var lead = estado.leads.filter(function (l) { return l.id === id; })[0];
+        if (!lead || lead.status === s) return;
+        salvaStatus(id, s, '', null).then(function () {
+          anuncia(texto(lead.nome) + ' movido para ' + rot('status', s) + '.');
+        });
+      });
+
+      faixa.appendChild(col);
+    });
+
+    alvo.appendChild(faixa);
+  }
+
+  /* ============================================================
+     Avisos
+     ============================================================ */
+  function desenhaAvisos() {
+    var alvo = pAvisos;
+    if (estado.avisos === null) return desenhaCarregando(alvo);
+
+    limpa(alvo);
+
+    if (estado.driver) {
+      var nota = el('div', 'nota-driver');
+      if (String(estado.driver) === 'log') {
+        var p = el('p', null, 'Driver em modo ');
+        p.appendChild(el('code', null, 'log'));
+        p.appendChild(document.createTextNode(': nenhuma mensagem está sendo enviada ao WhatsApp de verdade.'));
+        nota.appendChild(p);
+      } else {
+        var p2 = el('p', null, 'Driver de envio ativo: ');
+        p2.appendChild(el('code', null, String(estado.driver)));
+        nota.appendChild(p2);
+      }
+      alvo.appendChild(nota);
+    }
+
+    if (!estado.avisos.length) {
+      var ok = el('div', 'msg');
+      poe(ok, el('p', null, 'Nenhum aviso pendente. Tudo que era para sair, saiu.'));
+      alvo.appendChild(ok);
+      return;
+    }
+
+    var lista = el('ul', 'linhas');
+    estado.avisos.forEach(function (a) {
+      var li = el('li', 'aviso-item');
+      var topo = el('div', null, null);
+      topo.appendChild(el('strong', null, texto(a.nome)));
+      var sub = el('span', 'td-sub', telefoneBonito({ telefone: a.telefone }));
+      topo.appendChild(sub);
+      li.appendChild(topo);
+
+      var meta = el('p', 'td-sub',
+        rot('aviso', a.status) + ' · ' + (a.tentativas || 0) +
+        (Number(a.tentativas) === 1 ? ' tentativa' : ' tentativas') +
+        ' · ' + dataRelativa(a.criado_em));
+      meta.setAttribute('title', dataAbsoluta(a.criado_em));
+      li.appendChild(meta);
+
+      if (a.ultimo_erro) {
+        li.appendChild(el('p', 'erro-txt', 'Último erro: ' + texto(a.ultimo_erro)));
+      }
+
+      var b = el('button', 'bt bt-peq bt-forte', 'Reenviar');
+      b.type = 'button';
+      b.addEventListener('click', function () { reenviaAviso(a.id, b, li); });
+      li.appendChild(b);
+      lista.appendChild(li);
+    });
+    alvo.appendChild(lista);
+  }
+
+  function reenviaAviso(id, botao, caixa) {
+    botao.disabled = true;
+    botao.textContent = 'Reenviando...';
+    api('/crm/api/aviso/' + encodeURIComponent(id) + '/reenviar', { method: 'POST' })
+      .then(function () {
+        anuncia('Aviso recolocado na fila de envio.');
+        return Promise.all([carregaAvisos(), carregaResumo()]);
+      })
+      .catch(function (e) {
+        if (e.message === 'sessao') return;
+        botao.disabled = false;
+        botao.textContent = 'Reenviar';
+        var err = caixa.querySelector('.aviso-erro-form');
+        if (!err) {
+          err = el('p', 'aviso-erro-form');
+          err.setAttribute('role', 'alert');
+          caixa.appendChild(err);
+        }
+        err.textContent = 'Não consegui reenviar agora. Tente de novo.';
+      });
+  }
+
+  /* ============================================================
+     Detalhe do lead (drawer)
+     ============================================================ */
+  var painelAberto = false;
+
+  function bloco(titulo) {
+    var b = el('section', 'bloco');
+    b.appendChild(el('h3', null, titulo));
+    return b;
+  }
+
+  function linhaDado(rotulo, valor) {
+    var d = el('div', 'linha');
+    poe(d, el('dt', null, rotulo), el('dd', null, valor));
+    return d;
+  }
+
+  function listaDados(pares) {
+    var dl = document.createElement('dl');
+    dl.className = 'linhas';
+    pares.forEach(function (par) { dl.appendChild(linhaDado(par[0], par[1])); });
+    return dl;
+  }
+
+  function primeiroNome(nome) {
+    var s = texto(nome);
+    if (s === '—') return 'tudo bem';
+    return s.split(' ')[0];
+  }
+
+  function abreLead(id, abridor) {
+    estado.abridor = abridor || document.activeElement;
+    try { window.history.replaceState(null, '', '#lead=' + encodeURIComponent(id)); } catch (e) { /* ok */ }
+    mostraPainel();
+    limpa(painel);
+    painel.appendChild(cabecalhoPainel('Carregando...'));
+    painel.appendChild(poe(el('div', 'msg'), el('p', null, 'Carregando...')));
+    painel.focus();
+
+    api('/crm/api/lead/' + encodeURIComponent(id))
+      .then(function (dados) { desenhaDetalhe(dados); })
+      .catch(function (e) {
+        if (e.message === 'sessao') return;
+        limpa(painel);
+        painel.appendChild(cabecalhoPainel('Não deu certo'));
+        var caixaErro = el('div', 'bloco');
+        painel.appendChild(caixaErro);
+        desenhaErro(caixaErro, 'Não consegui carregar esse lead.', function () {
+          abreLead(id, estado.abridor);
+        });
+        var fecha = painel.querySelector('.painel-topo button');
+        if (fecha) fecha.focus();
+      });
+  }
+
+  function cabecalhoPainel(titulo) {
+    var topo = el('div', 'painel-topo');
+    var h = el('h2', null, titulo);
+    h.id = 'painelTitulo';
+    var x = el('button', 'bt bt-peq', 'Fechar');
+    x.type = 'button';
+    x.setAttribute('aria-label', 'Fechar o detalhe do lead');
+    x.addEventListener('click', fechaPainel);
+    poe(topo, h, x);
+    return topo;
+  }
+
+  function desenhaDetalhe(dados) {
+    var lead = dados.lead || {};
+    var historico = dados.historico || [];
+    var avisos = dados.avisos || [];
+
+    limpa(painel);
+    painel.appendChild(cabecalhoPainel(texto(lead.nome)));
+
+    /* pílula + ações rápidas */
+    var cabeca = el('div', 'bloco');
+    var linhaPil = el('p', null, null);
+    linhaPil.appendChild(pilulaQualif(lead.qualificacao, lead.pontuacao));
+    linhaPil.appendChild(document.createTextNode(' '));
+    linhaPil.appendChild(pilulaStatus(lead.status));
+    cabeca.appendChild(linhaPil);
+
+    var acoes = el('div', 'status-botoes');
+    acoes.style.marginTop = '12px';
+    if (lead.telefone) {
+      var saudacao = 'Oi, ' + primeiroNome(lead.nome) +
+        '! Aqui é a Nataly. Vi que você se inscreveu para o curso presencial em Cambuí 💛';
+      var wa = el('a', 'bt bt-destaque', 'Responder no WhatsApp');
+      wa.setAttribute('href', 'https://wa.me/' + String(lead.telefone).replace(/\D/g, '') +
+        '?text=' + encodeURIComponent(saudacao));
+      wa.setAttribute('target', '_blank');
+      wa.setAttribute('rel', 'noopener noreferrer');
+      acoes.appendChild(wa);
+    }
+    if (lead.instagram) {
+      var ig = el('a', 'bt', 'Abrir o Instagram');
+      ig.setAttribute('href', 'https://instagram.com/' + encodeURIComponent(String(lead.instagram)));
+      ig.setAttribute('target', '_blank');
+      ig.setAttribute('rel', 'noopener noreferrer');
+      acoes.appendChild(ig);
+    }
+    cabeca.appendChild(acoes);
+    painel.appendChild(cabeca);
+
+    /* contato */
+    var bContato = bloco('Contato');
+    bContato.appendChild(listaDados([
+      ['WhatsApp', telefoneBonito(lead)],
+      ['E-mail', texto(lead.email)],
+      ['Instagram', lead.instagram ? '@' + lead.instagram : '—'],
+      ['Cidade', texto(lead.cidade) + (lead.estado ? ' · ' + lead.estado : '')],
+      ['Inscrição', dataAbsoluta(lead.criado_em)]
+    ]));
+    painel.appendChild(bContato);
+
+    /* qualificação */
+    var bQualif = bloco('Qualificação');
+    bQualif.appendChild(listaDados([
+      ['Pontuação', (lead.pontuacao === null || lead.pontuacao === undefined ? '—' : lead.pontuacao + '/100')],
+      ['Nível', rot('qualificacao', lead.qualificacao)],
+      ['Faixa de idade', idade(lead.faixa_idade)],
+      ['Situação', rot('situacao', lead.situacao)],
+      ['Meta de renda', rot('meta_renda', lead.meta_renda)],
+      ['Disponibilidade', rot('disponibilidade', lead.disponibilidade)],
+      ['Valor', rot('aceita_valor', lead.aceita_valor)],
+      ['Quando começar', rot('quando_comecar', lead.quando_comecar)],
+      ['Objetivo', texto(lead.objetivo)],
+      ['Anotação', texto(lead.anotacao)]
+    ]));
+    painel.appendChild(bQualif);
+
+    /* origem */
+    var bOrigem = bloco('Origem do lead');
+    bOrigem.appendChild(listaDados([
+      ['utm_source', texto(lead.utm_source)],
+      ['utm_medium', texto(lead.utm_medium)],
+      ['utm_campaign', texto(lead.utm_campaign)],
+      ['utm_content', texto(lead.utm_content)],
+      ['utm_term', texto(lead.utm_term)],
+      ['fbclid', texto(lead.fbclid)],
+      ['gclid', texto(lead.gclid)],
+      ['Referência', texto(lead.referrer)],
+      ['Página', texto(lead.pagina)],
+      ['IP', texto(lead.ip)],
+      ['Navegador', texto(lead.user_agent)]
+    ]));
+    painel.appendChild(bOrigem);
+
+    /* mudança de status */
+    var bStatus = bloco('Mudar o status');
+    var botoes = el('div', 'status-botoes');
+    var area = document.createElement('textarea');
+    area.id = 'anotacaoNova';
+    area.setAttribute('placeholder', 'Anotação sobre essa mudança (opcional)');
+
+    var recado = el('p', 'aviso-erro-form');
+    recado.setAttribute('role', 'status');
+    recado.setAttribute('aria-live', 'polite');
+
+    STATUS.forEach(function (s) {
+      var atual = lead.status === s;
+      var b = el('button', 'bt bt-peq' + (atual ? ' bt-forte' : ''), rot('status', s));
+      b.type = 'button';
+      if (atual) {
+        b.setAttribute('aria-disabled', 'true');
+        b.setAttribute('aria-current', 'true');
+        b.disabled = true;
+      } else {
+        b.addEventListener('click', function () {
+          var todos = botoes.querySelectorAll('button');
+          for (var i = 0; i < todos.length; i++) todos[i].disabled = true;
+          b.textContent = 'Salvando...';
+          recado.textContent = 'Salvando a mudança de status...';
+          salvaStatus(lead.id, s, area.value, function (erro) {
+            if (erro) {
+              for (var j = 0; j < todos.length; j++) todos[j].disabled = false;
+              b.textContent = rot('status', s);
+              recado.textContent = 'Não consegui salvar. Verifique a conexão e tente de novo.';
+            }
+          });
+        });
+      }
+      botoes.appendChild(b);
+    });
+
+    var lbl = el('label', null, 'Anotação');
+    lbl.setAttribute('for', 'anotacaoNova');
+    lbl.style.display = 'block';
+    lbl.style.fontSize = '12px';
+    lbl.style.fontWeight = '700';
+    lbl.style.textTransform = 'uppercase';
+    lbl.style.letterSpacing = '.05em';
+    lbl.style.color = 'var(--tinta-2)';
+    lbl.style.marginBottom = '4px';
+
+    poe(bStatus, botoes, lbl, area, recado);
+    painel.appendChild(bStatus);
+
+    /* histórico */
+    var bHist = bloco('Histórico');
+    if (!historico.length) {
+      bHist.appendChild(el('p', 'kvazio', 'Sem mudanças de status até agora.'));
+    } else {
+      var ul = el('ul', 'tempo');
+      historico.forEach(function (h) {
+        var li = document.createElement('li');
+        var frase = 'de ' + rot('status', h.de_status) + ' para ' + rot('status', h.para_status);
+        li.appendChild(el('strong', null, frase));
+        var quando = el('span', 'quando',
+          dataRelativa(h.criado_em) + (h.autor ? ' · ' + texto(h.autor) : ''));
+        quando.setAttribute('title', dataAbsoluta(h.criado_em));
+        li.appendChild(quando);
+        if (h.anotacao) li.appendChild(el('span', 'nota', texto(h.anotacao)));
+        ul.appendChild(li);
+      });
+      bHist.appendChild(ul);
+    }
+    painel.appendChild(bHist);
+
+    /* avisos do lead */
+    var bAvisos = bloco('Aviso no WhatsApp');
+    if (!avisos.length) {
+      bAvisos.appendChild(el('p', 'kvazio', 'Nenhum aviso registrado para esse lead.'));
+    } else {
+      var ulA = el('ul', 'linhas');
+      avisos.forEach(function (a) {
+        var li = el('li', 'aviso-item');
+        li.appendChild(el('strong', null, rot('aviso', a.status)));
+        var meta = el('p', 'td-sub',
+          (a.tentativas || 0) + (Number(a.tentativas) === 1 ? ' tentativa' : ' tentativas') +
+          ' · criado ' + dataRelativa(a.criado_em) +
+          (a.enviado_em ? ' · enviado ' + dataRelativa(a.enviado_em) : ''));
+        meta.setAttribute('title', dataAbsoluta(a.criado_em));
+        li.appendChild(meta);
+        if (a.destino) li.appendChild(el('p', 'td-sub', 'Destino: ' + texto(a.destino)));
+        if (a.ultimo_erro) li.appendChild(el('p', 'erro-txt', 'Último erro: ' + texto(a.ultimo_erro)));
+        if (a.status !== 'enviado') {
+          var b = el('button', 'bt bt-peq bt-forte', 'Reenviar aviso');
+          b.type = 'button';
+          b.addEventListener('click', function () { reenviaAviso(a.id, b, li); });
+          li.appendChild(b);
+        }
+        ulA.appendChild(li);
+      });
+      bAvisos.appendChild(ulA);
+    }
+    painel.appendChild(bAvisos);
+
+    painel.scrollTop = 0;
+    var foco = painel.querySelector('.painel-topo button');
+    if (foco) foco.focus();
+  }
+
+  function salvaStatus(id, status, anotacao, aoTerminar) {
+    return api('/crm/api/lead/' + encodeURIComponent(id) + '/status', {
+      method: 'POST',
+      body: JSON.stringify({ status: status, anotacao: anotacao || '' })
+    }).then(function () {
+      if (aoTerminar) aoTerminar(null);
+      return Promise.all([carregaLeads(), carregaResumo()]).then(function () {
+        if (painelAberto) {
+          return api('/crm/api/lead/' + encodeURIComponent(id)).then(desenhaDetalhe);
+        }
+      });
+    }).catch(function (e) {
+      if (e.message === 'sessao') return;
+      if (aoTerminar) aoTerminar(e);
+      else anuncia('Não consegui salvar a mudança de status.');
+    });
+  }
+
+  /* ---------- abrir, fechar, prender o foco ---------- */
+  function mostraPainel() {
+    painel.classList.remove('oculto');
+    fundo.classList.remove('oculto');
+    document.body.style.overflow = 'hidden';
+    painelAberto = true;
+  }
+
+  function fechaPainel() {
+    if (!painelAberto) return;
+    painelAberto = false;
+    painel.classList.add('oculto');
+    fundo.classList.add('oculto');
+    document.body.style.overflow = '';
+    limpa(painel);
+    try { window.history.replaceState(null, '', window.location.pathname + window.location.search); } catch (e) { /* ok */ }
+    if (estado.abridor && document.contains(estado.abridor)) {
+      estado.abridor.focus();
+    } else {
+      document.getElementById('abaLista').focus();
+    }
+    estado.abridor = null;
+  }
+
+  fundo.addEventListener('click', fechaPainel);
+
+  document.addEventListener('keydown', function (ev) {
+    if (!painelAberto) return;
+    if (ev.key === 'Escape' || ev.key === 'Esc') {
+      ev.preventDefault();
+      fechaPainel();
+      return;
+    }
+    if (ev.key !== 'Tab') return;
+    var focaveis = painel.querySelectorAll(
+      'a[href], button:not([disabled]), textarea, input, select, [tabindex]:not([tabindex="-1"])');
+    if (!focaveis.length) { ev.preventDefault(); painel.focus(); return; }
+    var primeiro = focaveis[0];
+    var ultimo = focaveis[focaveis.length - 1];
+    if (ev.shiftKey && (document.activeElement === primeiro || document.activeElement === painel)) {
+      ev.preventDefault(); ultimo.focus();
+    } else if (!ev.shiftKey && document.activeElement === ultimo) {
+      ev.preventDefault(); primeiro.focus();
+    }
+  });
+
+  /* ============================================================
+     Abas
+     ============================================================ */
+  var ABAS = [
+    { id: 'lista', botao: 'abaLista', painel: pLista },
+    { id: 'kanban', botao: 'abaKanban', painel: pKanban },
+    { id: 'avisos', botao: 'abaAvisos', painel: pAvisos }
+  ];
+
+  function trocaAba(qual, foca) {
+    estado.aba = qual;
+    ABAS.forEach(function (a) {
+      var b = document.getElementById(a.botao);
+      var ativa = a.id === qual;
+      b.setAttribute('aria-selected', ativa ? 'true' : 'false');
+      b.setAttribute('tabindex', ativa ? '0' : '-1');
+      if (ativa) { a.painel.hidden = false; } else { a.painel.hidden = true; }
+      if (ativa && foca) b.focus();
+    });
+    desenhaConteudo();
+    if (qual === 'avisos') carregaAvisos();
+  }
+
+  ABAS.forEach(function (a, i) {
+    var b = document.getElementById(a.botao);
+    b.addEventListener('click', function () { trocaAba(a.id, false); });
+    b.addEventListener('keydown', function (ev) {
+      var passo = ev.key === 'ArrowRight' ? 1 : (ev.key === 'ArrowLeft' ? -1 : 0);
+      if (!passo) return;
+      ev.preventDefault();
+      var novo = (i + passo + ABAS.length) % ABAS.length;
+      trocaAba(ABAS[novo].id, true);
+    });
+  });
+
+  function desenhaConteudo() {
+    if (estado.aba === 'lista') desenhaLista();
+    else if (estado.aba === 'kanban') desenhaKanban();
+    else desenhaAvisos();
+  }
+
+  /* ============================================================
+     Filtros
+     ============================================================ */
+  var relogio = null;
+  function agenda(fn, ms) {
+    if (relogio) window.clearTimeout(relogio);
+    relogio = window.setTimeout(fn, ms);
+  }
+
+  function leFiltros() {
+    estado.filtros.busca = document.getElementById('fBusca').value.trim();
+    estado.filtros.status = document.getElementById('fStatus').value;
+    estado.filtros.qualificacao = document.getElementById('fQualif').value;
+    estado.filtros.cidade = document.getElementById('fCidade').value.trim();
+    estado.filtros.utm_content = document.getElementById('fAnuncio').value;
+    atualizaLinkCsv();
+  }
+
+  function aplicaFiltros(comAtraso) {
+    leFiltros();
+    if (comAtraso) agenda(carregaLeads, 300);
+    else { if (relogio) window.clearTimeout(relogio); carregaLeads(); }
+  }
+
+  document.getElementById('fBusca').addEventListener('input', function () { aplicaFiltros(true); });
+  document.getElementById('fCidade').addEventListener('input', function () { aplicaFiltros(true); });
+  document.getElementById('fStatus').addEventListener('change', function () { aplicaFiltros(false); });
+  document.getElementById('fQualif').addEventListener('change', function () { aplicaFiltros(false); });
+  document.getElementById('fAnuncio').addEventListener('change', function () { aplicaFiltros(false); });
+  document.getElementById('filtros').addEventListener('submit', function (ev) {
+    ev.preventDefault();
+    aplicaFiltros(false);
+  });
+
+  document.getElementById('btLimpar').addEventListener('click', function () {
+    document.getElementById('fBusca').value = '';
+    document.getElementById('fCidade').value = '';
+    document.getElementById('fStatus').value = '';
+    document.getElementById('fQualif').value = '';
+    document.getElementById('fAnuncio').value = '';
+    aplicaFiltros(false);
+    anuncia('Filtros limpos.');
+  });
+
+  /* ============================================================
+     Sair
+     ============================================================ */
+  document.getElementById('btSair').addEventListener('click', function () {
+    api('/crm/sair', { method: 'POST' })
+      .then(paraLogin)
+      .catch(function () { paraLogin(); });
+  });
+
+  /* ============================================================
+     Início
+     ============================================================ */
+  preencheSelects();
+  atualizaLinkCsv();
+  desenhaResumo();
+  carregaResumo();
+  carregaLeads().then(function () {
+    var m = /(?:^|#|&)lead=(\d+)/.exec(window.location.hash || '');
+    if (m) abreLead(parseInt(m[1], 10), null);
+  });
+
+  // Recarrega o resumo de tempos em tempos para o contador não envelhecer.
+  window.setInterval(carregaResumo, 120000);
+})();
+</script>
+</body>
+</html>

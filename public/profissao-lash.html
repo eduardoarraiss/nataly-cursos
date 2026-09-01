@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <!-- ===================================================================
+       CAPTAÇÃO · PROFISSÃO LASH (curso de extensão de cílios para INICIANTES)
+       Destino do tráfego pago de captação. Rota: /profissao-lash
+       CTA → /entrar-profissao-lash (dispara Lead + manda pro grupo).
+
+       ESTRUTURA TRAVADA (definida pelo Eduardo): 3 DOBRAS, nada além disso.
+         1. Headline + promessa na subheadline + CTA
+         2. O curso de iniciante, em no MÁXIMO 3 blocos
+         3. Quem é a Nataly
+       CTA repete nas 3 dobras e na barra fixa — o limite é de dobra, não de CTA.
+
+       PENDENTE (1 item): a aula ao vivo ainda NÃO tem data oficial, então
+       a página fala dela sem cravar dia. Quando o Eduardo fechar a data,
+       ela entra na dobra 2, na frase marcada com o comentário
+       "PENDENTE · DATA_LIVE", e é um edit de uma linha só.
+
+       ✅ O grupo de WhatsApp já está ligado em /entrar-profissao-lash.html
+          (grupo "Curso INICIANTE on-line").
+
+       REGRAS APLICADAS: sem preço em lugar nenhum (regra 53) · nomear a
+       profissão no gancho (78) · gancho por negação (23) · público ampliado
+       e os dois públicos pesando igual (80, 82) · não pressupor rotina (81) ·
+       biografia só com fonte (75) · nunca prometer prazo até a 1ª cliente.
+       =================================================================== -->
+
+  <title>Profissão Lash · Aula ao vivo e gratuita · Nataly Ribeiro</title>
+  <meta name="description" content="Uma profissão que se aprende do zero, sem faculdade e sem dom: extensão de cílios. Entre no grupo do WhatsApp e participe da aula ao vivo e gratuita com a Nataly Ribeiro.">
+  <meta property="og:title" content="Profissão Lash · Aula ao vivo e gratuita">
+  <meta property="og:description" content="Você não precisa de diploma, nem de dom, para viver de extensão de cílios. Entre no grupo e participe da aula ao vivo.">
+  <meta property="og:type" content="website">
+
+  <!-- Pixel Meta (PageView) + GA4 (page_view). O Lead sai só na /entrar-profissao-lash. -->
+  <script src="/js/pixel.js"></script>
+  <script src="/js/analytics.js"></script>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Abril+Fatface&family=Cormorant+Garamond:ital,wght@0,500;1,400;1,500&family=Hanken+Grotesk:wght@400;500;600;700&family=Playfair+Display:ital,wght@0,500;1,400;1,500;1,600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/css/atelier.css">
+
+  <style>
+    /* ---- específico da captação Profissão Lash ---- */
+
+    /* a barra fixa cobre o rodapé no mobile — reserva o espaço dela.
+       Este valor é só o piso: o JS no fim da página mede a barra e ajusta
+       o padding exato, porque a altura dela muda com a largura da tela. */
+    body { padding-bottom: 96px; }
+    @media (min-width: 860px) { body { padding-bottom: 0; } }
+
+    .hero-cap { min-height: 100svh; display: flex; align-items: center; padding: 72px 0 48px; }
+    .hero-grid { display: grid; gap: 34px; align-items: center; }
+    .hero-txt { max-width: 600px; }
+    .hero-cap .foto { border-radius: 18px; overflow: hidden; border: 1px solid rgba(242,238,229,.16); }
+    .hero-cap .foto img { width: 100%; height: 100%; object-fit: cover; object-position: center top; min-height: 320px; max-height: 62vh; }
+    @media (min-width: 900px){
+      .hero-grid { grid-template-columns: 1.05fr .95fr; gap: 56px; }
+      .hero-cap { padding: 96px 0; }
+      .hero-cap .foto img { max-height: 80vh; min-height: 420px; }
+    }
+
+    .pill-data { display:inline-flex; align-items:center; gap:.6em; border:1px solid rgba(242,238,229,.28); border-radius:100px; padding:8px 16px; font-size:12px; letter-spacing:.12em; text-transform:uppercase; font-weight:600; line-height:1.3; }
+    .titulo { overflow-wrap: anywhere; }
+
+    /* hero um pouco menor no celular: a headline é longa e não pode virar parede */
+    .hero-txt .titulo { font-size: clamp(34px, 8.4vw, 68px); }
+    .hero-sub { font-size: clamp(17px, 4.4vw, 21px); line-height: 1.6; }
+
+    /* CTA — cabe em 1 linha até 320px de largura */
+    .cta { font-size: 15px; padding: 18px 28px; }
+    @media (min-width: 420px){ .cta { font-size: 16px; padding: 19px 36px; } }
+
+    /* os 3 blocos do curso */
+    .curso-grid { display:grid; gap:18px; }
+    @media (min-width: 820px){ .curso-grid { grid-template-columns: repeat(3, 1fr); gap:22px; } }
+    .curso-bloco { border:1px solid var(--filete); border-radius:18px; padding: clamp(24px, 5vw, 34px); background: var(--papel); }
+    .curso-bloco:nth-child(2) { background:#E7EDE2; border-color:#D6DFCD; }
+    .curso-num { font-family: var(--f-impacto); font-size: 30px; line-height:1; color: var(--chocolate); opacity:.5; }
+    .curso-tit { font-family: var(--f-apoio); font-style: italic; font-weight:500; font-size: clamp(24px, 2.8vw, 31px); line-height:1.18; margin-top:10px; }
+
+    /* bloco da Nataly */
+    .nat-grid { display:grid; gap:32px; align-items:center; }
+    @media (min-width:840px){ .nat-grid { grid-template-columns: .92fr 1.08fr; gap:56px; } }
+    .nat-foto { border-radius:18px; overflow:hidden; border:1px solid var(--filete); }
+    .nat-foto img { width:100%; display:block; object-fit:cover; }
+
+    /* barra fixa — o polegar alcança sem rolar de volta */
+    .barra-fixa .cta { padding: 14px 26px; font-size: 15px; }
+    .barra-fixa-txt { font-family: var(--f-body); font-size: 13px; opacity: .8; }
+    @media (max-width: 520px){ .barra-fixa-txt { display: none; } .barra-fixa { padding: 12px 16px; } .barra-fixa .cta { width: 100%; } }
+  </style>
+</head>
+<body>
+
+  <!-- ============ DOBRA 1 · HEADLINE + PROMESSA ============ -->
+  <header class="bg-pretinho hero-cap">
+    <div class="wrap">
+      <div class="hero-grid">
+        <div class="hero-txt">
+          <span class="pill-data acento">●&nbsp;&nbsp;Aula ao vivo e gratuita</span>
+
+          <h1 class="titulo mt-m">Você não precisa de diploma, nem de dom, para viver de extensão de <span class="acento">cílios</span>.</h1>
+
+          <p class="hero-sub mt-m txt2">É uma profissão que se aprende do zero, com treino e paciência, e que dá para começar de dentro de casa, atendendo com hora marcada. Eu vou dar uma aula ao vivo, online e gratuita, explicando tudo sobre ela e apresentando o meu curso para iniciantes. Entra no grupo do WhatsApp, porque é por lá que eu aviso tudo.</p>
+
+          <div class="mt-l">
+            <a href="/entrar-profissao-lash" class="cta cta--whatsapp js-cta">
+              <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12.04 2C6.58 2 2.13 6.45 2.13 11.91c0 1.75.46 3.45 1.32 4.95L2 22l5.25-1.38c1.45.79 3.08 1.21 4.79 1.21h.01c5.46 0 9.91-4.45 9.91-9.91 0-2.65-1.03-5.14-2.9-7.01C17.18 3.03 14.69 2 12.04 2zm0 18.13h-.01c-1.52 0-3.01-.41-4.31-1.18l-.31-.18-3.12.82.83-3.04-.2-.31a8.23 8.23 0 0 1-1.26-4.35c0-4.54 3.7-8.24 8.25-8.24 2.2 0 4.27.86 5.83 2.42a8.18 8.18 0 0 1 2.41 5.83c0 4.54-3.7 8.23-8.24 8.23zm4.52-6.16c-.25-.12-1.47-.72-1.69-.81-.23-.08-.39-.12-.56.12-.16.25-.64.81-.79.97-.14.17-.29.19-.54.06-.25-.12-1.05-.39-1.99-1.23-.74-.66-1.23-1.47-1.38-1.72-.14-.25-.01-.38.11-.5.11-.11.25-.29.37-.43.13-.14.17-.25.25-.41.08-.17.04-.31-.02-.43-.06-.12-.56-1.34-.76-1.84-.2-.48-.4-.42-.56-.43-.14-.01-.31-.01-.48-.01-.17 0-.43.06-.66.31-.23.25-.86.85-.86 2.07 0 1.22.89 2.4 1.01 2.56.12.17 1.75 2.67 4.23 3.74.59.26 1.05.41 1.41.52.59.19 1.13.16 1.56.1.48-.07 1.47-.6 1.68-1.18.21-.58.21-1.07.14-1.18-.06-.1-.22-.16-.47-.28z"/></svg>
+              Quero entrar no grupo
+            </a>
+          </div>
+
+          <p class="corpo mt-m txt2" style="font-size:15px;">É gratuito. Você recebe o aviso da aula e todo o passo a passo por lá.</p>
+        </div>
+
+        <div class="foto">
+          <img src="/img/nataly-hero.jpg" alt="Nataly Ribeiro, lash designer e professora de extensão de cílios">
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- ============ DOBRA 2 · O CURSO DE INICIANTE (3 blocos, no máximo) ============ -->
+  <section class="secao bg-claro">
+    <div class="wrap">
+      <div class="centro" style="max-width:720px; margin-inline:auto;">
+        <span class="eyebrow eyebrow-c">O curso para iniciantes</span>
+        <h2 class="titulo titulo--md mt-m">Do zero até a sua primeira <span class="acento">cliente</span>.</h2>
+        <p class="corpo--lg txt2 mt-m">Você não precisa ter feito curso antes, nem ter experiência com estética. A maioria das mulheres que eu formei chegou até mim sem saber nem segurar a pinça. Na aula ao vivo eu abro tudo, mas em resumo é isso:</p>
+      </div>
+
+      <div class="curso-grid mt-l">
+        <div class="curso-bloco">
+          <span class="curso-num">1</span>
+          <p class="curso-tit acento">A técnica, e o porquê de cada coisa</p>
+          <p class="corpo txt2 mt-s">Aula teórica e prática, na ordem certa: como isolar o cílio natural, como escolher o fio, como aplicar e como fazer a manutenção. Eu não te ensino só o passo a passo, eu te explico o motivo de cada escolha. Quem entende o porquê não trava na frente da cliente.</p>
+        </div>
+        <div class="curso-bloco">
+          <span class="curso-num">2</span>
+          <p class="curso-tit acento">As técnicas que a cliente mais pede</p>
+          <p class="corpo txt2 mt-s">Não adianta saber uma só. Você aprende os efeitos mais procurados hoje, para atender desde a cliente que quer algo bem natural até a que quer volume, sem precisar recusar serviço nem mandar embora quem chega no seu estúdio.</p>
+        </div>
+        <div class="curso-bloco">
+          <span class="curso-num">3</span>
+          <p class="curso-tit acento">Você não fica sozinha depois</p>
+          <p class="corpo txt2 mt-s">Tem grupo de suporte durante todo o aprendizado e uma mentoria ao vivo comigo por mês, para você tirar dúvida de caso real. Erro de iniciante é normal, e é bem mais fácil de corrigir quando tem alguém junto para te dizer o que aconteceu.</p>
+        </div>
+      </div>
+
+      <div class="centro mt-l">
+        <a href="/entrar-profissao-lash" class="cta cta--whatsapp js-cta">
+          <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12.04 2C6.58 2 2.13 6.45 2.13 11.91c0 1.75.46 3.45 1.32 4.95L2 22l5.25-1.38c1.45.79 3.08 1.21 4.79 1.21h.01c5.46 0 9.91-4.45 9.91-9.91 0-2.65-1.03-5.14-2.9-7.01C17.18 3.03 14.69 2 12.04 2zm0 18.13h-.01c-1.52 0-3.01-.41-4.31-1.18l-.31-.18-3.12.82.83-3.04-.2-.31a8.23 8.23 0 0 1-1.26-4.35c0-4.54 3.7-8.24 8.25-8.24 2.2 0 4.27.86 5.83 2.42a8.18 8.18 0 0 1 2.41 5.83c0 4.54-3.7 8.23-8.24 8.23zm4.52-6.16c-.25-.12-1.47-.72-1.69-.81-.23-.08-.39-.12-.56.12-.16.25-.64.81-.79.97-.14.17-.29.19-.54.06-.25-.12-1.05-.39-1.99-1.23-.74-.66-1.23-1.47-1.38-1.72-.14-.25-.01-.38.11-.5.11-.11.25-.29.37-.43.13-.14.17-.25.25-.41.08-.17.04-.31-.02-.43-.06-.12-.56-1.34-.76-1.84-.2-.48-.4-.42-.56-.43-.14-.01-.31-.01-.48-.01-.17 0-.43.06-.66.31-.23.25-.86.85-.86 2.07 0 1.22.89 2.4 1.01 2.56.12.17 1.75 2.67 4.23 3.74.59.26 1.05.41 1.41.52.59.19 1.13.16 1.56.1.48-.07 1.47-.6 1.68-1.18.21-.58.21-1.07.14-1.18-.06-.1-.22-.16-.47-.28z"/></svg>
+          Quero entrar no grupo
+        </a>
+        <!-- PENDENTE · DATA_LIVE — quando o Eduardo fechar a data, ela entra AQUI,
+             na frase abaixo: "A aula é online e ao vivo, no dia X." Edit de 1 linha. -->
+        <p class="corpo txt2 mt-m" style="font-size:15px;">A aula é online e ao vivo. Quem está no grupo recebe o link e é avisada antes de todo mundo.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ DOBRA 3 · QUEM É A NATALY (história real, com fonte) ============ -->
+  <section class="secao bg-papel">
+    <div class="wrap">
+      <div class="nat-grid">
+        <div class="nat-foto">
+          <img src="/img/nataly-ribeiro.jpg" alt="Nataly Ribeiro">
+        </div>
+        <div>
+          <span class="eyebrow">Quem vai te ensinar</span>
+          <h2 class="titulo titulo--md mt-m">Nataly <span class="acento">Ribeiro</span></h2>
+
+          <p class="corpo--lg txt2 mt-m">Eu sou lash designer <b>há mais de 9 anos</b> e já formei <b>mais de 300 alunas</b> presencialmente. Comecei na extensão de cílios aos dezessete e é a única profissão que eu já tive na vida.</p>
+
+          <p class="corpo--lg txt2 mt-m">No começo, quase ninguém fazia extensão na minha cidade e muita gente aprendia errado, pela internet. Eu passei um bom tempo removendo aplicação malfeita e refazendo do jeito certo, e foi por aí que o meu nome ficou conhecido. Até hoje é assim que eu trabalho e é assim que eu ensino: arte com responsabilidade.</p>
+
+          <p class="corpo--lg txt2 mt-m">Hoje eu sou referência na minha região e trago pra cá cada novidade da área antes de todo mundo. Só que o que me deu mais orgulho nesses anos não foi nenhum trabalho meu. Foi ver aluna minha pedir a conta do emprego e passar a viver disso.</p>
+
+          <p class="corpo--lg txt2 mt-m">É por isso que eu ensino. O que eu quero é simples: tirar do CLT as mães, as meninas que estão começando agora e toda mulher que quer ter dignidade, para elas terem tempo, dinheiro e qualidade de vida.</p>
+
+          <div class="mt-l">
+            <a href="/entrar-profissao-lash" class="cta cta--whatsapp js-cta">
+              <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12.04 2C6.58 2 2.13 6.45 2.13 11.91c0 1.75.46 3.45 1.32 4.95L2 22l5.25-1.38c1.45.79 3.08 1.21 4.79 1.21h.01c5.46 0 9.91-4.45 9.91-9.91 0-2.65-1.03-5.14-2.9-7.01C17.18 3.03 14.69 2 12.04 2zm0 18.13h-.01c-1.52 0-3.01-.41-4.31-1.18l-.31-.18-3.12.82.83-3.04-.2-.31a8.23 8.23 0 0 1-1.26-4.35c0-4.54 3.7-8.24 8.25-8.24 2.2 0 4.27.86 5.83 2.42a8.18 8.18 0 0 1 2.41 5.83c0 4.54-3.7 8.23-8.24 8.23zm4.52-6.16c-.25-.12-1.47-.72-1.69-.81-.23-.08-.39-.12-.56.12-.16.25-.64.81-.79.97-.14.17-.29.19-.54.06-.25-.12-1.05-.39-1.99-1.23-.74-.66-1.23-1.47-1.38-1.72-.14-.25-.01-.38.11-.5.11-.11.25-.29.37-.43.13-.14.17-.25.25-.41.08-.17.04-.31-.02-.43-.06-.12-.56-1.34-.76-1.84-.2-.48-.4-.42-.56-.43-.14-.01-.31-.01-.48-.01-.17 0-.43.06-.66.31-.23.25-.86.85-.86 2.07 0 1.22.89 2.4 1.01 2.56.12.17 1.75 2.67 4.23 3.74.59.26 1.05.41 1.41.52.59.19 1.13.16 1.56.1.48-.07 1.47-.6 1.68-1.18.21-.58.21-1.07.14-1.18-.06-.1-.22-.16-.47-.28z"/></svg>
+              Quero entrar no grupo
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ RODAPÉ ============ -->
+  <footer class="rodape bg-pretinho centro">
+    <div class="wrap">
+      <p class="logo acento">Nataly Ribeiro</p>
+      <p class="corpo txt2 mt-s" style="font-size:14px;">Profissão Lash · Extensão de cílios do zero</p>
+      <p class="txt2 mt-m" style="font-size:13px;">© 2026 Nataly Ribeiro. Todos os direitos reservados.</p>
+      <!-- Link exigido pela revisão de anúncios do Meta quando a campanha usa formulário instantâneo. -->
+      <p class="txt2" style="font-size:13px;"><a href="/politica-de-privacidade" style="color:inherit;text-decoration:underline;text-underline-offset:3px;">Política de Privacidade</a></p>
+    </div>
+  </footer>
+
+  <!-- ============ BARRA FIXA (alcance do polegar no mobile) ============ -->
+  <div class="barra-fixa" id="barraFixa">
+    <span class="barra-fixa-txt">Aula ao vivo, online e gratuita</span>
+    <a href="/entrar-profissao-lash" class="cta cta--whatsapp js-cta">
+      <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12.04 2C6.58 2 2.13 6.45 2.13 11.91c0 1.75.46 3.45 1.32 4.95L2 22l5.25-1.38c1.45.79 3.08 1.21 4.79 1.21h.01c5.46 0 9.91-4.45 9.91-9.91 0-2.65-1.03-5.14-2.9-7.01C17.18 3.03 14.69 2 12.04 2zm0 18.13h-.01c-1.52 0-3.01-.41-4.31-1.18l-.31-.18-3.12.82.83-3.04-.2-.31a8.23 8.23 0 0 1-1.26-4.35c0-4.54 3.7-8.24 8.25-8.24 2.2 0 4.27.86 5.83 2.42a8.18 8.18 0 0 1 2.41 5.83c0 4.54-3.7 8.23-8.24 8.23zm4.52-6.16c-.25-.12-1.47-.72-1.69-.81-.23-.08-.39-.12-.56.12-.16.25-.64.81-.79.97-.14.17-.29.19-.54.06-.25-.12-1.05-.39-1.99-1.23-.74-.66-1.23-1.47-1.38-1.72-.14-.25-.01-.38.11-.5.11-.11.25-.29.37-.43.13-.14.17-.25.25-.41.08-.17.04-.31-.02-.43-.06-.12-.56-1.34-.76-1.84-.2-.48-.4-.42-.56-.43-.14-.01-.31-.01-.48-.01-.17 0-.43.06-.66.31-.23.25-.86.85-.86 2.07 0 1.22.89 2.4 1.01 2.56.12.17 1.75 2.67 4.23 3.74.59.26 1.05.41 1.41.52.59.19 1.13.16 1.56.1.48-.07 1.47-.6 1.68-1.18.21-.58.21-1.07.14-1.18-.06-.1-.22-.16-.47-.28z"/></svg>
+      Entrar no grupo
+    </a>
+  </div>
+
+  <script>
+    /* ---- reveal on scroll ---- */
+    var io = new IntersectionObserver(function (es) {
+      es.forEach(function (e) { if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); } });
+    }, { threshold: .12 });
+    document.querySelectorAll('.curso-bloco, .nat-foto, section .titulo').forEach(function (el) { el.classList.add('reveal'); io.observe(el); });
+
+    /* ---- barra fixa aparece depois que o hero sai da tela ---- */
+    (function () {
+      var barra = document.getElementById('barraFixa');
+      var hero = document.querySelector('.hero-cap');
+      if (!barra) return;
+
+      // Reserva embaixo do rodapé exatamente a altura da barra, senão ela
+      // cobre a última linha do rodapé. A altura muda com a largura da tela
+      // (em telas estreitas o botão vira largura cheia), então é medida, não chutada.
+      function reservaEspaco() {
+        var ehFixa = getComputedStyle(barra).position === 'fixed';
+        var precisa = ehFixa && window.innerWidth < 860;
+        document.body.style.paddingBottom = precisa ? (barra.offsetHeight + 8) + 'px' : '';
+      }
+      reservaEspaco();
+      window.addEventListener('resize', reservaEspaco);
+      window.addEventListener('load', reservaEspaco);
+
+      if (!hero || !('IntersectionObserver' in window)) { barra.classList.add('show'); return; }
+      new IntersectionObserver(function (entries) {
+        entries.forEach(function (e) { barra.classList.toggle('show', !e.isIntersecting); });
+      }, { threshold: 0 }).observe(hero);
+    })();
+
+    /* ------------------------------------------------------------------
+       UTM FORWARDING (captação → página de redirect)
+       O analytics.js só decora links pay.kiwify. Aqui a origem do anúncio
+       é repassada nos links INTERNOS de CTA, para que o evento Lead saia
+       na /entrar-profissao-lash já atribuído à campanha certa.
+       Fallback: o analytics.js persiste a origem em localStorage nr_attrib.
+       ------------------------------------------------------------------ */
+    (function () {
+      var CHAVES = ["utm_source", "utm_medium", "utm_campaign", "utm_content", "utm_term", "src", "fbclid", "gclid"];
+      var STORE = "nr_attrib"; // mesma chave usada pelo analytics.js
+
+      function daUrl() {
+        var qs;
+        try { qs = new URLSearchParams(location.search); } catch (e) { return null; }
+        var out = {}, tem = false;
+        CHAVES.forEach(function (k) { var v = qs.get(k); if (v) { out[k] = v; tem = true; } });
+        return tem ? out : null;
+      }
+
+      function atribuicao() {
+        var fresca = daUrl();
+        if (fresca) {
+          try { localStorage.setItem(STORE, JSON.stringify(fresca)); } catch (e) {}
+          return fresca;
+        }
+        try { return JSON.parse(localStorage.getItem(STORE) || "null"); } catch (e) { return null; }
+      }
+
+      function decora(a, attrib) {
+        if (!a || !attrib) return;
+        var href = a.getAttribute("href") || "";
+        if (href.indexOf("/entrar-profissao-lash") !== 0) return;
+        try {
+          var u = new URL(href, location.origin);
+          CHAVES.forEach(function (k) { if (attrib[k]) u.searchParams.set(k, attrib[k]); });
+          a.setAttribute("href", u.pathname + u.search);
+        } catch (e) {}
+      }
+
+      function aplica() {
+        var attrib = atribuicao();
+        if (!attrib) return;
+        var links = document.querySelectorAll("a.js-cta");
+        for (var i = 0; i < links.length; i++) decora(links[i], attrib);
+      }
+
+      if (document.readyState === "loading") {
+        document.addEventListener("DOMContentLoaded", aplica);
+      } else {
+        aplica();
+      }
+
+      // garantia no clique, antes da navegação
+      document.addEventListener("click", function (ev) {
+        var a = ev.target.closest && ev.target.closest("a.js-cta");
+        if (!a) return;
+        var href = a.getAttribute("href") || "";
+        if (href.indexOf("utm_") === -1 && href.indexOf("src=") === -1) decora(a, atribuicao());
+      }, true);
+    })();
+  </script>
+</body>
+</html>

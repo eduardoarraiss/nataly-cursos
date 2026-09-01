@@ -4,746 +4,433 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Apostila · O Método LED | Nataly Ribeiro</title>
-  <meta name="description" content="A apostila digital do Método LED: o método completo de extensão de cílios com LED, por escrito, pra estudar e consultar. PDF, 26 páginas, acesso imediato. R$67,90.">
-  <meta property="og:title" content="Lash 2.0 — O Método LED · Nataly Ribeiro">
-  <meta property="og:description" content="O LED vai ser o novo padrão da extensão de cílios. A pergunta é se você vai dominar essa técnica antes ou depois da sua concorrência.">
-  <meta property="og:type" content="website">
-
-  <!-- Variante de página (teste A/B copy+design) — A = página longa canônica -->
-  <!-- LED_VALUE = preço da fase atual (injetado pelo server: 197 fase 1 / 497 fase 2) -->
+  <meta name="description" content="A apostila digital do Método LED: o método completo de extensão de cílios com LED, por escrito, pra estudar e consultar. PDF, 26 páginas, 4 módulos, acesso imediato. R$67,90.">
+  <meta property="og:title" content="Apostila · O Método LED — Nataly Ribeiro">
+  <meta property="og:description" content="O Método LED inteiro, por escrito. 26 páginas, 4 módulos. Acesso imediato, sua pra sempre.">
   <script>window.PAGE_VARIANT = "APOSTILA"; window.LED_VALUE = 67.9;</script>
-  <!-- Meta Pixel + GA4 -->
   <script src="/js/pixel.js"></script>
   <script src="/js/analytics.js"></script>
-
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Abril+Fatface&family=Cormorant+Garamond:ital,wght@0,500;1,400;1,500&family=Hanken+Grotesk:wght@400;500;600;700;800&family=Playfair+Display:ital,wght@0,500;1,400;1,500;1,600&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="/css/atelier.css?v=20260629c">
-  <style>
-    /* ---------- HERO ---------- */
-    .hero { min-height: 100svh; display: flex; align-items: center; padding: 92px 0 56px; }
-    .hero-grid { display: grid; gap: 40px; align-items: center; }
-    .hero-txt { max-width: 600px; }
-    .hero .foto { border-radius: 18px; overflow: hidden; border: 1px solid rgba(242,238,229,.16); }
-    .hero .foto img { width: 100%; height: 100%; object-fit: cover; object-position: center 28%; min-height: 380px; max-height: 82vh; }
-    @media (min-width: 900px){
-      .hero-grid { grid-template-columns: 1.04fr .96fr; gap: 56px; }
-      .hero { padding: 96px 0; }
-    }
-    .pill-data { display:inline-flex; align-items:center; gap:.6em; border:1px solid rgba(242,238,229,.28); border-radius:100px; padding:8px 18px; font-size:13px; letter-spacing:.12em; text-transform:uppercase; font-weight:600; }
-    .titulo { overflow-wrap: anywhere; }
-    .micro { font-size: 14px; letter-spacing:.02em; }
+  <link href="https://fonts.googleapis.com/css2?family=Abril+Fatface&family=Cormorant+Garamond:ital,wght@0,500;1,400;1,500&family=Hanken+Grotesk:wght@400;500;600;700;800&family=Playfair+Display:ital,wght@0,500;0,700;1,400;1,500;1,600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --branco:#F2EEE5; --papel:#FAF7F0; --pedra:#E2D8C8; --blush:#E8D4C8;
+    --argila:#C9A48B; --salvia:#A5B59A; --salvia-p:#7E9072;
+    --mocha:#7A5C44; --choco:#6B4F3A; --tinta:#463729; --tinta2:#8A7766;
+    --filete:#DED3C2; --pretinho:#241C15; --verde-tinta:#2C3724;
+    --verde-glow:#A9DB7E;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth;scroll-padding-top:12px}
+  body{background:var(--branco);color:var(--tinta);font-family:'Hanken Grotesk',sans-serif;line-height:1.6;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+  img{max-width:100%;display:block}
+  .wrap{width:100%;max-width:940px;margin:0 auto;padding:0 24px}
+  .wrap--txt{max-width:680px}
+  .sec{padding:64px 0}
+  .bg-claro{background:var(--branco)} .bg-papel{background:var(--papel)}
+  .bg-pretinho{background:var(--pretinho);color:var(--branco)}
+  .bg-salvia{background:var(--salvia);color:var(--verde-tinta)}
+  .centro{text-align:center}
+  .eyebrow{font-weight:600;text-transform:uppercase;letter-spacing:.26em;font-size:12px;color:var(--choco);display:inline-flex;align-items:center;gap:9px}
+  .eyebrow::before{content:"";width:6px;height:6px;border-radius:50%;background:var(--salvia-p)}
+  .bg-pretinho .eyebrow{color:var(--argila)} .bg-pretinho .eyebrow::before{background:var(--salvia)}
+  h1{font-family:'Playfair Display';font-weight:700;font-size:clamp(34px,6vw,58px);line-height:1.04;letter-spacing:-.01em;margin:.3em 0}
+  h2{font-family:'Playfair Display';font-weight:700;font-size:clamp(27px,4.4vw,40px);line-height:1.1;margin:.3em 0}
+  h1 .ac,h2 .ac{font-style:italic;color:var(--choco)}
+  .bg-pretinho h1 .ac,.bg-pretinho h2 .ac{color:var(--argila)}
+  .lead{font-size:clamp(17px,1.9vw,20px);color:var(--tinta2);line-height:1.6}
+  .bg-pretinho .lead{color:rgba(242,238,229,.74)}
+  p{font-size:16.5px;color:var(--tinta2)}
+  .apoio{font-family:'Cormorant Garamond';font-style:italic;font-size:clamp(18px,2.3vw,22px);color:var(--tinta2)}
+  .head{max-width:36ch;margin:0 auto}
+  .mt-s{margin-top:12px}.mt-m{margin-top:22px}.mt-l{margin-top:38px}
+  .micro{font-size:13px;letter-spacing:.02em}
 
-    /* ---------- Áreas onde o LED já é usado (didático) ---------- */
-    .areas { display:grid; gap:18px; grid-template-columns:1fr 1fr; }
-    @media (min-width:760px){ .areas { grid-template-columns:repeat(4,1fr); } }
-    .area { border:1px solid var(--filete); border-radius:14px; padding: clamp(20px,2.6vw,28px); background:var(--papel); }
-    .area .ic { width:42px; height:42px; margin-bottom:12px; }
-    .area h4 { font-family:var(--f-body); font-size:12px; font-weight:600; letter-spacing:.16em; text-transform:uppercase; }
-    .area h3 { font-family:var(--f-display); font-style:italic; font-weight:500; font-size:clamp(20px,2.4vw,26px); margin-top:4px; line-height:1.1; }
-    .area p { font-size:14.5px; line-height:1.55; margin-top:8px; }
+  .cta{display:inline-flex;flex-direction:column;align-items:center;gap:3px;text-decoration:none;background:var(--choco);color:var(--branco);border-radius:100px;padding:16px 32px;font-weight:700;font-size:16px;transition:transform .12s}
+  .cta:active{transform:translateY(1px)}
+  .cta small{font-weight:400;font-size:11.5px;opacity:.82}
 
-    /* ---------- Passos do mecanismo ---------- */
-    .passos { display:grid; gap:20px; grid-template-columns:1fr; }
-    @media (min-width:680px){ .passos { grid-template-columns:repeat(3,1fr); } }
-    .passo .pn { font-family:var(--f-apoio); font-style:italic; font-size:clamp(34px,5vw,52px); line-height:1; }
-    .passo p { font-size:16px; margin-top:8px; }
+  /* HERO */
+  .hero-grid{display:grid;gap:34px;align-items:center}
+  @media(min-width:860px){.hero-grid{grid-template-columns:1.05fr .95fr;gap:48px}}
+  .pill{display:inline-flex;align-items:center;gap:8px;border:1px solid rgba(242,238,229,.2);color:var(--argila);font-size:12px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;padding:8px 16px;border-radius:100px}
+  .hero-foto{position:relative;text-align:center}
+  .hero-foto img{margin:0 auto;max-width:min(440px,94%);border-radius:6px;filter:drop-shadow(0 30px 54px rgba(0,0,0,.5))}
 
-    /* ---------- Comparação de segurança (48W x 5W) ---------- */
-    .seg { display:grid; gap:20px; grid-template-columns:1fr; align-items:stretch; }
-    @media (min-width:680px){ .seg { grid-template-columns:1fr 1fr; } }
-    .seg-card { border:1px solid rgba(242,238,229,.2); border-radius:18px; padding: clamp(26px,3.4vw,40px); }
-    .seg-card h4 { font-family:var(--f-body); font-size:12.5px; font-weight:600; letter-spacing:.18em; text-transform:uppercase; opacity:.85; }
-    .seg-num { font-family:var(--f-impacto); line-height:.95; font-size:clamp(72px,11vw,120px); margin-top:6px; }
-    .seg-num span { font-size:.4em; font-style:italic; font-family:var(--f-display); }
-    .seg-bar { height:7px; border-radius:4px; margin:14px 0; }
-    .seg-card.hi { background:var(--salvia); border-color:transparent; }
-    .seg-card.hi h4, .seg-card.hi p { color:#2C3724; }
-    .seg-card.hi .seg-num { color:#2C3724; }
+  /* MANDALA */
+  .jm-mandala{width:100%;max-width:340px;margin:28px auto 0;position:relative;aspect-ratio:1}
+  .jm-mandala .r2{position:absolute;inset:3%;border:1px solid var(--filete);border-radius:50%}
+  .jm-mandala .r1{position:absolute;inset:16%;border:1px dashed var(--filete);border-radius:50%}
+  .jm-centro{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:44%;height:44%;border-radius:50%;background:var(--pretinho);border:1px solid var(--filete);color:var(--branco);display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:8px}
+  .jm-centro .t{font-family:'Playfair Display';font-style:italic;font-weight:700;font-size:clamp(16px,5vw,24px);line-height:1.02;color:var(--argila)}
+  .jm-centro .s{font-size:clamp(9px,2.3vw,11px);color:var(--branco);opacity:.7;letter-spacing:.14em;text-transform:uppercase;margin-top:5px}
+  .jm-petala{position:absolute;transform:translate(-50%,-50%);z-index:2;text-align:center;width:clamp(70px,20vw,140px)}
+  .jm-petala .no{width:clamp(46px,13vw,60px);height:clamp(46px,13vw,60px);border-radius:50%;background:var(--choco);color:var(--branco);font-family:'Abril Fatface';font-size:clamp(19px,5vw,25px);display:flex;align-items:center;justify-content:center;margin:0 auto;border:3px solid var(--branco)}
+  .jm-petala .lb{font-size:13px;font-weight:600;color:var(--tinta);line-height:1.15;margin-top:7px}
+  .jm-p0{left:50%;top:7%}.jm-p1{left:91%;top:50%}.jm-p2{left:50%;top:93%}.jm-p3{left:9%;top:50%}
+  .jm-legenda{max-width:680px;margin:44px auto 0;display:grid;grid-template-columns:1fr 1fr;gap:14px}
+  .jm-lg{display:grid;grid-template-columns:44px 1fr;gap:14px;align-items:start;border:1px solid var(--filete);border-radius:12px;background:var(--papel);padding:18px}
+  .jm-lg .n{width:44px;height:44px;border-radius:50%;background:var(--branco);border:1px solid var(--filete);color:var(--choco);font-family:'Abril Fatface';font-size:20px;display:flex;align-items:center;justify-content:center}
+  .jm-lg h3{font-family:'Playfair Display';font-weight:700;font-size:17px;line-height:1.15;color:var(--tinta)}
+  .jm-lg .ap{font-size:14px;color:var(--tinta2);margin-top:5px;line-height:1.42}
+  .jm-faixa{display:flex;flex-wrap:wrap;border:1px solid var(--filete);border-radius:100px;overflow:hidden;background:var(--papel);max-width:640px;margin:36px auto 0}
+  .jm-faixa .c{flex:1;text-align:center;padding:16px 8px;border-left:1px solid var(--filete)}
+  .jm-faixa .c:first-child{border-left:0}
+  .jm-faixa .c b{font-family:'Abril Fatface';font-size:clamp(21px,5vw,28px);color:var(--choco);display:block;line-height:1}
+  .jm-faixa .c span{font-size:11px;color:var(--tinta2)}
+  @media(max-width:600px){.jm-petala .lb{display:none}.jm-legenda{grid-template-columns:1fr}.jm-faixa .c{flex:1 0 50%}.jm-mandala{max-width:290px}}
+  @media(min-width:760px){.jm-mandala{max-width:430px}.jm-petala .lb{font-size:14.5px}}
 
-    /* ---------- Timeline ---------- */
-    .tl-wrap { max-width:980px; margin:0 auto; }
-    .tl-wrap svg { width:100%; height:auto; display:block; }
+  /* MOCKUP GALLERY */
+  .mock-g{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-top:34px;align-items:center}
+  .mock-g img{border-radius:10px;filter:drop-shadow(0 16px 30px rgba(36,28,21,.22))}
+  @media(max-width:600px){.mock-g{grid-template-columns:1fr;max-width:300px;margin-inline:auto}}
 
-    /* ---------- Cards xadrez (benefícios) ---------- */
-    .benef-tit { font-family: var(--f-apoio); font-style: italic; font-weight: 500; font-size: clamp(23px, 2.7vw, 31px); line-height: 1.18; margin-bottom: 2px; }
-    .card--v { background: #E7EDE2; border-color: #D6DFCD; }
-    .card--c { background: #FAF7F0; }
+  /* PRINTS REAIS */
+  .rp-masonry{columns:2;column-gap:12px;margin-top:22px}
+  @media(max-width:560px){.rp-masonry{columns:1;max-width:420px;margin-inline:auto}}
+  .rp-card{break-inside:avoid;margin-bottom:12px;border:1px solid var(--filete);border-radius:12px;overflow:hidden;background:#fff}
+  .rp-card img{width:100%;height:auto}
+  .rp-sub{margin-top:42px}
 
-    /* ---------- Resultados ---------- */
-    .result-grid { display:grid; gap:16px; grid-template-columns:1fr; }
-    @media(min-width:760px){ .result-grid { grid-template-columns:repeat(3,1fr); } }
-    .result-item { border-radius:16px; overflow:hidden; border:1px solid rgba(242,238,229,.16); aspect-ratio:4/5; }
-    .result-item img { width:100%; height:100%; object-fit:cover; }
+  /* OFERTA CARD */
+  .card{max-width:460px;margin:26px auto 0;border:1px solid var(--filete);border-radius:20px;background:var(--papel);overflow:hidden;text-align:left}
+  .card .topo{background:var(--pretinho);color:var(--branco);text-align:center;padding:22px 24px}
+  .card .topo .selo{font-size:11px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--argila)}
+  .card .topo h3{font-family:'Playfair Display';font-weight:700;font-size:22px;margin-top:6px}
+  .card .corpo{padding:24px}
+  .inclui{list-style:none}
+  .inclui li{display:grid;grid-template-columns:26px 1fr;gap:11px;align-items:start;padding:11px 0;border-top:1px solid var(--filete)}
+  .inclui li:first-child{border-top:0}
+  .inclui .ck{width:24px;height:24px;border-radius:50%;background:var(--salvia);color:var(--verde-tinta);font-weight:800;font-size:13px;display:flex;align-items:center;justify-content:center;margin-top:1px}
+  .inclui .t{font-size:15px;color:var(--tinta);line-height:1.34}
+  .inclui .t b{font-weight:700}
+  .preco-box{background:var(--pretinho);border-radius:16px;text-align:center;padding:24px 18px;margin-top:22px}
+  .preco-box .lab{font-family:'Cormorant Garamond';font-style:italic;font-size:19px;color:rgba(242,238,229,.72)}
+  .preco-box .num{font-family:'Abril Fatface';font-size:clamp(58px,15vw,82px);line-height:.9;color:var(--verde-glow);text-shadow:0 0 26px rgba(169,219,126,.55),0 0 9px rgba(169,219,126,.4);margin-top:4px}
+  .preco-box .num .cif,.preco-box .num .cent{font-size:.4em;vertical-align:.5em}
+  .preco-box .parc{font-size:15px;color:rgba(242,238,229,.9);margin-top:10px}
+  .preco-box .parc b{color:var(--verde-glow)}
+  .preco-box .sub{font-size:12px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:rgba(242,238,229,.6);margin-top:9px}
+  .card .cta{display:flex;width:100%;margin-top:20px}
+  .card .gar{text-align:center;font-size:12.5px;color:var(--tinta2);margin-top:13px}
 
-    /* ---------- Nataly ---------- */
-    .nat-grid { display:grid; gap:36px; align-items:center; }
-    @media (min-width:840px){ .nat-grid { grid-template-columns: .92fr 1.08fr; gap:56px; } }
-    .nat-foto { border-radius:18px; overflow:hidden; border:1px solid var(--filete); }
-    .nat-foto img { width:100%; display:block; object-fit:cover; }
+  /* FAQ */
+  .faq{max-width:620px;margin:26px auto 0}
+  .faq details{border-bottom:1px solid var(--filete)}
+  .faq summary{list-style:none;cursor:pointer;padding:16px 2px;font-weight:700;font-size:16px;color:var(--tinta);display:flex;justify-content:space-between;gap:12px;align-items:center}
+  .faq summary::-webkit-details-marker{display:none}
+  .faq summary::after{content:"+";color:var(--choco);font-weight:800;font-size:22px}
+  .faq details[open] summary::after{content:"–"}
+  .faq .a{padding:0 2px 16px;color:var(--tinta2);font-size:15px;line-height:1.6}
 
-    /* ---------- Método / jornada ---------- */
-    .fase { border-top: 1px solid var(--filete); padding: 36px 0; }
-    .fase:first-of-type { border-top: 0; }
-    .fase__n { font-family: var(--f-impacto); font-size: clamp(42px,6vw,66px); line-height:1; opacity:.85; }
-    .fase__verbo { font-family: var(--f-display); font-style: italic; font-size: clamp(27px,3.6vw,42px); line-height:1.04; }
-    .fase__apoio { font-family: var(--f-apoio); font-style: italic; font-size: clamp(17px,2vw,21px); margin-top: 2px; }
-    .fase__aulas { font-size: 14.5px; opacity:.9; }
-    @media (min-width:760px){ .fase-grid { display:grid; grid-template-columns: 92px 1fr; gap: 34px; align-items: start; } }
-
-    /* ---------- Pra quem é / não é ---------- */
-    .col2 { display:grid; gap:24px; }
-    @media (min-width:760px){ .col2 { grid-template-columns: 1fr 1fr; gap: 32px; } }
-    .quadro { border:1px solid rgba(242,238,229,.2); border-radius:18px; padding: clamp(26px,3.4vw,38px); }
-    .check { display:flex; gap:12px; align-items:flex-start; margin-top:14px; }
-    .check .mk { flex:none; width:22px; height:22px; border-radius:50%; border:1.5px solid currentColor; display:flex; align-items:center; justify-content:center; font-size:12px; line-height:1; }
-
-    /* ---------- Oferta ---------- */
-    .preco-de { font-size: clamp(20px, 2.6vw, 28px); }
-    .preco-de .risco { text-decoration-thickness: 2px; }
-    .preco-grande { font-family: var(--f-impacto); line-height: .94; font-size: clamp(54px, 10.5vw, 92px); margin-top: 8px; letter-spacing: -0.01em; white-space: nowrap; }
-    .preco-grande .px { display:block; font-family: var(--f-body); font-weight:600; font-size:.2em; letter-spacing:.08em; text-transform:uppercase; opacity:.8; margin-bottom:.5em; white-space:normal; }
-    .preco-grande .cif { font-size:.46em; vertical-align:.42em; margin-right:.06em; letter-spacing:0; }
-    .bg-pretinho .preco-grande { color: var(--salvia); }
-    .preco-avista { font-size: clamp(16px, 2vw, 21px); }
-    .preco-avista .peso { color: var(--argila); }
-    .bg-claro .preco-avista .peso, .bg-papel .preco-avista .peso { color: var(--chocolate); }
-    .inclui { text-align:left; max-width:440px; margin: 26px auto 0; }
-
-    /* ---------- FAQ dinâmico (sanfona) ---------- */
-    .faq2 { max-width: 740px; margin: 0 auto; }
-    .faq-item { border-top: 1px solid var(--filete); }
-    .faq-item:last-child { border-bottom: 1px solid var(--filete); }
-    .faq-item summary { list-style: none; cursor: pointer; padding: 24px 4px; display: flex; align-items: center; justify-content: space-between; gap: 22px;
-      font-family: var(--f-display); font-style: italic; font-weight: 500; font-size: clamp(19px,2.2vw,24px); line-height: 1.25; color: var(--tinta); transition: color .2s ease; }
-    .faq-item summary::-webkit-details-marker { display: none; }
-    .faq-item summary:hover { color: var(--chocolate); }
-    .faq-item .ico { flex: none; width: 26px; height: 26px; position: relative; }
-    .faq-item .ico::before, .faq-item .ico::after { content: ""; position: absolute; background: var(--chocolate); border-radius: 2px; transition: transform .28s ease, opacity .28s ease; }
-    .faq-item .ico::before { top: 12px; left: 4px; right: 4px; height: 2px; }
-    .faq-item .ico::after { left: 12px; top: 4px; bottom: 4px; width: 2px; }
-    .faq-item[open] .ico::after { transform: rotate(90deg); opacity: 0; }
-    .faq-a { overflow: hidden; }
-    .faq-a p { padding: 0 4px 26px; max-width: 640px; }
-    .faq-item[open] summary { color: var(--chocolate); }
-
-    /* ---------- Comparativo de preço (gráfico de barras) ---------- */
-    .compara { max-width: 780px; margin-inline: auto; text-align: left; }
-    .cmp-row { display: grid; grid-template-columns: 1fr; gap: 8px; margin-top: 26px; align-items: center; }
-    .cmp-row:first-child { margin-top: 0; }
-    @media (min-width: 700px) { .cmp-row { grid-template-columns: 220px 1fr 132px; gap: 24px; } }
-    .cmp-label { font-size: 15px; line-height: 1.3; color: var(--tinta-suave); }
-    .cmp-row--hi .cmp-label { color: var(--tinta); font-weight: 600; }
-    .cmp-track { height: 22px; border-radius: 100px; background: var(--pedra); overflow: hidden; }
-    .cmp-bar { width: 0; height: 100%; border-radius: 100px; transition: width 1.1s cubic-bezier(.2,.7,.2,1); }
-    .cmp-val { font-weight: 700; font-size: clamp(17px,1.9vw,21px); white-space: nowrap; }
-    @media (min-width: 700px) { .cmp-val { text-align: right; } }
-    .cmp-row--hi .cmp-val { font-family: var(--f-impacto); font-weight: 400; font-size: clamp(28px,3.4vw,40px); line-height: 1; color: var(--chocolate); }
-
-    /* ---------- Oferta FASE 2 (card completo aprovado — verde vibrante LOCAL, não altera --salvia global) ---------- */
-    .oferta-card--f2 { --f2-verde:#79A85B; --f2-verde-claro:#9DBE85; --f2-verde-esc:#5f7d43; background:var(--papel); border:1px solid var(--argila); text-align:center; }
-    .oferta-card--f2 .f2-selo { display:inline-flex; align-items:center; gap:8px; border:1px solid var(--f2-verde-claro); color:var(--f2-verde-esc); font-family:var(--f-body); font-size:12px; font-weight:800; letter-spacing:.12em; text-transform:uppercase; padding:7px 16px; border-radius:100px; }
-    .oferta-card--f2 .f2-selo::before { content:""; width:6px; height:6px; border-radius:50%; background:var(--f2-verde); }
-    .f2-titulo-inclui { font-family:var(--f-apoio); font-style:italic; font-size:20px; color:var(--chocolate); margin-top:16px; }
-    .f2-lista { list-style:none; text-align:left; max-width:430px; margin:12px auto 0; }
-    .f2-item { display:flex; align-items:flex-start; gap:11px; padding:8px 0; border-bottom:1px solid var(--filete); }
-    .f2-item:last-child { border-bottom:none; }
-    .f2-ck { flex:none; width:22px; height:22px; border-radius:50%; background:var(--f2-verde); color:var(--papel); font-weight:800; font-size:13px; display:flex; align-items:center; justify-content:center; margin-top:1px; }
-    .f2-txt { font-family:var(--f-body); font-size:16px; line-height:1.34; color:var(--tinta); font-weight:500; }
-    .f2-txt b { font-weight:800; color:var(--chocolate); }
-    .f2-novo .f2-txt::after { content:"NOVO"; font-family:var(--f-body); font-size:9px; font-weight:800; letter-spacing:.5px; color:var(--f2-verde-esc); border:1px solid var(--f2-verde-claro); border-radius:4px; padding:1px 5px; margin-left:6px; vertical-align:middle; white-space:nowrap; }
-    .f2-preco-wrap { margin-top:18px; }
-    .f2-em12 { font-family:var(--f-body); font-weight:800; font-size:15px; letter-spacing:.16em; text-transform:uppercase; color:var(--chocolate); }
-    .f2-num { font-family:'Hanken Grotesk',var(--f-body),sans-serif; font-weight:800; line-height:.9; color:var(--f2-verde); margin-top:2px; font-size:clamp(74px,18vw,104px); letter-spacing:-.02em; }
-    .f2-num .cif { font-size:.38em; vertical-align:.5em; margin-right:.04em; font-weight:800; }
-    .f2-num .cent { font-size:.44em; vertical-align:.62em; font-weight:800; }
-    .f2-cartao { font-family:var(--f-body); font-size:13px; font-weight:700; letter-spacing:.09em; text-transform:uppercase; color:var(--chocolate); margin-top:4px; }
-    .f2-avista { font-family:'Hanken Grotesk',var(--f-body),sans-serif; font-weight:700; font-size:clamp(21px,5vw,28px); color:var(--tinta); margin-top:12px; letter-spacing:-.01em; }
-    .f2-avista b { color:var(--f2-verde); font-weight:800; }
-    .oferta-card--f2 .cta { display:flex; flex-direction:column; align-items:center; gap:3px; margin-top:16px; background:var(--f2-verde); color:#fff; border-radius:8px; padding:15px 20px; white-space:normal; text-align:center; box-shadow:0 3px 0 var(--f2-verde-esc); }
-    .oferta-card--f2 .cta .f2-cta-main { font-family:var(--f-body); font-weight:800; font-size:18px; letter-spacing:.01em; display:inline-flex; align-items:center; gap:8px; }
-    .oferta-card--f2 .cta small { font-weight:600; font-size:11.5px; opacity:.94; letter-spacing:.05em; text-transform:uppercase; }
-    .f2-pgto { display:none; }
-    .f2-garantia { font-family:var(--f-body); font-weight:700; font-size:13.5px; color:var(--tinta); margin-top:12px; }
-  
-    /* bloco de preço em destaque — card claro c/ caixa marrom e preço verde iluminado */
-    .preco-box{ background:var(--pretinho); border-radius:16px; padding:24px 20px; margin-top:24px; text-align:center; }
-    .preco-box .preco-label{ font-family:var(--f-apoio); font-style:italic; font-size:20px; color:rgba(242,238,229,.72); }
-    .preco-box .preco-num{ font-family:var(--f-body); font-weight:900; -webkit-text-stroke:.5px #9DBE85; font-size:clamp(60px,16vw,84px); line-height:1; letter-spacing:-.02em; color:#9DBE85; margin-top:4px; text-shadow:0 4px 26px rgba(157,190,133,.30); }
-    .preco-box .preco-num .cif{ font-size:.38em; vertical-align:.55em; margin-right:.04em; }
-    .preco-box .preco-num .cent{ font-size:.48em; vertical-align:.6em; }
-    .preco-box .preco-sub{ font-family:var(--f-body); font-weight:600; font-size:13px; letter-spacing:.08em; color:rgba(242,238,229,.6); margin-top:9px; text-transform:uppercase; }
-
-    .preco-box .preco-parc{ font-family:var(--f-body); font-weight:600; font-size:16px; color:rgba(242,238,229,.9); margin-top:10px; }
-    .preco-box .preco-parc b{ font-weight:800; color:#9DBE85; }
-    /* botões verdinhos (verde iluminado, texto escuro) */
-    .cta{ background:linear-gradient(180deg,#AEDB8B,#84C55D) !important; color:#18240E !important; box-shadow:0 3px 0 #6ba448, 0 12px 32px rgba(150,205,105,.45) !important; }
+  /* hero 3D flutuante + fotos em 2 colunas */
+  .hero-foto img{filter:drop-shadow(0 40px 64px rgba(0,0,0,.6))}
+  .ilus{font-size:11px;color:rgba(242,238,229,.5);margin-top:14px;text-align:center}
+  .foto-2col{display:grid;gap:28px;align-items:center}
+  @media(min-width:820px){.foto-2col{grid-template-columns:1fr 1fr;gap:52px}.foto-2col.rev .f2-img{order:2}}
+  .f2-img{position:relative}
+  .f2-img img{width:100%;border-radius:16px;display:block}
+  .ilus-c{display:block;font-size:11px;color:var(--tinta2);opacity:.65;margin-top:9px}
+  footer{text-align:center;padding:38px 0 46px;border-top:1px solid var(--filete)}
+  footer .marca{font-family:'Playfair Display';font-style:italic;font-size:22px;color:var(--tinta)}
+  footer small{display:block;color:var(--tinta2);font-size:12px;margin-top:8px}
 </style>
 </head>
 <body>
 
   <!-- ============ HERO ============ -->
-  <header class="bg-pretinho hero">
+  <header class="bg-pretinho sec">
     <div class="wrap">
       <div class="hero-grid">
-        <div class="hero-txt">
-          <span class="pill-data acento">● &nbsp;Apostila digital · O Método LED</span>
-          <h1 class="titulo mt-m">O Método LED inteiro, <span class="acento">por escrito</span>.</h1>
-          <p class="corpo--lg mt-m txt2" style="font-size:clamp(18px,1.9vw,22px); line-height:1.6;">Tudo o que você precisa pra entender, aplicar e cobrar mais pelo LED — do primeiro conceito ao seu atendimento. Pra estudar no seu ritmo e consultar na hora.</p>
-          <div class="mt-l">
-            <a href="#oferta" class="cta">Quero a apostila</a>
-          </div>
-          <p class="corpo mt-m txt2 micro">PDF · 26 páginas · acesso imediato · sua pra sempre.</p>
+        <div>
+          <span class="pill">● &nbsp;Apostila digital · O Método LED</span>
+          <h1 class="mt-m">O Método LED inteiro, <span class="ac">por escrito</span>.</h1>
+          <p class="lead mt-m">Tudo o que você precisa pra entender, aplicar e cobrar mais pelo LED — do primeiro conceito ao seu atendimento. Pra estudar no seu ritmo e consultar na hora.</p>
+          <div class="mt-l"><a href="#oferta" class="cta">Quero a apostila →<small>PDF · acesso imediato · sua pra sempre</small></a></div>
+          <p class="lead micro mt-m" style="opacity:.6">Produto digital (PDF) · você recebe por e-mail em minutos · 26 páginas</p>
         </div>
-
-        <div class="foto">
-          <img src="/img/apostila-capa.png?v=2" alt="Apostila O Método LED — Nataly Ribeiro">
+        <div class="hero-foto">
+          <img src="/img/apostila-capa.png" alt="Apostila O Método LED — Nataly Ribeiro">
         </div>
       </div>
     </div>
   </header>
 
-  <!-- ============ DOBRA: O LED NÃO É NOVO (mata objeção "é confiável?") ============ -->
-  <section class="secao bg-claro">
+  <!-- ============ DOBRA: SEGURANÇA — "O LED FAZ MAL?" (ilustrada) ============ -->
+  <section class="secao bg-claro sd" >
+    <style>
+    .sd .sd-wrap{max-width:900px;margin:0 auto;padding:0 8px}
+    .sd .sd-centro{text-align:center}
+    .sd .sd-eyebrow{font-family:'Hanken Grotesk',sans-serif;font-weight:600;text-transform:uppercase;letter-spacing:.24em;font-size:12px;color:#6B4F3A;display:inline-flex;align-items:center;gap:9px}
+    .sd .sd-eyebrow::before{content:"";width:6px;height:6px;border-radius:50%;background:#7E9072}
+    .sd .sd-h2{font-family:'Playfair Display',serif;font-weight:700;font-size:clamp(28px,5vw,44px);line-height:1.06;margin:.3em 0;color:#463729}
+    .sd .sd-h2 i{font-style:italic;color:#6B4F3A}
+    .sd .sd-apoio{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:clamp(18px,2.4vw,22px);color:#8A7766}
+    .sd .sd-apoio b{color:#6B4F3A;font-style:normal;font-weight:700}
+    .sd .sd-bloco{margin-top:38px;border:1px solid #DED3C2;border-radius:16px;background:#FAF7F0;padding:34px 28px}
+    .sd .sd-tit{font-family:'Playfair Display',serif;font-weight:700;font-size:22px;text-align:center;color:#463729}
+    .sd .sd-tit i{font-style:italic;color:#6B4F3A}
+    .sd .sd-bars{display:flex;align-items:flex-end;justify-content:center;gap:70px;margin-top:20px;padding:52px 0 78px;border-bottom:2px solid #DED3C2;position:relative}
+    .sd .sd-bar{width:96px;border-radius:12px 12px 0 0;position:relative}
+    .sd .sd-bar .sd-w{position:absolute;left:0;right:0;top:-46px;text-align:center;font-family:'Abril Fatface',serif;font-size:38px;line-height:1}
+    .sd .sd-bar .sd-lbl{position:absolute;left:50%;top:calc(100% + 14px);transform:translateX(-50%);width:150px;text-align:center;font-family:'Hanken Grotesk',sans-serif;font-size:14px;color:#8A7766;line-height:1.3}
+    .sd .sd-bar .sd-lbl b{display:block;color:#463729;font-size:15px;margin-bottom:2px}
+    .sd .sd-bar.g{height:210px;background:linear-gradient(180deg,#d9cbb6,#c9a48b)} .sd .sd-bar.g .sd-w{color:#7A5C44}
+    .sd .sd-bar.p{height:24px;background:linear-gradient(180deg,#b6d18f,#8FBE6F)} .sd .sd-bar.p .sd-w{color:#7E9072}
+    .sd .sd-frase{text-align:center;font-family:'Hanken Grotesk',sans-serif;font-size:18px;color:#463729;margin-top:30px}
+    .sd .sd-frase b{color:#6B4F3A}
+    .sd .sd-x{display:inline-block;background:#A5B59A;color:#2C3724;font-weight:800;border-radius:100px;padding:3px 12px;font-size:15px}
+    .sd .sd-icons{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-top:24px}
+    .sd .sd-ic{text-align:center;border:1px solid #DED3C2;border-radius:14px;background:#fff;padding:20px 10px}
+    .sd .sd-ic svg{width:46px;height:46px} .sd .sd-ic .sd-t{font-family:'Hanken Grotesk',sans-serif;font-weight:700;font-size:14.5px;color:#463729;margin-top:8px}
+    .sd .sd-ic .sd-s{font-family:'Hanken Grotesk',sans-serif;font-size:12.5px;color:#8A7766;margin-top:2px}
+    .sd .sd-stroke{fill:none;stroke:#6B4F3A;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round}
+    .sd .sd-selo-row{display:flex;flex-wrap:wrap;gap:12px;justify-content:center;margin-top:24px}
+    .sd .sd-selo{display:inline-flex;align-items:center;gap:11px;border:1px solid #7E9072;background:rgba(165,181,154,.12);border-radius:100px;padding:12px 20px;font-family:'Hanken Grotesk',sans-serif;font-weight:700;font-size:15px;color:#2C3724}
+    .sd .sd-selo svg{width:22px;height:22px} .sd .sd-selo .sd-stroke{stroke:#7E9072;stroke-width:2}
+    .sd .sd-pnota{text-align:center;font-family:'Hanken Grotesk',sans-serif;font-size:12.5px;color:#8A7766;margin-top:12px;opacity:.85}
+    .sd .sd-crenca{margin-top:20px;background:#241C15;border:1px solid #241C15;border-radius:16px;padding:40px 30px}
+    .sd .sd-crenca .sd-eyebrow{color:#C9A48B}.sd .sd-crenca .sd-eyebrow::before{background:#A5B59A}
+    .sd .sd-ch{font-family:'Playfair Display',serif;font-weight:700;font-style:italic;font-size:clamp(23px,3.6vw,31px);line-height:1.15;margin:12px 0 26px;color:#F2EEE5;text-align:center}
+    .sd .sd-ch em{color:#C9A48B}
+    .sd .sd-caminhos{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+    .sd .sd-cam{border-radius:14px;padding:24px 22px}
+    .sd .sd-cam .sd-ar{font-size:34px;line-height:1}
+    .sd .sd-cam h4{font-family:'Playfair Display',serif;font-weight:700;font-size:19px;margin:10px 0 6px}
+    .sd .sd-cam p{font-family:'Hanken Grotesk',sans-serif;font-size:14.5px}
+    .sd .sd-cam.bom{background:rgba(165,181,154,.16);border:1px solid #7E9072}
+    .sd .sd-cam.bom .sd-ar{color:#A5B59A} .sd .sd-cam.bom h4{color:#fff} .sd .sd-cam.bom p{color:rgba(242,238,229,.85)}
+    .sd .sd-cam.ruim{background:rgba(194,90,52,.12);border:1px solid rgba(194,90,52,.5)}
+    .sd .sd-cam.ruim .sd-ar{color:#E88A63} .sd .sd-cam.ruim h4{color:#E88A63} .sd .sd-cam.ruim p{color:rgba(242,238,229,.78)}
+    .sd .sd-fecho{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:22px;color:#C9A48B;text-align:center;margin-top:26px}
+    .sd .sd-cta{display:block;width:fit-content;margin:30px auto 0;background:#6B4F3A;color:#F2EEE5;text-decoration:none;font-family:'Hanken Grotesk',sans-serif;font-weight:700;border-radius:100px;padding:16px 34px;font-size:16px}
+    @media(max-width:600px){.sd .sd-icons{grid-template-columns:repeat(2,1fr)}.sd .sd-caminhos{grid-template-columns:1fr}}
+    </style>
+    <div class="sd-wrap">
+      <div class="sd-centro">
+        <span class="sd-eyebrow">A pergunta que trava todo mundo</span>
+        <h2 class="sd-h2">"Essa luz não faz mal pros <i>olhos</i>?"</h2>
+        <p class="sd-apoio">Vou te responder em 30 segundos — com prova, sem enrolação.</p>
+      </div>
+      <div class="sd-bloco">
+        <div class="sd-tit">O que faz mal é <i>potência alta</i>. Compara você mesma:</div>
+        <div class="sd-bars">
+          <div class="sd-bar g"><span class="sd-w">48W</span><span class="sd-lbl"><b>Cabine de unha</b>que você já usa</span></div>
+          <div class="sd-bar p"><span class="sd-w">2W</span><span class="sd-lbl"><b>Nosso LED</b>de cílios</span></div>
+        </div>
+        <p class="sd-frase">Você já expõe as unhas a <b>48W</b> sem medo. O nosso LED é <b>2W</b> — <span class="sd-x">24× menos</span></p>
+      </div>
+      <div class="sd-centro" style="margin-top:40px">
+        <span class="sd-eyebrow">Não é novidade arriscada</span>
+        <h2 class="sd-h2" style="font-size:clamp(24px,3.6vw,32px)">Você <i>já</i> confia nessa luz.</h2>
+      </div>
+      <div class="sd-icons">
+        <div class="sd-ic"><svg viewBox="0 0 48 48"><path class="sd-stroke" d="M16 8c-5 0-8 4-8 9 0 6 3 9 4 16 1 5 2 8 5 8s3-6 7-6 4 6 7 6 4-3 5-8c1-7 4-10 4-16 0-5-3-9-8-9-4 0-5 2-8 2s-4-2-9-2Z"/></svg><div class="sd-t">Dentista</div><div class="sd-s">cura de resina</div></div>
+        <div class="sd-ic"><svg viewBox="0 0 48 48"><rect class="sd-stroke" x="10" y="20" width="28" height="18" rx="2"/><path class="sd-stroke" d="M16 20v-4a8 8 0 0116 0v4M24 27v4"/></svg><div class="sd-t">Sua unha</div><div class="sd-s">esmalte em gel</div></div>
+        <div class="sd-ic"><svg viewBox="0 0 48 48"><circle class="sd-stroke" cx="24" cy="20" r="12"/><path class="sd-stroke" d="M24 12v16M18 20h12M14 40h20"/></svg><div class="sd-t">Estética</div><div class="sd-s">tratamento de pele</div></div>
+        <div class="sd-ic"><svg viewBox="0 0 48 48"><circle class="sd-stroke" cx="24" cy="16" r="8"/><path class="sd-stroke" d="M12 40c0-7 5-12 12-12s12 5 12 12"/></svg><div class="sd-t">Bebês</div><div class="sd-s">tratam icterícia</div></div>
+      </div>
+      <p class="sd-apoio sd-centro" style="margin-top:18px">É a mesma <b>tecnologia</b> — só muda a potência e o comprimento de onda. E isso a gente domina.</p>
+      <div class="sd-selo-row">
+        <span class="sd-selo"><svg viewBox="0 0 24 24"><path class="sd-stroke" d="M12 3l7 3v5c0 5-3 8-7 9-4-1-7-4-7-9V6z"/><path class="sd-stroke" d="M9 12l2 2 4-4"/></svg> ANVISA já vem liberando</span>
+        <span class="sd-selo"><svg viewBox="0 0 24 24"><circle class="sd-stroke" cx="12" cy="12" r="4"/><path class="sd-stroke" d="M2 12s4-6 10-6 10 6 10 6-4 6-10 6S2 12 2 12Z"/></svg> Oftalmologistas confirmam</span>
+        <span class="sd-selo"><svg viewBox="0 0 24 24"><path class="sd-stroke" d="M3 12s3-7 9-7 9 7 9 7"/><path class="sd-stroke" d="M8 12a4 4 0 108 0"/></svg> Proteção ocular sempre</span>
+      </div>
+      <p class="sd-pnota">[PROVA] aqui entram os links da Anvisa + o vídeo dos oftalmologistas quando estiverem prontos.</p>
+      <div class="sd-crenca">
+        <span class="sd-eyebrow">A parte que quase ninguém te fala</span>
+        <div class="sd-ch">Toda técnica nova nasce assim: uns falam bem, <em>outros falam mal.</em></div>
+        <div class="sd-caminhos">
+          <div class="sd-cam bom"><div class="sd-ar">&#8599;</div><h4>Quem abraça o novo</h4><p>Se profissionaliza, sai na frente da região e ganha mais uma carta na manga — atende mais, e melhor.</p></div>
+          <div class="sd-cam ruim"><div class="sd-ar">&#8600;</div><h4>Quem trava no medo</h4><p>Demora pra mudar, fica ultrapassada, perde cliente — e depois corre atrás do prejuízo, quando o mercado já virou.</p></div>
+        </div>
+        <p class="sd-fecho">Normalmente, quem fala mal é quem tem medo do novo.<br>E o novo assusta — mas quem se dispõe a mudar é quem ganha.</p>
+      </div>
+      <a href="#oferta" class="sd-cta">Quero aprender do jeito certo, com segurança &rarr;</a>
+    </div>
+  </section>
+
+  <!-- ============ MANDALA (metodologia da apostila) ============ -->
+  <section class="bg-claro sec">
     <div class="wrap">
-      <div class="centro" style="max-width:760px; margin-inline:auto;">
-        <span class="eyebrow eyebrow-c">Antes de tudo, uma verdade</span>
-        <h2 class="titulo titulo--md mt-m">Você confia no LED há anos. Só não tinha <span class="acento">reparado</span>.</h2>
-        <p class="corpo--lg txt2 mt-m">O LED não é nenhuma novidade arriscada. É a mesma tecnologia que já está na saúde e na estética que você conhece. O que muda na extensão de cílios é só a potência e o comprimento de onda.</p>
+      <div class="head centro">
+        <span class="eyebrow">A metodologia</span>
+        <h2 class="mt-s">Quatro módulos, <span class="ac">um método</span> completo.</h2>
+        <p class="apoio mt-s">Do porquê do LED até o seu faturamento — na ordem certa.</p>
       </div>
 
-      <div class="areas mt-l">
-        <div class="area">
-          <svg class="ic" viewBox="0 0 48 48" fill="none" stroke="var(--chocolate)" stroke-width="1.8"><path d="M16 8c-5 0-8 4-8 9 0 6 3 9 4 16 1 5 2 8 5 8s3-6 7-6 4 6 7 6 4-3 5-8c1-7 4-10 4-16 0-5-3-9-8-9-4 0-5 2-8 2s-4-2-9-2Z"/></svg>
-          <h4 class="acento">Odontologia</h4>
-          <h3>No dentista</h3>
-          <p class="txt2">Secagem de resinas e clareamento dos dentes.</p>
+      <div class="jm-mandala">
+        <div class="r2"></div><div class="r1"></div>
+        <div class="jm-centro"><div class="t">O Método<br>LED</div><div class="s">4 módulos</div></div>
+        <div class="jm-petala jm-p0"><div class="no">1</div><div class="lb">Fundamentos</div></div>
+        <div class="jm-petala jm-p1"><div class="no">2</div><div class="lb">Mão na massa</div></div>
+        <div class="jm-petala jm-p2"><div class="no">3</div><div class="lb">Segurança &amp; resultado</div></div>
+        <div class="jm-petala jm-p3"><div class="no">4</div><div class="lb">Vira negócio</div></div>
+      </div>
+
+      <div class="jm-legenda">
+        <div class="jm-lg"><div class="n">1</div><div><h3>Fundamentos</h3><p class="ap">A ciência do LED, cola tradicional × cola LED e a verdade sobre "faz mal aos olhos?".</p></div></div>
+        <div class="jm-lg"><div class="n">2</div><div><h3>Mão na massa</h3><p class="ap">Tipos de equipamento, como configurar o seu e o passo a passo completo da aplicação.</p></div></div>
+        <div class="jm-lg"><div class="n">3</div><div><h3>Segurança &amp; resultado</h3><p class="ap">Problemas e soluções, irritação e alergia, e a retenção — o grande diferencial do LED.</p></div></div>
+        <div class="jm-lg"><div class="n">4</div><div><h3>Vira negócio</h3><p class="ap">Precificação, comunicação com a cliente e posicionamento pra cobrar mais pela técnica.</p></div></div>
+      </div>
+
+      <div class="jm-faixa">
+        <div class="c"><b>26</b><span>páginas</span></div>
+        <div class="c"><b>4</b><span>módulos</span></div>
+        <div class="c"><b>PDF</b><span>acesso imediato</span></div>
+        <div class="c"><b>∞</b><span>sua pra sempre</span></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ POR DENTRO (foto mesa) ============ -->
+  <section class="bg-papel sec">
+    <div class="wrap">
+      <div class="foto-2col">
+        <div class="f2-img">
+          <img src="/img/apostila-mesa.jpg" alt="Apostila O Método LED sobre a mesa">
+          <span class="ilus-c">Imagem ilustrativa · produto digital em PDF</span>
         </div>
-        <div class="area">
-          <svg class="ic" viewBox="0 0 48 48" fill="none" stroke="var(--chocolate)" stroke-width="1.8"><circle cx="24" cy="20" r="13"/><path d="M24 13v14M17 20h14"/><path d="M14 38h20M16 44h16"/></svg>
-          <h4 class="acento">Medicina</h4>
-          <h3>Na pele</h3>
-          <p class="txt2">Tratamentos dermatológicos e recuperação da pele.</p>
-        </div>
-        <div class="area">
-          <svg class="ic" viewBox="0 0 48 48" fill="none" stroke="var(--chocolate)" stroke-width="1.8"><circle cx="24" cy="15" r="8"/><path d="M12 40c0-7 5-12 12-12s12 5 12 12"/><path d="M20 14c1 2 7 2 8 0"/></svg>
-          <h4 class="acento">Neonatologia</h4>
-          <h3>Nos bebês</h3>
-          <p class="txt2">Tratamento da icterícia, o "amarelão" dos recém-nascidos.</p>
-        </div>
-        <div class="area">
-          <svg class="ic" viewBox="0 0 48 48" fill="none" stroke="var(--chocolate)" stroke-width="1.8"><rect x="10" y="20" width="28" height="18" rx="2"/><path d="M16 20v-4a8 8 0 0116 0v4M24 27v4"/></svg>
-          <h4 class="acento">Estética</h4>
-          <h3>Nas unhas</h3>
-          <p class="txt2">As cabines de LED da esmaltação em gel que você já usa.</p>
+        <div class="f2-txt">
+          <span class="eyebrow">Por dentro</span>
+          <h2 class="mt-s">Feita pra <span class="ac">estudar</span> e consultar sempre.</h2>
+          <p class="lead mt-m">Diagramada com calma, linguagem direta e sem enrolação. Você abre no celular na hora do atendimento e acha o que precisa em segundos.</p>
         </div>
       </div>
     </div>
   </section>
 
-  <!-- ============ DOBRA: O MECANISMO (didático) ============ -->
-  <section class="secao bg-pretinho">
+  <!-- ============ QUEM ESCREVEU (foto Nataly segurando) ============ -->
+  <section class="bg-claro sec">
     <div class="wrap">
-      <div class="wrap--txt" style="margin-inline:auto;">
-        <span class="eyebrow">Como funciona</span>
-        <h2 class="titulo titulo--md mt-m">Você nunca mais vai depender do <span class="acento">clima</span> pra trabalhar.</h2>
-        <p class="corpo--lg txt2 mt-l">A cola tradicional precisa da umidade do ar pra endurecer, e a umidade você não controla. A cola LED é fotopolimerizável: ela só cura quando recebe a luz certa. Quem decide a hora é você.</p>
-      </div>
-      <div class="passos mt-l" style="max-width:880px; margin-inline:auto;">
-        <div class="passo">
-          <div class="pn acento">01</div>
-          <p class="txt2">Você posiciona o fio com calma, sem pressa de a cola pegar.</p>
+      <div class="foto-2col rev">
+        <div class="f2-img">
+          <img src="/img/apostila-nataly.jpg" alt="Nataly Ribeiro com a apostila O Método LED">
         </div>
-        <div class="passo">
-          <div class="pn acento">02</div>
-          <p class="txt2">Quando está perfeito, você ativa a luz LED sobre a aplicação.</p>
-        </div>
-        <div class="passo">
-          <div class="pn acento">03</div>
-          <p class="txt2">A cola cura em cerca de 3 segundos. Quase sem vapor e sem espera.</p>
-        </div>
-      </div>
-      <p class="apoio acento centro mt-l" style="max-width:680px;margin-inline:auto;">A aplicação continua igual. O que muda é que agora o controle é seu.</p>
-    </div>
-  </section>
-
-  <!-- ============ DOBRA: SEGURANÇA OCULAR (mata a objeção nº 1) ============ -->
-  <section class="secao bg-claro">
-    <div class="wrap">
-      <div class="centro" style="max-width:760px; margin-inline:auto;">
-        <span class="eyebrow eyebrow-c">A pergunta que toda cliente faz</span>
-        <h2 class="titulo titulo--md mt-m">"Mas essa luz não faz mal pros <span class="acento">olhos</span>?"</h2>
-        <p class="corpo--lg txt2 mt-m">É a dúvida número um, e a resposta tem números. A cabine de unha que você já usa tem quase dez vezes mais potência que o LED de cílios, e fica minutos ligada na pele. O LED de cílios trabalha com potência baixíssima, por poucos segundos e com proteção ocular.</p>
-      </div>
-
-      <div class="seg mt-l" style="max-width:820px;margin-inline:auto;">
-        <div class="seg-card" style="border-color:var(--filete); background:var(--papel);">
-          <h4 class="txt2">Cabine de unha</h4>
-          <div class="seg-num" style="color:var(--mocha);">48<span>W</span></div>
-          <div class="seg-bar" style="background:var(--mocha);"></div>
-          <p class="txt2">Exposição direta das mãos, por um minuto ou mais.</p>
-        </div>
-        <div class="seg-card hi">
-          <h4>LED para cílios</h4>
-          <div class="seg-num">5<span>W</span></div>
-          <div class="seg-bar" style="width:10.4%; background:#2C3724;"></div>
-          <p>Cerca de 3 segundos por aplicação, com proteção ocular.</p>
-        </div>
-      </div>
-      <p class="apoio acento centro mt-l">395 a 410 nanômetros. Uma faixa criada justamente pra curar a cola com eficiência e segurança.</p>
-    </div>
-  </section>
-
-  <!-- ============ DOBRA: BENEFÍCIOS (o que muda na cadeira) ============ -->
-  <section class="secao bg-claro" style="padding-top:0;">
-    <div class="wrap">
-      <div class="centro" style="max-width:720px; margin-inline:auto;">
-        <span class="eyebrow eyebrow-c">O que muda na sua cadeira</span>
-        <h2 class="titulo titulo--md mt-m">Não é uma cola mais cara. É um jeito melhor de <span class="acento">trabalhar</span>.</h2>
-      </div>
-      <div class="grid grid--2 mt-l">
-        <div class="card card--v">
-          <p class="benef-tit acento">A cliente sente a diferença</p>
-          <p class="corpo txt2 mt-s">A cura é na hora, então quase não há vapor nem ardência. Ela pode esquecer a regra das 24 horas e já sai podendo molhar os cílios. E como o fio cura no lugar exato, ele não entorta nem forma aquele grudinho. Tem cliente que não conseguia fazer extensão por sensibilidade e, com o LED, voltou a fazer.</p>
-        </div>
-        <div class="card card--c">
-          <p class="benef-tit acento">O LED também cuida de você</p>
-          <p class="corpo txt2 mt-s">Depois de anos respirando cianoacrilato, o vapor é uma preocupação real. Como a cola LED cura na hora e libera muito menos vapor, você se expõe bem menos ao longo do dia. É a sua saúde respiratória agradecendo no longo prazo.</p>
-        </div>
-        <div class="card card--c">
-          <p class="benef-tit acento">Você vira referência</p>
-          <p class="corpo txt2 mt-s">O LED ainda é raro no Brasil. Quem domina agora vira a profissional que as clientes procuram, inclusive de outras cidades. É o seu nome ligado à técnica que vai ser o padrão.</p>
-        </div>
-        <div class="card card--v">
-          <p class="benef-tit acento">Você valoriza o seu serviço</p>
-          <p class="corpo txt2 mt-s">Um trabalho mais confortável e mais seguro justifica um preço maior. E como o LED dispensa o finalizador e aproveita quase 100% da gota, você ainda economiza material. Cobra mais e gasta menos.</p>
+        <div class="f2-txt">
+          <span class="eyebrow">Quem escreveu</span>
+          <h2 class="mt-s">Escrita por quem <span class="ac">aplica</span> todo dia.</h2>
+          <p class="lead mt-m">Sou a Nataly, lash designer há mais de 9 anos e já formei mais de 300 alunas. Coloquei nesta apostila o mesmo método que uso no meu atendimento — do fundamento à cadeira, sem achismo.</p>
         </div>
       </div>
     </div>
   </section>
 
-  <!-- ============ DOBRA: É MODISMO? (timeline + urgência) ============ -->
-  <section class="secao bg-pretinho">
+  <!-- ============ PROVA SOCIAL (clientes + alunas, prints reais) ============ -->
+  <section class="bg-pretinho sec">
     <div class="wrap">
-      <div class="centro" style="max-width:760px; margin-inline:auto;">
-        <span class="eyebrow eyebrow-c">"Será que é só moda?"</span>
-        <h2 class="titulo titulo--md mt-m">Foi exatamente o que disseram do Volume <span class="acento">Russo</span>.</h2>
-        <p class="corpo--lg txt2 mt-m">Toda revolução da extensão de cílios assustou no começo. E em todas elas, quem aprendeu primeiro virou referência. Quem esperou demais teve que correr atrás.</p>
+      <div class="head centro">
+        <span class="eyebrow">Prova real</span>
+        <h2 class="mt-s">Não sou só eu falando. <span class="ac">Elas</span> sentiram.</h2>
+        <p class="lead mt-m">Mensagens reais de clientes logo depois do atendimento com LED — sem ardência, sem coceira, com retenção.</p>
+      </div>
+      <div class="rp-masonry">
+        <div class="rp-card"><img src="/img/depoimentos/depo-1.jpg" alt="Depoimento real de cliente" loading="lazy"></div>
+        <div class="rp-card"><img src="/img/depoimentos/depo-9.jpg" alt="Depoimento real de cliente" loading="lazy"></div>
+        <div class="rp-card"><img src="/img/depoimentos/depo-2.jpg" alt="Depoimento real de cliente" loading="lazy"></div>
+        <div class="rp-card"><img src="/img/depoimentos/depo-11.jpg" alt="Depoimento real de cliente" loading="lazy"></div>
+        <div class="rp-card"><img src="/img/depoimentos/depo-4.jpg" alt="Depoimento real de cliente" loading="lazy"></div>
+        <div class="rp-card"><img src="/img/depoimentos/depo-8.jpg" alt="Depoimento real de cliente" loading="lazy"></div>
       </div>
 
-      <div class="tl-wrap mt-l">
-        <svg viewBox="0 0 1500 500" role="img" aria-label="Linha do tempo das técnicas de extensão de cílios">
-          <defs><linearGradient id="tl" x1="0" y1="0" x2="0" y2="1">
-            <stop offset="0" stop-color="#C9A48B" stop-opacity=".22"/><stop offset="1" stop-color="#C9A48B" stop-opacity="0"/>
-          </linearGradient></defs>
-          <path d="M200 332 L560 262 L920 196 L1280 120 L1280 384 L200 384 Z" fill="url(#tl)"/>
-          <line x1="120" y1="384" x2="1410" y2="384" stroke="rgba(242,238,229,.22)" stroke-width="2"/>
-          <text x="120" y="50" font-family="Hanken Grotesk" font-size="21" font-weight="700" fill="rgba(242,238,229,.6)" letter-spacing="1.5">ADOÇÃO NO MERCADO</text>
-          <path d="M200 332 L560 262 L920 196 L1280 120" fill="none" stroke="#C9A48B" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/>
-          <path d="M1280 120 L1408 88" fill="none" stroke="#A5B59A" stroke-width="5" stroke-linecap="round" stroke-dasharray="2 16"/>
-          <circle cx="200" cy="332" r="9" fill="#C9A48B"/>
-          <circle cx="560" cy="262" r="9" fill="#C9A48B"/>
-          <circle cx="920" cy="196" r="9" fill="#C9A48B"/>
-          <circle cx="1280" cy="120" r="17" fill="#C9A48B" stroke="#241C15" stroke-width="5"/>
-          <rect x="1206" y="58" width="148" height="38" rx="19" fill="#A5B59A"/>
-          <text x="1280" y="83" text-anchor="middle" font-family="Hanken Grotesk" font-size="18" font-weight="700" fill="#2C3724" letter-spacing="1.5">AGORA</text>
-          <g text-anchor="middle">
-            <text x="200" y="426" font-family="Playfair Display" font-style="italic" font-size="30" fill="#F2EEE5">Clássico</text>
-            <text x="200" y="458" font-family="Hanken Grotesk" font-size="17" font-weight="700" letter-spacing="2" fill="rgba(242,238,229,.6)">ANOS 2000</text>
-            <text x="560" y="426" font-family="Playfair Display" font-style="italic" font-size="30" fill="#F2EEE5">Volume Russo</text>
-            <text x="560" y="458" font-family="Hanken Grotesk" font-size="17" font-weight="700" letter-spacing="2" fill="rgba(242,238,229,.6)">ANOS 2010</text>
-            <text x="920" y="426" font-family="Playfair Display" font-style="italic" font-size="30" fill="#F2EEE5">Fox Eyes</text>
-            <text x="920" y="458" font-family="Hanken Grotesk" font-size="17" font-weight="700" letter-spacing="2" fill="rgba(242,238,229,.6)">2020</text>
-            <text x="1280" y="426" font-family="Playfair Display" font-style="italic" font-size="30" fill="#C9A48B">LED</text>
-            <text x="1280" y="458" font-family="Hanken Grotesk" font-size="17" font-weight="700" letter-spacing="2" fill="#C9A48B">2026</text>
-          </g>
-        </svg>
+      <div class="head centro rp-sub">
+        <span class="eyebrow">Quem já está estudando</span>
+        <h2 class="mt-s">E o que as <span class="ac">alunas</span> dizem.</h2>
+        <p class="lead mt-m">Mensagens reais de quem entrou no Método LED e já está evoluindo.</p>
       </div>
-      <p class="apoio acento centro mt-l">A cada revolução, as primeiras a aprender saíram na frente. O LED é a próxima.</p>
-    </div>
-  </section>
-
-  <!-- ============ DOBRA: RESULTADOS ============ -->
-  <section class="secao bg-claro">
-    <div class="wrap">
-      <div class="centro" style="max-width:640px; margin-inline:auto;">
-        <span class="eyebrow eyebrow-c">Resultados</span>
-        <h2 class="titulo titulo--md mt-m">O que o <span class="acento">LED</span> entrega.</h2>
-        <p class="corpo--lg txt2 mt-m">Cílios confortáveis, alinhados e com uma retenção que dura. Trabalhos reais feitos com a técnica.</p>
-      </div>
-      <div class="result-grid mt-l">
-        <div class="result-item"><img src="/img/resultado-1.jpg?v=2" alt="Resultado de extensão de cílios com LED" loading="lazy"></div>
-        <div class="result-item"><img src="/img/resultado-2.jpg?v=2" alt="Cliente com extensão de cílios feita com LED" loading="lazy"></div>
-        <div class="result-item"><img src="/img/resultado-3.jpg?v=2" alt="Extensão de cílios com acabamento natural" loading="lazy"></div>
+      <div class="rp-masonry">
+        <div class="rp-card"><img src="/img/depoimentos-alunas/aluna-rebeca.jpg" alt="Depoimento de aluna do Método LED" loading="lazy"></div>
+        <div class="rp-card"><img src="/img/depoimentos-alunas/aluna-cristiane.jpg" alt="Depoimento de aluna do Método LED" loading="lazy"></div>
+        <div class="rp-card"><img src="/img/depoimentos-alunas/aluna-veronica.jpg" alt="Depoimento de aluna do Método LED" loading="lazy"></div>
+        <div class="rp-card"><img src="/img/depoimentos-alunas/aluna-chocada.jpg" alt="Depoimento de aluna do Método LED" loading="lazy"></div>
       </div>
     </div>
   </section>
 
-  <!-- ============ DOBRA: DEPOIMENTOS (prova social) ============ -->
-  <section class="secao bg-pretinho">
+  <!-- ============ NO SEU RITMO (foto lendo) ============ -->
+  <section class="bg-papel sec">
     <div class="wrap">
-      <div class="centro" style="max-width:700px; margin-inline:auto;">
-        <span class="eyebrow eyebrow-c">Prova real</span>
-        <h2 class="titulo titulo--md mt-m">Não sou só eu falando. <span class="acento">Elas</span> sentiram.</h2>
-        <p class="corpo--lg txt2 mt-m">São mensagens reais de clientes, logo depois do atendimento com LED. Sem ardência, sem coceira, com retenção. É isso que a técnica entrega, e é isso que você vai aprender a fazer.</p>
-      </div>
-      <div class="depo-masonry mt-l">
-        <div class="depo-card"><img src="/img/depoimentos/depo-1.jpg" width="760" height="512" alt="Depoimento: quase desisti dos cílios por ardência, mas com o LED não senti nada" loading="lazy"></div>
-        <div class="depo-card"><img src="/img/depoimentos/depo-9.jpg" width="760" height="343" alt="Depoimento: saí maravilhosa sem sentir nada, não ardeu nem na água" loading="lazy"></div>
-        <div class="depo-card"><img src="/img/depoimentos/depo-7.jpg" width="760" height="279" alt="Depoimento: tudo ok, nenhum desconforto graças a Deus" loading="lazy"></div>
-        <div class="depo-card"><img src="/img/depoimentos/depo-4.jpg" width="760" height="237" alt="Depoimento: amei meus cílios, não estou sentindo nada e não caiu nenhum" loading="lazy"></div>
-        <div class="depo-card"><img src="/img/depoimentos/depo-3.jpg" width="760" height="217" alt="Depoimento: nenhuma reação, nenhuma coceira, nenhuma ardência" loading="lazy"></div>
-        <div class="depo-card"><img src="/img/depoimentos/depo-2.jpg" width="760" height="219" alt="Depoimento: inacreditável, não sinto nadinha na raiz, quero só essa técnica" loading="lazy"></div>
-        <div class="depo-card"><img src="/img/depoimentos/depo-8.jpg" width="760" height="216" alt="Depoimento: você acredita que não saiu nenhum cílio" loading="lazy"></div>
-        <div class="depo-card"><img src="/img/depoimentos/depo-11.jpg" width="760" height="186" alt="Depoimento: simplesmente perfeitos, não caiu nenhum tufo e não tá ardendo nada" loading="lazy"></div>
-        <div class="depo-card"><img src="/img/depoimentos/depo-5.jpg" width="760" height="187" alt="Depoimento: está tudo no lugar, não caiu nada ainda" loading="lazy"></div>
-        <div class="depo-card"><img src="/img/depoimentos/depo-6.jpg" width="760" height="189" alt="Depoimento: não estou sentindo nada, nem coçou e nem inchou" loading="lazy"></div>
-        <div class="depo-card"><img src="/img/depoimentos/depo-10.jpg" width="760" height="178" alt="Depoimento: amei, não tá ardendo nada nem coçando, me sentindo maravilhosa" loading="lazy"></div>
-      </div>
-      <div class="centro mt-l">
-        <a href="#oferta" class="cta">Quero dominar o LED</a>
-      </div>
-    </div>
-  </section>
-
-  <!-- ============ DOBRA: QUEM ENSINA ============ -->
-  <section class="secao bg-papel">
-    <div class="wrap">
-      <div class="nat-grid">
-        <div class="nat-foto">
-          <img src="/img/nataly-bio-led.jpg" alt="Nataly Ribeiro" loading="lazy">
+      <div class="foto-2col">
+        <div class="f2-img">
+          <img src="/img/apostila-lendo.jpg" alt="Lendo a apostila O Método LED">
+          <span class="ilus-c">Imagem ilustrativa · produto digital em PDF</span>
         </div>
-        <div>
-          <span class="eyebrow">Quem vai te ensinar</span>
-          <h2 class="titulo titulo--md mt-m">Eu cheguei no LED pelas minhas <span class="acento">clientes</span>.</h2>
-          <p class="corpo--lg txt2 mt-m">Eu sou lash designer há mais de 9 anos e já formei mais de 300 alunas presencialmente. Mas o que me levou até o LED não foi um curso, foram as minhas clientes.</p>
-          <p class="corpo--lg txt2 mt-m">Algumas amavam fazer cílios, mas sentiam ardência durante o procedimento ou sensibilidade dias depois. Cheguei a precisar interromper a extensão de algumas delas pra não prejudicar a saúde dos olhos, e isso me incomodava demais. Foi aí que eu mergulhei no LED, estudei a fundo, testei, busquei quem já fazia lá fora, e só então trouxe pro meu atendimento.</p>
-          <p class="corpo--lg txt2 mt-m">Deu mais certo do que eu imaginava. Essas clientes voltaram a fazer cílios, passei a atender mais gente por dia e me tornei referência na minha região. O <span class="peso">Lash 2.0</span> é tudo isso organizado pra você aplicar com segurança, do jeito que eu faço todo dia.</p>
-          <p class="apoio acento mt-l">Arte com responsabilidade.</p>
+        <div class="f2-txt">
+          <span class="eyebrow">No seu ritmo</span>
+          <h2 class="mt-s">Estude <span class="ac">quando e onde</span> quiser.</h2>
+          <p class="lead mt-m">É um PDF: você lê no celular, no tablet ou no computador, quantas vezes precisar. Sem pressa e sem prazo — o material é seu pra sempre.</p>
         </div>
       </div>
     </div>
   </section>
 
-  <!-- ============ DOBRA: O MÉTODO LED (4 fases) ============ -->
-  <section class="secao bg-claro">
-    <div class="wrap">
-      <div class="centro" style="max-width:680px;margin-inline:auto;">
-        <span class="eyebrow eyebrow-c">O Método LED</span>
-        <h2 class="titulo titulo--md mt-m">Tudo o que você precisa pra aplicar com <span class="acento">segurança</span>.</h2>
-        <p class="corpo--lg txt2 mt-m">Uma jornada em quatro fases. Você entende o porquê de cada coisa antes de aplicar, e termina sabendo precificar, comunicar e se posicionar com a técnica.</p>
-      </div>
-
-      <div class="mt-l" style="max-width:860px; margin-inline:auto;">
-        <div class="fase">
-          <div class="fase-grid">
-            <div class="fase__n acento">01</div>
-            <div>
-              <div class="fase__verbo">Entender</div>
-              <p class="fase__apoio acento">a ciência por trás da luz</p>
-              <p class="corpo txt2 mt-s">O que é a tecnologia LED, como ela funciona de verdade e por que é uma evolução real na extensão de cílios. Um panorama completo do procedimento pra você enxergar o todo antes de mergulhar nos detalhes.</p>
-              <p class="corpo txt2 mt-s fase__aulas">Boas-vindas · Visão geral do procedimento · O que é a tecnologia LED · Por que o LED é uma evolução</p>
-            </div>
-          </div>
-        </div>
-        <div class="fase">
-          <div class="fase-grid">
-            <div class="fase__n acento">02</div>
-            <div>
-              <div class="fase__verbo">Dominar</div>
-              <p class="fase__apoio acento">equipamento, cola e segurança</p>
-              <p class="corpo txt2 mt-s">Qual equipamento comprar e qual evitar. A diferença real entre a cola tradicional e a cola LED, e o que acontece quando você ativa a luz. E a parte de segurança que toda cliente pergunta: tipos de ultravioleta, a faixa segura e um guia de problemas e soluções pra você nunca travar na cadeira.</p>
-              <p class="corpo txt2 mt-s fase__aulas">Tipos de equipamento · Cola tradicional x cola LED · Composição química · Dicas práticas (cola, marcas e cuidados) · Potência e comprimento de onda · Tipos de ultravioleta · Problemas e soluções · Irritação e alergia</p>
-            </div>
-          </div>
-        </div>
-        <div class="fase">
-          <div class="fase-grid">
-            <div class="fase__n acento">03</div>
-            <div>
-              <div class="fase__verbo">Aplicar</div>
-              <p class="fase__apoio acento">a técnica acontecendo, na prática</p>
-              <p class="corpo txt2 mt-s">O passo a passo da aplicação em vídeo, do preparo à ativação da luz. Retenção, remoção e manutenção. Tudo o que você precisa pra fazer o seu primeiro atendimento LED sabendo exatamente o que fazer.</p>
-              <p class="corpo txt2 mt-s fase__aulas">Equipamento na prática · Processo de aplicação (aula gravada) · Retenção · Remoção</p>
-            </div>
-          </div>
-        </div>
-        <div class="fase">
-          <div class="fase-grid">
-            <div class="fase__n acento">04</div>
-            <div>
-              <div class="fase__verbo">Crescer</div>
-              <p class="fase__apoio acento">precificar, comunicar e se posicionar</p>
-              <p class="corpo txt2 mt-s">A parte que quase ninguém ensina. Como precificar a técnica LED com argumento e sem medo. Como explicar pra cliente traduzindo benefício, não fórmula química. E como se posicionar nas redes pra virar a referência de LED da sua região.</p>
-              <p class="corpo txt2 mt-s fase__aulas">Precificação · Comunicação com a cliente · Posicionamento e marketing</p>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <div class="centro mt-l">
-        <a href="#oferta" class="cta">Quero a apostila</a>
-      </div>
-    </div>
-  </section>
-
-  <!-- ============ DOBRA: PRA QUEM É / NÃO É ============ -->
-  <section class="secao bg-pretinho">
-    <div class="wrap">
-      <div class="centro" style="max-width:680px;margin-inline:auto;">
-        <span class="eyebrow eyebrow-c">Antes de decidir</span>
-        <h2 class="titulo titulo--md mt-m">Essa apostila é uma <span class="acento">escolha</span>, e não é pra todo mundo.</h2>
-      </div>
-      <div class="col2 mt-l">
-        <div class="quadro">
-          <p class="apoio acento">É pra você se…</p>
-          <div class="check mt-m"><span class="mk acento">✓</span><span class="corpo txt2">Você já aplica cílios e quer evoluir antes do mercado te alcançar</span></div>
-          <div class="check"><span class="mk acento">✓</span><span class="corpo txt2">Sente que o LED é o futuro e não quer ficar pra trás</span></div>
-          <div class="check"><span class="mk acento">✓</span><span class="corpo txt2">Quer entender o porquê de cada coisa, não só decorar um passo a passo</span></div>
-          <div class="check"><span class="mk acento">✓</span><span class="corpo txt2">Quer cobrar mais oferecendo mais tecnologia, conforto e segurança</span></div>
-        </div>
-        <div class="quadro">
-          <p class="apoio acento">Não é pra você se…</p>
-          <div class="check mt-m"><span class="mk acento">·</span><span class="corpo txt2">Você quer um atalho sem estudar</span></div>
-          <div class="check"><span class="mk acento">·</span><span class="corpo txt2">Busca promessa milagrosa de "nunca mais cai"</span></div>
-          <div class="check"><span class="mk acento">·</span><span class="corpo txt2">Acha que tecnologia conserta aplicação mal feita</span></div>
-        </div>
-      </div>
-      <p class="apoio txt2 mt-l centro" style="max-width:580px;margin-inline:auto;">Aqui a gente trabalha com verdade. O LED não corrige aplicação mal feita. Ele potencializa quem domina a técnica.</p>
-    </div>
-  </section>
-
-  <!-- ============ DOBRA: ANCORAGEM (gráfico comparativo) ============ -->
-  <section class="secao bg-claro centro">
-    <div class="wrap">
-      <div class="centro" style="max-width:730px;margin-inline:auto;">
-        <span class="eyebrow eyebrow-c">O que volta pra você</span>
-        <h2 class="titulo titulo--md mt-m">Não pensa no LED como gasto. Pensa no que ele te <span class="acento">devolve</span>.</h2>
-        <p class="corpo--lg txt2 mt-m">E não é só sobre cobrar mais caro. Tem coisa que quase ninguém para pra somar, mas que muda o seu mês. Deixa eu te mostrar.</p>
-      </div>
-
-      <div class="grid grid--2 mt-l" style="text-align:left;">
-        <div class="card card--v">
-          <p class="benef-tit acento">Mais tempo na cadeira</p>
-          <p class="corpo txt2 mt-s">Como a cura é na hora, você não fica esperando a cola pegar nem refazendo fio que entortou. O atendimento rende mais. E tempo, pra quem trabalha com a mão, é tudo: ou você atende mais uma cliente no dia, ou termina o dia menos cansada.</p>
-        </div>
-        <div class="card card--c">
-          <p class="benef-tit acento">Clientes que você tinha perdido</p>
-          <p class="corpo txt2 mt-s">Lembra daquela cliente que amava fazer cílios, mas vivia sentindo ardência e foi parando? Com o LED ela volta. É cliente que você já tinha perdido sentando de novo na sua cadeira, sem você gastar nada pra trazer de volta.</p>
-        </div>
-        <div class="card card--c">
-          <p class="benef-tit acento">Clientes que voltam mais</p>
-          <p class="corpo txt2 mt-s">Quando a cliente sente mais conforto e a retenção dura, ela volta pra manutenção em dia e vira fiel. E você sabe: o que sustenta o nosso trabalho não é a cliente nova, é a que volta todo mês.</p>
-        </div>
-        <div class="card card--v">
-          <p class="benef-tit acento">Mais indicação, sem anúncio</p>
-          <p class="corpo txt2 mt-s">Cliente que sente a diferença comenta. Ela indica pra amiga, e aquela amiga chega até você sem que você gaste um real de anúncio. É assim que você vira a referência da sua região.</p>
-        </div>
-      </div>
-
-      <p class="apoio acento centro mt-l" style="max-width:720px;margin-inline:auto;">Junta tudo: mais tempo, cliente que voltou, cliente que fica e cliente que indica. A conta fecha rápido, e a apostila se paga logo no primeiro atendimento.</p>
-
-      <div class="filete--curto" style="margin:52px auto;"></div>
-
-      <div class="centro" style="max-width:600px;margin-inline:auto;">
-        <span class="eyebrow eyebrow-c">E quanto custa</span>
-        <h3 class="titulo titulo--sm mt-m">Perto disso tudo, o preço é <span class="acento">detalhe</span>.</h3>
-      </div>
-      <div class="compara mt-l">
-        <div class="cmp-row">
-          <span class="cmp-label">Curso de LED importado / no exterior</span>
-          <div class="cmp-track"><div class="cmp-bar" data-w="100%" style="background:var(--mocha)"></div></div>
-          <span class="cmp-val txt2">R$1.500 a 4.500</span>
-        </div>
-        <div class="cmp-row">
-          <span class="cmp-label">Formação presencial de LED no Brasil</span>
-          <div class="cmp-track"><div class="cmp-bar" data-w="35%" style="background:var(--mocha)"></div></div>
-          <span class="cmp-val txt2">a partir de R$1.500</span>
-        </div>
-        <div class="cmp-row">
-          <span class="cmp-label">Curso online Lash 2.0 (o método completo em vídeo)</span>
-          <div class="cmp-track"><div class="cmp-bar" data-w="11%" style="background:var(--mocha)"></div></div>
-          <span class="cmp-val txt2">R$497</span>
-        </div>
-        <div class="cmp-row cmp-row--hi">
-          <span class="cmp-label">Esta apostila — o método por escrito, digital</span>
-          <div class="cmp-track"><div class="cmp-bar" data-w="3%" style="background:var(--salvia)"></div></div>
-          <span class="cmp-val">R$67,90</span>
-        </div>
-      </div>
-
-      <p class="apoio acento mt-l">A técnica que vai ser o padrão do mercado, no seu ritmo e pelo seu celular, por uma fração do que cobram por aí.</p>
-    </div>
-  </section>
-
-  <!-- ============ DOBRA: OFERTA + GARANTIA ============ -->
-  <!-- ============ DOBRA: POR DENTRO / MÓDULOS (com mockup) ============ -->
-  <section class="secao bg-papel">
-    <div class="wrap">
-      <div class="centro" style="max-width:760px; margin-inline:auto;">
-        <span class="eyebrow eyebrow-c">Por dentro da apostila</span>
-        <h2 class="titulo titulo--md mt-m">26 páginas, <span class="acento">4 módulos</span> — do zero ao atendimento.</h2>
-        <p class="corpo--lg txt2 mt-m">Cada módulo te leva um passo adiante: entender, dominar o equipamento, aplicar na cadeira e transformar em negócio. Sem enrolação, direto ao que muda o seu resultado.</p>
-      </div>
-
-      <div class="areas mt-l" style="align-items:center;">
-        <div style="grid-column: span 2; display:flex; justify-content:center;">
-          <img src="/img/apostila-capa.png?v=2" alt="Apostila O Método LED" style="max-width:min(320px,78%); border-radius:8px; filter:drop-shadow(0 22px 40px rgba(36,28,21,.28));">
-        </div>
-        <div class="area"><h4 class="acento">Módulo 01</h4><h3>Fundamentos</h3><p class="txt2">A ciência do LED, cola tradicional x LED e a verdade sobre "faz mal aos olhos?".</p></div>
-        <div class="area"><h4 class="acento">Módulo 02</h4><h3>Mão na massa</h3><p class="txt2">Equipamento, configuração e o passo a passo completo da aplicação.</p></div>
-        <div class="area"><h4 class="acento">Módulo 03</h4><h3>Segurança &amp; resultado</h3><p class="txt2">Problemas e soluções, alergia e a retenção — o grande diferencial.</p></div>
-        <div class="area"><h4 class="acento">Módulo 04</h4><h3>Vira negócio</h3><p class="txt2">Precificação, comunicação com a cliente e posicionamento pra cobrar mais.</p></div>
-      </div>
-    </div>
-  </section>
-
-  <section class="secao bg-pretinho centro" id="oferta">
+  <!-- ============ OFERTA ============ -->
+  <section class="bg-claro sec centro" id="oferta">
     <div class="wrap wrap--txt">
-      <span class="eyebrow eyebrow-c">A oferta</span>
-      <!--OFERTA_F1--><h2 class="titulo titulo--md mt-m">O método que vira <span class="acento">padrão</span>, por menos que uma aplicação.</h2>
+      <span class="eyebrow">A oferta</span>
+      <h2 class="mt-s">O método que vira <span class="ac">padrão</span>, por menos que uma aplicação.</h2>
 
-      <div class="oferta-card mt-l">
-        <p class="apoio acento">📄 Apostila digital · acesso imediato</p>
-        <p class="corpo mt-s txt2" style="font-size:16px;">Um PDF completo pra estudar e consultar quando quiser. Sem mensalidade — seu pra sempre.</p>
-
-        <div class="inclui">
-          <div class="check"><span class="mk acento">✓</span><span class="corpo txt2">A <span class="peso">apostila completa</span> do Método LED — 26 páginas, 4 módulos</span></div>
-          <div class="check"><span class="mk acento">✓</span><span class="corpo txt2">Do fundamento ao <span class="peso">passo a passo</span> da aplicação</span></div>
-          <div class="check"><span class="mk acento">✓</span><span class="corpo txt2">Segurança ocular, retenção e solução de problemas</span></div>
-          <div class="check"><span class="mk acento">✓</span><span class="corpo txt2">Precificação e posicionamento pra <span class="peso">cobrar mais</span></span></div>
-          <div class="check"><span class="mk acento">✓</span><span class="corpo txt2"><span class="peso">Digital, sua pra sempre</span> — no celular, tablet ou computador</span></div>
+      <div class="card">
+        <div class="topo">
+          <div class="selo">📄 Apostila digital · acesso imediato</div>
+          <h3>Lash 2.0 — O Método LED</h3>
         </div>
-
-        <div class="preco-box">
-          <p class="preco-label">Tudo isso por</p>
-          <p class="preco-num"><span class="cif">R$</span>67<span class="cent">,90</span></p>
-          <p class="preco-parc">à vista &nbsp;·&nbsp; ou em <b>até 12× de R$7,02</b> no cartão</p>
-          <p class="preco-sub">acesso imediato · seu pra sempre</p>
+        <div class="corpo">
+          <ul class="inclui">
+            <li><span class="ck">✓</span><span class="t">A <b>apostila completa</b> do Método LED — 26 páginas, 4 módulos</span></li>
+            <li><span class="ck">✓</span><span class="t">Do fundamento ao <b>passo a passo</b> da aplicação</span></li>
+            <li><span class="ck">✓</span><span class="t">Segurança ocular, retenção e solução de problemas</span></li>
+            <li><span class="ck">✓</span><span class="t">Precificação e posicionamento pra <b>cobrar mais</b></span></li>
+            <li><span class="ck">✓</span><span class="t"><b>Digital, sua pra sempre</b> — no celular, tablet ou computador</span></li>
+          </ul>
+          <div class="preco-box">
+            <p class="lab">Tudo isso por</p>
+            <p class="num"><span class="cif">R$</span>67<span class="cent">,90</span></p>
+            <p class="parc">à vista · ou em <b>até 12× de R$7,02</b></p>
+            <p class="sub">acesso imediato · seu pra sempre</p>
+          </div>
+          <a href="https://pay.kiwify.com.br/VIljYxV" class="cta">Quero minha apostila →<small>Pix, cartão ou boleto · pagamento seguro</small></a>
+          <p class="gar">📄 Produto 100% digital (PDF) — nada é enviado pelos Correios. Você recebe o arquivo no e-mail logo após o pagamento.</p>
         </div>
-
-        <div class="mt-l">
-          <a href="https://pay.kiwify.com.br/VIljYxV" class="cta">Quero minha apostila</a>
-        </div>
-        <p class="corpo mt-m txt2 micro">Você recebe o PDF no seu e-mail logo após o pagamento.</p>
-      </div><!--/OFERTA_F1-->
+      </div>
     </div>
   </section>
 
-  <!-- ============ DOBRA: GARANTIA / RISCO ZERO ============ -->
-  <section class="secao bg-claro centro">
+  <!-- ============ GARANTIA ============ -->
+  <section class="bg-papel sec centro">
     <div class="wrap wrap--txt">
-      <span class="eyebrow eyebrow-c">Risco zero</span>
-      <h2 class="titulo titulo--md mt-m">O risco é <span class="acento">meu</span>, não seu.</h2>
-      <p class="corpo--lg mt-m">Eu sei o que esse método entrega. Por isso a decisão de experimentar não pode pesar no seu bolso.</p>
-
-      <div class="card mt-l" style="max-width:620px; margin-inline:auto;">
-        <p class="apoio acento">Garantia incondicional de 7 dias</p>
-        <p class="corpo txt2 mt-s">Entre, assista às aulas e comece a aplicar. Se em até 7 dias você sentir que o Método LED não é pra você (o que eu sinceramente duvido), é só me enviar uma mensagem.</p>
-        <p class="corpo txt2 mt-s">Eu te devolvo <span class="peso">100% do valor</span>. Sem letras miúdas, sem perguntas, sem constrangimento.</p>
-        <p class="corpo txt2 mt-s">Ou seja: <span class="peso">você não tem risco nenhum</span>. Ou você domina a técnica que vai ser o padrão do mercado, ou recebe o seu dinheiro de volta.</p>
-      </div>
-
-      <div class="mt-l">
-        <a href="https://pay.kiwify.com.br/VIljYxV" class="cta">Quero minha apostila sem risco</a>
-      </div>
+      <span class="eyebrow">Risco zero</span>
+      <h2 class="mt-s">O risco é <span class="ac">meu</span>, não seu.</h2>
+      <p class="lead mt-m">Baixe, leia e comece a aplicar. Se em até 7 dias você sentir que a apostila não é pra você, é só me enviar uma mensagem e eu devolvo 100% do valor. Sem letras miúdas.</p>
     </div>
   </section>
 
-  <!-- ============ DOBRA: FAQ ============ -->
-  <section class="secao bg-papel">
-    <div class="wrap wrap--txt">
-      <div class="centro">
-        <span class="eyebrow eyebrow-c">Ainda com dúvida?</span>
-        <h2 class="titulo titulo--md mt-m">É normal. Deixa eu <span class="acento">responder</span>.</h2>
-      </div>
-      <div class="faq2 mt-l">
-        <details class="faq-item">
-          <summary>Preciso já saber fazer extensão de cílios?<span class="ico"></span></summary>
-          <div class="faq-a"><p class="corpo txt2">Sim. A apostila é pra quem já aplica cílios e quer evoluir pro LED. A aplicação dos fios continua a mesma, o que muda é como o adesivo cura.</p></div>
-        </details>
-        <details class="faq-item">
-          <summary>O LED é seguro pros olhos da cliente?<span class="ico"></span></summary>
-          <div class="faq-a"><p class="corpo txt2">Sim, quando usado corretamente. Tem uma fase inteira de segurança explicando os tipos de ultravioleta, a faixa que usamos e por que ela é a mais segura, além da distância e do tempo de exposição corretos.</p></div>
-        </details>
-        <details class="faq-item">
-          <summary>O LED não sai mais caro que a cola comum?<span class="ico"></span></summary>
-          <div class="faq-a"><p class="corpo txt2">Pelo contrário. Como a cola só cura na luz, você não desperdiça gota seca, não precisa de finalizador e aproveita melhor o produto. O equipamento é um investimento único, e o que você cobra a mais por aplicação se paga rápido.</p></div>
-        </details>
-        <details class="faq-item">
-          <summary>Vou precisar comprar equipamento novo?<span class="ico"></span></summary>
-          <div class="faq-a"><p class="corpo txt2">Sim, uma lâmpada LED e a cola fotoativada. Na apostila eu te explico exatamente o que procurar, a potência, o comprimento de onda e as marcas que eu já testei, pra você comprar com segurança e sem desperdiçar dinheiro.</p></div>
-        </details>
-        <details class="faq-item">
-          <summary>Como funciona a mentoria mensal?<span class="ico"></span></summary>
-          <div class="faq-a"><p class="corpo txt2">Uma vez por mês a gente se encontra online pra você tirar dúvidas comigo ao vivo, mostrar suas aplicações e destravar o que estiver te travando na prática. É o acompanhamento que faz diferença no começo.</p></div>
-        </details>
-        <details class="faq-item">
-          <summary>Por quanto tempo tenho acesso?<span class="ico"></span></summary>
-          <div class="faq-a"><p class="corpo txt2">A apostila é sua pra sempre. É um PDF: você baixa e abre quantas vezes quiser, no celular, tablet ou computador — sem prazo de acesso.</p></div>
-        </details>
-        <details class="faq-item">
-          <summary>E se eu não gostar?<span class="ico"></span></summary>
-          <div class="faq-a"><p class="corpo txt2">Você tem 7 dias de garantia incondicional. Se não for pra você, devolvo todo o valor, sem perguntas.</p></div>
-        </details>
-      </div>
-    </div>
-  </section>
-
-  <!-- ============ DOBRA: CTA FINAL ============ -->
-  <section class="secao bg-salvia centro">
-    <div class="wrap wrap--txt">
-      <span class="eyebrow eyebrow-c">Última chamada</span>
-      <h2 class="titulo titulo--md mt-m">Seja a primeira a <span class="acento">evoluir</span> na sua região.</h2>
-      <p class="corpo--lg mt-m">O mercado de LED no Brasil ainda está no começo. Quem aprende a técnica agora sai na frente. Essa é a sua chance de chegar primeiro.</p>
-      <div class="mt-l">
-        <a href="https://pay.kiwify.com.br/VIljYxV" class="cta">Quero minha apostila</a>
-      </div>
-      <p class="corpo mt-m txt2 micro">Acesso por 1 ano · Garantia de 7 dias.</p>
-    </div>
-  </section>
-
-  <!-- ============ RODAPÉ ============ -->
-  <footer class="rodape bg-pretinho centro">
+  <!-- ============ FAQ ============ -->
+  <section class="bg-claro sec">
     <div class="wrap">
-      <p class="logo acento">Nataly Ribeiro</p>
-      <p class="corpo txt2 mt-s" style="font-size:13px;">Lash 2.0 · O Método LED · Extensão de cílios com fotopolimerização</p>
-      <p class="txt2 mt-m" style="font-size:12px;">© 2026 Nataly Ribeiro. Todos os direitos reservados.</p>
+      <div class="head centro">
+        <span class="eyebrow">Ainda com dúvida?</span>
+        <h2 class="mt-s">É normal. Deixa eu <span class="ac">responder</span>.</h2>
+      </div>
+      <div class="faq">
+        <details><summary>Como recebo a apostila?</summary><div class="a">É um PDF digital. Logo após a confirmação do pagamento, o arquivo chega no seu e-mail. Você abre no celular, tablet ou computador, quantas vezes quiser.</div></details>
+        <details><summary>Preciso já saber fazer extensão?</summary><div class="a">Não. A apostila parte do fundamento e vai até a aplicação. Se você já atende, migra pro LED com segurança; se está começando, aprende o caminho certo desde o início.</div></details>
+        <details><summary>A apostila é a mesma coisa que o curso?</summary><div class="a">É o método por escrito, pra estudar e consultar. O curso completo tem as aulas em vídeo, práticas, mentoria e certificado. A apostila é a porta de entrada — e o material que você vai consultar pra sempre.</div></details>
+        <details><summary>Por quanto tempo tenho acesso?</summary><div class="a">Pra sempre. O arquivo é seu — sem mensalidade, sem prazo. Baixou, é seu.</div></details>
+      </div>
+      <div class="centro mt-l"><a href="#oferta" class="cta">Quero minha apostila</a></div>
+    </div>
+  </section>
+
+  <footer>
+    <div class="wrap">
+      <div class="marca">Nataly Ribeiro</div>
+      <small>Lash 2.0 · O Método LED — Apostila digital de extensão de cílios com fotopolimerização</small>
     </div>
   </footer>
 
-  <script>
-    const io = new IntersectionObserver((es)=>es.forEach(e=>{ if(e.isIntersecting){ e.target.classList.add('in'); io.unobserve(e.target);} }), {threshold:.12});
-    document.querySelectorAll('.area, .passo, .seg-card, .card, .result-item, .nat-foto, .fase, .quadro, .oferta-card, .tl-wrap, .compara, section .titulo').forEach(el=>{ el.classList.add('reveal'); io.observe(el); });
-
-    // Gráfico comparativo: as barras crescem quando entram na tela
-    const barsIO = new IntersectionObserver((es)=>es.forEach(e=>{ if(e.isIntersecting){ e.target.style.width = e.target.dataset.w; barsIO.unobserve(e.target); } }), {threshold:.5});
-    document.querySelectorAll('.cmp-bar').forEach(b=>barsIO.observe(b));
-
-    // Ancoragem robusta: os CTAs #oferta caiam numa secao anterior no mobile porque
-    // imagens lazy acima terminavam de carregar e empurravam o layout apos o salto.
-    // Aqui reposicionamos no alvo algumas vezes ate o layout estabilizar.
-    (function(){
-      var alvo = document.getElementById('oferta');
-      if(!alvo) return;
-      alvo.style.scrollMarginTop = '12px';
-      function alinha(instant){
-        var r = alvo.getBoundingClientRect();
-        window.scrollTo({ top: window.pageYOffset + r.top - 12, behavior: instant ? 'auto' : 'smooth' });
-      }
-      function corrige(){
-        var r = alvo.getBoundingClientRect();
-        if(Math.abs(r.top - 12) > 40){ window.scrollTo(0, window.pageYOffset + r.top - 12); }
-      }
-      document.querySelectorAll('a[href="#oferta"]').forEach(function(a){
-        a.addEventListener('click', function(e){
-          e.preventDefault();
-          alinha(false);
-          [300, 700, 1300].forEach(function(ms){ setTimeout(corrige, ms); });
-        });
-      });
-    })();
-  </script>
 </body>
 </html>
