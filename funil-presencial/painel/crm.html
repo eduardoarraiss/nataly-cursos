@@ -1006,11 +1006,11 @@ code{background:var(--pedra); border-radius:var(--e1); padding:0 4px; font-size:
     var acoes = el('div', 'status-botoes');
     acoes.style.marginTop = '12px';
     if (lead.telefone) {
-      var saudacao = 'Oi, ' + primeiroNome(lead.nome) +
-        '! Aqui é a Nataly. Vi que você se inscreveu para o curso presencial em Cambuí 💛';
+      /* 🔴 Abre a conversa VAZIA. Quem fala com a aluna é a Nataly, e o texto
+         é dela — não escrever mensagem na voz de outra pessoa sem autorização.
+         Havia aqui uma saudação pronta assinada como ela; o Edu barrou. */
       var wa = el('a', 'bt bt-destaque', 'Responder no WhatsApp');
-      wa.setAttribute('href', 'https://wa.me/' + String(lead.telefone).replace(/\D/g, '') +
-        '?text=' + encodeURIComponent(saudacao));
+      wa.setAttribute('href', 'https://wa.me/' + String(lead.telefone).replace(/\D/g, ''));
       wa.setAttribute('target', '_blank');
       wa.setAttribute('rel', 'noopener noreferrer');
       acoes.appendChild(wa);
