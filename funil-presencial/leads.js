@@ -45,6 +45,18 @@ const STATUS = ['novo', 'contatado', 'em-conversa', 'proposta-enviada', 'ganho',
 const ORDEM_ETAPAS = ['1', '2', '3', '4', '5', '5.5', '6', '7', '8', '9', '10'];
 const ETAPA_PRECO  = '10';
 
+/* ---------- A PARADA MAIS CARA DE TODAS (02/09/2026) ----------
+   `rec` NAO e uma pergunta, e por isso NAO entra em ORDEM_ETAPAS: ela e o
+   lugar onde a pessoa parou DEPOIS de responder tudo — na tela que mostra o
+   produto indicado, o preco e as condicoes — sem apertar o botao que confirma.
+
+   Ate hoje essa pessoa nao existia: o formulario gravava tudo e disparava o
+   `Lead` no fim das perguntas, entao quem via o preco e recuava ja constava
+   como inscrita. Agora ela fica registrada como INCOMPLETA, e com o produto
+   que ela viu gravado na linha — que e a informacao comercial mais forte que
+   este funil produz: ela sabe o preco, e mesmo assim nao clicou. */
+const ETAPA_REC = 'rec';
+
 const ETAPAS = {
   '1':   'o nome',
   '2':   'a cidade',
@@ -57,6 +69,7 @@ const ETAPAS = {
   '8':   'se consegue vir a Cambuí',
   '9':   'como prefere aprender',
   '10':  'a faixa de investimento',
+  'rec': 'a tela da recomendacao — ela viu o curso indicado e o preco',
 };
 
 /* Descreve a parada em português, com posição REAL na fila daquela pessoa. */
@@ -69,9 +82,14 @@ function descreveEtapa(l) {
   return {
     id,
     rotulo: ETAPAS[id],
+    /* `rec` nao esta na fila de perguntas, entao nao tem numero: dizer
+       "pergunta 0 de 10" seria pior do que nao dizer nada. Quem le a mensagem
+       precisa e do `naRecomendacao`, que e uma informacao diferente e mais
+       valiosa do que a posicao. */
     posicao: pos < 0 ? null : pos + 1,
     total: fila.length,
     noPreco: id === ETAPA_PRECO,
+    naRecomendacao: id === ETAPA_REC,
   };
 }
 
@@ -92,7 +110,22 @@ function normalizaTelefone(v) {
   let d = String(v).replace(/\D/g, '');
   if (d.length > 11 && d.startsWith('55')) d = d.slice(2);   // já veio com DDI
   if (d.length === 11 && d[2] === '9') { /* celular com nono dígito */ }
-  else if (d.length === 10) { /* fixo ou celular antigo */ }
+  else if (d.length === 10) {
+    /* 🔴 DEZ dígitos começando o assinante com 8 ou 9 é, quase sempre, o
+       CELULAR DELA SEM O DDD — ela digitou "99716-4668" achando que bastava.
+       O código lia os dois primeiros como DDD e devolvia (99) 9716-4668:
+       um número de Imperatriz-MA que não existe e no qual a Nataly nunca
+       conseguiria falar. O lead entrava no painel parecendo bom e era lixo.
+
+       Os fixos de verdade têm assinante começando em 2..5, e são esses que
+       continuam passando. Celular de oito dígitos (o antigo 8xxx/9xxx) morreu
+       na migração para o nono dígito em 2016 — recusar é mais honesto do que
+       gravar um telefone morto.
+
+       Recusar aqui devolve o erro de validação que JÁ existe e JÁ diz o que
+       fazer: "precisa ter DDD e número, como (35) 99716-4668". */
+    if (d[2] === '9' || d[2] === '8') return null;
+  }
   else return null;
   const ddd = parseInt(d.slice(0, 2), 10);
   if (!(ddd >= 11 && ddd <= 99)) return null;               // DDD inexistente
@@ -352,9 +385,27 @@ function atribuicao(body, req) {
   };
 }
 
+/* ---------- o IP de quem está do outro lado ----------
+   🔴 `x-forwarded-for` NÃO serve aqui. Medido em produção em 02/09/2026: o
+   primeiro elemento que chega é sempre um endereço da BORDA da Cloudflare, e
+   ele MUDA a cada requisição — cinco IPs diferentes em dez chamadas
+   (104.23.254.42, 172.69.138.102, 172.71.238.16, 172.71.11.167...).
+
+   O estrago era duplo e nos dois sentidos:
+     · sete envios seguidos sem nunca tomar 429 (o freio não freia um script);
+     · e uma requisição LIMPA levando 429, porque caiu numa borda que outra
+       pessoa já tinha gasto — a mulher que nunca enviou nada era barrada.
+
+   `cf-connecting-ip` é o IP real do visitante e **não é forjável**: a própria
+   Cloudflare devolve 403 (error 1000) para quem tenta mandar esse cabeçalho de
+   fora. Testado. O `x-forwarded-for` fica como reserva para quando o site
+   rodar sem a Cloudflare na frente (desenvolvimento, ou um dia sem CDN). */
 function ipDe(req) {
+  const cf = req.headers['cf-connecting-ip'];
   const xf = req.headers['x-forwarded-for'];
-  const ip = (xf ? String(xf).split(',')[0] : '') || req.socket?.remoteAddress || '';
+  const ip = (cf ? String(cf) : '') ||
+             (xf ? String(xf).split(',')[0] : '') ||
+             req.socket?.remoteAddress || '';
   return ip.trim().replace(/^::ffff:/, '').slice(0, 45) || null;
 }
 
@@ -378,6 +429,16 @@ const CAMPOS_PARCIAL = [
   'utm_source', 'utm_medium', 'utm_campaign', 'utm_content', 'utm_term',
   'fbclid', 'gclid', 'referrer', 'pagina', 'user_agent', 'ip', 'lead_uid',
 ];
+
+/* Os campos da gravacao da RECOMENDACAO (02/09/2026). E o PARCIAL mais o que
+   a arvore decidiu: neste ponto ela respondeu tudo, entao o produto, o preco e
+   a qualificacao JA existem — o que ainda nao existe e a confirmacao dela.
+   Sem estas colunas a Nataly abriria o painel e veria "parou na recomendacao"
+   sem saber QUAL recomendacao, que e justamente o que faz a ligacao valer. */
+const CAMPOS_REC = CAMPOS_PARCIAL.concat([
+  'produto_id', 'produto_nome', 'produto_formato', 'produto_valor',
+  'recomendacao_motivos', 'aceita_valor', 'pontuacao', 'qualificacao',
+]);
 
 /* ---------- gravação do PARCIAL (02/09/2026) ----------
    Reaproveita o `lead_uid` e o `ON CONFLICT` que já existiam para o duplo
@@ -414,6 +475,41 @@ async function criaParcial(dados) {
   const r = await db.consulta(sql, vals);
   /* Zero linhas = o ON CONFLICT bateu num lead que JÁ ESTÁ COMPLETO e o WHERE
      recusou a atualização. Não é erro: é a trava funcionando. */
+  return r.rows[0] || null;
+}
+
+/* ---------- gravação da RECOMENDAÇÃO (02/09/2026) ----------
+   Mesma mecanica do parcial — mesmo `lead_uid`, mesmo COALESCE, mesma trava
+   `WHERE completo = false` — e pelas mesmas razoes. A unica diferenca e o
+   conjunto de colunas: aqui a arvore ja rodou.
+
+   🔴 ISTO NAO E UMA INSCRICAO. A linha continua `completo = false` e a Nataly
+      NAO e avisada na hora. Quem promove a linha a inscricao e o clique dela
+      no "Quero garantir a minha vaga", que vai para `cria()`. Gravar completo
+      aqui traria de volta exatamente o problema que este trabalho corrige:
+      contar como inscrita quem so olhou o preco.
+
+   O `ultima_etapa` fixo em ETAPA_REC e o que faz o aviso de parcial dizer a
+   verdade mais util do funil: "ela viu o preco e nao confirmou". */
+async function criaRecomendacao(dados) {
+  const d = Object.assign({}, dados, { ultima_etapa: ETAPA_REC });
+  const vals = CAMPOS_REC.map((c) => (d[c] === undefined ? null : d[c]));
+  const ph = CAMPOS_REC.map((_, i) => '$' + (i + 1)).join(', ');
+  const set = CAMPOS_REC
+    .filter((c) => c !== 'lead_uid')
+    .map((c) => c + ' = COALESCE(EXCLUDED.' + c + ', leads.' + c + ')')
+    .join(', ');
+
+  const sql =
+    'INSERT INTO leads (' + CAMPOS_REC.join(', ') + ', completo) ' +
+    'VALUES (' + ph + ', false) ' +
+    'ON CONFLICT (lead_uid) DO UPDATE SET ' + set + ', atualizado_em = now() ' +
+    'WHERE leads.completo = false ' +
+    'RETURNING *';
+
+  const r = await db.consulta(sql, vals);
+  /* Zero linhas = ela ja tinha confirmado antes (voltou e pediu a recomendacao
+     de novo). Nao e erro: a linha completa vale mais e fica como esta. */
   return r.rows[0] || null;
 }
 
@@ -646,10 +742,10 @@ async function avisosProblema() {
 }
 
 module.exports = { apaga,
-  OPCOES, STATUS, PRODUTO_IDS, ETAPAS, ORDEM_ETAPAS, ETAPA_PRECO,
+  OPCOES, STATUS, PRODUTO_IDS, ETAPAS, ORDEM_ETAPAS, ETAPA_PRECO, ETAPA_REC,
   valida, validaParcial, atribuicao, qualifica, ipDe, roteia, paraTela,
   deriveAceitaValor, descreveEtapa,
   normalizaTelefone, formataTelefone, normalizaInstagram, normalizaEmail,
-  cria, criaParcial, parciaisParaAvisar, marcaAvisadoParcial,
+  cria, criaParcial, criaRecomendacao, parciaisParaAvisar, marcaAvisadoParcial,
   porId, historico, avisosDo, mudaStatus, lista, resumo, avisosProblema,
 };

@@ -11,6 +11,40 @@
    Sai 0 se limpo, 1 se algo vaza, 2 se nao rodou. */
 const P='/Users/eduardoarrais/Documents/HAUS/cases-apresentacao/node_modules/puppeteer';
 const CH='/Applications/Google Chrome.app/Contents/MacOS/Google Chrome';
+
+/* ---------- as abas do painel, LIDAS DO DOM ----------
+   🔴 Estavam decoradas: `['abaLista','abaKanban','abaNumeros','abaAvisos']`,
+   repetido em tres lugares. Em 02/09/2026 a reescrita do painel renomeou
+   `abaNumeros` para `abaPainel`, e este verificador estourou com
+   "Cannot read properties of null (reading 'click')" no meio da secao 3:
+   51 dos 86 checks simplesmente NAO RODARAM — e o `verificar-pv.sh` ainda
+   assim fechou com "TUDO CERTO. As paginas podem ser divulgadas."
+
+   Ler do DOM faz a proxima renomeacao nao quebrar nada. E se o painel vier
+   SEM aba nenhuma, isso vira erro alto aqui, nunca uma lista vazia que faria
+   o laco rodar zero vezes e parecer aprovado. */
+
+/* ---------- clicar SEM derrubar o verificador ----------
+   🔴 `document.querySelector(x).click()` estoura com "Cannot read properties
+   of null" quando o seletor nao casa — e como isso e uma rejeicao nao tratada,
+   o processo MORRE no meio, sem rodape. Ja aconteceu duas vezes em 02/09/2026:
+   uma aba renomeada, e depois uma lista vazia. Nos dois casos o
+   `verificar-pv.sh` contou so as FALHAs impressas ANTES do crash e nao percebeu
+   que dezenas de checagens simplesmente nao rodaram.
+   Aqui o clique que nao acha alvo devolve `false`, e quem chamou decide o que
+   dizer. Nunca derruba nada. */
+async function clica(pagina, seletor){
+  return pagina.evaluate((s)=>{ const el=document.querySelector(s);
+    if(!el) return false; el.click(); return true; }, seletor);
+}
+
+async function abasDe(pagina){
+  const ids = await pagina.evaluate(() =>
+    Array.from(document.querySelectorAll('[role="tab"][id]')).map(e => e.id));
+  if(!ids.length) throw new Error('o painel /crm nao tem nenhuma aba [role=tab] — o verificador nao mediria nada');
+  return ids;
+}
+
 const BASE=process.argv[2]||'http://127.0.0.1:3999';
 /* As credenciais podem vir de CRM_SENHA/CRM_USUARIO (formato antigo) OU de
    CRM_CONTAS, que e o formato multi-usuario ("email:senha,email:senha"). Sem
@@ -142,7 +176,10 @@ function medida(SEL){
       const r2=await p.evaluate((sel,dado,rotulo)=>{
         document.querySelectorAll('.etapa').forEach(f=>f.hidden=true);
         document.getElementById('insc-form').hidden=true;
-        document.getElementById('obrigado').hidden=false;
+        /* 02/09/2026: a recomendacao virou TELA PROPRIA, antes do "recebido".
+           Medir a #obrigado aqui deixaria de fora exatamente a tela cheia. */
+        document.getElementById('recomendacao').hidden=false;
+        document.getElementById('obrigado').hidden=true;
         /* desenha a recomendacao pelos mesmos ids que o JS da pagina usa */
         document.getElementById('rec-nome').textContent=dado.nome;
         document.getElementById('rec-porque').textContent=dado.porque;
@@ -150,8 +187,15 @@ function medida(SEL){
         document.getElementById('rec-parcela').textContent='ou '+dado.parcela;
         const ul=document.getElementById('rec-inclui'); ul.innerHTML='';
         dado.inclui.forEach(t=>{const li=document.createElement('li');li.textContent=t;ul.appendChild(li);});
+        /* O botao existe nos DOIS caminhos, com papeis diferentes: <a> que
+           navega para o checkout no online, <button> que confirma no
+           presencial. A caixa "turma pequena" so no presencial. */
         const cta=document.getElementById('rec-cta');
+        const cnf=document.getElementById('rec-confirmar');
+        const exc=document.getElementById('rec-exclusivo');
         cta.hidden=!dado.checkout; if(dado.checkout) cta.setAttribute('href',dado.checkout);
+        cnf.hidden=!!dado.checkout;
+        exc.hidden=!!dado.checkout;
         const ex=document.getElementById('rec-extra');
         ex.hidden=!dado.presencial_possivel;
         if(dado.presencial_possivel){
@@ -161,7 +205,6 @@ function medida(SEL){
             '). Se você quiser fazer a prática ao vivo comigo, me fala no WhatsApp '+
             'que a gente vê as condições juntas.';
         }
-        document.getElementById('rec').hidden=false;
         const maus=[];
         const doc=document.documentElement;
         if(doc.scrollWidth>doc.clientWidth)
@@ -177,7 +220,7 @@ function medida(SEL){
                       ' — '+Math.round(a.width)+'px em pai de '+Math.round(pb.width)+'px');
         });
         return maus;
-      },SELETORES+',.rec,.rec__porque,.rec__extra,.rec__cta,.valor__l',caso.d,caso.nome);
+      },SELETORES+',.rec,.rec__porque,.rec__extra,.rec__cta,.rec__seleta,.valor__l',caso.d,caso.nome);
       rf=rf.concat(r2);
     }
     if(rf.length){ falhas+=rf.length; ruins+=rf.length; rf.forEach(m=>console.log('FALHA  formulario @'+w+'px  '+m)); }
@@ -208,7 +251,7 @@ function medida(SEL){
         '.kpis,.kpi,.kanban,.kcard,.kcard__pe,.k-atalhos,.fig,.tela,.duo,.graficos,'+
         '.legenda,.medidor,.rolagem,.mais-filtros,.painel,.bloco,.acoes-lead,.status-botoes';
       let ruimAqui=0;
-      for(const aba of ['abaLista','abaKanban','abaNumeros','abaAvisos']){
+      for(const aba of await abasDe(p)){
         await p.evaluate(id=>document.getElementById(id).click(),aba);
         await new Promise(r=>setTimeout(r,650));
         const r=await p.evaluate(medida,SEL_CRM);
@@ -351,7 +394,7 @@ function medida(SEL){
     await p.goto(BASE+'/crm',{waitUntil:'networkidle2'});
     await new Promise(r=>setTimeout(r,1100));
     let ruimC=0;
-    for(const aba of ['abaLista','abaKanban','abaNumeros','abaAvisos']){
+    for(const aba of await abasDe(p)){
       await p.evaluate(id=>document.getElementById(id).click(),aba);
       await new Promise(r=>setTimeout(r,650));
       const r=await p.evaluate(mediContraste);
@@ -393,7 +436,32 @@ function medida(SEL){
     const dizOk=m=>console.log('ok     /crm  '+m);
     const dizMal=m=>{ console.log('FALHA  /crm  '+m); falhas++; };
 
+    /* 🔴 A VISTA DE ENTRADA NAO E MAIS A LISTA (02/09/2026).
+       O painel virou quatro secoes com barra lateral, entra no "Painel" e
+       ainda LEMBRA a ultima secao usada. Qualquer check que leia `tbody tr`
+       tem de LEVAR a pagina ate a secao Leads primeiro — senao mede uma tela
+       que nao tem tabela nenhuma, acha zero linha e reprova o painel certo.
+       Foi o que aconteceu aqui: seis checks da secao 5f acusaram "lista
+       vazia" com a lista cheia, do outro lado da navegacao.
+
+       `abreFiltros` existe pela mesma razao: os sete campos agora moram numa
+       gaveta em TODA largura (antes ficavam abertos no desktop), e
+       `page.click` nao clica no que esta com display:none. */
+    async function vaPara(pagina, aba){
+      await pagina.evaluate(id=>{
+        const b=document.getElementById(id);
+        if(!b) throw new Error('a secao "'+id+'" nao existe no painel');
+        b.click();
+      }, aba);
+      await new Promise(r=>setTimeout(r,800));
+    }
+    async function abreFiltros(pagina){
+      await pagina.evaluate(()=>{ const d=document.getElementById('maisFiltros'); if(d) d.open=true; });
+      await new Promise(r=>setTimeout(r,200));
+    }
+
     /* --- 5a. os numeros do topo batem com a API --- */
+    await vaPara(p,'abaPainel');
     const api=await p.evaluate(async()=>{
       const r=await fetch('/crm/api/leads?limite=2000',{credentials:'same-origin'});
       const L=(await r.json()).leads||[];
@@ -419,11 +487,18 @@ function medida(SEL){
         val(r)===esperado? dizOk('azulejo "'+r+'" bate com a API ('+esperado+')')
           : dizMal('azulejo "'+r+'" mostra '+val(r)+' e a API diz '+esperado);
       });
-    tela.resumo.indexOf('Total: '+api.total.toLocaleString('pt-BR'))!==-1
+    /* A linha de resumo virou uma fileira de fichas (rotulo em cima, numero
+       embaixo), entao o texto e "Total 149" e nao mais "Total: 149". O check
+       le o par rotulo+numero em vez de uma frase inteira — assim ele mede o
+       DADO e nao a pontuacao. */
+    tela.resumo.replace(/\s+/g,' ').indexOf('Total '+api.total.toLocaleString('pt-BR'))!==-1
       ? dizOk('o total da linha de resumo bate com a API ('+api.total+')')
       : dizMal('total do resumo nao bate com a API ('+api.total+'): "'+tela.resumo.slice(0,70)+'"');
     tela.azulejos.length>=4? dizOk('os 4 numeros do dia estao no topo')
       : dizMal('so '+tela.azulejos.length+' numero(s) no topo');
+
+    /* O botao do WhatsApp e as linhas da tabela vivem na secao Leads. */
+    await vaPara(p,'abaLista');
 
     /* --- 5b. WhatsApp: verde, presente e SEM TEXTO PRE-ESCRITO ---
        🔴 O texto pronto na voz da Nataly foi barrado pelo Edu em 01/09/2026,
@@ -447,6 +522,7 @@ function medida(SEL){
       : dizMal('o botao do WhatsApp perdeu o verde');
 
     /* --- 5c. o filtro de produto RECARREGA a lista --- */
+    await abreFiltros(p);
     const antes=await p.evaluate(()=>document.querySelectorAll('tbody tr').length);
     await p.select('#fProduto','lash2-online');
     await new Promise(r=>setTimeout(r,900));
@@ -628,6 +704,8 @@ function medida(SEL){
     }
 
     /* a lista, com o filtro ligado */
+    await vaPara(pp,'abaLista');
+    await abreFiltros(pp);
     const antesP=await pp.evaluate(()=>document.querySelectorAll('tbody tr').length);
     await pp.select('#fCompleto','nao');
     await new Promise(r=>setTimeout(r,1200));
@@ -656,7 +734,11 @@ function medida(SEL){
       : dizMal('o CSV nao leva o filtro de completo: '+vista.csv);
 
     /* a gaveta: quem abre a ficha precisa saber que NAO e inscricao */
-    await pp.evaluate(()=>document.querySelector('tbody tr').click());
+    /* Se a lista veio vazia (e uma das FALHAs acima diz exatamente isso), nao
+       ha ficha para abrir. Antes isto derrubava o verificador inteiro e as 16
+       checagens seguintes nunca rodavam. */
+    const abriuParcial = await clica(pp, 'tbody tr');
+    if(!abriuParcial) dizMal('nao ha linha de parcial na lista para abrir a gaveta — as checagens da gaveta nao rodaram');
     await new Promise(r=>setTimeout(r,1000));
     const gav=await pp.evaluate(()=>{
       const g=document.querySelector('.gaveta, [aria-modal="true"]')||document.body;
@@ -688,7 +770,7 @@ function medida(SEL){
       headers:{'Content-Type':'application/json'},body:JSON.stringify({usuario:u,senha:s})}); },USUARIO,SENHA);
     await est.goto(BASE+'/crm',{waitUntil:'networkidle2'});
     await new Promise(r=>setTimeout(r,1200));
-    for(const aba of ['abaLista','abaKanban','abaNumeros','abaAvisos']){
+    for(const aba of await abasDe(est)){
       await est.evaluate(id=>document.getElementById(id).click(),aba);
       await new Promise(r=>setTimeout(r,650));
       const rola=await est.evaluate(()=>({d:document.documentElement.scrollWidth,c:document.documentElement.clientWidth,
@@ -704,7 +786,760 @@ function medida(SEL){
     else console.log('ok     /crm  nenhum erro de JS durante as interacoes');
   }
 
+  /* ============================================================
+     6. A NAVEGACAO NOVA, O PAINEL E A PORTA (02/09/2026)
+     ============================================================
+     A pagina unica virou quatro vistas com barra lateral, o painel
+     ganhou tela propria e a tela de login mudou de identidade. Nada
+     disso tinha gate: os checks de caixa e de contraste medem o que
+     esta na tela, nunca se a estrutura e a que foi pedida.
+
+     Tudo aqui e medido no DOM RENDERIZADO. Procurar a palavra no fonte
+     provaria que alguem escreveu "lateral", nao que existe uma. */
+  if(SENHA){
+    const dizOk6=m=>console.log('ok     /crm  '+m);
+    const dizMal6=m=>{ console.log('FALHA  /crm  '+m); falhas++; };
+
+    async function entra(pagina){
+      await pagina.goto(BASE+'/crm/entrar',{waitUntil:'networkidle2'});
+      await pagina.evaluate(async(u,s)=>{ await fetch('/crm/entrar',{method:'POST',
+        headers:{'Content-Type':'application/json'},body:JSON.stringify({usuario:u,senha:s})}); },USUARIO,SENHA);
+      await pagina.goto(BASE+'/crm',{waitUntil:'networkidle2'});
+      await new Promise(r=>setTimeout(r,1400));
+    }
+
+    /* ---------- 6a. a barra e UMA SO, em duas posicoes ---------- */
+    const n1=await b.newPage();
+    const errosNav=[];
+    n1.on('pageerror',e=>errosNav.push(e.message));
+    await n1.setViewport({width:1280,height:900});
+    await entra(n1);
+
+    const est=await n1.evaluate(()=>{
+      const navs=document.querySelectorAll('[role="tablist"]');
+      const itens=[...document.querySelectorAll('[role="tab"]')];
+      const ids=itens.map(i=>i.id);
+      return {
+        navs:navs.length,
+        itens:itens.length,
+        ids:ids.join(','),
+        /* id repetido = duas barras espelhadas, que e o erro que a decisao
+           de usar UM elemento em duas posicoes existe para evitar */
+        idsUnicos:new Set(ids).size===ids.length,
+        marcados:itens.filter(i=>i.getAttribute('aria-selected')==='true').length,
+        /* so o item ativo fica na ordem de tabulacao: o padrao de tablist */
+        tabbable:itens.filter(i=>i.getAttribute('tabindex')!=='-1').length,
+        paineis:[...document.querySelectorAll('[role="tabpanel"]')].length,
+        visiveis:[...document.querySelectorAll('[role="tabpanel"]')].filter(s=>!s.hidden).length
+      };
+    });
+    est.navs===1
+      ? dizOk6('a navegacao e UM elemento so ('+est.itens+' secoes), nao duas barras espelhadas')
+      : dizMal6('ha '+est.navs+' listas de navegacao — duas barras significam id duplicado e foco parando duas vezes');
+    est.idsUnicos? dizOk6('nenhum id de secao repetido ('+est.ids+')')
+      : dizMal6('id de secao REPETIDO: '+est.ids);
+    est.itens>=4? dizOk6('as quatro secoes existem')
+      : dizMal6('so '+est.itens+' secao(oes) na navegacao');
+    est.marcados===1? dizOk6('exatamente uma secao marcada como ativa')
+      : dizMal6(est.marcados+' secoes marcadas como ativas ao mesmo tempo');
+    est.tabbable===1? dizOk6('so a secao ativa esta na ordem de tabulacao (padrao de tablist)')
+      : dizMal6(est.tabbable+' itens tabulaveis — o Tab passaria por todos antes de chegar no conteudo');
+    est.visiveis===1? dizOk6('so um painel visivel de cada vez')
+      : dizMal6(est.visiveis+' paineis visiveis ao mesmo tempo');
+
+    /* geometria: no desktop e COLUNA a esquerda, encostada no topo */
+    const lat=await n1.evaluate(()=>{
+      const l=document.querySelector('.lateral'); if(!l) return null;
+      const r=l.getBoundingClientRect(), cs=getComputedStyle(l);
+      const it=[...document.querySelectorAll('[role="tab"]')].map(x=>x.getBoundingClientRect());
+      return {x:Math.round(r.left), larg:Math.round(r.width), alt:Math.round(r.height),
+        pos:cs.position,
+        /* empilhados = coluna; lado a lado = fileira */
+        empilhados: it.length>1 && it[1].top>=it[0].bottom-1,
+        alvoMin: Math.round(Math.min.apply(null,it.map(i=>i.height)))};
+    });
+    if(!lat) dizMal6('a barra lateral (.lateral) nao existe no desktop');
+    else{
+      (lat.x<=1 && lat.larg>=180 && lat.larg<=300)
+        ? dizOk6('@1280px a barra e uma COLUNA de '+lat.larg+'px encostada na esquerda')
+        : dizMal6('@1280px a barra nao e coluna lateral (x='+lat.x+' largura='+lat.larg+')');
+      lat.empilhados? dizOk6('…com as secoes empilhadas uma sob a outra')
+        : dizMal6('as secoes do desktop estao lado a lado — continua sendo fileira de abas');
+      lat.pos==='sticky'||lat.pos==='fixed'
+        ? dizOk6('…e ela acompanha a rolagem ('+lat.pos+')')
+        : dizMal6('a barra lateral rola junto com o conteudo e some ('+lat.pos+')');
+    }
+
+    /* a seta do teclado tem de andar na lista VERTICAL: para baixo */
+    const antesSeta=await n1.evaluate(()=>document.getElementById('tituloVista').textContent);
+    await n1.evaluate(()=>document.querySelector('[role="tab"][aria-selected="true"]').focus());
+    await n1.keyboard.press('ArrowDown');
+    await new Promise(r=>setTimeout(r,700));
+    const depoisSeta=await n1.evaluate(()=>document.getElementById('tituloVista').textContent);
+    depoisSeta!==antesSeta
+      ? dizOk6('a seta para BAIXO troca de secao na lista vertical ('+antesSeta+' -> '+depoisSeta+')')
+      : dizMal6('a seta para baixo nao troca de secao — no desktop a lista e vertical e a seta tem de acompanhar');
+
+    /* ---------- 6b. o titulo diz onde ela esta ---------- */
+    const abas6=await abasDe(n1);
+    let titulosOk=true;
+    for(const aba of abas6){
+      await n1.evaluate(id=>document.getElementById(id).click(),aba);
+      await new Promise(r=>setTimeout(r,650));
+      const t=await n1.evaluate(id=>({
+        titulo:document.getElementById('tituloVista').textContent.trim(),
+        rotulo:document.getElementById(id).querySelector('.rot').textContent.trim(),
+        doc:document.title
+      }),aba);
+      if(t.titulo!==t.rotulo){ titulosOk=false;
+        dizMal6('a secao "'+t.rotulo+'" mostra o titulo "'+t.titulo+'" — a tela mente sobre onde ela esta'); }
+      if(t.doc.indexOf(t.rotulo)!==0){ titulosOk=false;
+        dizMal6('o titulo da ABA DO NAVEGADOR nao acompanha a secao ("'+t.doc+'")'); }
+    }
+    if(titulosOk) dizOk6('o titulo da tela e o da aba do navegador acompanham a secao');
+
+    /* ---------- 6c. os filtros so aparecem onde recortam algo ---------- */
+    let filtrosOk=true;
+    for(const [aba,deveAparecer] of [['abaPainel',false],['abaKanban',true],['abaLista',true],['abaAvisos',false]]){
+      await n1.evaluate(id=>document.getElementById(id).click(),aba);
+      await new Promise(r=>setTimeout(r,650));
+      const vis=await n1.evaluate(()=>{
+        const f=document.getElementById('filtros');
+        return !!(f && f.offsetParent!==null);
+      });
+      if(vis!==deveAparecer){ filtrosOk=false;
+        dizMal6('os filtros '+(vis?'APARECEM':'SOMEM')+' em '+aba+' e deveria ser o contrario'); }
+    }
+    if(filtrosOk) dizOk6('os filtros aparecem em Leads e Pipeline e somem no Painel e nos Avisos');
+
+    /* 🔴 O PAINEL NAO PODE MENTIR: com filtro ligado, ele mostra um recorte
+       e os filtros estao escondidos. Se ele nao AVISAR, ela le um numero
+       menor achando que e o total. */
+    await n1.evaluate(()=>document.getElementById('abaLista').click());
+    await new Promise(r=>setTimeout(r,500));
+    await n1.evaluate(()=>{ const d=document.getElementById('maisFiltros'); if(d) d.open=true; });
+    await n1.select('#fQualif','quente');
+    await new Promise(r=>setTimeout(r,1100));
+    await n1.evaluate(()=>document.getElementById('abaPainel').click());
+    await new Promise(r=>setTimeout(r,900));
+    const avisou=await n1.evaluate(()=>{
+      const n=document.getElementById('notaGraficos');
+      return {txt:n?n.textContent:'', saida:!!(n&&n.querySelector('button'))};
+    });
+    avisou.txt.indexOf('recorte filtrado')!==-1
+      ? dizOk6('com filtro ligado o Painel AVISA que os numeros sao um recorte')
+      : dizMal6('o Painel mostra numeros filtrados sem dizer que sao filtrados: "'+avisou.txt.slice(0,60)+'"');
+    avisou.saida? dizOk6('…e da o caminho de volta ali mesmo')
+      : dizMal6('o Painel avisa do recorte mas nao oferece como sair dele');
+    await n1.evaluate(()=>document.getElementById('abaLista').click());
+    await new Promise(r=>setTimeout(r,400));
+    await n1.evaluate(()=>{ const d=document.getElementById('maisFiltros'); if(d) d.open=true; });
+    await n1.click('#btLimpar');
+    await new Promise(r=>setTimeout(r,1100));
+
+    /* ---------- 6d. o painel de fato tem graficos, e todos desenham ---------- */
+    await n1.evaluate(()=>document.getElementById('abaPainel').click());
+    await new Promise(r=>setTimeout(r,1100));
+    const dash=await n1.evaluate(()=>{
+      const figs=[...document.querySelectorAll('#pPainel .fig')];
+      return {
+        n:figs.length,
+        titulos:figs.map(f=>f.querySelector('h3').textContent.trim()),
+        /* uma figura sem SVG e sem explicacao e uma caixa branca vazia */
+        mudas:figs.filter(f=>{
+          const t=f.querySelector('.tela');
+          return !t || (!t.querySelector('svg') && !t.querySelector('.viz-vazio'));
+        }).map(f=>f.querySelector('h3').textContent.trim()),
+        /* toda figura tem de ter o caminho em tabela: leitor de tela, quem
+           nao separa as cores, e quem so quer o numero exato */
+        semTabela:figs.filter(f=>!f.querySelector('details.tabela-viz'))
+                      .map(f=>f.querySelector('h3').textContent.trim()),
+        /* o "porque" de cada uma: gráfico sem pergunta é enfeite */
+        semPorque:figs.filter(f=>{
+          const p=f.querySelector('.porque');
+          return !p || p.textContent.trim().length<20;
+        }).map(f=>f.querySelector('h3').textContent.trim()),
+        azulejos:document.querySelectorAll('#pPainel .kpi').length,
+        periodos:document.querySelectorAll('#segPeriodo button').length
+      };
+    });
+    dash.n>=6? dizOk6('o painel tem '+dash.n+' graficos com tela propria (antes eram 4, espremidos)')
+      : dizMal6('o painel tem so '+dash.n+' grafico(s) — o pedido era um dash robusto');
+    dash.mudas.length===0? dizOk6('toda figura desenha, ou diz por escrito que nao tem o que mostrar')
+      : dizMal6('figura(s) sem desenho e sem explicacao (caixa branca vazia): '+dash.mudas.join(' · '));
+    dash.semTabela.length===0? dizOk6('toda figura carrega a versao em tabela')
+      : dizMal6('figura(s) sem tabela — inacessivel para leitor de tela: '+dash.semTabela.join(' · '));
+    dash.semPorque.length===0? dizOk6('toda figura diz a que pergunta responde')
+      : dizMal6('figura(s) sem o "porque": '+dash.semPorque.join(' · '));
+    dash.azulejos>=5? dizOk6('os numeros do dia moram no painel ('+dash.azulejos+' azulejos)')
+      : dizMal6('so '+dash.azulejos+' azulejo(s) no painel');
+    dash.periodos>=4? dizOk6('o painel tem o seletor de periodo proprio ('+dash.periodos+' opcoes)')
+      : dizMal6('o painel nao tem seletor de periodo — com os filtros escondidos, ela nao consegue recortar por data');
+
+    /* os dois graficos NOVOS, pelo nome */
+    for(const t of ['Ha quanto tempo estao esperando','Onde o formulario perde gente']){
+      const achou=dash.titulos.some(x=>x.normalize('NFD').replace(/[̀-ͯ]/g,'')===t);
+      achou? dizOk6('grafico presente: "'+t+'"')
+           : dizMal6('sumiu o grafico "'+t+'" — ele foi aceito por mudar uma decisao');
+    }
+
+    /* o seletor de periodo tem de MEXER nos numeros, nao so acender */
+    const antesP6=await n1.evaluate(()=>document.querySelector('#pPainel .kpi .kpi__n').textContent);
+    await n1.evaluate(()=>{
+      const b=[...document.querySelectorAll('#segPeriodo button')].find(x=>x.getAttribute('data-v')==='1');
+      if(b) b.click();
+    });
+    await new Promise(r=>setTimeout(r,900));
+    const dep6=await n1.evaluate(()=>({
+      n:document.querySelector('#pPainel .kpi .kpi__n').textContent,
+      marcado:(document.querySelector('#segPeriodo button[aria-pressed="true"]')||{}).textContent,
+      /* o OUTRO controle do mesmo estado tem de concordar: dois controles,
+         um estado. Se discordarem, ela ve "Hoje" e exporta o periodo todo. */
+      select:document.getElementById('fPeriodo').value
+    }));
+    dep6.select==='1'
+      ? dizOk6('o segmentado e o select de periodo escrevem no MESMO estado')
+      : dizMal6('o segmentado diz "'+dep6.marcado+'" e o select ficou em "'+dep6.select+'" — dois estados para o mesmo filtro');
+    dep6.n!==antesP6? dizOk6('mudar o periodo mexe nos numeros ('+antesP6.trim()+' -> '+dep6.n.trim()+')')
+      : console.log('AVISO  /crm  o periodo nao mudou o numero do primeiro azulejo (pode ser a base de teste)');
+    await n1.evaluate(()=>{
+      const b=[...document.querySelectorAll('#segPeriodo button')].find(x=>x.getAttribute('data-v')==='');
+      if(b) b.click();
+    });
+    await new Promise(r=>setTimeout(r,700));
+
+    /* ---------- 6e. no celular a barra vai para BAIXO e nao cobre nada ---------- */
+    const n2=await b.newPage();
+    n2.on('pageerror',e=>errosNav.push('celular: '+e.message));
+    await n2.setViewport({width:390,height:844,isMobile:true,hasTouch:true});
+    await entra(n2);
+    const cel=await n2.evaluate(()=>{
+      const l=document.querySelector('.lateral'); if(!l) return null;
+      const r=l.getBoundingClientRect(), cs=getComputedStyle(l);
+      const it=[...document.querySelectorAll('[role="tab"]')].map(x=>x.getBoundingClientRect());
+      const main=document.querySelector('main.envolve');
+      const mcs=getComputedStyle(main);
+      return {
+        pos:cs.position,
+        colada: Math.round(r.bottom) >= window.innerHeight-1,
+        larguraCheia: Math.round(r.width) >= window.innerWidth-1,
+        emFileira: it.length>1 && it[1].left>=it[0].right-1,
+        alvoMin: Math.round(Math.min.apply(null,it.map(i=>i.height))),
+        alturaBarra: Math.round(r.height),
+        respiro: Math.round(parseFloat(mcs.paddingBottom)),
+        rotulos: [...document.querySelectorAll('[role="tab"] .rot')].map(x=>x.textContent.trim()).join(',')
+      };
+    });
+    if(!cel) dizMal6('a navegacao sumiu no celular');
+    else{
+      (cel.pos==='fixed' && cel.colada && cel.larguraCheia)
+        ? dizOk6('@390px a MESMA barra vira barra INFERIOR fixa, de ponta a ponta')
+        : dizMal6('@390px a navegacao nao e barra inferior fixa (pos='+cel.pos+' colada='+cel.colada+' cheia='+cel.larguraCheia+')');
+      cel.emFileira? dizOk6('…com as quatro secoes lado a lado, ao alcance do polegar')
+        : dizMal6('no celular as secoes continuam empilhadas — a barra ocuparia a tela toda');
+      /* 44px e o minimo de alvo de toque; a barra ja tem 52 por item */
+      cel.alvoMin>=44? dizOk6('…e cada alvo de toque tem '+cel.alvoMin+'px (minimo 44)')
+        : dizMal6('alvo de toque da navegacao com so '+cel.alvoMin+'px');
+      /* 🔴 barra FIXA sobre conteudo rolavel: sem respiro no pe do <main>,
+         a ultima linha da lista fica PARA SEMPRE atras da barra. */
+      cel.respiro>=cel.alturaBarra
+        ? dizOk6('…e o conteudo tem '+cel.respiro+'px de respiro no pe, maior que a barra ('+cel.alturaBarra+'px)')
+        : dizMal6('a barra inferior ('+cel.alturaBarra+'px) COBRE o fim do conteudo (respiro de so '+cel.respiro+'px)');
+      cel.rotulos.split(',').every(x=>x.length>0)
+        ? dizOk6('…e todo icone leva rotulo escrito ("'+cel.rotulos+'"), nunca so o desenho')
+        : dizMal6('ha item de navegacao so com icone: "'+cel.rotulos+'"');
+    }
+
+    /* a ultima linha da lista tem de ser alcancavel de verdade */
+    await n2.evaluate(()=>document.getElementById('abaLista').click());
+    await new Promise(r=>setTimeout(r,900));
+    const fim=await n2.evaluate(async()=>{
+      window.scrollTo(0,document.body.scrollHeight);
+      await new Promise(r=>setTimeout(r,400));
+      const linhas=document.querySelectorAll('tbody tr');
+      if(!linhas.length) return null;
+      const u=linhas[linhas.length-1].getBoundingClientRect();
+      const barra=document.querySelector('.lateral').getBoundingClientRect();
+      return {fundoLinha:Math.round(u.bottom), topoBarra:Math.round(barra.top)};
+    });
+    if(fim===null) console.log('AVISO  /crm  sem linha na lista para conferir o fim da rolagem');
+    else fim.fundoLinha<=fim.topoBarra
+      ? dizOk6('rolando ate o fim, a ultima linha da lista PARA acima da barra inferior')
+      : dizMal6('a barra inferior cobre a ultima linha da lista (linha termina em '+fim.fundoLinha+', barra comeca em '+fim.topoBarra+')');
+    await n2.close();
+    await n1.close();
+
+    /* ---------- 6f. a lista NAO pode esconder o botao do WhatsApp ----------
+       A barra lateral levou ~236px da largura do conteudo e a tabela precisa
+       de ~1140. Num notebook de 1400px ela passou a rolar de lado, e o que
+       saia da tela era justo a coluna de Acao. Rolar para alcancar o botao
+       mais usado do painel e o oposto de fluido. */
+    for(const w of [1280,1440]){
+      const t=await b.newPage();
+      await t.setViewport({width:w,height:900});
+      await entra(t);
+      await t.evaluate(()=>document.getElementById('abaLista').click());
+      await new Promise(r=>setTimeout(r,900));
+      const r=await t.evaluate(()=>{
+        const bt=document.querySelector('tbody td.td-acao a.bt-wa');
+        if(!bt) return null;
+        const c=bt.getBoundingClientRect();
+        const noAlvo=document.elementFromPoint(Math.round(c.left+c.width/2), Math.round(c.top+c.height/2));
+        return {dentro: c.right<=window.innerWidth+1 && c.left>=0,
+                clicavel: !!(noAlvo && (noAlvo===bt || bt.contains(noAlvo)))};
+      });
+      if(!r){ console.log('AVISO  /crm  sem botao de WhatsApp na lista @'+w+'px'); continue; }
+      (r.dentro && r.clicavel)
+        ? dizOk6('@'+w+'px o botao do WhatsApp esta na tela e clicavel sem rolar de lado')
+        : dizMal6('@'+w+'px o botao do WhatsApp saiu da tela ou esta coberto (dentro='+r.dentro+' clicavel='+r.clicavel+')');
+      await t.close();
+    }
+
+    if(errosNav.length){ errosNav.forEach(e=>console.log('FALHA  /crm  erro de JS na navegacao: '+e)); falhas+=errosNav.length; }
+    else console.log('ok     /crm  nenhum erro de JS ao percorrer as quatro secoes');
+  }
+
+  /* ============================================================
+     7. A PORTA — /crm/entrar
+     ============================================================
+     Nunca teve gate de layout nem de contraste, e e por ela que se
+     entra em dado pessoal de terceiro. Nao exige sessao: roda sempre. */
+  {
+    const le=await b.newPage();
+    const errosLogin=[];
+    le.on('pageerror',e=>errosLogin.push(e.message));
+    for(const w of [320,390,430,1280]){
+      await le.setViewport({width:w,height:820});
+      await le.goto(BASE+'/crm/entrar',{waitUntil:'networkidle2'});
+      const r=await le.evaluate(sel=>{
+        const maus=[];
+        const doc=document.documentElement;
+        if(doc.scrollWidth>doc.clientWidth) maus.push('BODY rola de lado ('+doc.scrollWidth+' > '+doc.clientWidth+')');
+        document.querySelectorAll(sel+',.caixa,.campo-senha,input,button').forEach(el=>{
+          if(el.offsetParent===null&&getComputedStyle(el).position!=='fixed') return;
+          const pa=el.parentElement; if(!pa) return;
+          const cs=getComputedStyle(pa);
+          if(cs.overflowX==='auto'||cs.overflowX==='scroll') return;
+          const a=el.getBoundingClientRect(), pb=pa.getBoundingClientRect();
+          if(a.width>pb.width+1||a.right>pb.right+1||a.left<pb.left-1)
+            maus.push((el.className||el.tagName)+' — '+Math.round(a.width)+'px em pai de '+Math.round(pb.width)+'px');
+        });
+        return maus;
+      },SELETORES);
+      if(r.length){ falhas+=r.length; r.forEach(m=>console.log('FALHA  /crm/entrar @'+w+'px  '+m)); }
+      else console.log('ok     /crm/entrar @'+w+'px  nada vaza e o corpo nao rola de lado');
+    }
+
+    /* contraste medido, com a MESMA regua do painel */
+    await le.setViewport({width:390,height:820});
+    await le.goto(BASE+'/crm/entrar',{waitUntil:'networkidle2'});
+    const cl=await le.evaluate(mediContraste);
+    if(cl.length){ falhas+=cl.length; cl.forEach(m=>console.log('FALHA  contraste /crm/entrar  '+m)); }
+    else console.log('ok     /crm/entrar  contraste medido: todo texto >=4.5:1 (>=3:1 se grande)');
+
+    /* o campo de 16px: abaixo disso o Safari do iPhone da zoom sozinho
+       ao focar e a caixa sai da tela */
+    const px=await le.evaluate(()=>['usuario','senha']
+      .map(id=>id+':'+Math.round(parseFloat(getComputedStyle(document.getElementById(id)).fontSize))));
+    px.every(x=>parseInt(x.split(':')[1],10)>=16)
+      ? console.log('ok     /crm/entrar  os campos tem 16px — o iPhone nao da zoom sozinho ao focar')
+      : (console.log('FALHA  /crm/entrar  campo com menos de 16px, o Safari dara zoom e a caixa sai da tela: '+px.join(' ')), falhas++);
+
+    /* alvos de toque */
+    const alvos=await le.evaluate(()=>[...document.querySelectorAll('button, input')]
+      .map(e=>({q:(e.id||e.type), h:Math.round(e.getBoundingClientRect().height)}))
+      .filter(x=>x.h<40));
+    alvos.length===0
+      ? console.log('ok     /crm/entrar  todo campo e botao tem pelo menos 40px de altura')
+      : (console.log('FALHA  /crm/entrar  alvo pequeno demais: '+alvos.map(a=>a.q+' '+a.h+'px').join(', ')), falhas++);
+
+    /* 🔴 O OLHO. As senhas daqui tem simbolo e maiuscula no meio: digitar
+       as cegas no celular erra, e sem o olho o suporte vira "esqueci a
+       senha". Ele ja existia — este check impede que ele saia num redesenho. */
+    const olho=await le.evaluate(async()=>{
+      const c=document.getElementById('senha'), b=document.getElementById('olho');
+      if(!b) return null;
+      c.value='Teste123$';
+      const antes=c.type;
+      b.click(); await new Promise(r=>setTimeout(r,60));
+      const depois=c.type, rot=b.getAttribute('aria-label'), pre=b.getAttribute('aria-pressed');
+      const foco=document.activeElement===c, cursor=c.selectionStart;
+      b.click(); await new Promise(r=>setTimeout(r,60));
+      return {antes, depois, volta:c.type, rot, pre, foco, cursor, tam:c.value.length};
+    });
+    if(!olho) { console.log('FALHA  /crm/entrar  SUMIU o olho de revelar a senha'); falhas++; }
+    else{
+      (olho.antes==='password' && olho.depois==='text' && olho.volta==='password')
+        ? console.log('ok     /crm/entrar  o olho revela e esconde a senha')
+        : (console.log('FALHA  /crm/entrar  o olho nao alterna o campo ('+olho.antes+' -> '+olho.depois+' -> '+olho.volta+')'), falhas++);
+      (olho.pre==='true' && /Ocultar/i.test(olho.rot||''))
+        ? console.log('ok     /crm/entrar  …e conta o estado ao leitor de tela')
+        : (console.log('FALHA  /crm/entrar  o olho nao conta o estado (aria-pressed='+olho.pre+' rotulo="'+olho.rot+'")'), falhas++);
+      (olho.foco && olho.cursor===olho.tam)
+        ? console.log('ok     /crm/entrar  …e devolve o foco ao campo com o cursor no fim')
+        : (console.log('FALHA  /crm/entrar  o olho rouba o foco ou joga o cursor para o comeco (foco='+olho.foco+' cursor='+olho.cursor+')'), falhas++);
+    }
+
+    /* 🔴 O TRIM. Espaco colado ao copiar a senha e a causa nº 1 de "senha
+       incorreta" com a senha certa — o teclado do celular acrescenta um
+       espaco depois de colar. Medido no que SAI na requisicao, nao no fonte. */
+    const enviado=await le.evaluate(async()=>{
+      let corpo=null;
+      const orig=window.fetch;
+      window.fetch=function(u,o){ corpo=o&&o.body; return Promise.resolve(
+        {ok:false, json:()=>Promise.resolve({ok:false,mensagem:'teste'})}); };
+      document.getElementById('usuario').value='  alguem@exemplo.com  ';
+      document.getElementById('senha').value='  senha-com-espaco  ';
+      document.getElementById('form').dispatchEvent(new Event('submit',{cancelable:true,bubbles:true}));
+      await new Promise(r=>setTimeout(r,150));
+      window.fetch=orig;
+      return corpo;
+    });
+    if(!enviado){ console.log('FALHA  /crm/entrar  o formulario nao enviou nada'); falhas++; }
+    else{
+      let j={}; try{ j=JSON.parse(enviado); }catch(e){}
+      (j.usuario==='alguem@exemplo.com' && j.senha==='senha-com-espaco')
+        ? console.log('ok     /crm/entrar  usuario e senha vao APARADOS (espaco colado nao derruba o login)')
+        : (console.log('FALHA  /crm/entrar  o espaco colado esta indo junto: '+JSON.stringify(j)), falhas++);
+    }
+
+    /* a IDV: a porta e a sala tem de ser o MESMO lugar */
+    await le.goto(BASE+'/crm/entrar',{waitUntil:'networkidle2'});
+    const corPorta=await le.evaluate(()=>({
+      fundo:getComputedStyle(document.body).backgroundColor,
+      tinta:getComputedStyle(document.querySelector('h1')).color}));
+    await le.evaluate(async(u,s)=>{ await fetch('/crm/entrar',{method:'POST',
+      headers:{'Content-Type':'application/json'},body:JSON.stringify({usuario:u,senha:s})}); },USUARIO,SENHA);
+    await le.goto(BASE+'/crm',{waitUntil:'networkidle2'});
+    await new Promise(r=>setTimeout(r,900));
+    /* Sem elemento, dizer o que houve — nao estourar. Rodar o gate sem
+       CRM_CONTAS deixava o login falhar, o /crm redirecionava para a porta,
+       `#tituloVista` nao existia e o getComputedStyle(null) ABORTAVA a suite
+       inteira no meio, escondendo tudo que vinha depois. */
+    const corSala=await le.evaluate(()=>{
+      const t=document.querySelector('#tituloVista');
+      if(!t) return {erro:'nao entrei no painel (login falhou? sem CRM_CONTAS?) — URL '+location.pathname};
+      return {fundo:getComputedStyle(document.body).backgroundColor,
+              tinta:getComputedStyle(t).color};
+    });
+    if(corSala.erro){ console.log('FALHA  /crm/entrar  '+corSala.erro); falhas++; }
+    else
+    (corPorta.fundo===corSala.fundo && corPorta.tinta===corSala.tinta)
+      ? console.log('ok     /crm/entrar  a porta e a sala usam o MESMO fundo e a MESMA tinta ('+corSala.fundo+' / '+corSala.tinta+')')
+      : (console.log('FALHA  /crm/entrar  login e painel tem identidades diferentes — porta '+
+          JSON.stringify(corPorta)+' vs sala '+JSON.stringify(corSala)), falhas++);
+
+    if(errosLogin.length){ errosLogin.forEach(e=>console.log('FALHA  /crm/entrar  erro de JS: '+e)); falhas+=errosLogin.length; }
+    else console.log('ok     /crm/entrar  nenhum erro de JS na tela de login');
+    await le.close();
+  }
+
+  /* ============================================================
+     5g. CONTRASTE NAS PAGINAS PUBLICAS
+     ============================================================
+     🔴 ESTA LACUNA CUSTOU CARO EM 02/09/2026. `mediContraste` existia desde
+     sempre, mas so era chamada dentro do `if(SENHA)` — ou seja, so no /crm. As
+     paginas que a aluna realmente ve nao tinham medida NENHUMA.
+
+     No mesmo dia, a dobra "Onde fica Cambui" entrou com o tempo de viagem em
+     --chocolate. Aquela dobra vive dentro do `.bloco`, que e pretinho: o par
+     media 2,24:1 contra um piso de 4,5:1, e passou por TODOS os checks — o
+     texto estava certo, a caixa nao vazava, nada rolava de lado. So foi pego
+     porque alguem mediu a mao. Isso nao pode depender de alguem lembrar.
+
+     Mede tambem as telas que so existem depois de o JS desenhar: as etapas do
+     formulario uma a uma (as escondidas nao tem caixa e passariam sem medida),
+     o combo de estado ABERTO, a recomendacao nos dois caminhos e o recebido. */
+  {
+    const PUB=['/profissao-lash-presencial','/inscricao-presencial'];
+    let ruimP=0;
+    for(const w of [320,390,900]){
+      for(const rota of PUB){
+        const pc=await b.newPage();
+        await pc.setViewport({width:w,height:900,deviceScaleFactor:1});
+        await pc.goto(BASE+rota,{waitUntil:'networkidle2'});
+        await new Promise(r=>setTimeout(r,500));
+        let r=await pc.evaluate(mediContraste);
+        if(r.length){ falhas+=r.length; ruimP+=r.length;
+          r.forEach(m=>console.log('FALHA  contraste '+rota+' @'+w+'px  '+m)); }
+
+        if(rota==='/inscricao-presencial'){
+          for(const et of ['0','1','2','3','4','5','5.5','6','7','8','9','10']){
+            await pc.evaluate(e=>{
+              document.querySelectorAll('.etapa').forEach(f=>f.hidden=(f.getAttribute('data-etapa')!==e));
+              document.getElementById('insc-form').hidden=(e==='0');},et);
+            r=await pc.evaluate(mediContraste);
+            if(r.length){ falhas+=r.length; ruimP+=r.length;
+              r.forEach(m=>console.log('FALHA  contraste etapa '+et+' @'+w+'px  '+m)); }
+          }
+          /* o combo de estado ABERTO: a lista tem tinta propria */
+          await pc.evaluate(()=>{
+            document.querySelectorAll('.etapa').forEach(f=>f.hidden=(f.getAttribute('data-etapa')!=='2'));
+            document.getElementById('insc-form').hidden=false;
+            document.getElementById('f-estado-busca').focus();});
+          await new Promise(r2=>setTimeout(r2,400));
+          r=await pc.evaluate(mediContraste);
+          if(r.length){ falhas+=r.length; ruimP+=r.length;
+            r.forEach(m=>console.log('FALHA  contraste combo aberto @'+w+'px  '+m)); }
+
+          /* a recomendacao nos dois caminhos, e depois o recebido */
+          for(const pres of [true,false]){
+            await pc.evaluate(pres=>{
+              document.querySelectorAll('.etapa').forEach(f=>f.hidden=true);
+              document.getElementById('insc-form').hidden=true;
+              document.getElementById('obrigado').hidden=true;
+              document.getElementById('recomendacao').hidden=false;
+              document.getElementById('rec-nome').textContent='Método LED — presencial';
+              document.getElementById('rec-porque').textContent='Você consegue vir até Cambuí e o valor cabe no que você me disse.';
+              document.getElementById('rec-preco').textContent='R$ 1.997';
+              document.getElementById('rec-parcela').textContent='ou 12x de R$ 206,54';
+              const ul=document.getElementById('rec-inclui'); ul.innerHTML='';
+              ['Um dia inteiro de formação ao vivo comigo, em Cambuí, MG'].forEach(t=>{
+                const li=document.createElement('li'); li.textContent=t; ul.appendChild(li);});
+              document.getElementById('rec-nota').textContent='Ao confirmar, eu recebo as suas respostas e te chamo no WhatsApp.';
+              document.getElementById('rec-exclusivo').hidden=!pres;
+              document.getElementById('rec-confirmar').hidden=!pres;
+              document.getElementById('rec-cta').hidden=pres;
+              if(!pres) document.getElementById('rec-cta').setAttribute('href','https://pay.kiwify.com.br/x');
+              document.getElementById('rec-extra').hidden=false;
+              document.getElementById('rec-extra-txt').textContent='E fica sabendo: o Método LED presencial existe, por R$ 1.997.';
+            },pres);
+            r=await pc.evaluate(mediContraste);
+            if(r.length){ falhas+=r.length; ruimP+=r.length;
+              r.forEach(m=>console.log('FALHA  contraste recomendacao/'+(pres?'presencial':'online')+' @'+w+'px  '+m)); }
+          }
+          await pc.evaluate(()=>{document.getElementById('recomendacao').hidden=true;
+            document.getElementById('obrigado').hidden=false;});
+          r=await pc.evaluate(mediContraste);
+          if(r.length){ falhas+=r.length; ruimP+=r.length;
+            r.forEach(m=>console.log('FALHA  contraste recebido @'+w+'px  '+m)); }
+        }
+        await pc.close();
+      }
+    }
+    if(!ruimP) console.log('ok     contraste medido nas paginas publicas: PV, formulario (12 etapas), '+
+      'combo aberto, recomendacao (2 caminhos) e recebido, em 320/390/900px');
+  }
+
+  /* ============================================================
+     6. O FLUXO DA RECOMENDACAO — medido no navegador, com o DEDO
+     ============================================================
+     Isto nao e checagem de layout: e a prova do COMPORTAMENTO que o Eduardo
+     pediu, e mora aqui porque aqui ja ha um navegador de verdade.
+
+     Duas coisas se provam, e as duas ja quebraram em producao:
+
+       1. 🔴 O `Lead` NAO PODE SAIR ANTES DO CLIQUE. E o evento pelo qual a
+          campanha de R$ 120/dia otimiza. Ate 02/09/2026 ele saia no fim das
+          perguntas — ensinando o algoritmo a procurar quem so olha o preco.
+          Medido pela REDE (facebook.com/tr?ev=...), que e a unica fonte que
+          nao mente: interceptar `fbq` no JS provaria a chamada, nao o hit.
+
+       2. 🔴 O BOTAO TEM DE EXISTIR NOS DOIS CAMINHOS. No presencial ele
+          simplesmente nao estava na tela, e o Eduardo relatou "o botao nao faz
+          nada" no celular. Medido em viewport de iPhone COM TOQUE e tocado com
+          `touchscreen.tap`: clique de mouse nao prova alvo de dedo.
+
+     ⚠️ NAVEGADOR PROPRIO, COM JANELA. O resto deste arquivo roda em
+     `headless:'new'` — e em headless o pixel do Meta simplesmente NAO DISPARA.
+     Medido: nesta mesma secao, em headless, `ViuRecomendacao`, `Lead` e
+     `InitiateCheckout` saem todos ZERO com a pagina funcionando perfeitamente.
+     Um gate assim nao mede o pixel: ele reprova o pixel sempre, ou — pior, se
+     alguem inverter a asserção para calar o ruido — aprova sempre. Entao esta
+     secao abre o seu proprio Chrome com janela, mede, e fecha.
+
+     Grava lead, entao so contra o local. */
+  if(BASE.indexOf('127.0.0.1')!==-1||BASE.indexOf('localhost')!==-1){
+   const bj=await puppeteer.launch({headless:false,executablePath:CH,
+     args:['--window-size=430,900','--window-position=0,0']});
+   for(const caminho of ['presencial','online']){
+    const f=await bj.newPage();
+    const errosF=[]; f.on('pageerror',e=>errosF.push(e.message));
+    const eventos=[]; let marco='perguntas';
+    f.on('request',r=>{ const u=r.url();
+      if(u.indexOf('facebook.com/tr')!==-1){
+        try{ const ev=new URL(u).searchParams.get('ev'); if(ev) eventos.push(marco+':'+ev); }catch(e){}
+      }});
+    await f.setViewport({width:390,height:844,deviceScaleFactor:2,isMobile:true,hasTouch:true});
+    const dizOkF=m=>console.log('ok     fluxo/'+caminho+'  '+m);
+    const dizMalF=m=>{ console.log('FALHA  fluxo/'+caminho+'  '+m); falhas++; };
+    try{
+      await f.goto(BASE+'/inscricao-presencial?utm_source=gate&utm_campaign=layout',{waitUntil:'networkidle2'});
+      /* rola ate o elemento antes de tocar: `tap` usa coordenada de VIEWPORT,
+         entao um botao abaixo da dobra receberia o toque no lugar errado — e o
+         gate reportaria "o botao nao faz nada" por culpa do proprio gate. */
+      const toca=async sel=>{
+        await f.waitForSelector(sel,{visible:true,timeout:8000});
+        const el=await f.$(sel);
+        await f.evaluate(e=>e.scrollIntoView({block:'center'}),el);
+        await new Promise(r=>setTimeout(r,200));
+        const bx=await el.boundingBox();
+        await f.touchscreen.tap(bx.x+bx.width/2,bx.y+bx.height/2);
+        await new Promise(r=>setTimeout(r,300));
+      };
+      const digita=async(sel,v)=>{ await f.waitForSelector(sel,{visible:true}); await f.type(sel,v,{delay:6}); };
+      const marca=(nome,valor)=>toca('input[name="'+nome+'"][value="'+valor+'"] + .marca');
+
+      await toca('#comecar');
+      await digita('#f-nome','Gate Fluxo '+caminho);
+      await toca('#avancar');
+      await digita('#f-cidade','Pouso Alegre');
+
+      /* o combo de estado (02/09/2026), pelo teclado e sem acento */
+      await digita('#f-estado-busca','sao paulo');
+      await new Promise(r=>setTimeout(r,320));
+      const combo=await f.evaluate(()=>({
+        aberto:document.getElementById('f-estado-busca').getAttribute('aria-expanded'),
+        n:document.querySelectorAll('#lista-estados .combo__op').length,
+        ativo:document.getElementById('f-estado-busca').getAttribute('aria-activedescendant')}));
+      (combo.aberto==='true'&&combo.n===1&&combo.ativo==='uf-SP')
+        ? dizOkF('o combo de estado acha "sao paulo" sem acento e marca a opcao')
+        : dizMalF('o combo de estado nao filtrou: '+JSON.stringify(combo));
+      await f.keyboard.press('Enter');
+      await new Promise(r=>setTimeout(r,280));
+      const dep=await f.evaluate(()=>({
+        escrito:document.getElementById('f-estado-busca').value,
+        enviado:document.getElementById('f-estado').value,
+        etapa:([...document.querySelectorAll('.etapa')].find(x=>!x.hidden)||{getAttribute:()=>null}).getAttribute('data-etapa')}));
+      (dep.enviado==='SP'&&dep.escrito==='São Paulo')
+        ? dizOkF('Enter escolhe o estado e manda a sigla ('+dep.escrito+' -> '+dep.enviado+')')
+        : dizMalF('Enter no combo nao escolheu: '+JSON.stringify(dep));
+      /* 🔴 Enter escolhendo o estado nao pode pular a pergunta junto. */
+      dep.etapa==='2'
+        ? dizOkF('e NAO pula para a pergunta seguinte no mesmo toque')
+        : dizMalF('Enter no combo pulou para a etapa '+dep.etapa+' — falta stopPropagation');
+
+      await toca('#avancar');
+      await digita('#f-telefone','35997164668');
+      await toca('#avancar');
+      await digita('#f-instagram','@gate_fluxo');
+      await toca('#avancar');
+      await marca('situacao','outra-area');
+      await marca('faixa_idade','25-34');
+      await toca('#avancar');
+      await marca('meta_renda','2k-5k');
+      await marca('quando_comecar','agora');
+      await toca('#avancar');
+      await toca('#avancar');                        /* objetivo e opcional */
+      await marca('disponibilidade', caminho==='online'?'nao':'sim');
+      await toca('#avancar');
+      await marca('prefere_formato', caminho==='online'?'online':'presencial');
+      await toca('#avancar');
+      await marca('faixa_investimento', caminho==='online'?'ate-500':'acima-2000');
+
+      marco='antes-do-clique';
+      await toca('#avancar');                        /* pede a recomendacao */
+      await new Promise(r=>setTimeout(r,2400));
+
+      const t2=await f.evaluate(()=>{
+        const vis=el=>!!el&&!el.hidden&&el.getBoundingClientRect().height>0;
+        const cta=document.getElementById('rec-cta'), cnf=document.getElementById('rec-confirmar');
+        return {rec:vis(document.getElementById('recomendacao')),
+                obr:vis(document.getElementById('obrigado')),
+                nome:(document.getElementById('rec-nome')||{}).textContent||'',
+                preco:(document.getElementById('rec-preco')||{}).textContent||'',
+                cta:vis(cta), cnf:vis(cnf), exc:vis(document.getElementById('rec-exclusivo')),
+                rolagem:Math.round(window.scrollY)};
+      });
+
+      (t2.rec&&!t2.obr) ? dizOkF('a tela da recomendacao abre, e a do "recebido" NAO')
+        : dizMalF('as telas trocaram de lugar (recomendacao '+t2.rec+', recebido '+t2.obr+')');
+      (t2.nome&&t2.preco) ? dizOkF('e mostra o produto e o preco ('+t2.nome+' / '+t2.preco+')')
+        : dizMalF('a recomendacao abriu VAZIA (nome "'+t2.nome+'", preco "'+t2.preco+'")');
+      t2.rolagem===0 ? dizOkF('a tela comeca no topo dela')
+        : dizMalF('a tela nasceu rolada em '+t2.rolagem+'px — a recomendacao fica acima da dobra sem ninguem ver');
+
+      /* 🔴 EXATAMENTE UM botao visivel. No presencial ja foi ZERO. */
+      const quantos=(t2.cta?1:0)+(t2.cnf?1:0);
+      quantos===1
+        ? dizOkF('exatamente um botao de garantir a vaga na tela ('+(t2.cta?'<a> do checkout':'<button> de confirmar')+')')
+        : dizMalF('havia '+quantos+' botoes visiveis (a='+t2.cta+' button='+t2.cnf+') — no presencial ja ficou ZERO');
+      if(caminho==='presencial'){
+        (t2.cnf&&!t2.cta) ? dizOkF('o presencial recebe o botao que CONFIRMA, sem link de pagamento')
+          : dizMalF('o presencial nao recebeu o botao certo');
+        t2.exc ? dizOkF('e a caixa de turma pequena aparece')
+          : dizMalF('a caixa de turma pequena nao apareceu no presencial');
+      } else {
+        (t2.cta&&!t2.cnf) ? dizOkF('o online recebe o <a> que leva ao checkout')
+          : dizMalF('o online nao recebeu o link do checkout');
+        !t2.exc ? dizOkF('e a caixa de turma pequena NAO aparece (e coisa do presencial)')
+          : dizMalF('a caixa de turma pequena vazou para o caminho online');
+      }
+
+      /* 🔴 NENHUM Lead pode ter saido ate aqui. */
+      const leadsAntes=eventos.filter(e=>/:Lead$|:Lead_/.test(e));
+      leadsAntes.length===0
+        ? dizOkF('🔴 nenhum Lead disparou antes do clique (so ViuRecomendacao)')
+        : dizMalF('🔴 o Lead saiu ANTES do clique ('+leadsAntes.join(', ')+') — a campanha aprenderia a trazer quem so olha o preco');
+      eventos.some(e=>e.indexOf('ViuRecomendacao')!==-1)
+        ? dizOkF('o ViuRecomendacao saiu na tela da recomendacao')
+        : dizMalF('o ViuRecomendacao nao saiu — perdemos a medida de quem viu o preco');
+
+      /* o toque, com o dedo */
+      marco='no-clique';
+      const alvo=t2.cta?'#rec-cta':'#rec-confirmar';
+      const el=await f.$(alvo);
+      if(!el){ dizMalF('nao ha botao nenhum para tocar na tela da recomendacao'); }
+      else {
+        const cx=await f.evaluate(e=>{const r=e.getBoundingClientRect();return {h:Math.round(r.height)};},el);
+        cx.h>=44 ? dizOkF('o botao tem '+cx.h+'px de altura (minimo de alvo de dedo: 44)')
+          : dizMalF('o botao tem so '+cx.h+'px — alvo de toque menor que 44px');
+        await f.evaluate(e=>e.scrollIntoView({block:'center'}),el);
+        await new Promise(r=>setTimeout(r,240));
+        const bx=await el.boundingBox();
+        await f.touchscreen.tap(bx.x+bx.width/2,bx.y+bx.height/2);
+        await new Promise(r=>setTimeout(r,2800));
+
+        const leadsDepois=eventos.filter(e=>e.indexOf('no-clique:Lead')===0);
+        leadsDepois.length>0
+          ? dizOkF('🔴 e o Lead sai NO CLIQUE ('+leadsDepois.join(', ')+')')
+          : dizMalF('🔴 o Lead NAO saiu no clique — a campanha ficaria sem conversao para otimizar');
+
+        if(caminho==='presencial'){
+          const t3=await f.evaluate(()=>{
+            const vis=el=>!!el&&!el.hidden&&el.getBoundingClientRect().height>0;
+            return {obr:vis(document.getElementById('obrigado')),
+                    rec:vis(document.getElementById('recomendacao')),
+                    titulo:((document.querySelector('#obrigado h2')||{}).textContent||'').trim()};
+          });
+          (t3.obr&&!t3.rec) ? dizOkF('o clique leva a tela do recebido ('+t3.titulo+')')
+            : dizMalF('o clique nao abriu a tela do recebido (recebido '+t3.obr+', recomendacao '+t3.rec+')');
+        } else {
+          const url=f.url();
+          url.indexOf('pay.kiwify')!==-1 ? dizOkF('o clique leva ao checkout Kiwify')
+            : dizMalF('o clique nao levou ao checkout (parou em '+url.slice(0,80)+')');
+          url.indexOf('utm_source=gate')!==-1
+            ? dizOkF('e a decoracao de UTM sobreviveu (a venda entra na Kiwify com origem)')
+            : dizMalF('o checkout perdeu os utm_* — a venda entraria sem origem nenhuma');
+          eventos.some(e=>e.indexOf('no-clique:InitiateCheckout')===0)
+            ? dizOkF('e o InitiateCheckout dispara no clique')
+            : dizMalF('o InitiateCheckout nao disparou no caminho do checkout');
+        }
+      }
+    }catch(e){
+      dizMalF('o fluxo travou: '+(e&&e.message));
+    }
+    if(errosF.length){ errosF.forEach(x=>console.log('FALHA  fluxo/'+caminho+'  erro de JS: '+x)); falhas+=errosF.length; }
+    else console.log('ok     fluxo/'+caminho+'  nenhum erro de JS no formulario');
+    await f.close();
+   }
+   await bj.close();
+  } else {
+    console.log('aviso  fluxo da recomendacao nao exercitado (grava lead) — rode contra o local');
+  }
+
   await b.close();
   console.log(falhas? '\n'+falhas+' VAZAMENTO(S) DE CAIXA.' : '\nLayout: nenhuma caixa vaza.');
+  /* 🔴 MARCADOR DE FIM, lido pelo `verificar-pv.sh`.
+     Contar linhas "FALHA" nao distingue "mediu tudo e achou 8 problemas" de
+     "mediu um terco, achou 8 e morreu". Sem uma marca de que o verificador
+     CHEGOU AO FIM, uma corrida truncada com pelo menos uma falha passa como se
+     tivesse medido tudo — foi o buraco que sobrou do conserto anterior. */
+  console.log('FIM-LAYOUT truncado=0 falhas=' + falhas);
   process.exit(falhas?1:0);
-})();
+})().catch((e) => {
+  console.log('FALHA  o verificador de layout ABORTOU: ' + (e && e.message));
+  console.log(e && e.stack ? String(e.stack).split('\n').slice(0,4).join('\n') : '');
+  console.log('FIM-LAYOUT truncado=1 falhas=?');
+  process.exit(3);
+});

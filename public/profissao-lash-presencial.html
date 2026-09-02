@@ -507,18 +507,72 @@ b,strong{font-weight:700}
    linha até em 320px, senão a tarja vira um bloco amontoado. */
 .tarja{
   position:sticky; top:0; z-index:60;
+  /* 🔴 `margin:0` NÃO É DETALHE. Isto é um <p>, e a margem de 16px que o
+     navegador dá a todo parágrafo aparecia como uma FAIXA CREME de 16px entre
+     a tarja e o hero escuro. O Eduardo leu aquilo como uma segunda tarja e
+     pediu para tirar a "tarja branca" — não havia duas tarjas no HTML: havia
+     uma tarja e a margem dela. Medido em 390px: tarja terminando em 41px e
+     hero começando em 57px. Sem esta linha, ela volta. */
+  margin:0;
   background:var(--destaque-esc); color:var(--creme);
   font-family:var(--f); font-weight:900; font-size:var(--t1);
   text-transform:uppercase; line-height:1.2; letter-spacing:.02em;
   padding:var(--e3) var(--e3); text-align:center;
   border-bottom:1px solid rgba(242,238,229,.22);
 }
-/* em 320px o t2 quebrava em duas linhas: nessa faixa o tamanho cai um degrau,
-   mas o peso 900 e o respiro do padding continuam — segue maior que a versão
-   anterior (41px de altura contra os 47px daqui). */
-@media(max-width:359px){.tarja{letter-spacing:0}}
+/* ⚠️ MEDIDO, e o comentário anterior aqui estava ERRADO: ele afirmava que o
+   texto cabia em uma linha até 320px, e não cabia — o texto de hoje já
+   quebrava em DUAS linhas (56px de altura) em 320px, com ou sem tracking.
+   Com a referência de distância o texto ficou mais longo, então a faixa
+   estreita precisa mesmo de um degrau a menos de tamanho: em 11px o texto
+   inteiro cabe numa linha só em 320px (38px de altura). Continua branco
+   sobre #A93C1E, que mede 5,41:1 — bem acima dos 4,5:1 de texto pequeno. */
+@media(max-width:359px){.tarja{font-size:11px; letter-spacing:0}}
 @media(min-width:560px){.tarja{font-size:var(--t3); letter-spacing:.06em; padding:var(--e3) var(--e5)}}
 @media(min-width:900px){.tarja{font-size:var(--t4)}}
+
+/* ============================================================
+   ONDE FICA CAMBUÍ — a dobra dos tempos de carro
+   ============================================================
+   Pedido do Eduardo: "talvez as pessoas não saibam onde é... ter em alguma
+   dobra explicação do tempo de distância".
+
+   Grade e não tabela: são pares cidade/tempo, e uma <table> aqui obrigaria a
+   um cabeçalho que não diz nada ("Cidade | Tempo") e a um leitor de tela a
+   anunciar duas colunas a cada linha. `minmax(0,1fr)` porque 1fr puro não
+   desce do min-content e a linha empurraria a página de lado em 320px — foi
+   exatamente o que já aconteceu com o `.nums`. */
+.dist{
+  display:grid; gap:var(--e2); margin:var(--e5) 0 0;
+  grid-template-columns:minmax(0,1fr);
+}
+@media(min-width:560px){.dist{grid-template-columns:repeat(2,minmax(0,1fr)); gap:var(--e2) var(--e5)}}
+/* 🔴 ESTA DOBRA VIVE DENTRO DO `.bloco`, QUE É PRETINHO. Medido: --chocolate
+   aqui dava 2,24:1 e --tinta-2 dava 3,19:1 — os dois REPROVAM os 4,5:1 de
+   texto pequeno. As cores de texto desta família só valem sobre fundo claro;
+   dentro do bloco escuro a régua é outra, e é a do próprio bloco:
+     · creme       14,49:1   (o texto normal do bloco)
+     · creme a 90% 11,91:1   (o que a lista de "o que inclui" já usa)
+     · argila       7,32:1   (o destaque, aqui o tempo de viagem)
+   Argila como TEXTO só é proibida sobre o creme, onde ela mede 1,98:1. Sobre
+   o pretinho ela é o destaque desta página desde sempre. */
+.dist__l{
+  display:flex; align-items:baseline; justify-content:space-between; gap:var(--e3);
+  padding:10px 0; border-bottom:1px solid rgba(242,238,229,.18);
+}
+.dist__c{
+  font-size:var(--t2); line-height:1.35; overflow-wrap:break-word; min-width:0;
+  color:var(--creme);
+}
+.dist__t{
+  flex:0 0 auto; font-weight:800; font-size:var(--t2);
+  color:var(--argila); white-space:nowrap;
+}
+.dist__nota{
+  margin:var(--e5) 0 0; font-size:var(--t1); line-height:1.5;
+  color:rgba(242,238,229,.9);
+}
+.dist__nota a{color:var(--creme); font-weight:700}
 
 /* ============================================================
    CORREÇÕES DE CONTRASTE (medidas, não estimadas)
@@ -719,6 +773,14 @@ b,strong{font-weight:700}
 }
 .controles.ver ~ .progresso{bottom:0}
 
+/* Em tela cheia o navegador dá ao elemento a tela inteira, mas ele mantém o
+   `aspect-ratio` do player e sobra tarja preta em cima e embaixo. `contain` no
+   vídeo faz ele caber inteiro sem cortar nada — cortar a imagem de uma aula em
+   que o que importa é a MÃO seria perder justamente o que ela veio ver. */
+#player:fullscreen{width:100vw; height:100vh; max-width:none; border-radius:0}
+#player:fullscreen video{width:100%; height:100%; object-fit:contain; background:#000}
+#player:-webkit-full-screen{width:100vw; height:100vh; max-width:none; border-radius:0}
+
 .volume{
   flex:1; -webkit-appearance:none; appearance:none; height:3px;
   background:rgba(242,238,229,.34); border-radius:3px; outline:none;
@@ -732,8 +794,16 @@ b,strong{font-weight:700}
 </head>
 <body>
 
-<!-- 0. TARJA — ninguém pode comprar achando que é só online ---- -->
-<p class="tarja">Aula prática presencial em Cambuí, MG</p>
+<!-- 0. TARJA — ninguém pode comprar achando que é só online ----
+     Pedido do Eduardo: "talvez as pessoas não saibam onde é... pode ser legal
+     explicar na tarja que fica a 2h de São Paulo capital". A referência entra
+     AQUI, na primeira coisa que se lê, porque é aqui que a pessoa decide se
+     "Cambuí" é longe demais para ela — e "Cambuí, MG" sozinho não responde
+     essa pergunta para quem nunca ouviu falar da cidade.
+     As duas horas foram confirmadas pela Nataly. O texto foi encurtado de
+     "Aula prática presencial" para "Presencial" pela medida: é o que cabe em
+     UMA linha em 320px depois de acrescentar a distância. -->
+<p class="tarja">Presencial em Cambuí, MG · 2h de São Paulo</p>
 
 <!-- 1. HERO — o que é, onde é, o que vem junto ---------------- -->
 <section class="faixa escuro">
@@ -832,6 +902,18 @@ b,strong{font-weight:700}
             </svg>
           </button>
           <input class="volume" id="volume" type="range" min="0" max="1" step="0.05" value="1" aria-label="Volume">
+          <!-- Tela cheia. Fica por último, que é onde todo player põe, e começa
+               ESCONDIDO: o JS só o revela se o navegador realmente souber
+               abrir. Botão que existe e não funciona é pior que botão que não
+               existe — foi assim que o "garantir vaga" do formulário virou um
+               problema. -->
+          <button class="ctrl" id="btn-tela" type="button" aria-label="Ver em tela cheia" hidden>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                 stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <path d="M8 3H5a2 2 0 0 0-2 2v3"></path><path d="M16 3h3a2 2 0 0 1 2 2v3"></path>
+              <path d="M8 21H5a2 2 0 0 1-2-2v-3"></path><path d="M16 21h3a2 2 0 0 0 2-2v-3"></path>
+            </svg>
+          </button>
         </div>
       </div>
 
@@ -1031,6 +1113,48 @@ b,strong{font-weight:700}
   </div>
 </section>
 
+<!-- 7b. ONDE FICA CAMBUÍ -------------------------------------
+     A objeção que ninguém escreve no formulário: "deve ser longe demais".
+     Cambuí é na Fernão Dias, e para metade do público paulista ela está mais
+     perto do que a pessoa imagina — mas ninguém sabe disso se a gente não
+     disser. A dobra existe para transformar "Minas" (que soa longe) num
+     número de horas (que se compara com um sábado).
+     🔴 Os tempos são APROXIMADOS e a página diz isso. Prometer "1h30" para
+     quem pega obra na Fernão Dias e chega em 2h20 é começar a relação
+     desmentida — e essa pessoa vai chegar na aula irritada, ou não vai. -->
+<section class="faixa faixa--curta">
+  <div class="wrap">
+    <div class="estreito centro" style="margin-bottom:var(--e5)">
+      <p class="rot rot--c">Onde fica Cambuí</p>
+      <h2 class="h1">Provavelmente é <em>mais perto</em> do que você está imaginando</h2>
+      <p class="lead p2">Cambuí fica no sul de Minas, na beira da Fernão Dias. Quem sai de
+      São Paulo capital chega em <b>cerca de duas horas</b> — dá para vir e voltar no
+      mesmo dia, e muita aluna faz exatamente isso.</p>
+    </div>
+
+    <div class="bloco estreito">
+      <p class="rot">De carro até Cambuí</p>
+      <div class="dist">
+        <p class="dist__l"><span class="dist__c">São Paulo, capital</span><span class="dist__t">~2h</span></p>
+        <p class="dist__l"><span class="dist__c">Campinas</span><span class="dist__t">~1h45</span></p>
+        <p class="dist__l"><span class="dist__c">Jundiaí</span><span class="dist__t">~1h30</span></p>
+        <p class="dist__l"><span class="dist__c">Atibaia</span><span class="dist__t">~1h</span></p>
+        <p class="dist__l"><span class="dist__c">Itajubá</span><span class="dist__t">~1h</span></p>
+        <p class="dist__l"><span class="dist__c">Bragança Paulista</span><span class="dist__t">~45min</span></p>
+        <p class="dist__l"><span class="dist__c">Pouso Alegre</span><span class="dist__t">~40min</span></p>
+        <p class="dist__l"><span class="dist__c">Extrema</span><span class="dist__t">~35min</span></p>
+        <p class="dist__l"><span class="dist__c">Camanducaia</span><span class="dist__t">~20min</span></p>
+      </div>
+      <p class="dist__nota">Tempos aproximados, de carro, em dia normal de trânsito.
+      Se a sua cidade não está na lista,
+      <a href="https://www.google.com/maps/dir/?api=1&amp;destination=Cambu%C3%AD%2C+MG"
+         target="_blank" rel="noopener">veja no mapa quanto tempo dá saindo daí</a> — e
+      quando a gente marcar a data eu te passo as referências da cidade para você
+      se organizar.</p>
+    </div>
+  </div>
+</section>
+
 <!-- 8. AS DUAS FORMAS ---------------------------------------- -->
 <section class="faixa faixa--curta">
   <div class="wrap">
@@ -1200,29 +1324,11 @@ b,strong{font-weight:700}
   </div>
 </section>
 
-<!-- 12. GARANTIA --------------------------------------------- -->
-<section class="faixa faixa--curta">
-  <div class="wrap">
-    <div class="bloco bloco--claro estreito centro">
-      <div class="selo">
-        <span class="selo__escudo">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6"
-               stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-            <path d="M12 2 4 5.5v6c0 4.6 3.4 8.9 8 10.5 4.6-1.6 8-5.9 8-10.5v-6L12 2z"></path>
-            <path d="m8.6 11.8 2.3 2.4 4.5-4.6"></path>
-          </svg>
-        </span>
-        <b>7</b><span>dias de garantia</span>
-      </div>
-      <h2 class="h2">Eu quero tirar todo o <em>risco</em> de cima de você</h2>
-      <p>O seu acesso ao curso online sai na hora, então você tem sete dias para entrar,
-      assistir, olhar tudo por dentro e sentir se o meu jeito de ensinar combina com você.</p>
-      <p><b>Se achar que não é para você, me pede o dinheiro de volta que a gente devolve.</b>
-      Sem pergunta, sem burocracia, sem justificar nada.</p>
-      <p class="apoio" style="margin-top:var(--e5)">Quem corre risco aqui sou eu, não você.</p>
-    </div>
-  </div>
-</section>
+<!-- 12. GARANTIA — REMOVIDA em 02/09/2026 a pedido do Edu ("garantia por
+     enquanto não"). A dobra prometia SETE DIAS de devolução sem burocracia e
+     não havia definição de quando o prazo começa: da compra, ou da prática,
+     que pode ser marcada semanas depois? Promessa de devolução sem marco é
+     dívida em aberto. Se voltar, ela precisa vir com o marco escrito. -->
 
 <!-- 13. PARA QUEM É ------------------------------------------ -->
 <section class="faixa faixa--curta">
@@ -1420,10 +1526,6 @@ b,strong{font-weight:700}
       <div class="faq">
         <button class="faq__c" aria-expanded="false"><span>Como eu pago?</span><span class="faq__s"></span></button>
         <div class="faq__r"><p>No Pix ou no cartão, e no cartão dá para parcelar em até 12 vezes. O acesso ao curso online chega no seu e-mail assim que o pagamento é confirmado.</p></div>
-      </div>
-      <div class="faq">
-        <button class="faq__c" aria-expanded="false"><span>E se eu não gostar?</span><span class="faq__s"></span></button>
-        <div class="faq__r"><p>Você tem sete dias para olhar tudo por dentro. Se achar que não é para você, me pede o dinheiro de volta nesse prazo que a gente devolve, sem pergunta e sem burocracia.</p></div>
       </div>
     </div>
   </div>
@@ -1640,6 +1742,8 @@ b,strong{font-weight:700}
   var btnSom    = document.getElementById("btn-som");
   var volume    = document.getElementById("volume");
   var continuar = document.getElementById("continuar");
+  var btnTela   = document.getElementById("btn-tela");
+  var player    = document.getElementById("player");
   var ligado    = false;
 
   var ICONE_PAUSA = '<svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><rect x="6" y="5" width="4" height="14" rx="1"></rect><rect x="14" y="5" width="4" height="14" rx="1"></rect></svg>';
@@ -1763,12 +1867,92 @@ b,strong{font-weight:700}
       btnSom.innerHTML = vsl.muted ? ICONE_MUDO : ICONE_SOM;
     });
 
+    /* ================= TELA CHEIA =================
+       Pedido do Eduardo: "no desktop e mobile deveria ser possível assistir em
+       tela inteira".
+
+       🔴 SÃO DOIS CAMINHOS, e não um com fallback decorativo:
+
+       · Desktop e Android → `requestFullscreen()` no CONTÊINER (#player). Tem
+         de ser o contêiner, não o <video>: em tela cheia só vai junto quem
+         está DENTRO do elemento pedido, e pedindo no vídeo a barra de
+         progresso, os controles e o overlay de retenção ficariam de fora — a
+         pessoa entraria em tela cheia e perderia o botão de pausa.
+
+       · iPhone → o Safari do iOS NÃO implementa `requestFullscreen` em
+         elemento comum. Um <div> nunca abre, e o botão pareceria quebrado
+         exatamente no aparelho onde a maioria assiste. O que existe lá é
+         `webkitEnterFullscreen()`, e só NO PRÓPRIO <video>: quem assume a tela
+         é o player nativo do iOS, com os controles dele. A gente perde os
+         nossos controles nesse modo — e é a troca certa, porque a alternativa
+         é não ter tela cheia nenhuma no iPhone.
+
+       O botão nasce `hidden` e só aparece se um dos dois caminhos existir. */
+    var podeContainer = !!(player && (player.requestFullscreen ||
+                                      player.webkitRequestFullscreen));
+    var podeVideoIOS  = typeof vsl.webkitEnterFullscreen === 'function';
+
+    if (btnTela && (podeContainer || podeVideoIOS)) {
+      btnTela.hidden = false;
+
+      var ICONE_SAIR = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 3v3a2 2 0 0 1-2 2H3"></path><path d="M21 8h-3a2 2 0 0 1-2-2V3"></path><path d="M3 16h3a2 2 0 0 1 2 2v3"></path><path d="M16 21v-3a2 2 0 0 1 2-2h3"></path></svg>';
+      var ICONE_ENTRAR = btnTela.innerHTML;
+
+      function emTelaCheia(){
+        return !!(document.fullscreenElement || document.webkitFullscreenElement);
+      }
+      function pinta(){
+        var dentro = emTelaCheia();
+        btnTela.innerHTML = dentro ? ICONE_SAIR : ICONE_ENTRAR;
+        btnTela.setAttribute('aria-label', dentro ? 'Sair da tela cheia' : 'Ver em tela cheia');
+      }
+
+      btnTela.addEventListener('click', function(){
+        if (emTelaCheia()) {
+          try { (document.exitFullscreen || document.webkitExitFullscreen).call(document); }
+          catch (e) {}
+          return;
+        }
+        /* O contêiner primeiro: é o que preserva os nossos controles. O
+           caminho do iPhone é o último recurso, porque lá a gente entrega a
+           tela para o player do sistema. */
+        if (podeContainer) {
+          var pedir = player.requestFullscreen || player.webkitRequestFullscreen;
+          try {
+            var r = pedir.call(player);
+            /* O Safari do Mac REJEITA a promessa em vez de não ter o método.
+               Sem este catch, o clique não faria nada e não diria por quê. */
+            if (r && r.catch) r.catch(function(){ if (podeVideoIOS) vsl.webkitEnterFullscreen(); });
+            return;
+          } catch (e) {}
+        }
+        if (podeVideoIOS) vsl.webkitEnterFullscreen();
+      });
+
+      document.addEventListener('fullscreenchange', pinta);
+      document.addEventListener('webkitfullscreenchange', pinta);
+    }
+
     /* Barra de progresso com percepção acelerada.
-       progresso = (t/T)^0,5 — anda rápido no começo (aos 30s mostra 30%,
-       quando o real é 8,9%) e desacelera, encontrando o real em 100% no fim.
-       A sensação é de vídeo curto, sem mentir sobre o fim. */
+       progresso = (t/T)^EXPO — anda rápido no começo e desacelera, encontrando
+       o real em 100% NO FIM. A sensação é de vídeo curto, sem mentir sobre o
+       fim: qualquer expoente entre 0 e 1 converge para 100% quando t = T, e é
+       isso que impede a barra de virar promessa falsa.
+
+       🔴 0,50 → 0,45 em 02/09/2026, a pedido do Eduardo: "o timer embaixo
+       deveria passar um pouquinho mais rápido só". Medido neste vídeo, que
+       tem 5min37 (337s):
+
+                     aos 10s     aos 30s     aos 60s     no fim
+           0,50       17,23%      29,84%      42,19%      100%
+           0,45       20,54%      33,67%      46,00%      100%   ← agora
+           0,42       22,82%      36,21%      48,44%      100%
+
+       0,45 e não 0,42 porque o pedido foi "um pouquinho": 0,45 adianta ~3,3
+       pontos aos 10s e ~3,8 aos 30s, que se sente sem virar outra coisa.
+       ⚠️ Nunca subir acima de 1: aí a barra andaria mais DEVAGAR que o real. */
     var barra = document.getElementById('progresso');
-    var EXPO  = 0.50;
+    var EXPO  = 0.45;
 
     function pintaBarra(){
       var dur = vsl.duration;

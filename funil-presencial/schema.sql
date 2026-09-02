@@ -119,6 +119,15 @@ ALTER TABLE leads ADD COLUMN IF NOT EXISTS completo           BOOLEAN NOT NULL D
 ALTER TABLE leads ADD COLUMN IF NOT EXISTS ultima_etapa       TEXT;
 ALTER TABLE leads ADD COLUMN IF NOT EXISTS avisado_parcial_em TIMESTAMPTZ;
 
+-- 🔴 lead_uid: existia SO dentro do CREATE TABLE acima, e o CREATE TABLE so
+--    roda em banco NOVO. Num banco que ja existia antes de o dedupe nascer, a
+--    coluna nunca seria criada — e `leads.js` usa `ON CONFLICT (lead_uid)` nas
+--    DUAS rotas de gravacao. O erro seria
+--    'column "lead_uid" does not exist' e TODA gravacao de lead morreria: o
+--    formulario inteiro fora do ar com a campanha rodando, e o site de pe.
+--    E a mesma classe do incidente de 01/09/2026, um nivel mais fundo.
+ALTER TABLE leads ADD COLUMN IF NOT EXISTS lead_uid TEXT;
+
 -- As colunas que eram NOT NULL e não podem mais ser: o parcial nasce com
 -- nome e telefone e mais nada. DROP NOT NULL é idempotente — rodar de novo
 -- em coluna que já é anulável não faz nada e não dá erro.
@@ -148,6 +157,18 @@ UPDATE leads SET completo = true
 --    e criada e toda insercao de lead passa a quebrar.
 --    Foi exatamente o que aconteceu em 01/09/2026.
 CREATE INDEX IF NOT EXISTS idx_leads_produto ON leads (produto_id);
+
+-- 🔴 E O INDICE UNICO DO lead_uid, aqui, DEPOIS do ALTER — mesma regra e mesmo
+--    motivo dos de baixo. Sem uma restricao unica sobre a coluna, o
+--    `ON CONFLICT (lead_uid)` nao falha por coluna ausente: falha com
+--    'there is no unique or exclusion constraint matching the ON CONFLICT
+--    specification', que e ainda mais dificil de ligar a causa.
+--    Em banco novo o CREATE TABLE ja declara `lead_uid TEXT UNIQUE` e este
+--    indice fica redundante — algumas dezenas de KB numa tabela de leads, que e
+--    barato demais para valer uma verificacao condicional que pode falhar
+--    diferente entre o Postgres e o PGlite. O que NAO pode e depender de uma
+--    restricao que talvez nao exista.
+CREATE UNIQUE INDEX IF NOT EXISTS idx_leads_uid ON leads (lead_uid);
 
 -- Mesma regra, mesma posição: depois dos ALTER. O painel abre filtrando por
 -- completo, e a varredura do aviso de incompleto procura parcial parado —

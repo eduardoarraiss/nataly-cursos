@@ -32,6 +32,18 @@ const DEV_DIR = process.env.FUNIL_DEV_DIR
 async function iniciar() {
   if (_pronto) return _pronto;
   _pronto = (async () => {
+    /* 🔴 O `_pronto` é memoizado, e uma promessa REJEITADA também se memoriza.
+       Sem o `catch` que zera lá embaixo, um Postgres fora do ar NO MOMENTO DO
+       BOOT envenenava o módulo para sempre: a primeira consulta tentava
+       conectar de verdade, e todas as seguintes recebiam a MESMA rejeição
+       guardada, em 0 ms, sem nunca tentar de novo. Medido em 02/09/2026:
+       tentativa 1 = 34 ms (conexão real), tentativas 2 e 3 = 0 ms.
+
+       O estrago era assimétrico e por isso difícil de ver: a página de venda e
+       o formulário continuavam no ar (são arquivo estático), mas NENHUM LEAD
+       ERA GRAVADO — e assim ficaria até alguém reiniciar o processo à mão,
+       mesmo depois de o banco voltar. Um restart do Railway coincidindo com um
+       restart do Postgres bastava para matar o funil com a campanha rodando. */
     const url = process.env.DATABASE_URL;
 
     if (url) {
@@ -68,7 +80,16 @@ async function iniciar() {
       console.log('[funil/db]     Para inspecionar os dados com o servidor de pé, use a API /crm.');
     }
     return _cli;
-  })();
+  })().catch((e) => {
+    /* Zera o estado para que a PRÓXIMA consulta tente conectar de novo. Sem
+       isto a falha vira permanente. Com isto, o funil volta sozinho assim que
+       o Postgres voltar — a pessoa que preencheu meio minuto depois grava
+       normalmente, sem ninguém precisar reiniciar nada. */
+    _pronto = null;
+    _cli = null;
+    _driver = null;
+    throw e;
+  });
   return _pronto;
 }
 

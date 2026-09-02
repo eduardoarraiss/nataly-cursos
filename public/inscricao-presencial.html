@@ -146,7 +146,43 @@ img{max-width:100%; display:block; height:auto}
   border-bottom-color:var(--destaque-esc);
 }
 .dupla{display:grid; gap:var(--e4); grid-template-columns:1fr}
-@media(min-width:560px){.dupla{grid-template-columns:1fr 110px}}
+/* 110px cabiam a sigla "MG" e mais nada. Com o campo de busca, o que aparece
+   escrito ali passa a ser "Rio Grande do Norte" — e minmax(0,...) é o que
+   deixa as duas colunas ENCOLHEREM em vez de empurrar a linha para fora da
+   caixa (repeat/1fr puro não desce do min-content e a página rolava de lado). */
+@media(min-width:560px){.dupla{grid-template-columns:minmax(0,1fr) minmax(0,220px)}}
+
+/* ---------- combo de estado, com busca (02/09/2026) ----------
+   Pedido do Eduardo: "ao selecionar estado, você deveria poder escrever e
+   aparecer uma seleção com todos os estados para escolher".
+
+   Sem biblioteca: são 27 itens, e um <select> nativo não deixa escrever.
+   O campo é um `role=combobox` de verdade — `aria-expanded`, `aria-controls`,
+   `aria-activedescendant` — para quem usa leitor de tela ouvir a mesma coisa
+   que a pessoa vê. O valor que VAI para o servidor continua sendo a sigla de
+   duas letras, num input escondido: a tela mudou, o dado não. */
+.combo{position:relative}
+.combo__lista{
+  position:absolute; z-index:30; left:0; right:0; top:calc(100% + 4px);
+  margin:0; padding:var(--e1); list-style:none;
+  max-height:264px; overflow-y:auto; -webkit-overflow-scrolling:touch;
+  background:var(--papel); border:1px solid var(--chocolate); border-radius:var(--r1);
+}
+.combo__lista[hidden]{display:none}
+.combo__op{
+  padding:12px var(--e3); min-height:48px; display:flex; align-items:center;
+  gap:var(--e2); cursor:pointer; border-radius:8px;
+  font-size:var(--t2); line-height:1.3; color:var(--tinta);
+}
+.combo__op b{
+  flex:0 0 auto; font-size:var(--t1); font-weight:800; letter-spacing:.06em;
+  color:var(--tinta-2);
+}
+/* O item ativo é o do TECLADO e o do dedo ao mesmo tempo: uma marca só, para
+   não existirem dois "onde eu estou" na mesma lista. */
+.combo__op[aria-selected="true"]{background:var(--chocolate); color:var(--creme)}
+.combo__op[aria-selected="true"] b{color:var(--creme)}
+.combo__vazio{padding:12px var(--e3); font-size:var(--t2); color:var(--tinta-2)}
 
 /* ---------- escolhas ---------- */
 .ops{display:grid; gap:var(--e2); margin:0 0 var(--e5)}
@@ -172,6 +208,26 @@ img{max-width:100%; display:block; height:auto}
 .op .sub{display:block; font-size:var(--t2); opacity:.8; margin-top:2px}
 .sub-rot{font-size:var(--t2); color:var(--tinta-2); margin:var(--e5) 0 var(--e3)}
 
+/* ---------- "onde fica Cambuí", dentro da própria pergunta ----------
+   O Eduardo: "seria legal ter um mapa... e ter uma escrita dizendo que fica
+   2h de São Paulo". O mapa com cálculo de rota exigiria a API paga do Google
+   e uma chave exposta no navegador; ele dispensou. O que ficou é a referência
+   em texto — que é o que a pergunta precisa para ser respondida — mais um
+   link que abre o Google Maps DO CELULAR DELA com o destino já travado em
+   Cambuí, onde ela vê o tempo real saindo de onde estiver. Custo zero,
+   chave nenhuma, e mais preciso do que qualquer tabela nossa. */
+.onde{
+  margin:0 0 var(--e5); padding:var(--e4);
+  border:1px solid var(--filete); border-radius:var(--r1); background:var(--papel);
+}
+.onde p{margin:0; font-size:var(--t2); line-height:1.55; color:var(--tinta-2)}
+.onde b{color:var(--tinta)}
+.onde a{color:var(--chocolate); font-weight:700}
+.onde__l{
+  display:inline-flex; align-items:center; gap:6px; margin-top:var(--e3);
+  min-height:44px;   /* alvo de dedo: é um link que se toca no celular */
+}
+
 /* ---------- a tela de recomendação ----------
    O card do produto reaproveita a caixa escura do investimento: é a mesma
    hierarquia visual (preço grande, parcelamento, o que inclui) e a pessoa
@@ -192,6 +248,27 @@ img{max-width:100%; display:block; height:auto}
 }
 .rec__cta{display:inline-flex; align-items:center; justify-content:center;
   text-decoration:none; text-align:center; margin:var(--e5) 0 0; width:100%}
+.rec__cta[hidden]{display:none}
+/* Alvo de toque: o botão desta tela é o único da página que fecha a conversa.
+   56px de altura já vem do `.btn`; aqui o que se garante é que ele não encolhe
+   quando o rótulo cabe numa linha só. */
+button.rec__cta{font:inherit; font-weight:800; font-size:var(--t3); cursor:pointer}
+
+/* ---------- "aqui eu pego poucas pessoas" (só no presencial) ----------
+   Filete de 1px e fundo de papel, como manda a régua desta família de páginas:
+   nunca box-shadow. O título vai em --chocolate e o corpo em --tinta-2, os
+   dois medidos sobre o papel — --argila e --salvia NUNCA como cor de texto. */
+.rec__seleta{
+  margin:0 0 var(--e5); padding:var(--e4) var(--e5);
+  border:1px solid var(--argila); border-radius:var(--r1); background:var(--papel);
+}
+.rec__seleta-t{
+  margin:0 0 var(--e2); font-size:var(--t1); font-weight:800;
+  letter-spacing:.12em; text-transform:uppercase; color:var(--chocolate);
+}
+.rec__seleta p{margin:0; font-size:var(--t2); line-height:1.55; color:var(--tinta-2)}
+.rec__seleta b{color:var(--tinta)}
+.rec__seleta[hidden]{display:none}
 .rec__nota{margin:var(--e4) 0 0; font-size:var(--t2); line-height:1.5; color:var(--tinta-2)}
 /* A caixa que diz "o presencial existe" para quem podia vir e só o
    investimento travou. Filete, nunca sombra — e nunca escondida. */
@@ -365,11 +442,17 @@ img{max-width:100%; display:block; height:auto}
                    autocapitalize="words" enterkeyhint="next"
                    placeholder="Sua resposta..." aria-describedby="e-cidade">
           </div>
-          <div>
-            <label for="f-estado">Estado</label>
-            <input type="text" id="f-estado" name="estado" autocomplete="address-level1"
-                   maxlength="2" autocapitalize="characters" spellcheck="false"
-                   enterkeyhint="next" placeholder="MG">
+          <div class="combo" id="combo-estado">
+            <label for="f-estado-busca">Estado</label>
+            <input type="text" id="f-estado-busca" role="combobox"
+                   aria-expanded="false" aria-controls="lista-estados"
+                   aria-autocomplete="list" aria-haspopup="listbox"
+                   autocomplete="off" autocapitalize="words" spellcheck="false"
+                   enterkeyhint="next" placeholder="Escreva ou escolha">
+            <ul class="combo__lista" id="lista-estados" role="listbox"
+                aria-label="Estados do Brasil" hidden></ul>
+            <!-- O que vai para o servidor: a sigla, como sempre foi. -->
+            <input type="hidden" id="f-estado" name="estado" value="">
           </div>
         </div>
       </fieldset>
@@ -486,6 +569,17 @@ img{max-width:100%; display:block; height:auto}
         <legend class="q"><span class="n"></span>A prática é presencial, em Cambuí, MG. Você consegue vir?</legend>
         <p class="ajuda">É um dia só, e a data a gente marca junto, conforme a sua agenda.
         Mas você precisa vir até aqui.</p>
+
+        <!-- Muita gente não faz ideia de onde fica Cambuí, e responder "não
+             consigo ir" sem saber a distância é desistir de graça. As duas
+             referências são as que a Nataly confirmou. -->
+        <div class="onde">
+          <p>Cambuí fica no sul de Minas, na Fernão Dias: <b>cerca de 2h de São Paulo
+          capital</b> e <b>40 minutos de Pouso Alegre</b>.</p>
+          <p class="onde__l"><a href="https://www.google.com/maps/dir/?api=1&amp;destination=Cambu%C3%AD%2C+MG"
+             target="_blank" rel="noopener">Ver quanto tempo dá saindo daí &rarr;</a></p>
+        </div>
+
         <p class="erro" id="e-disponibilidade" role="alert" hidden></p>
         <div class="ops" role="radiogroup" aria-label="Disponibilidade de vir a Cambuí">
           <label class="op"><input type="radio" name="disponibilidade" value="sim"><span class="marca" aria-hidden="true"></span><span class="txt">Sim, eu consigo ir até Cambuí<span class="sub">É longe, mas eu me organizo</span></span></label>
@@ -528,6 +622,14 @@ img{max-width:100%; display:block; height:auto}
         <legend class="q"><span class="n"></span>Quanto você consegue investir na sua formação agora?</legend>
         <p class="ajuda">Pode ser sincera. Eu tenho caminhos de preços bem
         diferentes, e é isso que me faz te indicar o certo em vez do mais caro.</p>
+        <!-- Sem esta linha a pergunta parece uma sondagem de quanto dá para
+             cobrar de cada uma. Quem desconfia disso mente para baixo ou
+             abandona — e esta é a ÚLTIMA pergunta, onde desistir custa mais
+             caro. O "pode ser sincera" acima pede confiança; esta frase dá o
+             motivo concreto para ela. -->
+        <p class="ajuda" id="ajuda-preco-fixo"><b>Os meus preços são os mesmos para todo
+        mundo</b>, e o que você marcar aqui não muda o valor de nada. Isso serve só para
+        eu te indicar o caminho certo para o seu momento.</p>
         <p class="erro" id="e-faixa_investimento" role="alert" hidden></p>
         <div class="ops" role="radiogroup" aria-label="Sua faixa de investimento">
           <label class="op"><input type="radio" name="faixa_investimento" value="ate-500"><span class="marca" aria-hidden="true"></span><span class="txt">Até R$ 500<span class="sub">É o que dá para agora</span></span></label>
@@ -550,38 +652,93 @@ img{max-width:100%; display:block; height:auto}
       </div>
     </form>
 
-    <!-- ============ TELA FINAL — A RECOMENDAÇÃO ============
-         Tudo aqui é preenchido pelo JS com o que o SERVIDOR devolveu. O HTML
-         não traz nome de produto, preço nem link de checkout: se trouxesse,
-         um bug de JS deixaria na tela o produto errado, e "R$ 1.997" cravado
-         num HTML servido para quem se qualificou no de R$ 297 é exatamente o
-         que este trabalho veio corrigir. Vazio é seguro; errado, não. -->
-    <section class="fim" id="obrigado" hidden tabindex="-1">
-      <div class="fim__selo" aria-hidden="true">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"
-             stroke-linecap="round" stroke-linejoin="round"><path d="m5 13 4.5 4.5L19 7"></path></svg>
-      </div>
-      <h2>Pronto, <span id="nome-fim">recebi a sua inscrição</span>!</h2>
-      <p id="fim-sub">A sua inscrição chegou aqui e eu já fui avisada.</p>
+    <!-- ============ TELA 2 — A RECOMENDAÇÃO (02/09/2026) ============
+         🔴 ESTA TELA NÃO DIZ "RECEBIDO", E ISSO É O PONTO DELA.
 
-      <div class="rec" id="rec" hidden>
+         Até hoje o fim das perguntas abria com "Pronto, recebi a sua
+         inscrição!" e só ENTÃO mostrava o produto e o preço. Ou seja: a pessoa
+         era dada como inscrita antes de saber quanto custava e antes de dizer
+         que queria. O Eduardo mandou desfazer isso, com estas palavras:
+         "deveria ser apenas a de apresentar o melhor programa para a pessoa,
+         dizer que é exclusivo e selecionamos poucas pessoas no caso do
+         presencial, etc… E depois clicar em garantir vaga e dar a mensagem
+         de form recebido".
+
+         Então aqui só existe a oferta: o curso indicado, por que ele, o que
+         inclui, o preço, as condições — e UM botão. O "recebido" mora na tela
+         seguinte, e só nasce do clique.
+
+         Tudo é preenchido pelo JS com o que o SERVIDOR devolveu. O HTML não
+         traz nome de produto, preço nem link de checkout: se trouxesse, um bug
+         de JS deixaria na tela o produto errado, e "R$ 1.997" cravado num HTML
+         servido para quem se qualificou no de R$ 297 é exatamente o que este
+         trabalho veio corrigir. Vazio é seguro; errado, não. -->
+    <section class="fim" id="recomendacao" hidden tabindex="-1">
+      <div class="rec" id="rec">
         <p class="rec__rot">Eu acho que a opção ideal para você é</p>
         <p class="rec__nome" id="rec-nome"></p>
         <p class="rec__porque" id="rec-porque"></p>
+
+        <!-- SÓ NO CAMINHO PRESENCIAL. É verdade, e por isso pode ser dito: a
+             prática é um dia inteiro de turma pequena, com a Nataly ao lado o
+             tempo todo, e é ela quem marca cada data uma a uma. Escassez
+             inventada estraga a conversa que vem depois — esta é a real. -->
+        <div class="rec__seleta" id="rec-exclusivo" hidden>
+          <p class="rec__seleta-t">Aqui eu pego poucas pessoas</p>
+          <p>A prática é de <b>turma pequena</b>, porque eu fico do lado de cada uma
+          corrigindo a mão o dia inteiro — e isso não escala. Eu marco cada data
+          individualmente, conforme a minha agenda e a sua. Por isso eu leio as
+          respostas de todo mundo e <b>seleciono quem entra em cada turma</b>.</p>
+        </div>
+
         <div class="valor">
           <p class="valor__n" id="rec-preco"></p>
           <p class="valor__p" id="rec-parcela"></p>
           <p class="valor__a">à vista no Pix ou no cartão</p>
           <ul class="valor__l" id="rec-inclui"></ul>
         </div>
-        <!-- Só no caminho ONLINE. No presencial a Nataly combina a data antes
-             de cobrar: mandar checkout aqui venderia uma vaga sem data. -->
+
+        <!-- ============ O BOTÃO, NOS DOIS CAMINHOS ============
+             🔴 O Eduardo testou no celular e o botão "não fez nada". A causa
+             estava aqui: existia UM botão só, revelado apenas quando
+             `formato === 'online' && checkout`. No caminho PRESENCIAL ele
+             ficava `hidden` de propósito, e a tela terminava sem nenhum jeito
+             de dizer "eu quero" — a pessoa lia o preço e não tinha o que
+             apertar.
+
+             São DOIS elementos, e não um, porque os dois caminhos fazem coisas
+             genuinamente diferentes e o HTML tem de dizer isso:
+               · online    → é NAVEGAÇÃO para o checkout: tem de ser <a href>,
+                 senão o InitiateCheckout do pixel.js (que escuta clique em
+                 a[href*=pay.kiwify]) não dispara e a decoração de UTM não
+                 acha o link — a venda entraria na Kiwify sem origem.
+               · presencial → é ENVIO: tem de ser <button>, porque não leva a
+                 lugar nenhum. Um <a> sem href não recebe foco de teclado e
+                 não responde a Enter; seria um botão quebrado para quem
+                 navega sem mouse.
+             O rótulo é o mesmo nos dois, e só UM aparece de cada vez. -->
         <a class="btn rec__cta" id="rec-cta" hidden rel="noopener">Quero garantir a minha vaga</a>
+        <button type="button" class="btn rec__cta" id="rec-confirmar" hidden>Quero garantir a minha vaga</button>
+        <p class="erro" id="e-confirmar" role="alert" hidden style="margin:var(--e4) 0 0"></p>
+
         <p class="rec__nota" id="rec-nota"></p>
         <!-- Ela PODE vir e só o investimento travou. O presencial não some em
              silêncio: aparece com preço, e ela decide se quer conversar. -->
         <div class="rec__extra" id="rec-extra" hidden><p id="rec-extra-txt"></p></div>
       </div>
+    </section>
+
+    <!-- ============ TELA 3 — RECEBIDO ============
+         Só nasce do clique em "Quero garantir a minha vaga". É aqui, e só
+         aqui, que a inscrição existe: é este momento que grava a linha como
+         completa, avisa a Nataly e dispara o `Lead` do Meta. -->
+    <section class="fim" id="obrigado" hidden tabindex="-1">
+      <div class="fim__selo" aria-hidden="true">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"
+             stroke-linecap="round" stroke-linejoin="round"><path d="m5 13 4.5 4.5L19 7"></path></svg>
+      </div>
+      <h2>Pronto, <span id="nome-fim">recebi a sua inscrição</span>!</h2>
+      <p id="fim-sub">Eu já fui avisada e a sua vaga está reservada para a gente conversar.</p>
 
       <ul class="passos" id="rec-passos">
         <li><b>1</b><span>Eu leio as suas respostas pessoalmente. Não é robô, sou eu mesma.</span></li>
@@ -629,12 +786,31 @@ privacidade</a>.</span></p>
    escrito pelo JS com o que o SERVIDOR devolveu. A árvore roda em
    funil-presencial/produtos.js e em lugar nenhum mais.
 
+   🔴 A ORDEM DAS TELAS MUDOU EM 02/09/2026, e o `Lead` mudou de lugar junto.
+      Antes, o fim das perguntas fazia tudo de uma vez: gravava a inscrição,
+      avisava a Nataly e disparava o `Lead` — e só DEPOIS a tela mostrava qual
+      curso e por quanto. Quem via o preço e recuava já constava como inscrita.
+
+      Agora são três telas:
+        1. as perguntas
+        2. a RECOMENDAÇÃO — o curso indicado, o porquê, o que inclui, o preço
+           e (no presencial) o aviso de que a turma é pequena e selecionada.
+           Nada foi confirmado ainda.
+        3. o RECEBIDO — só depois do clique em "Quero garantir a minha vaga".
+
+      O `Lead` é o evento pelo qual a campanha de R$ 120/dia otimiza. Ele
+      nasce no CLIQUE, na tela 3. Dispará-lo na tela 2 ensinaria o algoritmo a
+      procurar quem só olha o preço — e a gente pagaria por isso todo dia.
+
    Eventos disparados aqui (o mapa completo está no LEIA-ME):
      · ViuInvestimento  — quando a etapa da faixa aparece, 1×/sessão.
        Diz quantas desistem quando o assunto vira dinheiro.
-     · ViuRecomendacao  — a tela final, com o produto recomendado.
-     · Lead             — no envio, com eventID, content_ids do produto
-       e SEM valor de compra (valor é da Kiwify, no Purchase).
+     · ViuRecomendacao  — a TELA 2, com o produto recomendado. É o par do
+       `Lead`: a distância entre os dois é exatamente quanta gente viu o preço
+       e não quis. Sem valor de compra e sem nome otimizável por engano.
+     · Lead             — no CLIQUE do botão da tela 2, com eventID,
+       content_ids do produto e SEM valor de compra (valor é da Kiwify, no
+       Purchase). NUNCA antes do clique.
      · InitiateCheckout — SÓ no caminho online, no clique do checkout,
        com o valor do produto CERTO e travado em 1 por sessão. Ele
        existe aqui desde 01/09/2026: antes da árvore ninguém entrava em
@@ -665,9 +841,18 @@ privacidade</a>.</span></p>
   var erroGeral= document.getElementById('e-geral');
   var obrigado = document.getElementById('obrigado');
   var rodape   = document.getElementById('rodape');
+  var recomendacao = document.getElementById('recomendacao');
   var atual    = '0';
   var enviando = false;
   var enviado  = false;   /* virou inscrição completa: nenhum parcial depois disso */
+  /* Ela terminou as perguntas e está vendo o preço. A linha do banco já foi
+     gravada com `ultima_etapa = 'rec'`, que é o dado comercial mais forte
+     deste funil — e um beacon parcial atrasado, saindo depois, sobrescreveria
+     esse 'rec' por '10' e a Nataly ligaria falando de faixa de investimento
+     para quem na verdade já tinha visto o produto e o preço. */
+  var recomendado = false;
+  var confirmando = false;
+  var recAtual = null;    /* o que o servidor recomendou, para o clique usar */
 
   /* ---------- O UID QUE ATRAVESSA O PREENCHIMENTO ----------
      Antes de 02/09/2026 ele nascia no clique de enviar e morria ali. Agora ele
@@ -779,6 +964,210 @@ privacidade</a>.</span></p>
     }
     return ok;
   }
+
+  /* ============================================================
+     COMBO DE ESTADO COM BUSCA (02/09/2026)
+     ============================================================
+     Pedido do Eduardo: "ao selecionar estado, você deveria poder escrever e
+     aparecer uma seleção com todos os estados para escolher".
+
+     Sem biblioteca nenhuma. São 27 itens: o que isso pede é um campo de texto
+     que filtra uma lista, e não 40 KB de dependência.
+
+     O que vai para o servidor continua sendo a SIGLA, no input escondido —
+     `texto(body.estado, 2)` do outro lado não mudou, e o rascunho, o CSV e o
+     painel seguem lendo duas letras. A tela mudou; o dado, não.
+
+     Acessibilidade: `role=combobox` com `aria-expanded` de verdade,
+     `aria-activedescendant` apontando para a opção do teclado, e a lista em
+     `role=listbox` com `role=option`. Setas navegam, Enter escolhe, Esc
+     fecha. No celular a lista rola por dentro e cada opção tem 48px de altura,
+     que é alvo de dedo. */
+  var UFS = [
+    ['AC','Acre'], ['AL','Alagoas'], ['AP','Amapá'], ['AM','Amazonas'],
+    ['BA','Bahia'], ['CE','Ceará'], ['DF','Distrito Federal'], ['ES','Espírito Santo'],
+    ['GO','Goiás'], ['MA','Maranhão'], ['MT','Mato Grosso'], ['MS','Mato Grosso do Sul'],
+    ['MG','Minas Gerais'], ['PA','Pará'], ['PB','Paraíba'], ['PR','Paraná'],
+    ['PE','Pernambuco'], ['PI','Piauí'], ['RJ','Rio de Janeiro'],
+    ['RN','Rio Grande do Norte'], ['RS','Rio Grande do Sul'], ['RO','Rondônia'],
+    ['RR','Roraima'], ['SC','Santa Catarina'], ['SP','São Paulo'],
+    ['SE','Sergipe'], ['TO','Tocantins']
+  ];
+
+  var cbBusca = document.getElementById('f-estado-busca');
+  var cbLista = document.getElementById('lista-estados');
+  var cbValor = document.getElementById('f-estado');
+
+  if (cbBusca && cbLista && cbValor) (function () {
+    var aberta = false, ativo = -1, filtradas = UFS.slice();
+
+    /* "Sao Paulo", "são paulo" e "SP" têm de achar São Paulo. Quem está
+       digitando no celular quase nunca põe acento, e um filtro que exige o
+       acento é um filtro que não acha nada e faz a pessoa desistir do campo. */
+    function chave(v) {
+      return String(v || '').normalize('NFD').replace(/[\u0300-\u036f]/g, '')
+        .toLowerCase().trim();
+    }
+    function nomeDe(uf) {
+      for (var i = 0; i < UFS.length; i++) if (UFS[i][0] === uf) return UFS[i][1];
+      return '';
+    }
+
+    function desenha() {
+      cbLista.innerHTML = '';
+      if (!filtradas.length) {
+        var vaz = document.createElement('li');
+        vaz.className = 'combo__vazio';
+        vaz.textContent = 'Nenhum estado com esse nome.';
+        cbLista.appendChild(vaz);
+        return;
+      }
+      filtradas.forEach(function (uf, i) {
+        var li = document.createElement('li');
+        li.className = 'combo__op';
+        li.id = 'uf-' + uf[0];
+        li.setAttribute('role', 'option');
+        li.setAttribute('aria-selected', i === ativo ? 'true' : 'false');
+        li.setAttribute('data-uf', uf[0]);
+        var b = document.createElement('b');
+        b.textContent = uf[0];
+        li.appendChild(b);
+        li.appendChild(document.createTextNode(uf[1]));
+        cbLista.appendChild(li);
+      });
+    }
+
+    function abre() {
+      if (aberta) return;
+      aberta = true;
+      cbLista.hidden = false;
+      cbBusca.setAttribute('aria-expanded', 'true');
+    }
+    function fecha() {
+      if (!aberta) return;
+      aberta = false;
+      cbLista.hidden = true;
+      cbBusca.setAttribute('aria-expanded', 'false');
+      cbBusca.removeAttribute('aria-activedescendant');
+      ativo = -1;
+    }
+
+    function filtra(termo) {
+      var t = chave(termo);
+      filtradas = !t ? UFS.slice() : UFS.filter(function (uf) {
+        return chave(uf[1]).indexOf(t) === 0 || chave(uf[1]).indexOf(' ' + t) !== -1 ||
+               chave(uf[0]) === t;
+      });
+      /* Ninguém digita "inas" querendo Minas, mas muita gente digita "grande"
+         querendo os dois Rio Grande. Se o começo não acha nada, procura em
+         qualquer lugar do nome antes de dizer que não existe. */
+      if (!filtradas.length && t) {
+        filtradas = UFS.filter(function (uf) { return chave(uf[1]).indexOf(t) !== -1; });
+      }
+      ativo = filtradas.length ? 0 : -1;
+      desenha();
+      marcaAtivo();
+    }
+
+    function marcaAtivo() {
+      var ops = cbLista.querySelectorAll('.combo__op');
+      for (var i = 0; i < ops.length; i++) {
+        ops[i].setAttribute('aria-selected', i === ativo ? 'true' : 'false');
+      }
+      if (ativo >= 0 && ops[ativo]) {
+        cbBusca.setAttribute('aria-activedescendant', ops[ativo].id);
+        /* `nearest` e não `center`: rolar a lista inteira a cada seta faz o
+           item saltar debaixo do dedo de quem está lendo. */
+        try { ops[ativo].scrollIntoView({ block: 'nearest' }); } catch (e) {}
+      } else {
+        cbBusca.removeAttribute('aria-activedescendant');
+      }
+    }
+
+    function escolhe(uf) {
+      cbValor.value = uf;
+      cbBusca.value = nomeDe(uf);
+      cbBusca.removeAttribute('aria-invalid');
+      fecha();
+      salvaRascunho();
+    }
+
+    /* O que ela deixou escrito tem de virar um estado ou virar nada. Texto
+       solto no campo faria a pessoa jurar que escolheu São Paulo e o servidor
+       receber vazio — o pior dos dois mundos, porque ninguém avisa. */
+    function resolveTexto() {
+      var t = chave(cbBusca.value);
+      if (!t) { cbValor.value = ''; cbBusca.value = ''; salvaRascunho(); return; }
+      var exato = UFS.filter(function (uf) {
+        return chave(uf[1]) === t || chave(uf[0]) === t;
+      });
+      if (exato.length === 1) { escolhe(exato[0][0]); return; }
+      var comeca = UFS.filter(function (uf) { return chave(uf[1]).indexOf(t) === 0; });
+      if (comeca.length === 1) { escolhe(comeca[0][0]); return; }
+      /* Ambíguo ou inexistente: volta para o que estava escolhido antes. */
+      if (cbValor.value) { cbBusca.value = nomeDe(cbValor.value); }
+      else { cbBusca.value = ''; }
+      salvaRascunho();
+    }
+
+    cbBusca.addEventListener('focus', function () { filtra(''); abre(); });
+    cbBusca.addEventListener('click', function () { filtra(cbBusca.value); abre(); });
+    cbBusca.addEventListener('input', function () {
+      cbValor.value = '';          /* enquanto ela digita, não há escolha feita */
+      filtra(cbBusca.value); abre();
+    });
+
+    cbBusca.addEventListener('keydown', function (ev) {
+      if (ev.key === 'ArrowDown' || ev.key === 'ArrowUp') {
+        ev.preventDefault();
+        if (!aberta) { filtra(cbBusca.value); abre(); return; }
+        if (!filtradas.length) return;
+        ativo += (ev.key === 'ArrowDown' ? 1 : -1);
+        if (ativo < 0) ativo = filtradas.length - 1;
+        if (ativo >= filtradas.length) ativo = 0;
+        marcaAtivo();
+        return;
+      }
+      if (ev.key === 'Escape') { if (aberta) { ev.stopPropagation(); fecha(); } return; }
+      if (ev.key === 'Enter') {
+        /* 🔴 Enter aqui NÃO pode avançar a pergunta: o listener global do
+           formulário avança no Enter, e sem este `stopPropagation` escolher um
+           estado com o teclado pularia para a pergunta seguinte no mesmo
+           toque — a pessoa escolheria "São Paulo" e veria a tela do WhatsApp
+           sem entender o que aconteceu. */
+        if (aberta && ativo >= 0 && filtradas[ativo]) {
+          ev.preventDefault(); ev.stopPropagation();
+          escolhe(filtradas[ativo][0]);
+        }
+      }
+    });
+
+    /* `mousedown`/`touchstart` com preventDefault: sem isso o campo perde o
+       foco ANTES do clique, o `blur` fecha a lista e o clique cai no vazio —
+       o clássico "a lista some quando eu tento tocar nela". */
+    ['mousedown', 'touchstart'].forEach(function (evt) {
+      cbLista.addEventListener(evt, function (ev) {
+        if (ev.target.closest && ev.target.closest('.combo__op')) ev.preventDefault();
+      }, { passive: false });
+    });
+    cbLista.addEventListener('click', function (ev) {
+      var op = ev.target.closest && ev.target.closest('.combo__op');
+      if (op) { escolhe(op.getAttribute('data-uf')); cbBusca.focus(); }
+    });
+
+    cbBusca.addEventListener('blur', function () {
+      setTimeout(function () { resolveTexto(); fecha(); }, 120);
+    });
+    document.addEventListener('click', function (ev) {
+      if (!ev.target.closest || !ev.target.closest('#combo-estado')) fecha();
+    });
+
+    /* O rascunho guarda a SIGLA. Quem volta amanhã tem de ver o nome escrito
+       no campo, e não a caixa vazia com um valor invisível por baixo. */
+    window.NR_PINTA_ESTADO = function () {
+      if (cbValor.value) cbBusca.value = nomeDe(cbValor.value.toUpperCase());
+    };
+  })();
 
   /* ---------- máscara de telefone ---------- */
   var elTel = document.getElementById('f-telefone');
@@ -946,6 +1335,9 @@ privacidade</a>.</span></p>
      pergunta, se assusta e fecha antes de apertar o botão. */
   function mandaParcial(etapaId, saindo) {
     if (enviado || enviando) return;      /* já é (ou está virando) inscrição completa */
+    /* Ela já viu a recomendação: a linha no banco diz 'rec', e nada pode
+       rebaixá-la para uma etapa de pergunta. */
+    if (recomendado) return;
     if (!etapaId || etapaId === '0') return;
     if (!temContato()) return;            /* ainda não há contato utilizável */
 
@@ -1013,6 +1405,8 @@ privacidade</a>.</span></p>
     form.hidden = (atual === '0');
     barra.style.width = Math.round((pos / ultimo) * 100) + '%';
     btSubir.hidden = (pos <= 1);   /* da pergunta 1 não há para onde voltar */
+    /* "Ver o que eu indico" e não "Enviar": o que este botão faz agora é
+       abrir a tela da recomendação. Quem envia é o botão de lá. */
     btAvanca.textContent = (pos === ultimo) ? 'Ver o que eu indico para você' : 'Avançar';
     erroGeral.hidden = true;
     numera();
@@ -1046,8 +1440,11 @@ privacidade</a>.</span></p>
   }
 
   function avanca() {
+    /* Depois da tela 2 o formulário acabou. Sem esta trava, um Enter na tela
+       da recomendação pediria a recomendação de novo e a tela piscaria. */
+    if (recomendado || enviado) return;
     var f = fila();
-    if (idx(atual) === f.length - 1) { enviar(); return; }
+    if (idx(atual) === f.length - 1) { pedeRecomendacao(); return; }
     if (validaEtapa(atual)) vaiPara(fila()[idx(atual) + 1], true);
   }
 
@@ -1145,16 +1542,21 @@ privacidade</a>.</span></p>
     } catch (e) {}
   }
 
-  /* ---------- envio ---------- */
-  function enviar() {
-    if (enviando) return;
+  /* ---------- TELA 2: pedir a recomendação ----------
+     🔴 ISTO NÃO É O ENVIO. A rota `/api/recomendacao-presencial` roda a
+     árvore, devolve o produto e grava a linha como INCOMPLETA, com o produto
+     que ela viu. Ninguém é avisado e nenhum `Lead` sai daqui.
+
+     Quem envia de verdade é `confirma()`, no clique do botão da tela 2. */
+  function pedeRecomendacao() {
+    if (enviando || recomendado) return;
     var f = fila();
     for (var i = 1; i < f.length; i++) {
       if (!validaEtapa(f[i])) { vaiPara(f[i], true); return; }
     }
     enviando = true;
     btAvanca.disabled = true;
-    btAvanca.textContent = 'Enviando...';
+    btAvanca.textContent = 'Vendo o que serve para você...';
     erroGeral.hidden = true;
 
     var dados = {
@@ -1177,14 +1579,14 @@ privacidade</a>.</span></p>
       lead_uid: garanteUid(), atribuicao: ATRIB
     };
 
-    fetch('/api/lead-presencial', {
+    fetch('/api/recomendacao-presencial', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(dados)
     })
       .then(function (r) { return r.json().then(function (j) { return { http: r.status, j: j }; }); })
       .then(function (res) {
-        if (res.j && res.j.ok) { sucesso(dados, res.j.recomendacao); return; }
+        if (res.j && res.j.ok) { mostraRecomendacao(dados, res.j.recomendacao); return; }
         if (res.j && res.j.erros) {
           var pri = Object.keys(res.j.erros)[0];
           Object.keys(res.j.erros).forEach(function (n) { mostraErro(n, res.j.erros[n]); });
@@ -1215,10 +1617,6 @@ privacidade</a>.</span></p>
       ? 'Ver o que eu indico para você' : 'Avançar';
   }
 
-  /* ---------- sucesso ----------
-     Mesmo mecanismo da /entrar: função idempotente chamada tanto pelo
-     event_callback do GA quanto por um setTimeout de segurança. Sem isso,
-     em celular com rede ruim o evento não sai. */
   /* ---------- a tela de recomendação ----------
      Tudo vem do SERVIDOR. Esta função não decide produto, não escolhe preço e
      não monta URL de checkout: ela só desenha o que veio. É a garantia de que
@@ -1239,10 +1637,23 @@ privacidade</a>.</span></p>
       lista.appendChild(li);
     });
 
-    var cta = document.getElementById('rec-cta');
+    var cta = document.getElementById('rec-cta');          /* <a>, só no online */
+    var confirmar = document.getElementById('rec-confirmar'); /* <button>, só no presencial */
+    var exclusivo = document.getElementById('rec-exclusivo');
     var nota = document.getElementById('rec-nota');
     var passo3 = document.getElementById('passo-3');
 
+    /* 🔴 A CORREÇÃO DO BOTÃO QUE "NÃO FAZIA NADA" NO CELULAR.
+       Até 02/09/2026 esta condição era a única coisa que revelava um botão, e
+       o caminho PRESENCIAL caía no `else`, onde o botão era escondido. Quem se
+       qualificava para o presencial — que é a oferta cara, e o alvo da
+       campanha — lia o preço e chegava ao fim da tela sem nada para apertar.
+       Não era um bug de JS nem de toque: o elemento simplesmente não estava
+       visível.
+
+       Agora os dois caminhos têm botão, com o MESMO rótulo e papéis
+       diferentes: no online ele leva ao checkout, no presencial ele confirma
+       o interesse. O que muda é para onde vai, nunca se existe. */
     if (r.formato === 'online' && r.checkout) {
       /* O href sai cru daqui e é decorado pelo UTM forwarding do
          analytics.js — uma implementação só, em vez de remontar a query aqui
@@ -1254,15 +1665,21 @@ privacidade</a>.</span></p>
          fbclid, e a venda entra na Kiwify sem origem nenhuma. */
       cta.setAttribute('href', r.checkout);
       cta.hidden = false;
+      confirmar.hidden = true;
+      exclusivo.hidden = true;   /* turma pequena é coisa do presencial */
       try { if (window.NR_DECORA_UTM) window.NR_DECORA_UTM(); } catch (e) {}
       nota.textContent = 'O acesso é liberado assim que o pagamento é confirmado. ' +
         'Mesmo assim eu te chamo no WhatsApp para acompanhar o seu começo.';
       if (passo3) passo3.hidden = true;   /* não há data de prática a combinar */
     } else {
-      /* Presencial: SEM checkout. A data vem antes do pagamento. */
+      /* Presencial: SEM checkout, mas COM botão. A data vem antes do
+         pagamento — o que este botão confirma é o interesse, não a compra. */
       cta.hidden = true;
-      nota.textContent = 'Aqui eu não te mando link de pagamento agora: primeiro a ' +
-        'gente combina a data da sua prática em Cambuí, e aí sim eu te envio o link.';
+      confirmar.hidden = false;
+      exclusivo.hidden = false;
+      nota.textContent = 'Ao confirmar, eu recebo as suas respostas e te chamo no ' +
+        'WhatsApp. Aqui eu não te mando link de pagamento agora: primeiro a gente ' +
+        'combina a data da sua prática em Cambuí, e aí sim eu te envio o link.';
       if (passo3) passo3.hidden = false;
     }
 
@@ -1279,11 +1696,12 @@ privacidade</a>.</span></p>
       extra.hidden = true;
     }
 
-    document.getElementById('fim-sub').textContent = r.sugestao
-      ? 'A sua inscrição chegou e eu já fui avisada. Olha o que eu sugiro para você:'
-      : 'A sua inscrição chegou e eu já fui avisada.';
-
-    document.getElementById('rec').hidden = false;
+    /* Quando a árvore não teve certeza da família, o rótulo diz isso em vez de
+       afirmar. Antes essa nuance morava no subtítulo do "recebido" — que agora
+       é outra tela, e onde ela não fazia mais sentido nenhum. */
+    document.querySelector('.rec__rot').textContent = r.sugestao
+      ? 'Olhando as suas respostas, o que eu sugiro para você é'
+      : 'Eu acho que a opção ideal para você é';
 
     /* O produto passa a valer para os eventos desta página. O pixel.js e o
        analytics.js leem esta variável ANTES de cair na detecção por rota —
@@ -1313,31 +1731,101 @@ privacidade</a>.</span></p>
       .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
   }
 
-  function sucesso(dados, recomendacao) {
-    var jaMostrou = false;
-    function mostra() {
-      if (jaMostrou) return;
-      jaMostrou = true;
-      enviado = true;   /* trava qualquer parcial atrasado (o beacon de saída) */
-      form.hidden = true;
-      etapas.forEach(function (f) { f.hidden = true; });
-      rodape.hidden = true;
-      barra.style.width = '100%';
-      var pn = String(dados.nome || '').trim().split(/\s+/)[0];
-      if (pn) document.getElementById('nome-fim').textContent = pn;
-      try { desenhaRecomendacao(recomendacao); } catch (e) {}
-      obrigado.hidden = false;
-      obrigado.focus();
-      window.scrollTo({ top: 0, behavior: 'smooth' });
-      try { localStorage.removeItem(CHAVE); } catch (e) {}
-    }
+  /* ============================================================
+     TELA 2 — MOSTRA A RECOMENDAÇÃO (e NÃO diz que recebeu)
+     ============================================================
+     Aqui o formulário sai da tela e entra a oferta. Nada foi confirmado: a
+     linha no banco está gravada como INCOMPLETA, com o produto que ela está
+     vendo, e a Nataly não foi avisada.
 
-    /* O Lead agora DIZ QUAL PRODUTO. Sem isso o Meta otimizaria pela média de
-       quatro ofertas de R$ 297 a R$ 1.997 — e a média de preços tão distantes
-       não descreve nenhuma delas. `content_ids` reaproveita os mesmos ids que
-       as páginas de venda já mandam, então o relatório fecha com o histórico.
-       Sem `value`: quem tem valor de compra é a Kiwify, no Purchase. */
-    var prod = recomendacao || {};
+     🔴 NENHUM `Lead` SAI DAQUI. O único evento é o `ViuRecomendacao`, que
+        `desenhaRecomendacao()` dispara. */
+  function mostraRecomendacao(dados, rec) {
+    recomendado = true;
+    enviando = false;
+    recAtual = rec || null;
+
+    form.hidden = true;
+    etapas.forEach(function (f) { f.hidden = true; });
+    rodape.hidden = true;
+    barra.style.width = '100%';
+
+    try { desenhaRecomendacao(rec); } catch (e) {}
+
+    recomendacao.hidden = false;
+    /* 🔴 A TELA TEM DE COMEÇAR NO TOPO DELA, e de forma determinística.
+       `focus()` sozinho rola a página até o elemento, e um `behavior:'smooth'`
+       depois disso é uma animação que pode ser interrompida — o resultado era
+       a tela nova aparecendo numa posição herdada da pergunta anterior, com a
+       recomendação acima da dobra sem ninguém ver.
+       `preventScroll` no foco + rolagem instantânea: o foco vai para quem
+       usa leitor de tela, e a página vai para o topo, sem os dois brigarem. */
+    try { recomendacao.focus({ preventScroll: true }); } catch (e) { recomendacao.focus(); }
+    window.scrollTo(0, 0);
+    /* 🔴 O rascunho NÃO é apagado aqui. Se ela recarregar a página nesta tela
+       — e recarregar na hora de decidir é comum — o rascunho é o que traz de
+       volta as respostas E o mesmo `lead_uid`, para ela continuar na MESMA
+       linha do banco em vez de virar uma segunda pessoa. Ele só some quando a
+       inscrição existe de verdade, em `confirmado()`. */
+  }
+
+  /* ============================================================
+     O CLIQUE — é aqui que a inscrição passa a existir
+     ============================================================
+     Os dois caminhos passam por esta função, e os dois disparam o `Lead`. A
+     diferença é o que acontece depois:
+
+       · presencial → espera a resposta e mostra a TELA 3 ("recebi").
+       · online     → NÃO espera nada: o clique é num <a> de verdade e o
+         navegador segue para o checkout. Por isso o POST vai com
+         `keepalive: true`, que é o único jeito de uma requisição sobreviver à
+         navegação que ela mesma dispara. Enfiar uma tela de "recebido" entre
+         a decisão e o checkout custaria venda, e o "recebido" do online é a
+         própria página de pagamento.
+
+     `ehNavegacao` diz qual dos dois é. */
+
+  function corpoFinal() {
+    /* Remonta a partir do formulário, e não de uma cópia guardada: se ela
+       voltou e corrigiu alguma coisa antes de pedir a recomendação, é a
+       correção que tem de ir. O `lead_uid` é o MESMO desde a primeira
+       gravação parcial — é ele que promove aquela linha a inscrição em vez
+       de criar uma segunda. */
+    return {
+      nome: valorDe('nome'), telefone: valorDe('telefone'), email: valorDe('email'),
+      instagram: valorDe('instagram'), cidade: valorDe('cidade'), estado: valorDe('estado'),
+      faixa_idade: valorDe('faixa_idade'), situacao: valorDe('situacao'),
+      busca: ehLash() ? valorDe('busca') : null,
+      meta_renda: valorDe('meta_renda'), objetivo: valorDe('objetivo'),
+      quando_comecar: valorDe('quando_comecar'),
+      disponibilidade: valorDe('disponibilidade'),
+      prefere_formato: valorDe('prefere_formato'),
+      faixa_investimento: valorDe('faixa_investimento'),
+      sobrenome_confirmacao: valorDe('sobrenome_confirmacao'),
+      lead_uid: garanteUid(), atribuicao: ATRIB
+    };
+  }
+
+  /* O `Lead` DIZ QUAL PRODUTO. Sem isso o Meta otimizaria pela média de quatro
+     ofertas de R$ 297 a R$ 1.997 — e a média de preços tão distantes não
+     descreve nenhuma delas. `content_ids` reaproveita os mesmos ids que as
+     páginas de venda já mandam, então o relatório fecha com o histórico.
+     Sem `value`: quem tem valor de compra é a Kiwify, no Purchase.
+
+     🔴 UM DISPARO POR SESSÃO. Ela pode clicar duas vezes, a rede pode repetir,
+     e o navegador pode restaurar a página do cache de volta/avançar. Um `Lead`
+     por clique inflaria a métrica pela qual a campanha otimiza — que é
+     exatamente o erro que deixou o A/B do Método LED ilegível. */
+  var leadDisparado = false;
+  function disparaLead(uid) {
+    if (leadDisparado) return;
+    leadDisparado = true;
+    try {
+      if (sessionStorage.getItem('nr_lead_presencial')) return;
+      sessionStorage.setItem('nr_lead_presencial', '1');
+    } catch (e) {}
+
+    var prod = recAtual || {};
     var dadosLead = Object.assign({}, COMUNS, prod.id ? {
       content_ids: [prod.id], content_type: 'product',
       content_name: prod.nome_meta || prod.nome,
@@ -1346,7 +1834,7 @@ privacidade</a>.</span></p>
 
     try {
       if (window.fbq) {
-        fbq('track', 'Lead', dadosLead, { eventID: dados.lead_uid });
+        fbq('track', 'Lead', dadosLead, { eventID: uid });
         /* Nome próprio por produto: vira Conversão Personalizada no Meta sem
            depender de filtro por parâmetro, que nem todo relatório aceita. */
         if (prod.id) fbq('trackCustom', 'Lead_' + prod.id, dadosLead);
@@ -1358,11 +1846,95 @@ privacidade</a>.</span></p>
         produto: prod.id || null,
         formato: prod.formato || null,
         items: prod.id ? [{ item_id: prod.id, item_name: prod.nome_meta || prod.nome,
-                            price: prod.valor, quantity: 1 }] : undefined,
-        event_callback: mostra
+                            price: prod.valor, quantity: 1 }] : undefined
       }));
     } catch (e) {}
-    setTimeout(mostra, 1200);
+  }
+
+  var erroConfirmar = document.getElementById('e-confirmar');
+  var btConfirmar = document.getElementById('rec-confirmar');
+
+  function confirma(ehNavegacao) {
+    if (enviado || confirmando) return;
+    confirmando = true;
+    if (erroConfirmar) erroConfirmar.hidden = true;
+
+    var dados = corpoFinal();
+    disparaLead(dados.lead_uid);
+
+    var envio = fetch('/api/lead-presencial', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(dados),
+      /* Sobrevive à navegação para o checkout, no caminho online. */
+      keepalive: true
+    });
+
+    if (ehNavegacao) {
+      /* O navegador já está indo embora. Não há tela para atualizar e não há
+         erro para mostrar: a próxima coisa que ela vê é o checkout. */
+      enviado = true;
+      try { localStorage.removeItem(CHAVE); } catch (e) {}
+      return;
+    }
+
+    btConfirmar.disabled = true;
+    btConfirmar.textContent = 'Confirmando...';
+
+    envio
+      .then(function (r) { return r.json().then(function (j) { return j; }); })
+      .then(function (j) {
+        if (j && j.ok) { confirmado(dados); return; }
+        falhouConfirmar((j && j.mensagem) ||
+          'Não consegui confirmar agora. Tenta de novo em instantes.');
+      })
+      .catch(function () {
+        falhouConfirmar('Parece que a sua internet caiu. Confere a conexão e tenta ' +
+          'de novo — as suas respostas continuam aqui.');
+      });
+  }
+
+  /* 🔴 Falhar aqui NÃO pode ser silencioso, ao contrário do parcial. Ela
+     apertou o botão de propósito e está esperando: sem aviso, ela acha que
+     deu certo e nunca mais volta. E o botão VOLTA a funcionar — a linha dela
+     já está no banco como "viu o preço", então o pior caso é a Nataly chamar
+     por ali. */
+  function falhouConfirmar(msg) {
+    confirmando = false;
+    btConfirmar.disabled = false;
+    btConfirmar.textContent = 'Quero garantir a minha vaga';
+    if (erroConfirmar) { erroConfirmar.textContent = msg; erroConfirmar.hidden = false; }
+  }
+
+  /* ============================================================
+     TELA 3 — RECEBIDO
+     ============================================================ */
+  function confirmado(dados) {
+    enviado = true;      /* trava qualquer parcial atrasado (o beacon de saída) */
+    confirmando = false;
+
+    var pn = String(dados.nome || '').trim().split(/\s+/)[0];
+    if (pn) document.getElementById('nome-fim').textContent = pn;
+
+    recomendacao.hidden = true;
+    obrigado.hidden = false;
+    try { obrigado.focus({ preventScroll: true }); } catch (e) { obrigado.focus(); }
+    window.scrollTo(0, 0);
+    try { localStorage.removeItem(CHAVE); } catch (e) {}
+  }
+
+  /* ---------- os dois botões ---------- */
+  if (btConfirmar) {
+    btConfirmar.addEventListener('click', function () { confirma(false); });
+  }
+  var aCta = document.getElementById('rec-cta');
+  if (aCta) {
+    /* SEM `preventDefault`: o <a> tem de navegar sozinho. É o que faz o
+       InitiateCheckout do pixel.js disparar (ele escuta clique em
+       a[href*=pay.kiwify] no document) e é o que mantém a decoração de UTM
+       válida — remontar a navegação aqui criaria uma segunda implementação
+       para divergir da primeira com o tempo. */
+    aCta.addEventListener('click', function () { confirma(true); });
   }
 
   /* ---------- início ---------- */
@@ -1372,6 +1944,10 @@ privacidade</a>.</span></p>
      Método LED ilegível. Um por sessão e por produto. */
   window.IC_UNICO = true;
   var _inicio = leRascunho();
+  /* O rascunho guarda a sigla no input escondido. Sem esta chamada, quem volta
+     amanhã veria o campo de estado VAZIO com "MG" invisível por baixo — e ao
+     tocar nele para "preencher" apagaria a escolha que já estava lá. */
+  try { if (window.NR_PINTA_ESTADO) window.NR_PINTA_ESTADO(); } catch (e) {}
   garanteUid();
   vaiPara(_inicio, false);
 })();

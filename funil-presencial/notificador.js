@@ -183,11 +183,19 @@ function montaMensagemParcial(l) {
   const et = L.descreveEtapa(l);
   const linha = [];
 
-  linha.push('🟠 *FORMULÁRIO INCOMPLETO* — alguém para chamar');
-  if (et && et.posicao) {
-    linha.push('Parou na pergunta ' + et.posicao + ' de ' + et.total + ': ' + et.rotulo);
+  /* Quem parou na RECOMENDAÇÃO não parou no meio: ela respondeu tudo, viu o
+     curso indicado e viu o preço — e não apertou o botão. É outra conversa, e
+     começa a partir de outro cabeçalho. */
+  if (et && et.naRecomendacao) {
+    linha.push('🟡 *VIU O PREÇO E NÃO CONFIRMOU* — a ligação que mais vale');
+    linha.push('Respondeu tudo e parou na tela da recomendação');
   } else {
-    linha.push('Parou no meio do formulário');
+    linha.push('🟠 *FORMULÁRIO INCOMPLETO* — alguém para chamar');
+    if (et && et.posicao) {
+      linha.push('Parou na pergunta ' + et.posicao + ' de ' + et.total + ': ' + et.rotulo);
+    } else {
+      linha.push('Parou no meio do formulário');
+    }
   }
   linha.push('━━━━━━━━━━━━━━━');
   linha.push('');
@@ -228,7 +236,17 @@ function montaMensagemParcial(l) {
   /* A informação comercial forte: parar NA pergunta do dinheiro não é o mesmo
      que parar na do Instagram. Uma é objeção de preço, que se conversa; a
      outra é distração, que se retoma. */
-  if (et && et.noPreco) {
+  if (et && et.naRecomendacao) {
+    /* 🔴 Aqui NÃO vale o texto de baixo. Dizer "não viu preço nenhum" para
+       quem viu exatamente o preço faria a Nataly abrir a conversa errada — e,
+       pior, ensinaria ela a desconfiar do que este aviso afirma. */
+    const pn = PRODUTO_CURTO[l.produto_id] || l.produto_nome;
+    const pv = l.produto_valor ? 'R$ ' + precoBR(l.produto_valor) : null;
+    linha.push('👀 Ela VIU a indicação' + (pn ? ' do *' + pn + '*' : '') +
+               (pv ? ', por ' + pv : '') + ', e não clicou em garantir a vaga.');
+    linha.push('Não é falta de informação: ela sabe o preço. É a conversa de');
+    linha.push('condição, de data ou de dúvida — e é a que mais vira venda.');
+  } else if (et && et.noPreco) {
     linha.push('💰 Ela parou justamente na pergunta do investimento — é onde');
     linha.push('mais gente desiste, e é a conversa que costuma virar venda.');
   } else {
@@ -253,12 +271,27 @@ function precoBR(v) { return String(v).replace(/\B(?=(\d{3})+(?!\d))/g, '.'); }
 function primeiroNome(n) { return String(n || '').trim().split(/\s+/)[0] || ''; }
 
 /* ---------- enfileirar ---------- */
+/* 🔴 UM AVISO DE LEAD POR LEAD, garantido pelo BANCO e não pela ordem em que
+   as coisas acontecem. `cria()` decide se avisa lendo o estado anterior com um
+   SELECT e gravando depois — entre os dois há uma janela. Dois envios
+   simultâneos com o mesmo `lead_uid` (duplo clique numa rede lenta, ou a
+   tentativa de reenvio do navegador) leem os dois "ainda não existia" e os dois
+   mandam avisar. O lead não duplica, porque o `ON CONFLICT` segura; a MENSAGEM
+   duplicava, e a Nataly recebia a mesma pessoa duas vezes no grupo.
+
+   O `WHERE NOT EXISTS` fecha a janela onde ela realmente existe: o INSERT só
+   acontece se ainda não houver aviso de lead para esta linha. Zero linhas de
+   volta não é erro — é a segunda chamada descobrindo que a primeira já avisou.
+   (O reenvio manual do painel não passa por aqui: ele faz UPDATE no aviso que
+   já existe, então continua funcionando.) */
 async function enfileira(lead) {
   const cfg = CFG();
   const r = await db.consulta(
-    "INSERT INTO avisos (lead_id, destino, mensagem, tipo) VALUES ($1,$2,$3,'lead') RETURNING *",
+    "INSERT INTO avisos (lead_id, destino, mensagem, tipo) " +
+    "SELECT $1,$2,$3,'lead' WHERE NOT EXISTS (" +
+    "  SELECT 1 FROM avisos WHERE lead_id = $1 AND tipo = 'lead') RETURNING *",
     [lead.id, cfg.destino || null, montaMensagem(lead)]);
-  return r.rows[0];
+  return r.rows[0] || null;
 }
 
 async function enfileiraParcial(lead) {

@@ -19,8 +19,20 @@ const db = require('./db');
 
 const COOKIE = 'nr_crm';
 const HORAS_SESSAO = 12;
-const MAX_ERROS = 8;          // por IP
+/* O painel e ESTRITO de proposito, ao contrario do formulario publico.
+   Aqui o erro caro e o oposto: sao dados pessoais de terceiros e SO DUAS
+   PESSOAS entram. Barrar uma delas custa um cafe; deixar passar forca bruta
+   custa o cadastro inteiro das alunas. Dez tentativas em quinze minutos e
+   folgado para quem erra a senha e apertado para script. */
+const MAX_ERROS = 10;         // por IP, na janela abaixo
 const JANELA_MIN = 15;
+/* Espera CRESCENTE a cada erro, antes mesmo do bloqueio. Um bloqueio seco no
+   decimo erro ainda deixa nove tentativas de graca por janela; com a espera
+   subindo, uma lista de senhas fica inviavel muito antes disso. O teto de 4 s
+   existe para nao prender conexao a toa — quem so errou a senha uma vez nao
+   sente nada. */
+const ESPERA_POR_ERRO_MS = 400;
+const ESPERA_MAX_MS = 4000;
 
 /* CONTAS: cada pessoa com a SUA senha.
    Formato de `CRM_CONTAS`: "email:senha,email:senha".
@@ -124,8 +136,15 @@ async function tentaLogin(req, usuario, senha) {
   if (!configurado()) {
     return { ok: false, motivo: 'nao-configurado' };
   }
-  if (await errosRecentes(ip) >= MAX_ERROS) {
+  const erros = await errosRecentes(ip);
+  if (erros >= MAX_ERROS) {
     return { ok: false, motivo: 'bloqueado' };
+  }
+  /* A espera vem ANTES de comparar a senha, e por isso vale para a tentativa
+     que acerta tambem — o que e proposital: se ela nao valesse, o tempo de
+     resposta diria "esta foi a certa". */
+  if (erros > 0) {
+    await new Promise((r) => setTimeout(r, Math.min(erros * ESPERA_POR_ERRO_MS, ESPERA_MAX_MS)));
   }
 
     // Percorre TODAS as contas sem sair do laco cedo: parar no primeiro acerto
@@ -143,9 +162,20 @@ async function tentaLogin(req, usuario, senha) {
   return { ok: true, token };
 }
 
+/* ---------- o IP de quem tenta entrar ----------
+   Mesma correcao do `leads.js`, e aqui ela pesa mais: do outro lado desta
+   senha ha dado pessoal de terceiros. Com o `x-forwarded-for` da Cloudflare, o
+   IP mudava a cada requisicao e o freio de forca bruta NAO PRENDIA NINGUEM —
+   medido em 02/09/2026: DOZE senhas erradas seguidas, nenhum bloqueio.
+   `cf-connecting-ip` e o IP real e nao e forjavel (a Cloudflare recusa com 403
+   quem tenta manda-lo de fora). O `x-forwarded-for` fica de reserva para
+   quando nao houver CDN na frente. */
 function ipDe(req) {
+  const cf = req.headers['cf-connecting-ip'];
   const xf = req.headers['x-forwarded-for'];
-  const ip = (xf ? String(xf).split(',')[0] : '') || req.socket?.remoteAddress || '';
+  const ip = (cf ? String(cf) : '') ||
+             (xf ? String(xf).split(',')[0] : '') ||
+             req.socket?.remoteAddress || '';
   return ip.trim().replace(/^::ffff:/, '').slice(0, 45);
 }
 

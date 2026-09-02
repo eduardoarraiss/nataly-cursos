@@ -144,7 +144,19 @@ function makeHandler() {
       const raw = Buffer.isBuffer(req.body) ? req.body : Buffer.from(JSON.stringify(req.body || {}));
       const signature = req.query.signature || req.headers["x-kiwify-signature"];
       const wToken = process.env.KIWIFY_WEBHOOK_TOKEN;
-      if (wToken && !verifyKiwifySignature(raw, signature, wToken)) {
+      // 🔴 FALHA FECHADA. Antes era `if (wToken && !verifica(...))`: sem o token
+      //    configurado, a verificação era PULADA e qualquer POST anônimo passava.
+      //    Enquanto META_CAPI_TOKEN não existe a rota é inerte e ninguém repara —
+      //    mas no dia em que alguém configurar o CAPI e esquecer este token, a
+      //    rota vira um injetor aberto de `Purchase` no pixel: qualquer pessoa
+      //    forjaria vendas, e o algoritmo do Meta passaria a otimizar por elas.
+      //    Com uma campanha rodando, isso envenena a entrega e o ROAS de uma vez.
+      //    Sem token não há como distinguir a Kiwify de um estranho: recusa.
+      if (!wToken) {
+        console.error("[capi] KIWIFY_WEBHOOK_TOKEN ausente — webhook recusado (falha fechada)");
+        return res.status(503).json({ ok: false, error: "webhook não configurado" });
+      }
+      if (!verifyKiwifySignature(raw, signature, wToken)) {
         return res.status(401).json({ ok: false, error: "assinatura inválida" });
       }
       let payload; try { payload = JSON.parse(raw.toString("utf8")); } catch { payload = {}; }

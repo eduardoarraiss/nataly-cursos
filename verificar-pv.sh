@@ -8,7 +8,13 @@
 set -uo pipefail
 
 ALVO="${1:-producao}"
-if [ "$ALVO" = "local" ]; then BASE="http://127.0.0.1:3999"; else BASE="https://natalyribeiro.com.br"; fi
+# BASE_LOCAL existe para quando MAIS DE UMA pessoa mexe na mesma árvore ao mesmo
+# tempo — que foi o caso em 02/09/2026, com três frentes abertas. Sem isto, o
+# gate só sabe falar com a 3999: quem subisse o segundo servidor exercitaria o
+# processo do outro, que tem o código ANTIGO carregado na memória (os módulos do
+# funil são `require`ados no boot), e reprovaria rotas que existem.
+# Sem a variável, nada muda: continua a 3999 de sempre.
+if [ "$ALVO" = "local" ]; then BASE="${BASE_LOCAL:-http://127.0.0.1:3999}"; else BASE="https://natalyribeiro.com.br"; fi
 FALHAS=0
 TMP=$(mktemp)
 
@@ -77,6 +83,14 @@ proibido_vivo(){
 proibido_vivo_re(){
   if grep -qE "$2" "$TMP.vivo"; then falha "$1 (casou: $2)"; else ok "$1"; fi
 }
+# precisa_vivo <rótulo> <marcador> — o espelho do `proibido_vivo`, e ele
+# faltava. Sem ele, um `precisa` era satisfeito pelo COMENTÁRIO que explica a
+# regra: em 02/09/2026 o check "o funil fecha com quem terminou" passou com a
+# linha do funil APAGADA, porque o comentário logo acima dela ainda dizia
+# "Terminaram o formulário". Todo `precisa` cujo marcador também apareça num
+# comentário tem de ser este aqui — senão o gate certifica a explicação em vez
+# do código.
+precisa_vivo(){ if grep -qF "$2" "$TMP.vivo"; then ok "$1"; else falha "$1 (não achei no código vivo: $2)"; fi; }
 
 # confere_checkout <código esperado>
 confere_checkout(){
@@ -148,7 +162,31 @@ if baixa_pagina /profissao-lash-presencial 40000; then
   #    saber que a aula é em Cambuí — é testada por POSIÇÃO mais abaixo.
   precisa "a cidade, com acento"             "Cambuí"
   precisa "tarja de aviso no topo"           'class="tarja"'
-  precisa "a tarja diz a cidade"             "Aula prática presencial em Cambuí, MG"
+  precisa "a tarja diz a cidade"             "Presencial em Cambuí, MG"
+  # 02/09/2026: o Eduardo pediu a distância na tarja — "Cambuí, MG" sozinho não
+  # diz nada para quem nunca ouviu falar da cidade, e é AQUI que ela decide se
+  # é longe demais. As 2h foram confirmadas pela Nataly.
+  precisa "a tarja diz a distância"          "2h de São Paulo"
+  # 🔴 A "TARJA BRANCA" QUE O EDUARDO PEDIU PARA TIRAR. Nunca houve duas
+  # tarjas: a tarja é um <p>, e a margem de 16px que todo navegador dá a um
+  # parágrafo aparecia como uma faixa creme entre ela e o hero escuro. Sem
+  # `margin:0` no seletor, a faixa volta — e volta silenciosamente.
+  precisa_re1 "a tarja não tem margem (a faixa creme era isso)" '\.tarja\{[^}]*margin:0'
+  # -- a dobra de distâncias, também pedida em 02/09 --
+  precisa "a dobra de onde fica Cambuí"      "Onde fica Cambuí"
+  precisa "diz que é na Fernão Dias"         "Fernão Dias"
+  precisa "tempo de São Paulo na dobra"      "São Paulo, capital"
+  precisa "tempo de Pouso Alegre"            "Pouso Alegre"
+  precisa "os tempos são declarados aproximados" "Tempos aproximados"
+  # -- o player: tela cheia e a barra --
+  precisa "botão de tela cheia no player"    'id="btn-tela"'
+  precisa "tela cheia pelo contêiner (mantém os controles)" "requestFullscreen"
+  # 🔴 Sem este caminho o botão não faz NADA no iPhone: o Safari do iOS não
+  # implementa requestFullscreen em elemento comum, só webkitEnterFullscreen
+  # no próprio <video>. E é no iPhone que a maioria assiste.
+  precisa "tela cheia pelo caminho do iPhone" "webkitEnterFullscreen"
+  precisa "a barra acelerada usa o expoente"  "var EXPO  = 0.45"
+  proibido "o expoente antigo saiu"          "var EXPO  = 0.50"
   precisa "a cidade colada no botão"         "Só se inscreva se você puder vir até aqui"
   # -- persuasão: profissão, calculadora, prova, autoridade --
   precisa "vende a profissão antes do curso" "A conta da extensão de cílios"
@@ -402,17 +440,93 @@ if baixa_pagina /inscricao-presencial 20000; then
     falha "a ordem da árvore quebrou (Cambuí $P_CAMBUI, preferência $P_PREF, valor $P_VALOR)"
   fi
 
-  # -- a TELA FINAL: recomendação, e checkout só no online --
-  precisa "a tela da recomendação existe"    'id="rec"'
+  # -- AS TRÊS TELAS (02/09/2026) --------------------------------------
+  # 🔴 A ORDEM É O PEDIDO. Antes, o fim das perguntas gravava a inscrição,
+  # avisava a Nataly e disparava o `Lead` — e a tela abria dizendo "recebi a
+  # sua inscrição" com o preço ESCONDIDO ABAIXO. Quem não rolava concluía que
+  # a recomendação não veio; e quem via o preço já constava como inscrita.
+  # Agora: perguntas → recomendação → (clique) → recebido.
+  precisa "a tela da recomendação existe"    'id="recomendacao"'
+  precisa "a tela do recebido existe"        'id="obrigado"'
+  precisa "o bloco do produto existe"        'id="rec"'
   precisa "diz qual é a opção ideal"         "opção ideal para você"
   precisa "espaço para o nome do produto"    'id="rec-nome"'
   precisa "espaço para o porquê"             'id="rec-porque"'
   precisa "espaço para o preço"              'id="rec-preco"'
   precisa "espaço para o que está incluso"   'id="rec-inclui"'
-  precisa "botão de checkout, escondido por padrão" 'id="rec-cta" hidden'
   precisa "caixa do presencial para quem só travou no bolso" 'id="rec-extra"'
   precisa "o produto vem do SERVIDOR"        "res.j.recomendacao"
+  precisa "a recomendação vem da rota própria" "/api/recomendacao-presencial"
   precisa "o presencial não recebe checkout" "primeiro a"
+
+  # 🔴 A TELA DA RECOMENDAÇÃO NÃO PODE DIZER QUE RECEBEU. Era exatamente esse
+  # o erro: "Pronto, recebi a sua inscrição" aparecia ANTES de ela querer.
+  # A frase agora vive só na tela 3, e o gate mede por POSIÇÃO de byte.
+  P_REC=$(grep -boF 'id="recomendacao"' "$TMP" | head -1 | cut -d: -f1)
+  P_OBR=$(grep -boF 'id="obrigado"' "$TMP" | head -1 | cut -d: -f1)
+  P_PRONTO=$(grep -boF 'recebi a sua inscrição' "$TMP" | head -1 | cut -d: -f1)
+  if [ -z "$P_REC" ] || [ -z "$P_OBR" ] || [ -z "$P_PRONTO" ]; then
+    falha "não achei as duas telas finais para medir a ordem delas"
+  elif [ "$P_REC" -lt "$P_OBR" ] && [ "$P_PRONTO" -gt "$P_OBR" ]; then
+    ok "a recomendação vem ANTES do recebido, e o 'recebi' só existe na tela 3"
+  else
+    falha "a ordem das telas quebrou (recomendação $P_REC, recebido $P_OBR, 'recebi' $P_PRONTO)"
+  fi
+
+  # -- O BOTÃO, NOS DOIS CAMINHOS ---------------------------------------
+  # 🔴 A CAUSA do "o botão não faz nada no celular": existia UM botão só,
+  # revelado apenas quando `formato === 'online' && checkout`. No caminho
+  # PRESENCIAL ele ficava `hidden` de propósito e a tela terminava sem nada
+  # para apertar. São dois elementos porque os papéis são diferentes: <a> que
+  # navega para o checkout e <button> que confirma o interesse.
+  precisa "botão de checkout do online (âncora)"   'id="rec-cta"'
+  precisa "botão de confirmar do presencial"       'id="rec-confirmar"'
+  precisa "o presencial CONFIRMA de verdade"       "function confirma"
+  precisa "os dois botões têm o mesmo rótulo"      "Quero garantir a minha vaga"
+  precisa "o clique do presencial está ligado"     "btConfirmar.addEventListener"
+  precisa "o clique do checkout está ligado"       "aCta.addEventListener"
+  # O <a> do checkout NÃO pode ter preventDefault: é a navegação dele que faz
+  # o InitiateCheckout do pixel.js disparar e a decoração de UTM valer.
+  proibido "o link do checkout não é interceptado" "aCta.addEventListener('click', function (ev) { ev.preventDefault"
+  precisa "o POST sobrevive à navegação"           "keepalive: true"
+  # A escassez do presencial é verdadeira (turma pequena) e o Eduardo pediu.
+  precisa "o presencial diz que a turma é selecionada" 'id="rec-exclusivo"'
+  precisa "e diz por quê"                          "turma pequena"
+
+  # -- a tela entra ROLADA NO TOPO --------------------------------------
+  # Sem isto a tela nova herdava a rolagem da pergunta anterior e a
+  # recomendação nascia acima da dobra, sem ninguém ver — que foi o relato.
+  precisa "a tela da recomendação começa no topo"  "window.scrollTo(0, 0)"
+  precisa "o foco não briga com a rolagem"         "preventScroll: true"
+
+  # -- CAMPO DE ESTADO COM BUSCA (02/09/2026) ---------------------------
+  # Pedido do Eduardo: "ao selecionar estado, você deveria poder escrever e
+  # aparecer uma seleção com todos os estados para escolher". Sem biblioteca.
+  precisa "o estado é um combo com busca"    'role="combobox"'
+  precisa "a lista é um listbox"             'role="listbox"'
+  precisa "o combo diz se está aberto"       'aria-expanded="false"'
+  precisa "e aponta a opção do teclado"      "aria-activedescendant"
+  precisa "os 27 estados estão na página"    "Rio Grande do Norte"
+  precisa "busca sem acento acha com acento" "normalize('NFD')"
+  # O que vai para o servidor continua sendo a SIGLA de duas letras.
+  precisa "o valor enviado é a sigla"        'id="f-estado" name="estado"'
+  # 🔴 Enter escolhendo o estado NÃO pode avançar a pergunta junto.
+  precisa "Enter no combo não pula a pergunta" "ev.stopPropagation()"
+
+  # -- ONDE FICA CAMBUÍ, dentro da pergunta (02/09/2026) ----------------
+  # O mapa com rota exigiria a API paga do Google; o Eduardo dispensou. Ficou
+  # a referência em texto mais um link que abre o Maps do celular dela.
+  precisa "a pergunta diz a distância de São Paulo" "2h de São Paulo"
+  precisa "e a de Pouso Alegre"              "40 minutos de Pouso Alegre"
+  precisa "link para o Maps com destino travado" "maps/dir/?api=1"
+  proibido_re "NENHUMA chave da API do Google no cliente" "AIza[0-9A-Za-z_-]{20}"
+  proibido "não carrega a API paga de mapas" "maps.googleapis.com"
+
+  # -- a pergunta do dinheiro não é sondagem de preço -------------------
+  # Sem esta linha a pergunta parece uma sondagem de quanto dá para cobrar de
+  # cada uma. Quem desconfia mente para baixo ou abandona — e é a ÚLTIMA
+  # pergunta, onde desistir custa mais caro.
+  precisa "diz que a resposta não muda o preço" "não muda o valor de nada"
 
   # -- campos obrigatórios pedidos pelo Eduardo --
   precisa "campo nome"                       'name="nome"'
@@ -460,7 +574,38 @@ if baixa_pagina /inscricao-presencial 20000; then
   precisa "GA4 generate_lead no envio"       "'generate_lead'"
   precisa "o GA4 também diz o produto"       "produto: prod.id"
   precisa "beacon no evento antes de sair"   "transport_type: 'beacon'"
-  precisa "event_callback coordenado"        "event_callback: mostra"
+
+  # ============================================================
+  # 🔴 O `Lead` SÓ NASCE DO CLIQUE (02/09/2026)
+  # ============================================================
+  # É o evento pelo qual a campanha de R$ 120/dia otimiza. Disparado no fim
+  # das perguntas — como era até 02/09 — ele ensinaria o algoritmo a procurar
+  # quem só olha o preço, e a gente pagaria por isso todo dia.
+  precisa "o Lead mora numa função própria"  "function disparaLead"
+  precisa "e ela é chamada no clique"        "disparaLead(dados.lead_uid)"
+  precisa "o Lead é travado em 1 por sessão" "nr_lead_presencial"
+  # A prova de ORDEM: `disparaLead` tem de ser chamado DEPOIS de
+  # `mostraRecomendacao` no arquivo, e nunca de dentro dela.
+  P_MOSTRA=$(grep -boF 'function mostraRecomendacao' "$TMP" | head -1 | cut -d: -f1)
+  P_CONFIRMA=$(grep -boF 'function confirma' "$TMP" | head -1 | cut -d: -f1)
+  P_CHAMA=$(grep -boF 'disparaLead(dados.lead_uid)' "$TMP" | head -1 | cut -d: -f1)
+  if [ -z "$P_MOSTRA" ] || [ -z "$P_CONFIRMA" ] || [ -z "$P_CHAMA" ]; then
+    falha "não achei as funções do fluxo para medir onde o Lead é disparado"
+  elif [ "$P_CHAMA" -gt "$P_CONFIRMA" ] && [ "$P_CONFIRMA" -gt "$P_MOSTRA" ]; then
+    ok "o Lead é disparado dentro de confirma(), depois da tela da recomendação"
+  else
+    falha "o Lead saiu do lugar (mostra $P_MOSTRA, confirma $P_CONFIRMA, chamada $P_CHAMA)"
+  fi
+  # E a tela da recomendação dispara o ViuRecomendacao, que é o PAR do Lead:
+  # a distância entre os dois é quanta gente viu o preço e não quis.
+  # ⚠️ Não dá para provar isto com `grep -F` de duas linhas: um padrão com \n
+  # vira DOIS padrões em OU, e a checagem casaria a linha do meio do arquivo e
+  # reprovaria código certo. Quem prova a ordem é a medida por posição acima.
+  precisa "a recomendação dispara o par do Lead" "'ViuRecomendacao'"
+  # 🔴 O eventID é o que deduplica o Lead do navegador com o do CAPI. Sem ele o
+  # Meta contaria a mesma inscrição duas vezes e o custo por lead do relatório
+  # cairia pela metade sem nada ter melhorado.
+  precisa "o Lead leva eventID (dedupe com o CAPI)" "{ eventID: uid }"
   # ⚠️ MUDOU EM 01/09/2026. Antes da árvore, nenhum caminho desta página levava
   # a checkout, e disparar InitiateCheckout aqui era erro. Hoje metade dos
   # caminhos termina num checkout Kiwify, então o evento é OBRIGATÓRIO — e a
@@ -649,6 +794,78 @@ else
   else
     falha "teste-parcial.js falhou — veja /tmp/nr-parcial.txt"
     grep "FALHA" /tmp/nr-parcial.txt | head -8 | sed 's/^/       /'
+  fi
+fi
+
+# ============================================================
+echo
+echo "== 2e. A RECOMENDAÇÃO — a tela que vem ANTES do envio"
+# ============================================================
+# ⚠️ Grava lead. Só roda em local, pelo mesmo motivo da árvore e do parcial.
+if [ "$ALVO" != "local" ]; then
+  # Em produção dá para conferir o que NÃO grava: que a rota existe e recusa o
+  # método errado. Se ela sumir, o formulário inteiro para no fim das perguntas.
+  COD=$(curl -s -o /dev/null -w "%{http_code}" --max-time 20 "$BASE/api/recomendacao-presencial")
+  if [ "$COD" = "405" ]; then ok "a rota da recomendação existe (GET devolve 405)"
+  else falha "GET em /api/recomendacao-presencial devolveu $COD — a rota sumiu ou o catch-all pegou"; fi
+  echo "aviso  recomendação não exercitada em produção (grava lead) — rode ./verificar-pv.sh local"
+else
+  UIDR="gate-rec-$RANDOM$RANDOM"
+  CORPO_REC="{\"nome\":\"Gate Recomendacao\",\"telefone\":\"(35) 99716-4668\",\"cidade\":\"Cambui\",\"instagram\":\"@gate_rec\",\"quando_comecar\":\"agora\",\"situacao\":\"ja-lash\",\"busca\":\"tecnica-led\",\"faixa_idade\":\"25-34\",\"meta_renda\":\"5k-10k\",\"disponibilidade\":\"sim\",\"prefere_formato\":\"presencial\",\"faixa_investimento\":\"acima-2000\",\"lead_uid\":\"$UIDR\"}"
+
+  # 1. a rota devolve o produto, o preço e o porquê — que é o que a tela mostra
+  R=$(curl -s --max-time 20 -X POST "$BASE/api/recomendacao-presencial" \
+        -H 'Content-Type: application/json' -d "$CORPO_REC")
+  if echo "$R" | grep -q '"id":"lash2-presencial"'; then
+    ok "a recomendação devolve o produto certo para estas respostas"
+  else falha "a recomendação não devolveu o produto esperado (veio: ${R:0:160})"; fi
+  if echo "$R" | grep -q '"preco":"R\$ 1.997"'; then
+    ok "e devolve o preço, que é o que a tela precisa mostrar"
+  else falha "a recomendação veio sem preço (veio: ${R:0:160})"; fi
+  if echo "$R" | grep -q '"gravado":true'; then
+    ok "e grava a linha de quem viu o preço"
+  else falha "a recomendação NÃO gravou — perdemos o lead comercial mais forte do funil"; fi
+  # 🔴 O presencial NUNCA recebe link de pagamento aqui: a data vem antes.
+  if echo "$R" | grep -q '"checkout":null'; then
+    ok "o presencial não recebe checkout na recomendação"
+  else falha "veio link de pagamento no presencial — venderia uma vaga sem data"; fi
+
+  # 2. sem as respostas todas não há recomendação para dar. Devolver um produto
+  #    chutado seria pior do que devolver erro: a Nataly leria o chute como
+  #    indicação de verdade.
+  R=$(curl -s --max-time 20 -X POST "$BASE/api/recomendacao-presencial" \
+        -H 'Content-Type: application/json' \
+        -d '{"nome":"Gate Incompleto","telefone":"(35) 99716-4668","lead_uid":"gate-rec-incompleto"}')
+  if echo "$R" | grep -q '"erros"'; then
+    ok "sem as respostas todas, a recomendação recusa em vez de chutar produto"
+  else falha "a recomendação aceitou um corpo incompleto (veio: ${R:0:160})"; fi
+
+  # 3. o robô leva 200 e não grava nada
+  R=$(curl -s --max-time 20 -X POST "$BASE/api/recomendacao-presencial" \
+        -H 'Content-Type: application/json' \
+        -d "{\"nome\":\"Robo\",\"telefone\":\"(35) 99716-4668\",\"sobrenome_confirmacao\":\"pego\",\"lead_uid\":\"gate-rec-robo\"}")
+  if echo "$R" | grep -q '"dedupe":true'; then ok "a armadilha de robô responde manso e não grava"
+  else falha "a armadilha de robô da recomendação não pegou (veio: ${R:0:120})"; fi
+
+  # 4. GET não passa
+  COD=$(curl -s -o /dev/null -w "%{http_code}" --max-time 20 "$BASE/api/recomendacao-presencial")
+  if [ "$COD" = "405" ]; then ok "GET na recomendação devolve 405"
+  else falha "GET em /api/recomendacao-presencial devolveu $COD"; fi
+
+  # 5. o clique promove a MESMA linha a inscrição
+  R=$(curl -s --max-time 20 -X POST "$BASE/api/lead-presencial" \
+        -H 'Content-Type: application/json' -d "$CORPO_REC")
+  if echo "$R" | grep -q '"ok":true'; then
+    ok "o clique em garantir a vaga fecha a inscrição da mesma pessoa"
+  else falha "o envio final falhou depois da recomendação (veio: ${R:0:160})"; fi
+
+  # 6. e a suíte que prova o resto: grava incompleta, avisa com texto próprio,
+  #    promove no clique e não aparece na lista de inscrições.
+  if FUNIL_DEV_DIR=.dados-teste node funil-presencial/teste-recomendacao.js > /tmp/nr-rec.txt 2>&1; then
+    ok "a suíte da recomendação passa (grava incompleta, aviso próprio, promoção no clique)"
+  else
+    falha "teste-recomendacao.js falhou — veja /tmp/nr-rec.txt"
+    grep "FALHA" /tmp/nr-rec.txt | head -8 | sed 's/^/       /'
   fi
 fi
 
@@ -850,11 +1067,106 @@ else
     proibido_vivo_re "sem fonte remota"           "fonts\.(googleapis|gstatic)"
     precisa "os gráficos são SVG feito à mão"     "createElementNS"
 
+    # ============================================================
+    # O REDESENHO DE 02/09/2026 — navegação lateral e painel próprio
+    # ============================================================
+    # Estes checks existem porque a página única virou quatro vistas. Se
+    # alguém "simplificar" de volta para uma tela só, ou se um gráfico novo
+    # sumir numa refatoração, é aqui que aparece.
+    precisa "a navegação é lateral/inferior, não uma fileira de abas" 'class="nav" role="tablist"'
+    precisa "a lista de seções é vertical (desktop)"  'aria-orientation="vertical"'
+    precisa "seção: Painel"    'id="abaPainel"'
+    precisa_vivo "seção: Pipeline"  '>Pipeline<'
+    precisa_vivo "seção: Leads"     '>Leads<'
+    precisa "seção: Avisos"    '>Avisos<'
+    precisa "o painel tem tela própria"        'id="pPainel"'
+    precisa "o título muda com a seção"        'id="tituloVista"'
+    # A barra de navegação é UM elemento em duas posições. Dois elementos
+    # espelhados dariam ids duplicados e foco parando duas vezes na mesma seção.
+    # O MESMO seletor tem de existir nas duas formas: barra inferior fixa
+    # (celular) e coluna grudada (desktop). Se um dia virarem dois elementos
+    # espelhados, nascem ids duplicados e foco parando duas vezes na mesma
+    # seção — `precisa_re1` achata o arquivo porque a regra atravessa linhas.
+    precisa_re1 "a navegação vira barra inferior no celular" '\.lateral\{[^}]*position:fixed'
+    precisa_re1 "…e coluna lateral no desktop"               '\.lateral\{[^}]*position:sticky'
+    # o período do painel, que é o único filtro que sobrevive nessa vista
+    precisa "seletor de período no painel"     'id="segPeriodo"'
+    precisa "o segmentado escreve no mesmo estado do select" "document.getElementById('fPeriodo').value = x.v"
+
+    # os gráficos NOVOS — cada um foi aceito por mudar uma decisão
+    precisa_vivo "gráfico: há quanto tempo estão esperando" "Há quanto tempo estão esperando"
+    precisa "…medido pelo ÚLTIMO TOQUE, não pela entrada" "l.atualizado_em || l.criado_em"
+    precisa_vivo "gráfico: onde o formulário perde gente"   "Onde o formulário perde gente"
+    # 🔴 Sem a linha final o funil saía com todas as barras do mesmo tamanho:
+    #    quem para NA última pergunta ficava dentro da barra dela.
+    # ⚠️ O marcador NÃO pode ser só "Terminaram o formulário": esse texto já
+    #    existe vivo, como rótulo da opção do filtro de completo — o check
+    #    passava com a linha do funil APAGADA. Marcador tem de ser único ao
+    #    que ele certifica.
+    precisa_vivo "…e o funil fecha com quem terminou"      "etapa: 'fim', rot: 'Terminaram o formulário'"
+    # A honestidade que o funil precisa: ele conta o banco inteiro, e começa
+    # no WhatsApp porque antes disso ninguém é gravado.
+    precisa_vivo "…e avisa que começa no WhatsApp"         "antes dele ninguém é gravado"
+    precisa_vivo "…e que não respeita os filtros da tela"  "Conta o formulário inteiro, sem filtro"
+    # No Painel os filtros somem da tela; um número recortado tem de dizer que é recorte.
+    precisa_vivo "o painel avisa quando está filtrado"     "Estes números são de um recorte filtrado"
+    # A rampa de espera é SEQUENCIAL (uma cor, clara -> escura), não categórica.
+    precisa_vivo "a rampa de espera é sequencial de uma cor só" "RAMPA_ESPERA"
+    # gráfico sem dado tem de DIZER que não tem, não virar caixa vazia
+    precisa_vivo "gráfico sem dado explica que não tem"    "Nada para mostrar ainda"
+    # a última vista fica guardada — ela abre isto dez vezes por dia
+    precisa_vivo "o painel lembra a última seção usada"    "crm.vista"
+
     comuns_proibidos
   else
     falha "não consegui entrar no painel com a conta configurada (resposta: ${ENTROU:0:90})"
   fi
   rm -f "$CK"
+fi
+
+# ============================================================
+# A PORTA DO PAINEL — /crm/entrar
+# ============================================================
+# Esta página NUNCA foi auditada aqui, e é por onde se entra em dados
+# pessoais de terceiros. Não exige sessão (é o login), então roda sempre.
+if baixa_pagina /crm/entrar 3000; then
+  sem_comentarios
+  # o que não pode faltar por acessibilidade e por dor real
+  precisa "o campo tem rótulo de verdade (usuário)"  'for="usuario"'
+  precisa "o campo tem rótulo de verdade (senha)"    'for="senha"'
+  # 🔴 O OLHO. As senhas daqui têm símbolo e maiúscula no meio; digitar às
+  #    cegas no celular erra, e sem ele o suporte vira "esqueci a senha".
+  precisa "olho para revelar a senha"                'id="olho"'
+  precisa "…e ele diz o estado para o leitor de tela" 'aria-pressed="false"'
+  precisa "…e troca o rótulo ao revelar"             "'Mostrar senha' : 'Ocultar senha'"
+  # 🔴 O TRIM. Espaço colado ao copiar a senha é a causa nº 1 de
+  #    "senha incorreta" com a senha certa.
+  precisa "apara espaço do usuário no envio"         "getElementById('usuario').value.trim()"
+  precisa "apara espaço da senha no envio"           "getElementById('senha').value.trim()"
+  # o campo não pode ter menos de 16px, senão o Safari do iPhone dá zoom
+  # sozinho ao focar e a caixa sai da tela
+  precisa_re "campo de 16px (o iPhone não dá zoom sozinho)" "font-size:16px"
+  # o erro tem de ser anunciado, não só pintado
+  precisa "o erro é anunciado ao leitor de tela"     'role="alert"'
+  precisa "avisa que a página trata dado de terceiro" "dados pessoais de terceiros"
+  # dados pessoais: fora do índice e sem cache
+  precisa "login fora do índice do Google"           'content="noindex, nofollow, noarchive"'
+  precisa "login não vaza referenciador"             'name="referrer"'
+  # 🔴 A IDV: a porta e a sala são o MESMO lugar. A paleta da marca é
+  #    proibida no painel de propósito, e a porta segue a mesma regra.
+  proibido_vivo "login sem o creme da marca"     "#F2EEE5"
+  proibido_vivo "login sem o chocolate da marca" "#6B4F3A"
+  proibido_vivo "login sem a sálvia da marca"    "#A5B59A"
+  precisa "login usa a MESMA tinta do painel"    "#101828"
+  precisa "login usa o MESMO chão do painel"     "#F6F7F9"
+  precisa "login usa o MESMO azul do painel"     "#1c5cab"
+  # nada de CDN: ela entra pelo 4G
+  proibido_vivo_re "login sem script de CDN externo"  "<script[^>]+src=\"https?://"
+  proibido_vivo_re "login sem folha de estilo remota" "<link[^>]+href=\"https?://[^\"]*\.css"
+  proibido_vivo_re "login sem fonte remota"           "fonts\.(googleapis|gstatic)"
+  # 🔴 nunca uma senha escrita no fonte
+  proibido_vivo_re "nenhuma senha no fonte do login"  "senha *[:=] *[\"'][^\"']{6,}"
+  comuns_proibidos
 fi
 
 # ---- a política cobre o formulário ----
@@ -976,6 +1288,24 @@ if [ "$ALVO" = "local" ]; then
     FALHAS=$((FALHAS+N))
   else
     ok "nenhuma caixa vaza do pai em 320/390/430/900/1280px"
+  fi
+
+  # ============================================================
+  # 🔴 O VERIFICADOR CHEGOU AO FIM? Contar linhas "FALHA" nao distingue
+  #    "mediu tudo e achou 8 problemas" de "mediu um terco, achou 8 e MORREU".
+  #    Em 02/09/2026 aconteceram as duas coisas, em sequencia: primeiro um
+  #    crash com ZERO falhas impressas (e este gate fechou com "TUDO CERTO.
+  #    As paginas podem ser divulgadas" tendo medido 35 de 86); depois um
+  #    crash COM 8 falhas impressas, que passou como se tivesse medido tudo.
+  #    Por isso a trava agora e um MARCADOR DE FIM, e nao uma contagem: o
+  #    verificar-layout.js imprime `FIM-LAYOUT truncado=0` na ultima linha,
+  #    inclusive quando reprova. Se ele nao aparecer, a checagem nao terminou —
+  #    e uma checagem que nao terminou nunca conta como aprovada.
+  # ============================================================
+  if ! grep -q "FIM-LAYOUT truncado=0" /tmp/layout-check.txt; then
+    falha "a checagem de layout NAO chegou ao fim (saida $RC) — ela abortou no meio e nao mediu tudo. Ver /tmp/layout-check.txt"
+    grep -c "^ok" /tmp/layout-check.txt | sed 's/^/       so rodou ate: /;s/$/ checagens ok (o normal e 86)/'
+    tail -8 /tmp/layout-check.txt | sed 's/^/       /'
   fi
 fi
 

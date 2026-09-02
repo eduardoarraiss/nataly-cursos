@@ -19,14 +19,26 @@
    lado. O piso é 4.5:1 para texto e 3:1 para marca de gráfico —
    inclusive dentro dos gráficos, que é onde contraste costuma ser
    esquecido.
+
+   REDESENHO 02/09/2026 — "premium" virou requisito, não adjetivo:
+     · poucos tamanhos de tipo (5) e muita distância entre eles;
+     · superfícies em DOIS níveis (o chão e a carta), nunca mais;
+     · cor como sinal — o azul só aparece onde há dado ou seleção;
+     · movimento curto (160–200ms) e só em opacidade/transformação,
+       que a placa de vídeo resolve sozinha: nada que atrase o clique.
+       Ela abre isto dez vezes por dia — animação que segura o
+       trabalho não é premium, é lentidão.
    ============================================================ */
 :root{
-  /* superfícies */
-  --fundo:#F7F8FA;      /* a página */
+  /* superfícies — dois níveis e mais nada */
+  --fundo:#F6F7F9;      /* o chão da página e da barra lateral */
   --carta:#FFFFFF;      /* onde o dado pousa */
-  --carta-2:#F2F4F7;    /* trilha de medidor, cabeçalho de tabela */
-  --linha:#E3E6EB;
-  --linha-2:#D5DAE1;
+  --carta-2:#F1F3F6;    /* trilha de medidor, cabeçalho de tabela */
+  --linha:#E5E8ED;
+  --linha-2:#D3D9E0;
+  /* o filete quase invisível que substitui a borda quando ela só
+     serviria para "fechar" a caixa — a sombra já faz esse trabalho */
+  --fio:rgba(16,24,40,.07);
 
   /* tinta */
   --ink:#101828;        /* 17.75:1 sobre carta */
@@ -38,7 +50,7 @@
   --azul:#2a78d6;       /* 4.42:1 — marca de gráfico e preenchimento */
   --azul-txt:#1c5cab;   /* 6.63:1 — texto e link */
   --azul-esc:#184f95;   /* 8.10:1 */
-  --azul-luz:#E7EEF8;
+  --azul-luz:#E9F0FA;
 
   /* rampa ordinal do pipeline (todas ≥3:1 sobre carta) */
   --e-novo:#3987e5;     /* 3.64:1 */
@@ -60,12 +72,20 @@
   --wa:#0F7B54;
   --wa-esc:#0B5F41;
 
-  --e1:4px; --e2:8px; --e3:12px; --e4:16px; --e5:24px; --e6:32px; --e7:48px;
-  --r1:8px; --r2:12px; --r3:16px;
+  --e1:4px; --e2:8px; --e3:12px; --e4:16px; --e5:20px;
+  --e6:28px; --e7:40px; --e8:56px;
+  --r1:10px; --r2:14px; --r3:20px; --r4:26px;
   --f:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,'Helvetica Neue',Arial,sans-serif;
   --fn:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
-  --sombra:0 1px 2px rgba(16,24,40,.06), 0 1px 3px rgba(16,24,40,.05);
-  --sombra-2:0 8px 24px rgba(16,24,40,.12);
+  /* uma sombra só, muito baixa: a carta descola do chão sem virar caixa */
+  --sombra:0 1px 2px rgba(16,24,40,.04), 0 4px 12px rgba(16,24,40,.05);
+  --sombra-2:0 12px 40px rgba(16,24,40,.16);
+  --sombra-pill:0 1px 2px rgba(16,24,40,.06), 0 2px 6px rgba(16,24,40,.05);
+  /* movimento: uma curva só, dois tempos. A curva é quase-linear no fim,
+     que é o que faz o movimento parecer que "assenta" em vez de frear. */
+  --curva:cubic-bezier(.32,.72,0,1);
+  --mv:180ms; --mv-r:120ms;
+  --lateral:236px;
 }
 *,*::before,*::after{box-sizing:border-box}
 html,body{margin:0;padding:0;max-width:100%;overflow-x:hidden}
@@ -73,45 +93,194 @@ body{
   background:var(--fundo); color:var(--ink); font-family:var(--f);
   font-size:15px; line-height:1.5; -webkit-text-size-adjust:100%;
   font-variant-numeric:tabular-nums;
+  -webkit-font-smoothing:antialiased; -moz-osx-font-smoothing:grayscale;
 }
-h1,h2,h3,h4{margin:0; font-weight:650; letter-spacing:-.011em}
+/* CINCO tamanhos de tipo em toda a ferramenta, e é de propósito: o que
+   dá hierarquia é a DISTÂNCIA entre eles, não a quantidade. */
+h1,h2,h3,h4{margin:0; font-weight:640; letter-spacing:-.014em}
 p{margin:0}
 ul{margin:0; padding:0}
 dl{margin:0}
 button,input,select,textarea{font:inherit; color:inherit}
 a{color:var(--azul-txt)}
-:focus-visible{outline:3px solid var(--azul-esc); outline-offset:2px; border-radius:var(--r1)}
+:focus-visible{outline:2px solid var(--azul-esc); outline-offset:2px; border-radius:var(--r1)}
 .oculto{display:none !important}
 .sr{position:absolute;width:1px;height:1px;margin:-1px;padding:0;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap;border:0}
 
-/* ---------- estrutura ---------- */
-.envolve{max-width:1320px; margin:0 auto; padding:0 var(--e4) var(--e7)}
-@media (max-width:479px){ .envolve{padding:0 var(--e3) var(--e7)} }
+/* pular para o conteúdo — o teclado não deve percorrer a navegação inteira */
+.pular{
+  position:absolute; left:var(--e3); top:-60px; z-index:90;
+  background:var(--ink); color:var(--ink-inv); padding:var(--e2) var(--e4);
+  border-radius:var(--r1); font-weight:640; font-size:14px; text-decoration:none;
+}
+.pular:focus{top:var(--e3)}
+
+/* ============================================================
+   ESTRUTURA — barra lateral + coluna de conteúdo
+   ============================================================
+   UM único <nav> serve as duas formas. No desktop ele é a barra
+   lateral; abaixo de 1000px o MESMO elemento vira a barra inferior.
+   Não são dois menus: são duas posições do mesmo, e por isso não há
+   como um ficar marcado e o outro não, nem ids duplicados, nem foco
+   parando duas vezes na mesma seção.
+   ============================================================ */
+.app{display:block}
+@media (min-width:1000px){
+  .app{display:grid; grid-template-columns:var(--lateral) minmax(0,1fr); align-items:start}
+}
+
+.lateral{
+  position:fixed; z-index:40; left:0; right:0; bottom:0;
+  background:rgba(255,255,255,.86);
+  -webkit-backdrop-filter:saturate(180%) blur(20px);
+  backdrop-filter:saturate(180%) blur(20px);
+  border-top:1px solid var(--linha);
+  padding:var(--e1) var(--e2) calc(var(--e1) + env(safe-area-inset-bottom,0px));
+}
+/* Sem `backdrop-filter` o fundo translúcido deixaria a lista aparecer
+   através da barra e os rótulos ficariam ilegíveis. Nesse caso a barra
+   volta a ser opaca — o vidro é enfeite, a legibilidade não é. */
+@supports not ((backdrop-filter:blur(1px)) or (-webkit-backdrop-filter:blur(1px))){
+  .lateral{background:var(--carta)}
+}
+.lateral .marca, .lateral__pe{display:none}
+
+@media (min-width:1000px){
+  .lateral{
+    position:sticky; top:0; left:auto; right:auto; bottom:auto;
+    height:100vh; height:100dvh; display:flex; flex-direction:column;
+    background:transparent; -webkit-backdrop-filter:none; backdrop-filter:none;
+    border-top:none; border-right:1px solid var(--linha);
+    padding:var(--e5) var(--e3) var(--e4);
+  }
+  .lateral .marca{display:block; padding:0 var(--e3) var(--e6)}
+  .lateral__pe{display:block; margin-top:auto; padding:var(--e4) var(--e3) 0; border-top:1px solid var(--linha)}
+}
+
+.marca h1, .marca .nome{
+  font-size:17px; line-height:1.2; font-weight:640; letter-spacing:-.02em;
+  margin:0; color:var(--ink);
+}
+.marca .sub{
+  display:block; font-size:11px; color:var(--ink-3); margin-top:3px;
+  letter-spacing:.08em; text-transform:uppercase; font-weight:640;
+}
+
+/* ---------- a navegação ---------- */
+.nav{display:flex; gap:2px}
+.nav-item{
+  flex:1 1 0; min-width:0; display:flex; flex-direction:column; align-items:center;
+  justify-content:center; gap:2px; min-height:52px; padding:var(--e1) 2px;
+  border:1px solid transparent; border-radius:var(--r2); background:transparent;
+  color:var(--ink-3); font-weight:600; font-size:11px; cursor:pointer;
+  transition:color var(--mv-r) var(--curva), background var(--mv-r) var(--curva);
+}
+.nav-item svg{flex:0 0 auto; display:block}
+.nav-item .rot{
+  display:block; max-width:100%; overflow:hidden; text-overflow:ellipsis;
+  white-space:nowrap; letter-spacing:-.005em;
+}
+.nav-item .qt{display:none}
+.nav-item:hover{color:var(--ink-2)}
+.nav-item[aria-selected="true"]{color:var(--azul-txt)}
+/* O ponto sob o item ativo é o que diz "você está aqui" no celular, onde
+   não cabe uma pílula. Fica FORA do rótulo para não empurrar o texto. */
+.nav-item::after{
+  content:""; display:block; width:16px; height:2px; border-radius:2px;
+  background:transparent; margin-top:1px;
+}
+.nav-item[aria-selected="true"]::after{background:var(--azul-txt)}
+
+@media (min-width:1000px){
+  .nav{flex-direction:column; gap:2px}
+  .nav-item{
+    flex:0 0 auto; flex-direction:row; justify-content:flex-start; align-items:center;
+    gap:var(--e3); min-height:40px; padding:var(--e2) var(--e3);
+    font-size:14px; font-weight:600; text-align:left; letter-spacing:-.008em;
+    color:var(--ink-2);
+  }
+  .nav-item .rot{flex:1 1 auto}
+  .nav-item .qt{
+    display:inline-block; font-size:12px; font-weight:640; color:var(--ink-3);
+    font-variant-numeric:tabular-nums;
+  }
+  .nav-item::after{display:none}
+  .nav-item:hover{background:rgba(16,24,40,.045); color:var(--ink)}
+  /* A seleção é uma SUPERFÍCIE, não uma cor de texto: a carta branca
+     sobe do chão cinza e o item fica "em cima". É o mesmo gesto do
+     resto do painel (o dado mora em carta branca). */
+  .nav-item[aria-selected="true"]{
+    background:var(--carta); color:var(--ink); border-color:var(--fio);
+    box-shadow:var(--sombra-pill);
+  }
+  .nav-item[aria-selected="true"] .qt{color:var(--ink-2)}
+  .nav-item[aria-selected="true"] svg{color:var(--azul-txt)}
+}
+
+.lateral__pe .pe-rot{
+  display:block; font-size:11px; text-transform:uppercase; letter-spacing:.07em;
+  font-weight:640; color:var(--ink-3);
+}
+.lateral__pe .pe-n{
+  display:block; font-size:20px; font-weight:640; letter-spacing:-.02em; margin-top:2px;
+}
+.lateral__pe .acoes-pe{display:flex; flex-direction:column; gap:var(--e2); margin-top:var(--e3)}
+
+/* ---------- a coluna de conteúdo ---------- */
+.col{min-width:0}
+.envolve{
+  max-width:1320px; margin:0 auto;
+  padding:0 var(--e4) calc(var(--e8) + 72px);
+}
+@media (max-width:479px){ .envolve{padding:0 var(--e3) calc(var(--e8) + 72px)} }
+@media (min-width:1000px){
+  .envolve{padding:0 var(--e6) var(--e8)}
+}
 
 /* ---------- cabeçalho ---------- */
-.topo{position:sticky; top:0; z-index:40; background:var(--carta); border-bottom:1px solid var(--linha)}
+.topo{
+  position:sticky; top:0; z-index:30;
+  background:rgba(246,247,249,.82);
+  -webkit-backdrop-filter:saturate(180%) blur(20px);
+  backdrop-filter:saturate(180%) blur(20px);
+  border-bottom:1px solid var(--linha);
+}
+@supports not ((backdrop-filter:blur(1px)) or (-webkit-backdrop-filter:blur(1px))){
+  .topo{background:var(--fundo)}
+}
 .topo-in{
   max-width:1320px; margin:0 auto; padding:var(--e3) var(--e4);
   display:flex; gap:var(--e3); align-items:center; flex-wrap:wrap;
 }
 @media (max-width:479px){ .topo-in{padding:var(--e3)} }
-.marca{flex:1 1 200px; min-width:0}
-.marca h1{font-size:clamp(16px,4vw,19px); line-height:1.2}
-.marca .sub{
-  display:block; font-size:11px; color:var(--ink-3);
-  letter-spacing:.09em; text-transform:uppercase; font-weight:650;
+@media (min-width:1000px){ .topo-in{padding:var(--e5) var(--e6)} }
+/* No celular o cabeçalho é FIXO no topo: cada pixel dele é um pixel a
+   menos de lista em toda rolagem. Com base menor, título e ações cabem
+   na mesma linha e ele passa de ~220px para uma faixa de ~64px. */
+.topo__t{flex:1 1 120px; min-width:0}
+.topo__t h1{font-size:clamp(20px,4.6vw,26px); line-height:1.15; letter-spacing:-.024em}
+.topo__t .sub{
+  display:block; font-size:11px; color:var(--ink-3); margin-bottom:2px;
+  letter-spacing:.08em; text-transform:uppercase; font-weight:640;
 }
+/* No desktop a marca já está na lateral: repeti-la no cabeçalho é ruído. */
+@media (min-width:1000px){ .topo__t .sub{display:none} }
 .acoes-topo{display:flex; gap:var(--e2); flex-wrap:wrap}
+/* No desktop "Exportar CSV" e "Sair" descem para o pé da barra lateral —
+   o cabeçalho fica só com o nome da vista, que é o que ela precisa ler. */
+@media (min-width:1000px){ .topo .acoes-topo{display:none} }
 
 /* ---------- botões ---------- */
 .bt{
   display:inline-flex; align-items:center; justify-content:center; gap:var(--e2);
-  min-height:40px; padding:var(--e2) var(--e3); border-radius:var(--r1);
+  min-height:40px; padding:var(--e2) var(--e4); border-radius:999px;
   border:1px solid var(--linha-2); background:var(--carta); color:var(--ink);
   font-weight:600; font-size:14px; cursor:pointer; text-decoration:none;
-  white-space:nowrap;
+  white-space:nowrap; letter-spacing:-.006em;
+  transition:background var(--mv-r) var(--curva), border-color var(--mv-r) var(--curva);
 }
 .bt:hover{background:var(--carta-2)}
+.bt:active{transform:translateY(.5px)}
 .bt-forte{background:var(--ink); border-color:var(--ink); color:var(--ink-inv)}
 .bt-forte:hover{background:#25324a}
 .bt-azul{background:var(--azul-txt); border-color:var(--azul-txt); color:var(--ink-inv)}
@@ -128,7 +297,7 @@ a{color:var(--azul-txt)}
 .faixa{
   background:#FEF3F2; border:1px solid #FDA29B; border-left:4px solid var(--alerta);
   color:var(--ink); border-radius:var(--r2);
-  padding:var(--e3) var(--e4); margin:var(--e4) 0 0;
+  padding:var(--e3) var(--e4); margin:var(--e5) 0 0;
   display:flex; gap:var(--e3); align-items:center; flex-wrap:wrap;
 }
 .faixa p{flex:1 1 240px; font-weight:600; min-width:0}
@@ -137,46 +306,89 @@ a{color:var(--azul-txt)}
    de alarme ensinaria a Nataly a ignorar o vermelho quando ele importar. */
 .faixa-parcial{background:#F0FDFA; border-color:#5EEAD4; border-left-color:#14B8A6}
 
+/* ---------- o painel (dashboard) ---------- */
+.vista{animation:surge var(--mv) var(--curva) both}
+@keyframes surge{ from{opacity:0; transform:translateY(6px)} to{opacity:1; transform:none} }
+
+.secao-cab{
+  display:flex; align-items:baseline; gap:var(--e3); flex-wrap:wrap;
+  margin:var(--e6) 0 var(--e3);
+}
+.secao-cab:first-child{margin-top:var(--e5)}
+.secao-cab h2{font-size:15px; letter-spacing:-.012em}
+.secao-cab .nota{font-size:13px; color:var(--ink-3)}
+
+/* o seletor de período do painel — segmentado, um toque, sem menu */
+.seg{
+  display:flex; gap:2px; padding:3px; background:var(--carta-2);
+  border-radius:999px; overflow-x:auto; -webkit-overflow-scrolling:touch;
+  scrollbar-width:none; max-width:100%;
+}
+.seg::-webkit-scrollbar{display:none}
+.seg button{
+  flex:0 0 auto; min-height:34px; padding:0 var(--e4); border:0; border-radius:999px;
+  background:transparent; color:var(--ink-2); font-size:13px; font-weight:600;
+  cursor:pointer; white-space:nowrap; letter-spacing:-.006em;
+  transition:background var(--mv-r) var(--curva), color var(--mv-r) var(--curva);
+}
+.seg button:hover{color:var(--ink)}
+.seg button[aria-pressed="true"]{background:var(--carta); color:var(--ink); box-shadow:var(--sombra-pill)}
+
 /* ---------- KPIs ---------- */
 .kpis{
-  margin-top:var(--e4); display:grid; gap:var(--e3);
-  grid-template-columns:repeat(auto-fit,minmax(210px,1fr));
+  margin-top:var(--e3); display:grid; gap:var(--e3);
+  /* 200px, e não 220: são CINCO azulejos, e a 220 o quinto caía sozinho
+     numa segunda fileira em telas de 1280–1440px — que é onde ela usa. */
+  grid-template-columns:repeat(auto-fit,minmax(200px,1fr));
 }
-/* No celular os quatro azulejos empilhados comiam a tela inteira antes de
-   chegar em qualquer lead. Em duas colunas eles cabem numa olhada só. */
+/* No celular os azulejos empilhados comiam a tela inteira antes de chegar
+   em qualquer lead. Em duas colunas eles cabem numa olhada só. */
 @media (max-width:639px){
   .kpis{grid-template-columns:1fr 1fr; gap:var(--e2)}
   .kpi{padding:var(--e3)}
-  .kpi__n{font-size:27px}
+  .kpi__n{font-size:28px}
   .kpi__p{font-size:11.5px}
 }
 .kpi{
-  text-align:left; background:var(--carta); border:1px solid var(--linha);
-  border-radius:var(--r3); padding:var(--e4); box-shadow:var(--sombra);
+  text-align:left; background:var(--carta); border:1px solid var(--fio);
+  border-radius:var(--r3); padding:var(--e5); box-shadow:var(--sombra);
   display:flex; flex-direction:column; gap:var(--e1); min-width:0;
   cursor:pointer; font:inherit; color:inherit;
+  transition:box-shadow var(--mv-r) var(--curva), transform var(--mv-r) var(--curva);
 }
-.kpi:hover{border-color:var(--linha-2); background:var(--carta)}
+.kpi:hover{box-shadow:0 1px 2px rgba(16,24,40,.05), 0 8px 22px rgba(16,24,40,.09)}
+.kpi:active{transform:translateY(.5px)}
 .kpi[aria-pressed="true"]{border-color:var(--azul); box-shadow:0 0 0 1px var(--azul)}
-.kpi__r{font-size:12px; font-weight:650; color:var(--ink-2); letter-spacing:.02em; overflow-wrap:anywhere}
-.kpi__n{font-size:34px; font-weight:680; line-height:1.05; letter-spacing:-.025em; color:var(--ink)}
+.kpi__r{font-size:12px; font-weight:640; color:var(--ink-2); letter-spacing:.01em; overflow-wrap:anywhere}
+/* O número é o protagonista: grande, apertado e tabular, para a coluna de
+   azulejos alinhar dígito com dígito. */
+.kpi__n{font-size:40px; font-weight:640; line-height:1; letter-spacing:-.038em; color:var(--ink); margin:2px 0}
 .kpi__p{font-size:12.5px; color:var(--ink-3); overflow-wrap:anywhere}
-.kpi__p b{color:var(--ink-2); font-weight:650}
-.delta{font-size:13px; font-weight:650; display:inline-flex; align-items:center; gap:3px}
+.kpi__p b{color:var(--ink-2); font-weight:640}
+.delta{font-size:13px; font-weight:640; display:inline-flex; align-items:center; gap:3px}
 .delta.sobe{color:var(--ok)} .delta.desce{color:var(--alerta)} .delta.igual{color:var(--ink-3)}
-.medidor{display:flex; height:6px; border-radius:999px; overflow:hidden; background:var(--carta-2); margin-top:2px}
+.medidor{display:flex; height:6px; border-radius:999px; overflow:hidden; background:var(--carta-2); margin-top:4px}
 .medidor span{display:block; height:100%}
-.faisca{display:block; margin-top:2px}
+.faisca{display:block; margin-top:4px}
 
 .resumo-linha{
   margin-top:var(--e3); font-size:13px; color:var(--ink-2);
-  display:flex; gap:var(--e3); flex-wrap:wrap; align-items:center;
+  display:flex; gap:var(--e2); flex-wrap:wrap; align-items:stretch;
 }
-.resumo-linha b{color:var(--ink); font-weight:650}
+.resumo-linha b{color:var(--ink); font-weight:640}
+/* A linha de contexto virou uma fileira de fichas: o mesmo conteúdo, mas
+   cada número com o rótulo em cima em vez de tudo numa frase corrida. */
+.resumo-linha>span{
+  display:flex; flex-direction:column; gap:1px; flex:1 1 128px; min-width:0;
+  background:var(--carta); border:1px solid var(--fio); border-radius:var(--r2);
+  padding:var(--e2) var(--e3); box-shadow:var(--sombra);
+}
+.resumo-linha .rr{font-size:11px; color:var(--ink-3); font-weight:640; letter-spacing:.03em; text-transform:uppercase}
+.resumo-linha .teto{flex:1 1 100%; color:var(--alerta); font-weight:600}
 
 /* ---------- filtros ---------- */
 .filtros{
-  margin-top:var(--e4); background:var(--carta); border:1px solid var(--linha);
+  margin-top:var(--e5); background:var(--carta); border:1px solid var(--fio);
   border-radius:var(--r3); padding:var(--e4); box-shadow:var(--sombra);
 }
 .filtros-grade{display:grid; gap:var(--e3); grid-template-columns:repeat(auto-fit,minmax(178px,1fr))}
@@ -186,28 +398,38 @@ a{color:var(--azul-txt)}
 .mais-filtros{margin-top:var(--e3)}
 .mais-filtros>summary{
   list-style:none; cursor:pointer; min-height:40px; display:flex; align-items:center;
-  gap:var(--e2); font-weight:650; font-size:14px; color:var(--ink);
-  border:1px solid var(--linha-2); border-radius:var(--r1); padding:var(--e2) var(--e3);
+  gap:var(--e2); font-weight:640; font-size:14px; color:var(--ink);
+  border:1px solid var(--linha-2); border-radius:999px; padding:var(--e2) var(--e4);
 }
 .mais-filtros>summary::-webkit-details-marker{display:none}
 .mais-filtros>summary::after{content:"▾"; margin-left:auto; color:var(--ink-3)}
 .mais-filtros[open]>summary::after{content:"▴"}
 .mais-filtros>summary .qtf{
   background:var(--azul-txt); color:var(--ink-inv); border-radius:999px;
-  font-size:12px; padding:1px 8px; font-weight:650;
+  font-size:12px; padding:1px 8px; font-weight:640;
 }
 .mais-filtros>.filtros-grade{margin-top:var(--e3)}
+/* Antes os sete campos ficavam SEMPRE abertos no desktop. Somados ao
+   cabeçalho, empurravam o kanban ~300px para baixo: ela abria o Pipeline
+   e via um formulário de busca, não o quadro de trabalho. Agora a gaveta
+   é a mesma em toda largura — e se abre sozinha quando há filtro ligado,
+   que era a razão de mantê-la aberta (filtro escondido é filtro esquecido).
+   No desktop ela ganha duas colunas de campos por linha, senão a gaveta
+   aberta ficaria mais alta do que o bloco que ela substituiu. */
 @media (min-width:900px){
-  .mais-filtros{margin-top:0}
-  .mais-filtros>summary{display:none}
-  .mais-filtros>.filtros-grade{display:grid; margin-top:0}
+  .filtros{display:grid; grid-template-columns:minmax(220px,320px) 1fr; gap:var(--e3); align-items:end}
+  .filtros .campo:first-child{grid-column:1}
+  .mais-filtros{margin-top:0; grid-column:2}
+  .mais-filtros>summary{justify-content:flex-start; max-width:220px}
+  .filtros .nota-csv{grid-column:1 / -1; margin-top:0}
 }
 .campo{display:flex; flex-direction:column; gap:5px; min-width:0}
-.campo label{font-size:11.5px; font-weight:650; letter-spacing:.05em; text-transform:uppercase; color:var(--ink-3)}
+.campo label{font-size:11px; font-weight:640; letter-spacing:.05em; text-transform:uppercase; color:var(--ink-3)}
 .campo input,.campo select{
   min-height:42px; width:100%; max-width:100%; padding:var(--e2) var(--e3);
   border:1px solid var(--linha-2); border-radius:var(--r1);
   background:var(--carta); color:var(--ink); appearance:none;
+  transition:border-color var(--mv-r) var(--curva);
 }
 .campo select{
   padding-right:30px;
@@ -222,26 +444,10 @@ a{color:var(--azul-txt)}
   border-top:1px solid var(--linha); padding-top:var(--e3);
 }
 
-/* ---------- abas ---------- */
-.abas{
-  display:flex; gap:var(--e1); margin:var(--e5) 0 var(--e4);
-  background:var(--carta-2); border:1px solid var(--linha); border-radius:var(--r2);
-  padding:var(--e1); overflow-x:auto; -webkit-overflow-scrolling:touch;
-}
-.aba{
-  min-height:40px; padding:var(--e2) var(--e4); border:1px solid transparent;
-  border-radius:var(--r1); background:transparent; color:var(--ink-2);
-  font-weight:650; font-size:14px; cursor:pointer; white-space:nowrap; flex:0 0 auto;
-}
-.aba:hover{color:var(--ink)}
-.aba[aria-selected="true"]{background:var(--carta); color:var(--ink); border-color:var(--linha); box-shadow:var(--sombra)}
-.aba .qt{color:var(--ink-3); font-weight:600}
-.aba[aria-selected="true"] .qt{color:var(--ink-2)}
-
 /* ---------- pílulas ---------- */
 .pil{
   display:inline-flex; align-items:center; gap:5px; padding:3px var(--e2);
-  border-radius:999px; font-size:12px; font-weight:650; white-space:nowrap;
+  border-radius:999px; font-size:12px; font-weight:640; white-space:nowrap;
   border:1px solid transparent;
 }
 .pil::before{content:""; width:7px; height:7px; border-radius:50%; background:currentColor; flex:0 0 auto}
@@ -258,7 +464,7 @@ a{color:var(--azul-txt)}
 /* A linha inteira do parcial ganha um filete à esquerda: dá para varrer a
    lista com o olho e ver quem terminou e quem não, sem ler pílula nenhuma. */
 tbody tr.lin-parcial td:first-child{box-shadow:inset 3px 0 0 #14B8A6}
-.parou{font-weight:650; color:#134E4A}
+.parou{font-weight:640; color:#134E4A}
 .s-novo            {background:#E7EEF8; color:#1E3A5F; border-color:#CBDCF2}  /* 9.85:1 */
 .s-contatado       {background:#E7EEF8; color:#1c5cab; border-color:#CBDCF2}  /* 5.68:1 */
 .s-em-conversa     {background:#E0F2FE; color:#155E75; border-color:#BAE6FD}  /* 6.33:1 */
@@ -267,8 +473,8 @@ tbody tr.lin-parcial td:first-child{box-shadow:inset 3px 0 0 #14B8A6}
 .s-perdido         {background:#FEE2E2; color:#7F1D1D; border-color:#FECACA}  /* 8.20:1 */
 
 /* ---------- cartões e mensagens ---------- */
-.cartao{background:var(--carta); border:1px solid var(--linha); border-radius:var(--r3); padding:var(--e4); box-shadow:var(--sombra)}
-.msg{background:var(--carta); border:1px solid var(--linha); border-radius:var(--r3); padding:var(--e6) var(--e4); text-align:center; box-shadow:var(--sombra)}
+.cartao{background:var(--carta); border:1px solid var(--fio); border-radius:var(--r3); padding:var(--e5); box-shadow:var(--sombra)}
+.msg{background:var(--carta); border:1px solid var(--fio); border-radius:var(--r3); padding:var(--e7) var(--e4); text-align:center; box-shadow:var(--sombra)}
 .msg p{color:var(--ink-2)}
 .msg .bt{margin-top:var(--e3)}
 .erro{border-color:#FDA29B; background:#FFFBFA}
@@ -280,46 +486,70 @@ tbody tr.lin-parcial td:first-child{box-shadow:inset 3px 0 0 #14B8A6}
    coluna era maior que o pai (296px depois do respiro lateral). O `min()`
    deixa a coluna encolher com a tela em vez de empurrar a página. */
 .duo{display:grid; gap:var(--e4); grid-template-columns:repeat(auto-fit,minmax(min(100%,320px),1fr))}
-.fig{background:var(--carta); border:1px solid var(--linha); border-radius:var(--r3); padding:var(--e4); box-shadow:var(--sombra); min-width:0}
-.fig h3{font-size:15px; color:var(--ink)}
-.fig .porque{font-size:12.5px; color:var(--ink-2); margin-top:2px}
-.fig .tela{margin-top:var(--e3); position:relative; min-width:0}
+.fig{
+  background:var(--carta); border:1px solid var(--fio); border-radius:var(--r3);
+  padding:var(--e5); box-shadow:var(--sombra); min-width:0;
+}
+.fig h3{font-size:15px; color:var(--ink); letter-spacing:-.012em}
+.fig .porque{font-size:12.5px; color:var(--ink-2); margin-top:3px; max-width:62ch}
+.fig .tela{margin-top:var(--e4); position:relative; min-width:0}
 .fig svg{display:block; max-width:100%; overflow:visible}
 .legenda{display:flex; gap:var(--e3); flex-wrap:wrap; margin-top:var(--e3); font-size:12.5px; color:var(--ink-2)}
 .legenda span{display:inline-flex; align-items:center; gap:6px}
 .legenda i{width:11px; height:11px; border-radius:3px; display:block; flex:0 0 auto}
 .dica{
   position:absolute; z-index:5; pointer-events:none; background:var(--ink); color:var(--ink-inv);
-  font-size:12.5px; padding:6px var(--e2); border-radius:var(--r1); box-shadow:var(--sombra-2);
+  font-size:12.5px; padding:6px var(--e3); border-radius:var(--r1); box-shadow:var(--sombra-2);
   white-space:nowrap; transform:translate(-50%,-100%); margin-top:-8px;
 }
-details.tabela-viz{margin-top:var(--e3); border-top:1px solid var(--linha); padding-top:var(--e2)}
+details.tabela-viz{margin-top:var(--e4); border-top:1px solid var(--linha); padding-top:var(--e2)}
 details.tabela-viz summary{font-size:12.5px; color:var(--azul-txt); cursor:pointer; font-weight:600; min-height:32px; display:flex; align-items:center}
 details.tabela-viz table{margin-top:var(--e2); font-size:13px; width:100%; min-width:0}
 details.tabela-viz th,details.tabela-viz td{padding:5px var(--e2); border-bottom:1px solid var(--linha); text-align:left}
 details.tabela-viz td:last-child,details.tabela-viz th:last-child{text-align:right}
-.viz-vazio{font-size:13px; color:var(--ink-3); padding:var(--e5) 0; text-align:center}
+.viz-vazio{font-size:13px; color:var(--ink-3); padding:var(--e6) 0; text-align:center}
 
 /* ---------- tabela ---------- */
-.rolagem{overflow-x:auto; -webkit-overflow-scrolling:touch; border:1px solid var(--linha); border-radius:var(--r3); background:var(--carta); box-shadow:var(--sombra)}
+.rolagem{overflow-x:auto; -webkit-overflow-scrolling:touch; border:1px solid var(--fio); border-radius:var(--r3); background:var(--carta); box-shadow:var(--sombra)}
 table{border-collapse:collapse; width:100%}
 .rolagem table{min-width:1060px}
 /* telefone, data e o botão do WhatsApp não podem quebrar em duas linhas:
    quebrado, cada lead vira uma linha de 3 alturas e cabem 4 na tela */
 .nw{white-space:nowrap}
+/* 🔴 `--ink-3` aqui MEDIA 4.48:1 e o piso é 4.5.
+   O token estava certo sobre a carta branca (4.97:1), mas o cabeçalho da
+   tabela pousa em `--carta-2`, e o redesenho escureceu esse cinza um degrau
+   (#F2F4F7 → #F1F3F6). Meio ponto de luminância derrubou o par — e o gate
+   pegou. Sobe um degrau de tinta: 5.79:1, e o cabeçalho fica mais legível
+   do que era antes. */
 thead th{
   text-align:left; font-size:11px; text-transform:uppercase; letter-spacing:.06em;
-  color:var(--ink-3); padding:var(--e3); background:var(--carta-2);
-  border-bottom:1px solid var(--linha); white-space:nowrap; font-weight:650;
+  color:var(--ink-2); padding:var(--e3); background:var(--carta-2);
+  border-bottom:1px solid var(--linha); white-space:nowrap; font-weight:640;
 }
 tbody td{padding:var(--e3); border-bottom:1px solid var(--linha); vertical-align:middle}
 tbody tr:last-child td{border-bottom:none}
 tbody tr:hover{background:var(--carta-2)}
-tbody tr:focus-visible{outline:3px solid var(--azul-esc); outline-offset:-3px}
-.td-nome{font-weight:650}
+tbody tr:focus-visible{outline:2px solid var(--azul-esc); outline-offset:-2px}
+.td-nome{font-weight:640}
 .td-sub{display:block; font-size:12px; color:var(--ink-3); overflow-wrap:anywhere}
 .td-acao{width:1%; white-space:nowrap}
 tr[data-abre]{cursor:pointer}
+/* A COLUNA DE AÇÃO GRUDA NA DIREITA.
+   A tabela precisa de ~1140px e a barra lateral levou 236 do que havia:
+   num notebook de 1400px ela passou a rolar de lado, e o que saía da tela
+   era justo o botão do WhatsApp — a ação mais usada daqui. Rolar para
+   alcançar o botão principal é o oposto de fluido.
+   Grudada, ela fica alcançável em qualquer largura, com ou sem rolagem.
+   Só no desktop: abaixo de 840px a tabela vira cartão e não há coluna. */
+@media (min-width:840px){
+  thead th:last-child, tbody td.td-acao{
+    position:sticky; right:0; z-index:1;
+    background:var(--carta); box-shadow:inset 1px 0 0 var(--linha);
+  }
+  thead th:last-child{background:var(--carta-2); z-index:2}
+  tbody tr:hover td.td-acao{background:var(--carta-2)}
+}
 
 @media (max-width:839px){
   .rolagem{overflow-x:visible; border:none; background:transparent; border-radius:0; box-shadow:none}
@@ -327,8 +557,8 @@ tr[data-abre]{cursor:pointer}
   thead{display:none}
   tbody{display:block}
   tbody tr{
-    display:block; background:var(--carta); border:1px solid var(--linha);
-    border-radius:var(--r3); padding:var(--e3); margin-bottom:var(--e3); box-shadow:var(--sombra);
+    display:block; background:var(--carta); border:1px solid var(--fio);
+    border-radius:var(--r3); padding:var(--e4); margin-bottom:var(--e3); box-shadow:var(--sombra);
   }
   tbody tr:last-child td{border-bottom:none}
   tbody td{
@@ -337,7 +567,7 @@ tr[data-abre]{cursor:pointer}
   }
   tbody td::before{
     content:attr(data-rot); font-size:11px; text-transform:uppercase; letter-spacing:.06em;
-    color:var(--ink-3); flex:0 0 auto; font-weight:650;
+    color:var(--ink-3); flex:0 0 auto; font-weight:640;
   }
   tbody td>*{min-width:0; text-align:right; overflow-wrap:anywhere}
   tbody td.td-acao{width:auto; white-space:normal; padding-top:var(--e2)}
@@ -347,14 +577,14 @@ tr[data-abre]{cursor:pointer}
 
 /* ---------- kanban ---------- */
 .k-ajuda{
-  font-size:12.5px; color:var(--ink-2); background:var(--carta); border:1px solid var(--linha);
-  border-radius:var(--r2); padding:var(--e2) var(--e3); margin-bottom:var(--e3);
+  font-size:12.5px; color:var(--ink-2); background:var(--carta); border:1px solid var(--fio);
+  border-radius:var(--r2); padding:var(--e2) var(--e3); margin-bottom:var(--e3); box-shadow:var(--sombra);
 }
 .k-atalhos{display:flex; gap:var(--e2); overflow-x:auto; padding-bottom:var(--e2); margin-bottom:var(--e2); -webkit-overflow-scrolling:touch}
 .k-atalho{
-  flex:0 0 auto; min-height:34px; padding:5px var(--e3); border-radius:999px;
+  flex:0 0 auto; min-height:34px; padding:5px var(--e4); border-radius:999px;
   border:1px solid var(--linha-2); background:var(--carta); color:var(--ink-2);
-  font-size:12.5px; font-weight:650; cursor:pointer; white-space:nowrap;
+  font-size:12.5px; font-weight:640; cursor:pointer; white-space:nowrap;
 }
 .k-atalho:hover{background:var(--carta-2); color:var(--ink)}
 @media (min-width:900px){ .k-atalhos{display:none} }
@@ -365,20 +595,24 @@ tr[data-abre]{cursor:pointer}
 }
 .kanban.arrastando{scroll-snap-type:none}
 .coluna{
-  flex:0 0 min(86vw,320px); background:var(--carta-2);
+  flex:0 0 min(86vw,320px); background:rgba(16,24,40,.028);
   border:1px solid var(--linha); border-radius:var(--r3); padding:var(--e3);
   display:flex; flex-direction:column; gap:var(--e2); scroll-snap-align:start; min-width:0;
+  transition:background var(--mv-r) var(--curva), border-color var(--mv-r) var(--curva);
 }
 @media (min-width:900px){ .coluna{flex:0 0 296px} }
 .coluna.alvo{border-color:var(--azul); background:var(--azul-luz); box-shadow:0 0 0 1px var(--azul)}
 .coluna__cab{display:flex; align-items:center; gap:var(--e2); padding:2px 2px var(--e2)}
 .coluna__pt{width:9px; height:9px; border-radius:50%; flex:0 0 auto}
-.coluna h3{font-size:13px; color:var(--ink); font-weight:650; flex:1 1 auto; min-width:0; overflow-wrap:anywhere}
-.coluna__n{font-size:12.5px; color:var(--ink-2); font-weight:650; background:var(--carta); border:1px solid var(--linha); border-radius:999px; padding:1px 8px}
-.kvazio{font-size:12.5px; color:var(--ink-3); padding:var(--e3) var(--e2); text-align:center}
+.coluna h3{font-size:13px; color:var(--ink); font-weight:640; flex:1 1 auto; min-width:0; overflow-wrap:anywhere}
+.coluna__n{font-size:12.5px; color:var(--ink-2); font-weight:640; background:var(--carta); border:1px solid var(--linha); border-radius:999px; padding:1px 8px}
+/* --ink-3 da 4.48:1 sobre --carta-2 e 4.64 sobre --fundo: abaixo do piso de
+   4.5 para texto de 12.5px. --ink-2 da 5.77 no pior caso. Texto pequeno nao
+   pode usar o tom mais claro da rampa fora do fundo branco. */
+.kvazio{font-size:12.5px; color:var(--ink-2); padding:var(--e3) var(--e2); text-align:center}
 
 .kcard{
-  background:var(--carta); border:1px solid var(--linha); border-radius:var(--r2);
+  background:var(--carta); border:1px solid var(--fio); border-radius:var(--r2);
   padding:var(--e2) var(--e2) var(--e2) 0; display:grid;
   grid-template-columns:28px 1fr; align-items:start; gap:0 var(--e1); min-width:0;
   box-shadow:var(--sombra);
@@ -386,7 +620,7 @@ tr[data-abre]{cursor:pointer}
 .kcard.pego{border-color:var(--azul); box-shadow:0 0 0 1px var(--azul)}
 .kcard.fantasma{
   position:fixed; z-index:80; pointer-events:none; width:264px; opacity:.96;
-  box-shadow:var(--sombra-2); transform:rotate(1.5deg);
+  box-shadow:var(--sombra-2); transform:rotate(1.5deg) scale(1.02);
 }
 .kcard.origem-arrasto{opacity:.35}
 .kpega{
@@ -399,7 +633,7 @@ tr[data-abre]{cursor:pointer}
 .kpega:active{cursor:grabbing}
 .kcard__nome{
   grid-column:2; text-align:left; background:none; border:none; padding:2px 0 0;
-  font-weight:650; font-size:14px; color:var(--ink); cursor:pointer;
+  font-weight:640; font-size:14px; color:var(--ink); cursor:pointer;
   overflow-wrap:anywhere; min-width:0; width:100%; border-radius:var(--r1);
 }
 .kcard__nome:hover{color:var(--azul-txt)}
@@ -408,34 +642,38 @@ tr[data-abre]{cursor:pointer}
 .kcard__pe .bt{flex:0 0 auto}
 .kmover{
   flex:1 1 auto; min-width:0; min-height:36px; font-size:13px; font-weight:600;
-  border:1px solid var(--linha-2); border-radius:var(--r1); background:var(--carta);
-  color:var(--ink-2); padding:0 26px 0 var(--e2); appearance:none; cursor:pointer;
+  border:1px solid var(--linha-2); border-radius:999px; background:var(--carta);
+  color:var(--ink-2); padding:0 26px 0 var(--e3); appearance:none; cursor:pointer;
   background-image:url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1.5 6 6.5l5-5' fill='none' stroke='%2354606E' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
-  background-repeat:no-repeat; background-position:right 8px center;
+  background-repeat:no-repeat; background-position:right 10px center;
 }
 .kcard__pil{grid-column:2; margin-top:var(--e2)}
 
 /* ---------- gaveta de detalhe ---------- */
-.fundo{position:fixed; inset:0; background:rgba(16,24,40,.45); z-index:50}
+.fundo{position:fixed; inset:0; background:rgba(16,24,40,.42); z-index:50; animation:apaga var(--mv) var(--curva) both}
+@keyframes apaga{ from{opacity:0} to{opacity:1} }
 .painel{
   position:fixed; top:0; right:0; bottom:0; z-index:60; width:min(580px,100%);
   background:var(--fundo); border-left:1px solid var(--linha);
-  overflow-y:auto; overscroll-behavior:contain; padding:0 var(--e4) var(--e7);
+  overflow-y:auto; overscroll-behavior:contain; padding:0 var(--e5) var(--e8);
+  box-shadow:var(--sombra-2);
+  animation:entra var(--mv) var(--curva) both;
 }
-@media (max-width:479px){ .painel{padding:0 var(--e3) var(--e7)} }
+@keyframes entra{ from{transform:translateX(16px); opacity:0} to{transform:none; opacity:1} }
+@media (max-width:479px){ .painel{padding:0 var(--e3) var(--e8)} }
 .painel-topo{
-  position:sticky; top:0; background:var(--carta); z-index:2;
-  display:flex; gap:var(--e3); align-items:flex-start; padding:var(--e4) 0;
+  position:sticky; top:0; background:var(--fundo); z-index:2;
+  display:flex; gap:var(--e3); align-items:flex-start; padding:var(--e5) 0;
   border-bottom:1px solid var(--linha); margin-bottom:var(--e4);
 }
-.painel-topo h2{font-size:clamp(18px,5vw,23px); overflow-wrap:anywhere; flex:1 1 auto; min-width:0}
+.painel-topo h2{font-size:clamp(19px,5vw,24px); overflow-wrap:anywhere; flex:1 1 auto; min-width:0; letter-spacing:-.022em}
 .bloco{
-  margin-bottom:var(--e3); background:var(--carta); border:1px solid var(--linha);
-  border-radius:var(--r3); padding:var(--e4); box-shadow:var(--sombra);
+  margin-bottom:var(--e3); background:var(--carta); border:1px solid var(--fio);
+  border-radius:var(--r3); padding:var(--e5); box-shadow:var(--sombra);
 }
 .bloco h3{
-  font-size:11.5px; text-transform:uppercase; letter-spacing:.07em; color:var(--ink-3);
-  margin-bottom:var(--e3); font-weight:650;
+  font-size:11px; text-transform:uppercase; letter-spacing:.07em; color:var(--ink-3);
+  margin-bottom:var(--e3); font-weight:640;
 }
 .linhas{display:grid; gap:var(--e2)}
 .linha{display:grid; grid-template-columns:minmax(96px,36%) 1fr; gap:var(--e3); align-items:baseline}
@@ -449,19 +687,20 @@ textarea{
   width:100%; max-width:100%; min-height:84px; padding:var(--e3);
   border:1px solid var(--linha-2); border-radius:var(--r1); background:var(--carta); resize:vertical;
 }
-.rot-campo{display:block; font-size:11.5px; font-weight:650; text-transform:uppercase; letter-spacing:.05em; color:var(--ink-3); margin-bottom:5px}
+.rot-campo{display:block; font-size:11px; font-weight:640; text-transform:uppercase; letter-spacing:.05em; color:var(--ink-3); margin-bottom:5px}
 .tempo{border-left:2px solid var(--linha); padding-left:var(--e3); display:grid; gap:var(--e3)}
 .tempo li{list-style:none}
 .tempo .quando{display:block; font-size:12px; color:var(--ink-3)}
 .tempo .nota{display:block; overflow-wrap:anywhere; margin-top:2px}
 .aviso-item{
-  border:1px solid var(--linha); border-radius:var(--r2); padding:var(--e3);
-  background:var(--carta); display:grid; gap:var(--e2); list-style:none;
+  border:1px solid var(--fio); border-radius:var(--r2); padding:var(--e3);
+  background:var(--carta); display:grid; gap:var(--e2); list-style:none; box-shadow:var(--sombra);
 }
 .aviso-item .erro-txt{font-size:13px; color:var(--ink); overflow-wrap:anywhere}
 .nota-driver{
-  border:1px solid var(--linha); border-left:4px solid var(--azul);
+  border:1px solid var(--fio); border-left:4px solid var(--azul);
   background:var(--carta); border-radius:var(--r2); padding:var(--e3); margin-bottom:var(--e4);
+  box-shadow:var(--sombra);
 }
 code{background:var(--carta-2); border:1px solid var(--linha); border-radius:var(--e1); padding:0 5px; font-size:.9em; font-family:var(--fn); overflow-wrap:anywhere}
 .aviso-erro-form{color:var(--alerta); font-weight:600; margin-top:var(--e2); font-size:13.5px}
@@ -471,86 +710,154 @@ code{background:var(--carta-2); border:1px solid var(--linha); border-radius:var
 </head>
 <body>
 
-<header class="topo">
-  <div class="topo-in">
+<a class="pular" href="#conteudo">Pular para o conteúdo</a>
+
+<div class="app">
+
+  <!-- ============================================================
+       A NAVEGAÇÃO — um único <nav>, duas posições.
+       ============================================================
+       Acima de 1000px ele é a barra lateral; abaixo disso o MESMO
+       elemento vira a barra inferior do celular. Não são dois menus
+       espelhados: são duas posições do mesmo, e por isso não existe
+       o bug de um ficar marcado e o outro não, nem id duplicado, nem
+       o foco do teclado parando duas vezes na mesma seção.
+
+       Continua sendo `tablist` (agora vertical no desktop): as setas
+       do teclado seguem trocando de seção, como já faziam.
+       ============================================================ -->
+  <aside class="lateral">
     <div class="marca">
+      <span class="nome">Painel de leads</span>
       <span class="sub">Nataly Ribeiro</span>
-      <h1>Painel de leads</h1>
     </div>
-    <div class="acoes-topo">
-      <a class="bt" id="btCsv" href="/crm/exportar.csv">Exportar CSV</a>
-      <button type="button" class="bt" id="btSair">Sair</button>
+
+    <nav class="nav" role="tablist" aria-label="Seções do painel" aria-orientation="vertical">
+      <button type="button" class="nav-item" role="tab" id="abaPainel" aria-controls="pPainel" aria-selected="true">
+        <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><rect x="3" y="3" width="7.5" height="8.5" rx="2"/><rect x="13.5" y="3" width="7.5" height="5.5" rx="2"/><rect x="3" y="14.5" width="7.5" height="6.5" rx="2"/><rect x="13.5" y="11.5" width="7.5" height="9.5" rx="2"/></svg>
+        <span class="rot">Painel</span><span class="qt"></span>
+      </button>
+      <button type="button" class="nav-item" role="tab" id="abaKanban" aria-controls="pKanban" aria-selected="false" tabindex="-1">
+        <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><rect x="3" y="4" width="5" height="16" rx="2"/><rect x="9.5" y="4" width="5" height="11" rx="2"/><rect x="16" y="4" width="5" height="7" rx="2"/></svg>
+        <span class="rot">Pipeline</span><span class="qt"></span>
+      </button>
+      <button type="button" class="nav-item" role="tab" id="abaLista" aria-controls="pLista" aria-selected="false" tabindex="-1">
+        <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M4 6.5h16M4 12h16M4 17.5h10"/></svg>
+        <span class="rot">Leads</span><span class="qt"></span>
+      </button>
+      <button type="button" class="nav-item" role="tab" id="abaAvisos" aria-controls="pAvisos" aria-selected="false" tabindex="-1">
+        <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M18 8.5a6 6 0 1 0-12 0c0 6-2 7.5-2 7.5h16s-2-1.5-2-7.5Z"/><path d="M10.3 19.5a2 2 0 0 0 3.4 0"/></svg>
+        <span class="rot">Avisos</span><span class="qt"></span>
+      </button>
+    </nav>
+
+    <!-- No desktop as ações da conta descem para cá: o cabeçalho fica só
+         com o nome da vista, que é o que ela precisa ler ao chegar. -->
+    <div class="lateral__pe">
+      <span class="pe-rot">No banco</span>
+      <span class="pe-n" id="peTotal">—</span>
+      <div class="acoes-pe">
+        <a class="bt bt-peq" id="btCsvLado" href="/crm/exportar.csv">Exportar CSV</a>
+        <button type="button" class="bt bt-peq" id="btSairLado">Sair</button>
+      </div>
     </div>
-  </div>
-</header>
+  </aside>
 
-<main class="envolve">
-  <div id="faixaAvisos" class="faixa oculto" role="status"></div>
+  <div class="col">
 
-  <section aria-labelledby="tKpis">
-    <h2 id="tKpis" class="sr">Os números do dia</h2>
-    <div class="kpis" id="kpis"></div>
-    <p class="resumo-linha" id="resumoLinha"></p>
-  </section>
-
-  <form class="filtros" id="filtros" role="search" autocomplete="off">
-    <div class="campo">
-      <label for="fBusca">Buscar</label>
-      <input type="search" id="fBusca" name="busca" placeholder="Nome, telefone ou @">
-    </div>
-    <details class="mais-filtros" id="maisFiltros">
-      <summary id="resumoFiltros">Filtros</summary>
-      <div class="filtros-grade">
-        <div class="campo">
-          <label for="fCompleto">Terminou o formulário?</label>
-          <select id="fCompleto" name="completo"></select>
+    <header class="topo">
+      <div class="topo-in">
+        <div class="topo__t">
+          <span class="sub">Nataly Ribeiro</span>
+          <h1 id="tituloVista">Painel</h1>
         </div>
-        <div class="campo">
-          <label for="fProduto">Produto indicado</label>
-          <select id="fProduto" name="produto_id"></select>
-        </div>
-        <div class="campo">
-          <label for="fQualif">Qualificação</label>
-          <select id="fQualif" name="qualificacao"></select>
-        </div>
-        <div class="campo">
-          <label for="fStatus">Status</label>
-          <select id="fStatus" name="status"></select>
-        </div>
-        <div class="campo">
-          <label for="fAnuncio">Origem</label>
-          <select id="fAnuncio" name="utm_content"></select>
-        </div>
-        <div class="campo">
-          <label for="fPeriodo">Período</label>
-          <select id="fPeriodo" name="periodo"></select>
-        </div>
-        <div class="campo">
-          <label for="fCidade">Cidade</label>
-          <input type="text" id="fCidade" name="cidade" placeholder="Ex.: Cambuí">
-        </div>
-        <div class="campo fim">
-          <button type="button" class="bt" id="btLimpar">Limpar filtros</button>
+        <div class="acoes-topo">
+          <a class="bt bt-peq" id="btCsv" href="/crm/exportar.csv">Exportar CSV</a>
+          <button type="button" class="bt bt-peq" id="btSair">Sair</button>
         </div>
       </div>
-    </details>
-    <p class="nota-csv oculto" id="notaCsv"></p>
-  </form>
+    </header>
 
-  <div class="abas" role="tablist" aria-label="Visões do painel">
-    <button type="button" class="aba" role="tab" id="abaLista" aria-controls="pLista" aria-selected="true">Lista</button>
-    <button type="button" class="aba" role="tab" id="abaKanban" aria-controls="pKanban" aria-selected="false" tabindex="-1">Kanban</button>
-    <button type="button" class="aba" role="tab" id="abaNumeros" aria-controls="pNumeros" aria-selected="false" tabindex="-1">Números</button>
-    <button type="button" class="aba" role="tab" id="abaAvisos" aria-controls="pAvisos" aria-selected="false" tabindex="-1">Avisos</button>
+    <main class="envolve" id="conteudo">
+      <div id="faixaAvisos" class="faixa oculto" role="status"></div>
+
+      <!-- Os filtros pertencem a QUEM TRABALHA a lista: Leads e Pipeline.
+           No Painel e nos Avisos eles ficam escondidos (não apagados: o
+           estado continua o mesmo, e o Painel avisa quando há filtro
+           ligado em vez de mostrar um número recortado em silêncio). -->
+      <form class="filtros oculto" id="filtros" role="search" autocomplete="off">
+        <div class="campo">
+          <label for="fBusca">Buscar</label>
+          <input type="search" id="fBusca" name="busca" placeholder="Nome, telefone ou @">
+        </div>
+        <details class="mais-filtros" id="maisFiltros">
+          <summary id="resumoFiltros">Filtros</summary>
+          <div class="filtros-grade">
+            <div class="campo">
+              <label for="fCompleto">Terminou o formulário?</label>
+              <select id="fCompleto" name="completo"></select>
+            </div>
+            <div class="campo">
+              <label for="fProduto">Produto indicado</label>
+              <select id="fProduto" name="produto_id"></select>
+            </div>
+            <div class="campo">
+              <label for="fQualif">Qualificação</label>
+              <select id="fQualif" name="qualificacao"></select>
+            </div>
+            <div class="campo">
+              <label for="fStatus">Status</label>
+              <select id="fStatus" name="status"></select>
+            </div>
+            <div class="campo">
+              <label for="fAnuncio">Origem</label>
+              <select id="fAnuncio" name="utm_content"></select>
+            </div>
+            <div class="campo">
+              <label for="fPeriodo">Período</label>
+              <select id="fPeriodo" name="periodo"></select>
+            </div>
+            <div class="campo">
+              <label for="fCidade">Cidade</label>
+              <input type="text" id="fCidade" name="cidade" placeholder="Ex.: Cambuí">
+            </div>
+            <div class="campo fim">
+              <button type="button" class="bt" id="btLimpar">Limpar filtros</button>
+            </div>
+          </div>
+        </details>
+        <p class="nota-csv oculto" id="notaCsv"></p>
+      </form>
+
+      <!-- ---------- 1. PAINEL ---------- -->
+      <section id="pPainel" class="vista" role="tabpanel" aria-labelledby="abaPainel" tabindex="0">
+        <div class="secao-cab">
+          <h2 id="tKpis">Os números do dia</h2>
+          <div class="seg" id="segPeriodo" role="group" aria-label="Período dos números"></div>
+        </div>
+        <div class="kpis" id="kpis"></div>
+        <p class="resumo-linha" id="resumoLinha"></p>
+        <div class="secao-cab">
+          <h2>O que os números estão dizendo</h2>
+          <p class="nota" id="notaGraficos"></p>
+        </div>
+        <div id="graficos"></div>
+      </section>
+
+      <!-- ---------- 2. PIPELINE ---------- -->
+      <section id="pKanban" class="vista" role="tabpanel" aria-labelledby="abaKanban" tabindex="0" hidden></section>
+
+      <!-- ---------- 3. LEADS ---------- -->
+      <section id="pLista" class="vista" role="tabpanel" aria-labelledby="abaLista" tabindex="0" hidden></section>
+
+      <!-- ---------- 4. AVISOS ---------- -->
+      <section id="pAvisos" class="vista" role="tabpanel" aria-labelledby="abaAvisos" tabindex="0" hidden></section>
+
+      <p id="anuncio" class="sr" role="status" aria-live="polite"></p>
+    </main>
+
   </div>
-
-  <section id="pLista" role="tabpanel" aria-labelledby="abaLista" tabindex="0"></section>
-  <section id="pKanban" role="tabpanel" aria-labelledby="abaKanban" tabindex="0" hidden></section>
-  <section id="pNumeros" role="tabpanel" aria-labelledby="abaNumeros" tabindex="0" hidden></section>
-  <section id="pAvisos" role="tabpanel" aria-labelledby="abaAvisos" tabindex="0" hidden></section>
-
-  <p id="anuncio" class="sr" role="status" aria-live="polite"></p>
-</main>
+</div>
 
 <div id="fundo" class="fundo oculto"></div>
 <aside id="painel" class="painel oculto" role="dialog" aria-modal="true" aria-labelledby="painelTitulo" tabindex="-1"></aside>
@@ -894,7 +1201,7 @@ code{background:var(--carta-2); border:1px solid var(--linha); border-radius:var
        todo e o aviso do CSV nunca calaria. Ele vai à query pelo `queryString`,
        como o parâmetro que é. */
     completo: 'sim',
-    aba: 'lista',
+    aba: 'painel',   /* a vista de entrada; `trocaAba` no início respeita a última usada */
     carregando: false,
     erro: null,
     avisos: null,
@@ -905,7 +1212,8 @@ code{background:var(--carta-2); border:1px solid var(--linha); border-radius:var
 
   var pLista = document.getElementById('pLista');
   var pKanban = document.getElementById('pKanban');
-  var pNumeros = document.getElementById('pNumeros');
+  var pPainel = document.getElementById('pPainel');
+  var elGraficos = document.getElementById('graficos');
   var pAvisos = document.getElementById('pAvisos');
   var painel = document.getElementById('painel');
   var fundo = document.getElementById('fundo');
@@ -945,7 +1253,15 @@ code{background:var(--carta-2); border:1px solid var(--linha); border-radius:var
   }
 
   function atualizaLinkCsv() {
-    document.getElementById('btCsv').setAttribute('href', '/crm/exportar.csv' + queryString());
+    /* São DOIS botões de exportar — o do cabeçalho (celular) e o do pé da
+       barra lateral (desktop). Só um está visível de cada vez, mas os dois
+       têm de carregar o MESMO recorte: atualizar um só faria o CSV do
+       desktop sair sem os filtros da tela. */
+    var href = '/crm/exportar.csv' + queryString();
+    ['btCsv', 'btCsvLado'].forEach(function (id) {
+      var a = document.getElementById(id);
+      if (a) a.setAttribute('href', href);
+    });
     /* Honestidade sobre o CSV: o período é aplicado só na tela, porque a
        rota de exportação usa o mesmo WHERE do banco, que não tem data.
        Deixar isso implícito faria a Nataly exportar 300 linhas achando que
@@ -983,14 +1299,18 @@ code{background:var(--carta-2); border:1px solid var(--linha); border-radius:var
       ? 'Filtros — ' + n + (n === 1 ? ' filtro ligado' : ' filtros ligados')
       : 'Filtros — nenhum ligado');
     var d = document.getElementById('maisFiltros');
-    if (d && n && !d.open && !window.matchMedia('(min-width:900px)').matches) d.open = true;
+    if (d && n && !d.open) d.open = true;
   }
 
-  /* No desktop os filtros nunca ficam escondidos atrás de um clique. */
+  /* A gaveta abre sozinha quando há filtro ligado — em QUALQUER largura.
+     Antes ela ficava permanentemente aberta no desktop; o motivo era bom
+     ("filtro escondido é filtro esquecido") mas a solução era cara: sete
+     campos empurravam o kanban e a lista para baixo da dobra. O que resolve
+     o motivo é abrir quando há o que mostrar, e é o que `marcaFiltros` faz. */
   var mqLargo = window.matchMedia('(min-width:900px)');
   function ajustaFiltros() {
     var d = document.getElementById('maisFiltros');
-    if (d && mqLargo.matches) d.open = true;
+    if (d && temFiltro()) d.open = true;
   }
   if (mqLargo.addEventListener) mqLargo.addEventListener('change', ajustaFiltros);
   else if (mqLargo.addListener) mqLargo.addListener(ajustaFiltros);
@@ -1016,7 +1336,20 @@ code{background:var(--carta-2); border:1px solid var(--linha); border-radius:var
       proposta: 0, valorProposta: 0,
       ganho: 0, perdido: 0,
       d7: 0, d7ant: 0,
-      serie: [], serie14: []
+      serie: [], serie14: [],
+      /* Há quanto tempo cada lead EM ABERTO está parado. A conta é sobre
+         `atualizado_em`, não sobre `criado_em`: o que interessa não é a
+         idade do lead, é há quanto tempo ninguém encosta nele. Um lead de
+         março que ela moveu ontem não está parado; um de anteontem que
+         ninguém tocou, está. */
+      espera: [
+        { rot: 'Hoje',            ate: 0,        n: 0 },
+        { rot: '1 a 3 dias',      ate: 3,        n: 0 },
+        { rot: '4 a 7 dias',      ate: 7,        n: 0 },
+        { rot: '8 a 14 dias',     ate: 14,       n: 0 },
+        { rot: 'Mais de 14 dias', ate: Infinity, n: 0 }
+      ],
+      esquecidos: 0
     };
     STATUS.forEach(function (s) { c.porStatus[s] = 0; });
     QUALIF.forEach(function (q) { c.porQualif[q] = 0; });
@@ -1050,6 +1383,13 @@ code{background:var(--carta-2); border:1px solid var(--linha); border-radius:var
         if (c.filaQualif[q] === undefined) c.filaQualif[q] = 0;
         c.filaQualif[q]++;
         if (q === 'quente') c.quentesFila++;
+        var parado = diasAtras(l.atualizado_em || l.criado_em);
+        if (parado !== null) {
+          for (var bi = 0; bi < c.espera.length; bi++) {
+            if (parado <= c.espera[bi].ate) { c.espera[bi].n++; break; }
+          }
+          if (parado > 7) c.esquecidos++;
+        }
       }
 
       var d = diasAtras(l.criado_em);
@@ -1227,16 +1567,19 @@ code{background:var(--carta-2); border:1px solid var(--linha); border-radius:var
       ['Perdidos', num(c.perdido)],
       ['Quente/morno/frio', num(c.porQualif.quente) + ' · ' + num(c.porQualif.morno) + ' · ' + num(c.porQualif.frio)]
     ];
-    partes.forEach(function (par, i) {
-      if (i) linha.appendChild(document.createTextNode(' '));
+    /* Era uma frase corrida ("Total: 246 Ganhos: 7 ..."). Virou fileira de
+       fichas com o rótulo em cima do número: o mesmo conteúdo, mas dá para
+       achar o número que se procura sem ler a linha inteira. */
+    partes.forEach(function (par) {
       var s = el('span');
-      s.appendChild(document.createTextNode(par[0] + ': '));
-      s.appendChild(el('b', null, par[1]));
+      /* o espaço no rótulo é invisível (os dois ficam em linhas separadas)
+         e existe para o textContent da ficha sair "Total 246", e não
+         "Total246" — é assim que o leitor de tela e o gate leem. */
+      poe(s, el('span', 'rr', par[0] + ' '), el('b', null, par[1]));
       linha.appendChild(s);
     });
     if (estado.leads.length >= TETO) {
-      var av = el('span', null, '⚠ mostrando os ' + num(TETO) + ' leads mais recentes');
-      av.style.color = 'var(--alerta)';
+      var av = el('span', 'teto', '⚠ mostrando os ' + num(TETO) + ' leads mais recentes');
       linha.appendChild(av);
     }
   }
@@ -1426,12 +1769,22 @@ code{background:var(--carta-2); border:1px solid var(--linha); border-radius:var
 
   /* ---------- 2/3/4. barras horizontais (com pilha opcional) ---------- */
   function grafBarras(tela, itens, opcoes) {
-    /* itens: [{rot, n, cor, seg:[{n,cor,rot}]}] */
+    /* itens: [{rot, n, cor, nota, aria, seg:[{n,cor,rot}]}] */
     limpa(tela);
+    var tudoZero = itens.every(function (x) { return !x.n; });
+    if (!itens.length || tudoZero) {
+      /* Barra nenhuma com altura nenhuma é uma caixa vazia sem explicação.
+         Um gráfico que não tem o que dizer tem de DIZER que não tem. */
+      tela.appendChild(el('p', 'viz-vazio', (opcoes && opcoes.vazio) || 'Nada para mostrar ainda.'));
+      return;
+    }
     var o = opcoes || {};
     var L = Math.max(260, tela.clientWidth || 320);
     var gut = Math.max(96, Math.min(o.gutter || 150, Math.round(L * 0.42)));
-    var mD = 40, alt = 26, esp = 10;
+    /* Uma anotação depois do número (o "−12 aqui" do funil) precisa de
+       calha própria à direita, senão ela sai por fora do cartão. */
+    var temNota = itens.some(function (x) { return x.nota; });
+    var mD = temNota ? 96 : 40, alt = 26, esp = 10;
     var H = itens.length * (alt + esp) + 4;
     var max = 1;
     itens.forEach(function (it) { if (it.n > max) max = it.n; });
@@ -1483,13 +1836,21 @@ code{background:var(--carta-2); border:1px solid var(--linha); border-radius:var
 
       var vt = svg('text', { x: gut + w + 8, y: y + alt / 2 + 4, 'font-size': 12.5, 'font-weight': 650, fill: '#101828' });
       vt.textContent = num(it.n) + (o.sufixo || '');
+      /* A anotação NÃO ganha cor própria: cor aqui viraria uma quinta
+         régua de significado. Ela é a mesma tinta secundária do resto
+         da tela, um degrau menor — 6.41:1, bem acima do piso. */
+      if (it.nota) {
+        var nt = svg('tspan', { dx: 8, fill: COR_INK2, 'font-weight': 600, 'font-size': 12 });
+        nt.textContent = it.nota;
+        vt.appendChild(nt);
+      }
       s.appendChild(vt);
 
       var alvo = svg('rect', {
         x: 0, y: y - esp / 2, width: L, height: alt + esp, fill: 'transparent', tabindex: 0, role: 'img',
-        'aria-label': it.rot + ': ' + it.n + (o.sufixoAria || '') +
+        'aria-label': it.aria || (it.rot + ': ' + it.n + (o.sufixoAria || '') +
           (it.seg && it.seg.length > 1
-            ? '. ' + it.seg.map(function (g) { return g.n + ' ' + g.rot; }).join(', ') : '')
+            ? '. ' + it.seg.map(function (g) { return g.n + ' ' + g.rot; }).join(', ') : ''))
       });
       var msg = it.rot + ' · ' + num(it.n) +
         (it.seg && it.seg.length > 1
@@ -1515,8 +1876,134 @@ code{background:var(--carta-2); border:1px solid var(--linha); border-radius:var
     return l;
   }
 
-  function desenhaNumeros() {
-    var alvo = pNumeros;
+  /* ============================================================
+     O PAINEL — os números com tela própria
+     ============================================================
+     Antes os gráficos dividiam a página com o kanban e a lista, e por
+     isso só cabiam quatro. Com tela própria cabem seis, e a régua de
+     entrada continua a mesma: só entra o que MUDA UMA DECISÃO.
+
+     O que entrou agora (e por quê):
+
+       5. "Há quanto tempo estão esperando" — a fila diz QUANTOS estão
+          em aberto; este diz há quanto tempo ninguém encosta neles. É
+          a diferença entre ter trabalho e estar perdendo lead por
+          esquecimento. Nenhum outro gráfico daqui responde isso.
+
+       6. "Onde o formulário perde gente" — o único funil de verdade
+          que este banco sustenta. Diz em qual PERGUNTA a pessoa desiste,
+          que é onde se mexe para ganhar lead sem gastar mais em anúncio.
+
+     O que foi recusado (e por quê):
+
+       · Pizza de qualificação — três fatias que a linha de fichas já
+         diz em número exato. Ângulo é a pior forma de comparar
+         grandeza; um gráfico pior que o número que ele substitui não
+         é gráfico, é enfeite.
+       · Leads por hora / por dia da semana — com o volume desta base
+         cada barra tem um punhado de leads. Ela mudaria a rotina por
+         causa de ruído, achando que viu padrão.
+       · Taxa de ganho ao longo do tempo — são 7 ganhos no total. Uma
+         linha com dois pontos de ruído sugere tendência onde não há.
+       · Cidades — ela dá o presencial em Cambuí e só. Saber que há
+         gente em Pouso Alegre não muda nada nesta temporada; o que
+         muda ("consegue vir?") já está na ficha de cada lead.
+       · Funil do pipeline (novo → ganho) — o banco guarda o status de
+         AGORA, não por onde cada lead passou. Um "perdido" pode ter
+         morrido no primeiro contato ou depois da proposta, e o gráfico
+         não tem como saber. Sairia um funil bonito e falso. Ele volta
+         no dia em que o histórico de status virar agregado — e aí é
+         endpoint novo, não chute em cima do que já existe.
+       · Leads × receita no mesmo gráfico — dois eixos verticais. É a
+         forma mais fácil de fazer duas séries parecerem correlacionadas
+         só escolhendo a escala.
+     ============================================================ */
+
+  /* Rampa SEQUENCIAL de uma cor só, clara → escura: o que ela mede é
+     tempo parado, que tem ordem. Cor categórica aqui (uma por faixa)
+     diria que as faixas são coisas diferentes, e elas são a mesma coisa
+     em graus. Os cinco passos são equidistantes em OKLab (L .63 → .37)
+     e nenhum fica abaixo de 3:1 sobre a carta branca:
+     3.56 · 4.54 · 6.07 · 8.11 · 10.62. */
+  var RAMPA_ESPERA = ['#5589D2', '#3B77C4', '#2C63A8', '#21508C', '#193F6E'];
+
+  /* A ordem das perguntas do formulário, em número, para dar para
+     comparar "chegou até onde". A 5.5 é condicional (só para quem já é
+     lash) e por isso entra como 5.5 — e fica FORA do funil desenhado,
+     senão quem nunca viu essa pergunta apareceria como desistente dela. */
+  var ORDEM_ETAPA = { '1':1, '2':2, '3':3, '4':4, '5':5, '5.5':5.5,
+                      '6':6, '7':7, '8':8, '9':9, '10':10 };
+  /* Começa no WhatsApp de propósito: o lead só é GRAVADO quando há nome
+     e WhatsApp válidos. Quem fecha a aba antes disso nunca existiu no
+     banco — desenhar as etapas 1 e 2 mostraria 100% de aproveitamento
+     em duas perguntas que ninguém mediu. */
+  var ETAPAS_FUNIL = ['3', '4', '5', '6', '7', '8', '9', '10'];
+
+  function funilFormulario() {
+    var r = estado.resumo;
+    if (!r || !r.parciais) return null;
+    var completos = Number(r.total || 0);
+    var parciais = r.parciais.porEtapa || [];
+    /* quantas pararam em cada ponto da régua */
+    function paradasEm(min, max) {
+      var n = 0;
+      parciais.forEach(function (e) {
+        var o = ORDEM_ETAPA[String(e.etapa)];
+        if (o === undefined) return;
+        if (o >= min && o < max) n += Number(e.n || 0);
+      });
+      return n;
+    }
+    function chegouAte(ordem) {
+      var n = completos;
+      parciais.forEach(function (e) {
+        var o = ORDEM_ETAPA[String(e.etapa)];
+        if (o !== undefined && o >= ordem) n += Number(e.n || 0);
+      });
+      return n;
+    }
+    /* Os rótulos das etapas foram escritos para caber na frase "parou n_o
+       WhatsApp_", então nascem em minúscula. Num eixo de gráfico eles são
+       um rótulo e não um pedaço de frase: sobe a primeira letra. */
+    function comoTitulo(t) { return t ? t.charAt(0).toUpperCase() + t.slice(1) : t; }
+    var linhas = [];
+    for (var i = 0; i < ETAPAS_FUNIL.length; i++) {
+      var et = ETAPAS_FUNIL[i];
+      var o = ORDEM_ETAPA[et];
+      var prox = (i + 1 < ETAPAS_FUNIL.length) ? ORDEM_ETAPA[ETAPAS_FUNIL[i + 1]] : Infinity;
+      linhas.push({
+        etapa: et,
+        rot: comoTitulo(rot('etapa', et)),
+        n: chegouAte(o),
+        /* quem parou NESTE ponto — inclui a 5.5 na conta da etapa 5,
+           que é onde ela de fato mora na régua */
+        perdeu: paradasEm(o, prox)
+      });
+    }
+    /* 🔴 A ÚLTIMA LINHA É O QUE FAZ ISTO SER UM FUNIL.
+       Sem ela, quem para NA última pergunta (o preço — e é aí que a
+       maioria para) aparecia dentro da barra da própria etapa: as oito
+       barras saíam do mesmo tamanho e o gráfico não mostrava queda
+       nenhuma justamente no ponto que ele existe para mostrar.
+       "Terminaram" é a única linha que não é uma pergunta: é o desfecho. */
+    linhas.push({ etapa: 'fim', rot: 'Terminaram o formulário', n: completos, perdeu: 0 });
+    if (!linhas.length || !linhas[0].n) return null;
+    var base = linhas[0].n;
+    var pior = null;
+    linhas.forEach(function (l) {
+      l.pct = base ? Math.round(1000 * l.n / base) / 10 : 0;
+      if (l.perdeu > 0 && (!pior || l.perdeu > pior.perdeu)) pior = l;
+    });
+    /* o rótulo do "porque" fala da PERGUNTA, e a linha final não é uma —
+       por isso ela nunca pode ser eleita a pior perda (perdeu = 0). */
+    return { linhas: linhas, base: base, pior: pior, completos: completos };
+  }
+
+  function desenhaPainel() {
+    var alvo = elGraficos;
+    var nota = document.getElementById('notaGraficos');
+    limpa(nota);
+
     if (estado.carregando && !estado.leads.length) return desenhaCarregando(alvo);
     if (estado.erro) return desenhaErro(alvo, estado.erro, carregaLeads);
 
@@ -1526,6 +2013,20 @@ code{background:var(--carta-2); border:1px solid var(--linha); border-radius:var
       return desenhaVazio(alvo, temFiltro()
         ? 'Nenhum lead com esses filtros — não há o que somar.'
         : 'Nenhum lead ainda. Os gráficos aparecem quando o primeiro chegar.');
+    }
+
+    /* HONESTIDADE: no Painel os filtros ficam escondidos, e um número
+       recortado sem dizer que está recortado é um número que mente.
+       Se há filtro ligado, a tela fala — e oferece o caminho de volta. */
+    if (temFiltro()) {
+      nota.appendChild(document.createTextNode('Estes números são de um recorte filtrado. '));
+      var lp = el('button', 'bt bt-peq', 'Ver tudo');
+      lp.type = 'button';
+      lp.style.marginLeft = '4px';
+      lp.addEventListener('click', function () { document.getElementById('btLimpar').click(); });
+      nota.appendChild(lp);
+    } else {
+      nota.appendChild(document.createTextNode('Todos os leads, sem filtro.'));
     }
 
     var c = calcula(leads);
@@ -1539,19 +2040,49 @@ code{background:var(--carta-2); border:1px solid var(--linha); border-radius:var
       return [fmtCurto.format(p.data), num(p.n)];
     })));
 
-    /* --- 2 e 3 lado a lado --- */
-    var duo = el('div', 'duo');
+    /* --- 2 e 3 lado a lado: onde a fila empoça, e há quanto tempo --- */
+    var duo1 = el('div', 'duo');
 
     var f2 = figura('Onde os leads estão agora',
       'Mostra em qual etapa a fila empoça. Muitos contatados e pouca proposta é gargalo de conversa, não de tráfego.');
-    duo.appendChild(f2);
+    duo1.appendChild(f2);
     f2.appendChild(tabelaViz('Status', STATUS.map(function (s) {
       return [rot('status', s), num(c.porStatus[s] || 0)];
     })));
 
+    /* NOVO — o gráfico que diz se ela está perdendo lead por esquecimento */
+    var f5 = figura('Há quanto tempo estão esperando',
+      c.esquecidos
+        ? (c.esquecidos === 1
+            ? '1 lead em aberto está há mais de uma semana sem ninguém encostar. A conta é do último toque, não da data de entrada.'
+            : num(c.esquecidos) + ' leads em aberto estão há mais de uma semana sem ninguém encostar. A conta é do último toque, não da data de entrada.')
+        : 'Nenhum lead em aberto passou de uma semana sem contato. A conta é do último toque, não da data de entrada.');
+    duo1.appendChild(f5);
+    f5.appendChild(tabelaViz('Parado há', c.espera.map(function (b) {
+      return [b.rot, num(b.n)];
+    }), 'Leads em aberto'));
+    caixa.appendChild(duo1);
+
+    /* --- 4. NOVO: onde o formulário perde gente --- */
+    var fun = funilFormulario();
+    var f6 = null;
+    if (fun) {
+      f6 = figura('Onde o formulário perde gente',
+        (fun.pior
+          ? 'A maior perda é em "' + fun.pior.rot + '": ' + num(fun.pior.perdeu) +
+            (fun.pior.perdeu === 1 ? ' pessoa parou' : ' pessoas pararam') + ' aí. '
+          : 'Ninguém está parando no meio. ') +
+        'Mexer na pergunta que mais derruba rende lead sem gastar mais um real em anúncio. ' +
+        'Conta o formulário inteiro, sem filtro, e começa no WhatsApp — antes dele ninguém é gravado.');
+      caixa.appendChild(f6);
+      f6.appendChild(tabelaViz('Pergunta', fun.linhas.map(function (l) {
+        return [l.rot, num(l.n) + ' (' + String(l.pct).replace('.', ',') + '%)'];
+      }), 'Chegaram até aqui'));
+    }
+
+    /* --- 5 e 6 lado a lado: produto e origem --- */
     var f3 = figura('Produto que a árvore indicou',
       'É o que ela vai defender na conversa. Se um produto some daqui, o problema está na árvore ou no anúncio.');
-    duo.appendChild(f3);
     var prodItens = PRODUTOS.map(function (p) {
       return { rot: rot('produto_curto', p), n: c.porProduto[p] || 0, cor: COR_AZUL };
     }).sort(function (a, b) { return b.n - a.n; });
@@ -1559,9 +2090,9 @@ code{background:var(--carta-2); border:1px solid var(--linha); border-radius:var
       prodItens.push({ rot: 'Sem produto', n: c.porProduto['(sem produto)'], cor: '#6B7480' });
     }
     f3.appendChild(tabelaViz('Produto', prodItens.map(function (p) { return [p.rot, num(p.n)]; })));
-    caixa.appendChild(duo);
+    caixa.appendChild(f3);
 
-    /* --- 4. origem × qualidade --- */
+    /* --- origem × qualidade --- */
     var f4 = figura('Origem — e quanta gente quente ela traz',
       'Volume sozinho engana: um anúncio pode encher a lista de gente que não compra. A barra escura é o que interessa.');
     var origens = Object.keys(c.porOrigem).map(function (k) {
@@ -1588,6 +2119,20 @@ code{background:var(--carta-2); border:1px solid var(--linha); border-radius:var
       grafBarras(f2.tela, STATUS.map(function (s) {
         return { rot: rot('status', s), n: c.porStatus[s] || 0, cor: COR[s] };
       }), { gutter: 128, sufixoAria: ' leads' });
+      grafBarras(f5.tela, c.espera.map(function (b, i) {
+        return { rot: b.rot, n: b.n, cor: RAMPA_ESPERA[i] };
+      }), { gutter: 132, sufixoAria: ' leads em aberto', vazio: 'Nenhum lead em aberto.' });
+      if (f6) {
+        grafBarras(f6.tela, fun.linhas.map(function (l) {
+          return {
+            rot: l.rot, n: l.n, cor: COR_AZUL,
+            nota: l.perdeu ? '−' + num(l.perdeu) + ' aqui' : '',
+            aria: l.rot + ': ' + l.n + ' chegaram até aqui' +
+                  (l.perdeu ? ', ' + l.perdeu + ' pararam nesta pergunta' : '')
+          };
+        }), { gutter: 210, sufixoAria: ' pessoas' });   /* 168 cortava
+               "a meta de renda e quando quer começar" no meio */
+      }
       grafBarras(f3.tela, prodItens, { gutter: 150, sufixoAria: ' leads' });
       grafBarras(f4.tela, topo.map(function (o) {
         return {
@@ -1634,6 +2179,53 @@ code{background:var(--carta-2); border:1px solid var(--linha); border-radius:var
     cp.value = estado.completo || 'sim';
 
     preencheProdutos();
+    montaSegPeriodo();
+  }
+
+  /* ============================================================
+     O período, no Painel, é um segmentado
+     ============================================================
+     No Painel os filtros ficam escondidos — mas o período é o único
+     recorte que faz sentido para um agregado ("como foi a semana?"),
+     e enterrá-lo dentro de um menu que nem está na tela seria esconder
+     a única pergunta que ela faz olhando para esta vista.
+
+     É outro CONTROLE, não outro ESTADO: escreve no mesmo
+     `estado.periodo` que o `<select>` da lista, e `escreveFiltros()`
+     marca os dois. Dois controles com estados próprios discordariam no
+     primeiro dia e ninguém saberia qual manda.
+     ============================================================ */
+  function montaSegPeriodo() {
+    var seg = document.getElementById('segPeriodo');
+    if (!seg) return;
+    limpa(seg);
+    PERIODOS.forEach(function (x) {
+      var b = el('button', null, x.v === '' ? 'Tudo' : x.r.replace('Últimos ', ''));
+      b.type = 'button';
+      b.setAttribute('data-v', x.v);
+      b.setAttribute('aria-pressed', estado.periodo === x.v ? 'true' : 'false');
+      b.addEventListener('click', function () {
+        if (estado.periodo === x.v) return;
+        estado.periodo = x.v;
+        document.getElementById('fPeriodo').value = x.v;
+        marcaSegPeriodo();
+        atualizaLinkCsv();
+        desenhaKpis();
+        desenhaContadoresAba();
+        desenhaConteudo();
+        anuncia(visiveis().length + ' leads no período escolhido.');
+      });
+      seg.appendChild(b);
+    });
+  }
+  function marcaSegPeriodo() {
+    var seg = document.getElementById('segPeriodo');
+    if (!seg) return;
+    var bs = seg.querySelectorAll('button');
+    for (var i = 0; i < bs.length; i++) {
+      bs[i].setAttribute('aria-pressed',
+        bs[i].getAttribute('data-v') === estado.periodo ? 'true' : 'false');
+    }
   }
 
   /* O select de produto vem com a CONTAGEM do resumo ao lado — assim ele
@@ -1685,6 +2277,7 @@ code{background:var(--carta-2); border:1px solid var(--linha); border-radius:var
     document.getElementById('fAnuncio').value = estado.filtros.utm_content;
     document.getElementById('fPeriodo').value = estado.periodo;
     document.getElementById('fCompleto').value = estado.completo || 'sim';
+    marcaSegPeriodo();
     atualizaLinkCsv();
   }
 
@@ -1755,15 +2348,32 @@ code{background:var(--carta-2); border:1px solid var(--linha); border-radius:var
     }
   }
 
+  /* Os números ao lado dos rótulos da navegação. Só aparecem no desktop
+     (no celular a barra de baixo não tem largura para eles, e o CSS os
+     esconde): o rótulo tem de continuar legível antes de tudo.
+
+     ⚠️ Escrevem no <span class="qt"> de cada item, NUNCA no botão inteiro —
+     limpar o botão apagaria o ícone e o rótulo junto. */
+  function porNav(id) {
+    var b = document.getElementById(id);
+    return b ? b.querySelector('.qt') : null;
+  }
   function desenhaContadoresAba() {
     var n = visiveis().length;
-    var b = document.getElementById('abaLista');
-    limpa(b);
-    b.appendChild(document.createTextNode('Lista '));
-    b.appendChild(el('span', 'qt', '(' + num(n) + ')'));
-    var k = document.getElementById('abaKanban');
-    limpa(k);
-    k.appendChild(document.createTextNode('Kanban'));
+    var q = porNav('abaLista');
+    if (q) q.textContent = num(n);
+    var c = estado.calc;
+    var qk = porNav('abaKanban');
+    if (qk) qk.textContent = c ? num(c.fila) : '';
+    var qa = porNav('abaAvisos');
+    var falhos = (estado.resumo && estado.resumo.avisosFalhos) || 0;
+    if (qa) qa.textContent = falhos ? num(falhos) : '';
+    var qp = porNav('abaPainel');
+    if (qp) qp.textContent = '';
+    var pe = document.getElementById('peTotal');
+    if (pe) {
+      pe.textContent = estado.resumo ? num(estado.resumo.total) : num(estado.leads.length);
+    }
   }
 
   /* ============================================================
@@ -2654,25 +3264,73 @@ code{background:var(--carta-2); border:1px solid var(--linha); border-radius:var
   });
 
   /* ============================================================
-     Abas
+     NAVEGAÇÃO — quatro seções, um <nav> só
+     ============================================================
+     A página única virou quatro vistas. Cada uma responde a uma
+     pergunta diferente e por isso não deviam dividir a mesma tela:
+
+       Painel   — "como estão as coisas?"    (números e gráficos)
+       Pipeline — "o que eu faço agora?"     (o kanban de sempre)
+       Leads    — "cadê a fulana?"           (a lista, busca e filtros)
+       Avisos   — "algum WhatsApp não saiu?"
+
+     Continua sendo um `tablist` com as setas do teclado: mudou a
+     posição na tela, não a semântica.
      ============================================================ */
   var ABAS = [
-    { id: 'lista', botao: 'abaLista', painel: pLista },
-    { id: 'kanban', botao: 'abaKanban', painel: pKanban },
-    { id: 'numeros', botao: 'abaNumeros', painel: pNumeros },
-    { id: 'avisos', botao: 'abaAvisos', painel: pAvisos }
+    { id: 'painel', botao: 'abaPainel', painel: pPainel, titulo: 'Painel' },
+    { id: 'kanban', botao: 'abaKanban', painel: pKanban, titulo: 'Pipeline' },
+    { id: 'lista',  botao: 'abaLista',  painel: pLista,  titulo: 'Leads' },
+    { id: 'avisos', botao: 'abaAvisos', painel: pAvisos, titulo: 'Avisos' }
   ];
+
+  /* Os filtros só aparecem onde recortam alguma coisa. No Painel e nos
+     Avisos eles não somem do ESTADO — somem da tela; o Painel avisa,
+     em texto, quando está mostrando um recorte. */
+  var COM_FILTRO = { lista: true, kanban: true };
+
+  /* A última vista fica guardada no aparelho dela. Ela abre isto dez
+     vezes por dia: cair sempre no Painel obrigaria um toque a mais em
+     toda sessão de quem só quer trabalhar a lista. Na primeira visita
+     abre no Painel, que é a visão geral. */
+  var CHAVE_VISTA = 'crm.vista';
+  function vistaGuardada() {
+    try {
+      var v = window.localStorage.getItem(CHAVE_VISTA);
+      for (var i = 0; i < ABAS.length; i++) if (ABAS[i].id === v) return v;
+    } catch (e) { /* modo privado, armazenamento bloqueado: segue no padrão */ }
+    return 'painel';
+  }
+  function guardaVista(v) {
+    try { window.localStorage.setItem(CHAVE_VISTA, v); } catch (e) {}
+  }
 
   function trocaAba(qual, foca) {
     estado.aba = qual;
+    guardaVista(qual);
+    var titulo = 'Painel';
     ABAS.forEach(function (a) {
       var b = document.getElementById(a.botao);
       var ativa = a.id === qual;
       b.setAttribute('aria-selected', ativa ? 'true' : 'false');
       b.setAttribute('tabindex', ativa ? '0' : '-1');
       a.painel.hidden = !ativa;
+      /* A vista entra com um movimento curto (180ms, só opacidade e 6px
+         de subida). Reiniciar a animação exige tirar e repor a classe —
+         sem isso o navegador não reconhece que ela deve rodar de novo. */
+      if (ativa) {
+        a.painel.classList.remove('vista');
+        void a.painel.offsetWidth;
+        a.painel.classList.add('vista');
+        titulo = a.titulo;
+      }
       if (ativa && foca) b.focus();
     });
+    var t = document.getElementById('tituloVista');
+    if (t) t.textContent = titulo;
+    document.title = titulo + ' · Leads · Nataly Ribeiro';
+    var f = document.getElementById('filtros');
+    if (f) f.classList.toggle('oculto', !COM_FILTRO[qual]);
     desenhaConteudo();
     if (qual === 'avisos') carregaAvisos();
   }
@@ -2681,7 +3339,12 @@ code{background:var(--carta-2); border:1px solid var(--linha); border-radius:var
     var b = document.getElementById(a.botao);
     b.addEventListener('click', function () { trocaAba(a.id, false); });
     b.addEventListener('keydown', function (ev) {
-      var passo = ev.key === 'ArrowRight' ? 1 : (ev.key === 'ArrowLeft' ? -1 : 0);
+      /* A lista é vertical no desktop e horizontal no celular: as quatro
+         setas andam nela, senão a direção certa depende da largura da
+         tela — e ninguém adivinha isso. */
+      var k = ev.key;
+      var passo = (k === 'ArrowRight' || k === 'ArrowDown') ? 1
+                : ((k === 'ArrowLeft' || k === 'ArrowUp') ? -1 : 0);
       if (!passo) return;
       ev.preventDefault();
       trocaAba(ABAS[(i + passo + ABAS.length) % ABAS.length].id, true);
@@ -2692,7 +3355,7 @@ code{background:var(--carta-2); border:1px solid var(--linha); border-radius:var
     _redraw = null;
     if (estado.aba === 'lista') desenhaLista();
     else if (estado.aba === 'kanban') desenhaKanban();
-    else if (estado.aba === 'numeros') desenhaNumeros();
+    else if (estado.aba === 'painel') desenhaPainel();
     else desenhaAvisos();
   }
 
@@ -2765,8 +3428,12 @@ code{background:var(--carta-2); border:1px solid var(--linha); border-radius:var
   /* ============================================================
      Sair
      ============================================================ */
-  document.getElementById('btSair').addEventListener('click', function () {
-    api('/crm/sair', { method: 'POST' }).then(paraLogin).catch(paraLogin);
+  ['btSair', 'btSairLado'].forEach(function (id) {
+    var b = document.getElementById(id);
+    if (!b) return;
+    b.addEventListener('click', function () {
+      api('/crm/sair', { method: 'POST' }).then(paraLogin).catch(paraLogin);
+    });
   });
 
   /* ============================================================
@@ -2787,6 +3454,10 @@ code{background:var(--carta-2); border:1px solid var(--linha); border-radius:var
   atualizaLinkCsv();
   desenhaKpis();
   desenhaContadoresAba();
+  /* A vista é escolhida ANTES do primeiro fetch: assim a tela já nasce na
+     seção certa, com o título certo e os filtros no estado certo — em vez
+     de aparecer no Painel e pular para outra seção meio segundo depois. */
+  trocaAba(vistaGuardada(), false);
   carregaResumo();
   carregaLeads().then(function () {
     var m = /(?:^|#|&)lead=(\d+)/.exec(window.location.hash || '');

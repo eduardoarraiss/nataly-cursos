@@ -5,11 +5,12 @@
   "main": "server.js",
   "scripts": {
     "start": "node server.js",
-    "teste": "npm run teste:arvore && npm run teste:unidade && npm run teste:aviso && npm run teste:parcial",
+    "teste": "npm run teste:arvore && npm run teste:unidade && npm run teste:aviso && npm run teste:parcial && npm run teste:recomendacao",
     "teste:arvore": "node funil-presencial/teste-arvore.js",
     "teste:unidade": "FUNIL_DEV_DIR=.dados-teste node funil-presencial/teste-unidade.js",
     "teste:aviso": "FUNIL_DEV_DIR=.dados-teste node funil-presencial/teste-aviso.js",
     "teste:parcial": "FUNIL_DEV_DIR=.dados-teste node funil-presencial/teste-parcial.js",
+    "teste:recomendacao": "FUNIL_DEV_DIR=.dados-teste node funil-presencial/teste-recomendacao.js",
     "teste:formulario": "node funil-presencial/teste-formulario.js",
     "teste:rastreamento": "node funil-presencial/teste-rastreamento.js",
     "senha": "node funil-presencial/gerar-senha.js"
