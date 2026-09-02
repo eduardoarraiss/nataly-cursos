@@ -1130,14 +1130,36 @@ privacidade</a>.</span></p>
       }
       if (ev.key === 'Escape') { if (aberta) { ev.stopPropagation(); fecha(); } return; }
       if (ev.key === 'Enter') {
-        /* 🔴 Enter aqui NÃO pode avançar a pergunta: o listener global do
-           formulário avança no Enter, e sem este `stopPropagation` escolher um
-           estado com o teclado pularia para a pergunta seguinte no mesmo
-           toque — a pessoa escolheria "São Paulo" e veria a tela do WhatsApp
-           sem entender o que aconteceu. */
-        if (aberta && ativo >= 0 && filtradas[ativo]) {
-          ev.preventDefault(); ev.stopPropagation();
+        /* 🔴 Enter aqui NUNCA pode escapar para o formulário, ABERTA OU NÃO.
+           O listener global avança a pergunta no Enter. A versão anterior só
+           barrava o evento quando a lista estava aberta COM item ativo — e
+           quando ela não abria (arranque lento, primeira digitação), o Enter
+           vazava e pulava a pergunta do estado.
+           Pior: com a lista fechada, `filtradas` ainda era a lista INTEIRA e
+           `ativo` valia 0, então escolher pelo índice devolvia o primeiro
+           estado do alfabeto. Alguém de São Paulo era gravada como do ACRE.
+           Medido em 02/09/2026: falhou em 2 de 3 rodadas com servidor frio.
+
+           Agora: barra sempre, e resolve pelo TEXTO quando não há item ativo —
+           `resolveTexto()` compara o que ela escreveu, em vez de chutar índice. */
+        ev.preventDefault();
+        ev.stopPropagation();
+        /* 🔴 REFILTRA ANTES DE DECIDIR.
+           Escolher por `filtradas[ativo]` sem refiltrar confia num estado que
+           pode estar velho: se o `input` ainda nao processou (digitacao rapida,
+           colar, autopreenchimento), `filtradas` continua sendo a lista INTEIRA
+           com `ativo = 0` — e o Enter devolve o primeiro estado do alfabeto.
+           Alguem de Sao Paulo virava do ACRE, e o campo ainda mostrava "Acre"
+           como se ela tivesse escolhido.
+           Refiltrar aqui custa um laco de 27 itens e elimina a classe inteira:
+           o que decide passa a ser o TEXTO que esta no campo, sempre. */
+        var digitado = String(cbBusca.value || '');
+        filtra(digitado);
+        if (chave(digitado) && filtradas.length && ativo >= 0 && filtradas[ativo]) {
           escolhe(filtradas[ativo][0]);
+        } else {
+          resolveTexto();
+          fecha();
         }
       }
     });
@@ -1419,7 +1441,9 @@ privacidade</a>.</span></p>
       var alvo = etapas.filter(function (el) { return !el.hidden; })[0];
       var pri = alvo && alvo.querySelector('input:not([type=radio]):not([tabindex="-1"]), textarea, input[type=radio]');
       if (pri) { try { pri.focus({ preventScroll: true }); } catch (e) { pri.focus(); } }
-      window.scrollTo({ top: 0, behavior: 'smooth' });
+      /* sem `smooth`: a animacao pode ser interrompida pela troca de tela
+         seguinte e deixar a pagina numa posicao herdada. */
+      vaiProTopo();
     }
     salvaRascunho();
   }
@@ -1740,6 +1764,28 @@ privacidade</a>.</span></p>
 
      🔴 NENHUM `Lead` SAI DAQUI. O único evento é o `ViuRecomendacao`, que
         `desenhaRecomendacao()` dispara. */
+  /* 🔴 Rolar para o topo UMA VEZ nao basta.
+     A troca de tela esconde o formulario, desenha a recomendacao e mostra o
+     bloco — tudo no mesmo instante. O `scrollTo` roda antes de o navegador
+     terminar de recalcular o layout, e qualquer ajuste que chegue depois
+     (imagem que carrega, fonte que troca, bloco que muda de altura) desloca a
+     pagina. O resultado e a tela "nascer rolada" e a recomendacao ficar acima
+     da dobra, com a pessoa vendo so o fim.
+     Medido em 02/09/2026: falhou em 1 de 8 rodadas do gate, e a que falhou foi
+     a PRIMEIRA depois de reiniciar o servidor — ou seja, so aparece quando a
+     resposta demora. Em rede de celular ruim, que e metade do publico de
+     anuncio, demora e o normal.
+     Por isso a posicao e reafirmada nos dois quadros seguintes. */
+  function vaiProTopo() {
+    window.scrollTo(0, 0);
+    try {
+      requestAnimationFrame(function () {
+        window.scrollTo(0, 0);
+        requestAnimationFrame(function () { window.scrollTo(0, 0); });
+      });
+    } catch (e) {}
+  }
+
   function mostraRecomendacao(dados, rec) {
     recomendado = true;
     enviando = false;
@@ -1761,7 +1807,7 @@ privacidade</a>.</span></p>
        `preventScroll` no foco + rolagem instantânea: o foco vai para quem
        usa leitor de tela, e a página vai para o topo, sem os dois brigarem. */
     try { recomendacao.focus({ preventScroll: true }); } catch (e) { recomendacao.focus(); }
-    window.scrollTo(0, 0);
+    vaiProTopo();
     /* 🔴 O rascunho NÃO é apagado aqui. Se ela recarregar a página nesta tela
        — e recarregar na hora de decidir é comum — o rascunho é o que traz de
        volta as respostas E o mesmo `lead_uid`, para ela continuar na MESMA
@@ -1919,7 +1965,7 @@ privacidade</a>.</span></p>
     recomendacao.hidden = true;
     obrigado.hidden = false;
     try { obrigado.focus({ preventScroll: true }); } catch (e) { obrigado.focus(); }
-    window.scrollTo(0, 0);
+    vaiProTopo();
     try { localStorage.removeItem(CHAVE); } catch (e) {}
   }
 

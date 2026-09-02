@@ -1,6 +1,7 @@
 const express = require('express');
 const path = require('path');
 const fs = require('fs');
+const crypto = require('crypto');
 const zlib = require('zlib');
 
 const app = express();
@@ -150,8 +151,10 @@ function injetaHotjar(html) {
 // Com o Hotjar DESLIGADO continua um sendFile puro (zero mudança de comportamento no ar).
 // Com o Hotjar ligado, lê o HTML do cache (mesmo rawHtml que renderVenda usa) e injeta.
 const pagina = (file) => (_req, res) => {
-  if (!HOTJAR_SNIPPET) return res.sendFile(path.join(PUBLIC, file));
-  res.type('html').send(injetaHotjar(rawHtml(file)));
+  /* Nao usa mais sendFile: o arquivo em disco nao tem o carimbo de versao nos
+     scripts, e era por ai que o HTML novo saia apontando para o /js/ antigo. */
+  const html = rawHtml(file);
+  res.type('html').send(HOTJAR_SNIPPET ? injetaHotjar(html) : html);
 };
 
 app.get('/', pagina('home.html'));              // home oficial (placeholder; futuro site)
@@ -373,8 +376,33 @@ const RELAMPAGO_TOPO_FAIXA = `<div class="rel3-faixa"><span class="rel3-lead">&#
 
 // Renderiza a página de venda aplicando a fase (checkout, bloco de preço, labels e value).
 const _rawCache = {};
+/* ---------- versao dos estaticos, para o cache nao servir codigo velho ----------
+   🔴 A Cloudflare REESCREVE o Cache-Control que este servidor manda: pedimos
+   `no-cache` e ela entrega `max-age=14400` ao navegador (Browser Cache TTL do
+   painel dela). Ou seja, pelo cabecalho nao da para garantir nada.
+   A unica defesa que nao depende de configuracao de CDN e mudar a URL: se o
+   endereco muda quando o arquivo muda, nao existe versao velha para servir.
+   O HTML vai com `max-age=0`, entao a URL nova chega na hora. */
+const _verCache = {};
+function verDe(rel) {
+  if (_verCache[rel]) return _verCache[rel];
+  try {
+    const buf = fs.readFileSync(path.join(PUBLIC, rel));
+    _verCache[rel] = crypto.createHash('sha1').update(buf).digest('hex').slice(0, 8);
+  } catch (e) { _verCache[rel] = String(Date.now()); }
+  return _verCache[rel];
+}
+/* Carimba ?v=<hash> em todo /js/*.js e /css/*.css referenciado no HTML.
+   Feito na leitura, que ja e cacheada em memoria: custo zero por requisicao. */
+function versiona(html) {
+  return html.replace(/(src|href)="(\/(?:js|css)\/[^"?#]+\.(?:js|css))"/g,
+    (m, attr, rel) => attr + '="' + rel + '?v=' + verDe(rel.slice(1)) + '"');
+}
+
 function rawHtml(file) {
-  if (!_rawCache[file]) _rawCache[file] = fs.readFileSync(path.join(PUBLIC, file), 'utf8');
+  if (!_rawCache[file]) {
+    _rawCache[file] = versiona(fs.readFileSync(path.join(PUBLIC, file), 'utf8'));
+  }
   return _rawCache[file];
 }
 function renderVenda(file, fase, opts) {
