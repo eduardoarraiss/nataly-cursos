@@ -821,10 +821,27 @@ privacidade</a>.</span></p>
   var form = document.getElementById('insc-form');
   if (!form) return;
 
-  var CHAVE = 'nr_insc_presencial_v2';   /* v2: a árvore mudou os campos; um
-     rascunho da versão antiga restauraria respostas que não existem mais e a
-     pessoa cairia numa etapa vazia sem entender por quê. Chave nova = começo
-     limpo, uma vez só, para quem tinha rascunho pendente. */
+  /* 🔴 A CHAVE MUDA SEMPRE QUE O FORMULÁRIO MUDA DE FORMA.
+     v2 foi quando a árvore trocou os campos. v3 é 02/09/2026, quando a tela
+     final virou recomendação-depois-confirmação: quem tinha rascunho da versão
+     da mesma manhã era restaurado sobre um formulário que já era outro, e o
+     resultado era a tela travando na recomendação — sem erro, sem aviso.
+     Aconteceu com o Edu, que preencheu o formulário várias vezes no dia.
+
+     Esquecer de trocar esta chave é o erro fácil aqui: o defeito NÃO aparece
+     em teste, porque teste sempre roda em sessão limpa. Só aparece para quem
+     já tinha usado o formulário antes — que é justamente quem testa. */
+  var CHAVE = 'nr_insc_presencial_v3';
+
+  /* Rascunho de versão anterior não é restaurado NEM fica ocupando espaço. */
+  try {
+    for (var _i = localStorage.length - 1; _i >= 0; _i--) {
+      var _k = localStorage.key(_i);
+      if (_k && _k.indexOf('nr_insc_presencial_') === 0 && _k !== CHAVE) {
+        localStorage.removeItem(_k);
+      }
+    }
+  } catch (e) {}
 
   /* A FILA DE ETAPAS. Não é mais uma contagem de 1 a 9: a pergunta 5.5 só
      existe para quem já trabalha com cílios, então o total muda de pessoa
