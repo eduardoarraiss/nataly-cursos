@@ -1,10 +1,111 @@
 const express = require('express');
 const path = require('path');
 const fs = require('fs');
+const zlib = require('zlib');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
 const PUBLIC = path.join(__dirname, 'public');
+
+// ============================================================
+//  COMPRESSÃO (02/09/2026) — o site servia TUDO sem comprimir
+// ============================================================
+//  Medido em 390px, primeira visita, cache desligado: a /profissao-lash-presencial
+//  descia 97 KB de HTML cru e a /inscricao-presencial 60 KB. Texto comprime de
+//  quatro a seis vezes; esses bytes eram desperdício puro, e no 4G de quem clica
+//  num anúncio eles são segundos.
+//
+//  Escrito com o `zlib` do próprio Node, e não com o pacote `compression`,
+//  porque acrescentar dependência de produção não é decisão de quem escreve o
+//  código — e aqui não faz falta nenhuma.
+//
+//  🔴 QUATRO TRAVAS, e cada uma existe por um motivo concreto:
+//
+//   1. /api/ e /crm NÃO PASSAM POR AQUI. São o formulário que grava a venda e
+//      o painel com dado pessoal de terceiro. Eles não têm peso relevante
+//      (JSON pequeno) e não há ganho que pague o risco de mexer neles.
+//   2. REQUISIÇÃO COM `Range` PASSA DIREITO. É assim que o navegador busca a
+//      VSL de 21 MB, e é assim que o gate confere os assets pesados
+//      (`curl -r 0-2047`). Comprimir uma resposta parcial quebra o vídeo.
+//   3. SÓ TIPO DE TEXTO. JPEG, MP4 e WOFF2 já vêm comprimidos: passá-los pelo
+//      gzip gastaria CPU para deixar o arquivo do mesmo tamanho ou maior.
+//   4. 204 E 304 NÃO TÊM CORPO. Escrever bytes de gzip num 304 devolveria uma
+//      resposta que o navegador não sabe ler.
+// ============================================================
+const COMPRIMIVEL = /^(?:text\/(?:html|css|plain|csv)|application\/(?:javascript|json)|image\/svg\+xml)/i;
+const MIN_GZIP = 1024;   // abaixo disso o cabeçalho do gzip come o ganho
+
+app.use((req, res, next) => {
+  if (req.path.indexOf('/api/') === 0 || req.path.indexOf('/crm') === 0) return next();
+  if (req.headers.range) return next();
+  if (req.method === 'HEAD') return next();
+  if (!/\bgzip\b/i.test(String(req.headers['accept-encoding'] || ''))) return next();
+
+  const write = res.write.bind(res);
+  const end = res.end.bind(res);
+  let pedacos = [];      // o corpo, juntado antes de comprimir
+  let passar = null;     // true = deixa passar cru (decidido no 1º write)
+
+  /* 🔴 JUNTA O CORPO E COMPRIME UMA VEZ, em vez de empurrar por um stream.
+     A primeira versão disto plugava um `zlib.createGzip()` entre o `sendFile`
+     e o socket. Funcionava nos cabeçalhos e travava no corpo: saíam os 10
+     bytes do cabeçalho do gzip e a resposta nunca fechava — o navegador
+     ficava girando. Contrapressão de pipe com um transform no meio tem mais
+     casos de borda do que este site precisa resolver.
+     Aqui não há stream nenhum: as respostas que passam por este caminho são
+     texto de no máximo uma centena de KB (o maior HTML do site tem 97 KB), e
+     juntá-las na memória é barato e não tem caso de borda.
+     Nada de binário grande passa por aqui — o filtro de tipo e a saída
+     antecipada do `Range` já mandaram o vídeo de 21 MB embora lá em cima. */
+  function deixaPassar() {
+    if (passar !== null) return passar;
+    const tipo = String(res.getHeader('Content-Type') || '');
+    passar = !!(res.getHeader('Content-Encoding') || !COMPRIMIVEL.test(tipo) ||
+                res.statusCode === 204 || res.statusCode === 304);
+    return passar;
+  }
+
+  res.write = function (pedaco, cod, cb) {
+    if (deixaPassar()) return write(pedaco, cod, cb);
+    if (pedaco) pedacos.push(Buffer.isBuffer(pedaco) ? pedaco : Buffer.from(pedaco, typeof cod === 'string' ? cod : 'utf8'));
+    if (typeof cod === 'function') cod();
+    else if (typeof cb === 'function') cb();
+    return true;
+  };
+
+  res.end = function (pedaco, cod, cb) {
+    if (typeof pedaco === 'function') { cb = pedaco; pedaco = undefined; }
+    if (deixaPassar()) return end(pedaco, cod, cb);
+    if (pedaco) pedacos.push(Buffer.isBuffer(pedaco) ? pedaco : Buffer.from(pedaco, typeof cod === 'string' ? cod : 'utf8'));
+    const cru = Buffer.concat(pedacos);
+    pedacos = [];
+
+    /* Corpo pequeno não vale o gzip: o cabeçalho e o rodapé do formato somam
+       mais do que se ganha, e a resposta sairia MAIOR. */
+    if (cru.length < MIN_GZIP) {
+      res.setHeader('Content-Length', String(cru.length));
+      return end(cru, cb);
+    }
+
+    zlib.gzip(cru, { level: 6 }, (erro, comprimido) => {
+      /* 🔴 Se o gzip falhar, manda o texto CRU. Uma página lenta é um
+         problema; uma página que não carrega é outro, e não é este o lugar
+         de trocar um pelo outro. */
+      const corpo = (erro || !comprimido || comprimido.length >= cru.length) ? cru : comprimido;
+      if (corpo !== cru) {
+        res.setHeader('Content-Encoding', 'gzip');
+        const vary = String(res.getHeader('Vary') || '');
+        if (vary.toLowerCase().indexOf('accept-encoding') === -1) {
+          res.setHeader('Vary', vary ? vary + ', Accept-Encoding' : 'Accept-Encoding');
+        }
+      }
+      res.setHeader('Content-Length', String(corpo.length));
+      end(corpo, cb);
+    });
+    return res;
+  };
+  next();
+});
 
 // ============================================================
 //  HOTJAR — mapas de calor + gravação de sessão (29/07/2026)
@@ -718,8 +819,33 @@ try {
 }
 
 
-// Estáticos (css, img)
-app.use(express.static(PUBLIC));
+// ============================================================
+//  Estáticos (css, img, fontes, vídeo) — AGORA COM CACHE
+// ============================================================
+//  Estava `max-age=0`: cada visita revalidava CADA arquivo. Na primeira visita
+//  isso não custa bytes, mas custa uma ida e volta por arquivo — e o funil tem
+//  DUAS páginas em sequência (a de venda e o formulário) que compartilham as
+//  fontes, o pixel.js e o analytics.js. Sem cache, o segundo passo do funil
+//  refazia toda a conversa com o servidor para receber "não mudou nada".
+//
+//  Os prazos são deliberadamente diferentes, e o critério é UM: quanto tempo eu
+//  aguento esperar se precisar trocar o arquivo NO MESMO NOME.
+//   · vídeo (21 MB, nunca muda)  → 30 dias
+//   · imagem e fonte             → 7 dias
+//   · js e css                   → 1 hora. É pouco de propósito: um conserto no
+//     pixel.js no meio de uma campanha tem de chegar no mesmo dia, e uma hora
+//     já mata a revalidação dentro da sessão, que é o ganho que importa.
+app.use(express.static(PUBLIC, {
+  setHeaders: (res, caminho) => {
+    const ext = path.extname(caminho).toLowerCase();
+    let segundos = 0;
+    if (ext === '.mp4' || ext === '.webm') segundos = 30 * 24 * 3600;
+    else if (['.jpg', '.jpeg', '.png', '.webp', '.avif', '.gif', '.svg', '.ico',
+              '.woff2', '.woff', '.ttf'].indexOf(ext) !== -1) segundos = 7 * 24 * 3600;
+    else if (ext === '.js' || ext === '.css') segundos = 3600;
+    if (segundos) res.setHeader('Cache-Control', 'public, max-age=' + segundos);
+  },
+}));
 
 // 404 → volta pra captação
 app.use((_req, res) => res.redirect('/'));

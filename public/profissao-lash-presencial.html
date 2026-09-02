@@ -27,6 +27,13 @@
 <script src="/js/pixel.js"></script>
 <script src="/js/analytics.js"></script>
 
+<!-- O pixel e o GA4 vem de outros dominios e sao os arquivos mais pesados da
+     pagina (~351 KB juntos). O preconnect faz o DNS e o TLS acontecerem em
+     paralelo com o resto, em vez de so comecarem quando o script for pedido —
+     no 4G isso vale algumas centenas de milissegundos, e nao muda NADA no
+     que e' disparado nem em quando. -->
+<link rel="preconnect" href="https://connect.facebook.net" crossorigin>
+<link rel="preconnect" href="https://www.googletagmanager.com" crossorigin>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Abril+Fatface&family=Cormorant+Garamond:ital,wght@1,400;1,500&family=Hanken+Grotesk:wght@400;500;600;700;800;900&family=Playfair+Display:ital,wght@1,500;1,600&display=swap" rel="stylesheet">
@@ -1186,7 +1193,7 @@ b,strong{font-weight:700}
         <li>Grupo de suporte no WhatsApp</li>
         <li>Certificado</li>
       </ul>
-      <p class="cta-nota">São nove perguntas rápidas. Na última eu te mostro o
+      <p class="cta-nota">São poucas perguntas, menos de dois minutos. Na última eu te mostro o
       investimento e as condições. Depois eu te chamo no WhatsApp para combinar a data
       da sua prática.</p>
     </div>
