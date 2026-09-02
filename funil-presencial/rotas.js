@@ -131,7 +131,7 @@ router.post('/api/lead-presencial', express.json({ limit: '32kb' }), async (req,
 
     // Armadilha para robô: campo escondido que humano nunca preenche.
     // Responde 200 de propósito — o robô acha que funcionou e não insiste.
-    if (body.sobrenome_confirmacao) {
+    if (body.ref_c7 || body.sobrenome_confirmacao) {
       console.log('[funil] envio de robô descartado (honeypot)');
       return res.json({ ok: true, dedupe: true });
     }
@@ -244,9 +244,18 @@ router.post('/api/recomendacao-presencial', express.json({ limit: '32kb' }), asy
     const body = req.body || {};
 
     // Mesma armadilha de robô das outras rotas, mesma resposta mansa.
-    if (body.sobrenome_confirmacao) {
-      console.log('[funil] recomendação de robô descartada (honeypot)');
-      return res.json({ ok: true, dedupe: true });
+    if (body.ref_c7 || body.sobrenome_confirmacao) {
+      /* 🔴 NÃO responder `ok:true` sem recomendação: a tela abre vazia, sem
+         nome, sem preço e sem botão, e a pessoa fica olhando um cartão em
+         branco sem nenhum aviso. Foi assim que o autopreenchimento do
+         navegador — que escrevia na armadilha — virou tela morta em 02/09.
+         Robô não lê mensagem de erro; gente lê. Então a resposta honesta é
+         um erro, que o formulário sabe mostrar. */
+      console.log('[funil] recomendação com honeypot preenchido — recusada');
+      return res.status(400).json({
+        ok: false, erro: 'honeypot',
+        mensagem: 'Deu um problema aqui do nosso lado. Tenta de novo, por favor.',
+      });
     }
 
     const ip = L.ipDe(req);
@@ -342,7 +351,7 @@ router.post('/api/lead-parcial', express.json({ limit: '32kb' }), async (req, re
     const body = req.body || {};
 
     // Mesma armadilha de robô da rota final, mesma resposta mansa.
-    if (body.sobrenome_confirmacao) return res.json({ ok: true, ignorado: 'robo' });
+    if (body.ref_c7 || body.sobrenome_confirmacao) return res.json({ ok: true, ignorado: 'robo' });
 
     const ip = L.ipDe(req);
     const ehDev = !process.env.DATABASE_URL;

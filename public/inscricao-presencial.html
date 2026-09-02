@@ -410,10 +410,22 @@ button.rec__cta{font:inherit; font-weight:800; font-size:var(--t3); cursor:point
 
     <form id="insc-form" novalidate autocomplete="on">
 
+      <!-- 🔴 ARMADILHA DE ROBO — o nome dela NAO pode parecer um campo real.
+           Ate 02/09/2026 ela se chamava `sobrenome_confirmacao`, e o
+           preenchimento automatico do navegador ESCREVIA NELA: ve "sobrenome",
+           preenche. `autocomplete="off"` nao segura — os navegadores ignoram
+           essa dica justamente em campos de nome.
+           Consequencia: pessoa de verdade, com autopreenchimento ligado, era
+           tratada como robo. O servidor respondia `ok:true` sem recomendacao e
+           a tela mostrava um cartao VAZIO — sem erro, sem aviso, sem botao.
+           Foi o que aconteceu com o Edu, e aba anonima nao resolvia porque o
+           autopreenchimento e do navegador, nao da sessao.
+           O nome agora nao casa com heuristica nenhuma. -->
       <div class="mel" aria-hidden="true">
-        <label for="sobrenome_confirmacao">Deixe este campo em branco</label>
-        <input type="text" id="sobrenome_confirmacao" name="sobrenome_confirmacao"
-               tabindex="-1" autocomplete="off">
+        <label for="ref_c7">Deixe este campo em branco</label>
+        <input type="text" id="ref_c7" name="ref_c7"
+               tabindex="-1" autocomplete="off" data-lpignore="true"
+               data-1p-ignore="true" data-form-type="other">
       </div>
 
       <!-- ============ 1. NOME ============ -->
@@ -1359,7 +1371,7 @@ privacidade</a>.</span></p>
       disponibilidade: valorDe('disponibilidade'),
       prefere_formato: valorDe('prefere_formato'),
       faixa_investimento: valorDe('faixa_investimento'),
-      sobrenome_confirmacao: valorDe('sobrenome_confirmacao'),
+      ref_c7: valorDe('ref_c7'),
       /* A etapa que ela está VENDO agora — não a última que respondeu. Se ela
          sumir aqui, foi AQUI que ela parou, e é isso que a Nataly precisa
          ouvir para saber que conversa ter. */
@@ -1612,7 +1624,7 @@ privacidade</a>.</span></p>
       disponibilidade: valorDe('disponibilidade'),
       prefere_formato: valorDe('prefere_formato'),
       faixa_investimento: valorDe('faixa_investimento'),
-      sobrenome_confirmacao: valorDe('sobrenome_confirmacao'),
+      ref_c7: valorDe('ref_c7'),
       /* O MESMO uid das gravações parciais: é ele que promove aquela linha a
          inscrição completa em vez de criar uma segunda. Sem isto a Nataly
          veria a mesma pessoa duas vezes no painel — uma "incompleta" e uma
@@ -1627,7 +1639,20 @@ privacidade</a>.</span></p>
     })
       .then(function (r) { return r.json().then(function (j) { return { http: r.status, j: j }; }); })
       .then(function (res) {
-        if (res.j && res.j.ok) { mostraRecomendacao(dados, res.j.recomendacao); return; }
+        /* 🔴 `ok:true` SEM recomendacao nao pode virar tela.
+           Era assim que o cartao aparecia vazio: o servidor responde ok e a
+           tela abre sem nome, sem preco e sem botao. Se nao veio recomendacao,
+           e erro nosso — diz isso e deixa ela tentar de novo. */
+        if (res.j && res.j.ok && res.j.recomendacao && res.j.recomendacao.nome) {
+          mostraRecomendacao(dados, res.j.recomendacao); return;
+        }
+        if (res.j && res.j.ok) {
+          erroGeral.textContent = 'Deu um problema aqui do nosso lado ao montar a sua ' +
+            'indicação. Tenta de novo, por favor — as suas respostas continuam aqui.';
+          erroGeral.hidden = false;
+          reabilita();
+          return;
+        }
         if (res.j && res.j.erros) {
           var pri = Object.keys(res.j.erros)[0];
           Object.keys(res.j.erros).forEach(function (n) { mostraErro(n, res.j.erros[n]); });
@@ -1864,7 +1889,7 @@ privacidade</a>.</span></p>
       disponibilidade: valorDe('disponibilidade'),
       prefere_formato: valorDe('prefere_formato'),
       faixa_investimento: valorDe('faixa_investimento'),
-      sobrenome_confirmacao: valorDe('sobrenome_confirmacao'),
+      ref_c7: valorDe('ref_c7'),
       lead_uid: garanteUid(), atribuicao: ATRIB
     };
   }
