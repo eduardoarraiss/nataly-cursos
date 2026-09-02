@@ -607,6 +607,102 @@ else falha "/crm sem X-Robots-Tag noindex"; fi
 if echo "$D" | grep -qi "Cache-Control: no-store"; then ok "/crm não fica em cache"
 else falha "/crm sem Cache-Control no-store"; fi
 
+# ---- O PAINEL POR DENTRO ----------------------------------------------
+# Os checks acima provam que /crm esta FECHADO. Estes provam que, aberto,
+# ele e o painel certo. Exigem credencial, entao so rodam quando ela existe
+# no ambiente (CRM_CONTAS ou CRM_SENHA) — e quando nao existe, dizem isso
+# em vez de ficarem calados, que e como um gate passa a mentir.
+CRM_U=""; CRM_P=""
+if [ -n "${CRM_CONTAS:-}" ]; then
+  PAR="${CRM_CONTAS%%,*}"
+  CRM_U="${PAR%:*}"; CRM_P="${PAR##*:}"
+elif [ -n "${CRM_SENHA:-}" ]; then
+  CRM_U="${CRM_USUARIO:-nataly}"; CRM_P="$CRM_SENHA"
+fi
+
+if [ -z "$CRM_P" ]; then
+  echo "AVISO  painel não auditado por dentro: defina CRM_CONTAS para conferir o conteúdo do /crm"
+else
+  CK=$(mktemp)
+  ENTROU=$(curl -s -c "$CK" --max-time 20 -X POST "$BASE/crm/entrar" \
+    -H 'Content-Type: application/json' \
+    -d "{\"usuario\":\"$CRM_U\",\"senha\":\"$CRM_P\"}")
+  if echo "$ENTROU" | grep -q '"ok":true'; then
+    ok "entrei no painel com a conta configurada"
+    curl -s -b "$CK" --max-time 20 -o "$TMP" "$BASE/crm"
+    TAM=$(wc -c < "$TMP" | tr -d ' ')
+    if [ "$TAM" -gt 30000 ]; then ok "/crm serve o painel ($TAM bytes)"
+    else falha "/crm veio com $TAM bytes — o catch-all serviu outra coisa?"; fi
+    sem_comentarios
+
+    # 🔴 A REGRA QUE NAO PODE VOLTAR: o link do WhatsApp abre a conversa
+    # VAZIA. Havia texto pronto assinado como a Nataly em DOIS lugares e o
+    # Edu barrou em 01/09/2026. Ninguem escreve na voz de outra pessoa.
+    proibido_vivo_re "WhatsApp SEM mensagem pronta (a conversa abre vazia)" "wa\.me/[^\"']*[?&]text="
+    proibido_vivo_re "WhatsApp sem parâmetro de mensagem (api.whatsapp)"    "whatsapp\.com/send[^\"']*text="
+    # ⚠️ Os dois de cima so pegam o link ESCRITO INTEIRO no fonte. O link real
+    # e MONTADO ('https://wa.me/' + numero), entao um "+ '?text=Oi'" passaria
+    # por eles inteiro — foi o que o teste de mutacao mostrou. Este pega o
+    # parametro em qualquer forma, montado ou nao. Quem valida o link JA
+    # RENDERIZADO e o verificar-layout.js, secao 5b; este aqui e a segunda
+    # tranca, para o caso de o navegador nao rodar.
+    proibido_vivo_re "nenhum parâmetro de mensagem em lugar nenhum do painel" "[?&]text="
+    proibido_vivo    "nenhuma saudação pronta na voz da Nataly"             "Oi, aqui é a Nataly"
+    precisa          "o painel tem link de WhatsApp"                        "wa.me/"
+    precisa          "o botão do WhatsApp é verde (classe própria)"         "bt-wa"
+
+    # os quatro numeros do topo, cada um respondendo a uma pergunta dela
+    precisa "número: novos sem contato"  "Novos sem contato"
+    precisa "número: quentes na fila"    "Quentes na fila"
+    precisa "número: chegaram em 7 dias" "Chegaram em 7 dias"
+    precisa "número: em proposta"        "Em proposta"
+
+    # os graficos — e a promessa de que cada um responde a alguma coisa
+    precisa "gráfico de tendência por dia"       "Leads por dia"
+    precisa "gráfico de onde a fila empoça"      "Onde os leads estão agora"
+    precisa "gráfico de produto indicado"        "Produto que a árvore indicou"
+    precisa "gráfico de origem por qualidade"    "Origem"
+    precisa "toda figura tem a versão em tabela" "Ver os números em tabela"
+
+    # kanban: as TRES formas de mover. Arrastar sozinho exclui gente.
+    precisa "kanban: alça de arraste"                 "kpega"
+    precisa "kanban: menu Mover (sem arrastar)"       "kmover"
+    precisa "kanban: arraste por ponteiro (funciona no toque)" "pointerdown"
+    precisa "kanban: caminho por teclado"             "para escolher a coluna"
+    precisa "kanban: as 6 colunas do funil"           "proposta-enviada"
+
+    # filtros — o de produto ja existiu sem listener e nao filtrava nada
+    precisa "filtro de produto"      "fProduto"
+    precisa "filtro de período"      "fPeriodo"
+    precisa "filtro de qualificação" "fQualif"
+    precisa "filtro de origem"       "fAnuncio"
+    precisa "busca por nome/telefone/@" "Nome, telefone ou @"
+    precisa_re "o filtro de produto tem listener de change" "fStatus', 'fQualif', 'fProduto'"
+    precisa "exportar CSV continua de pé" "/crm/exportar.csv"
+
+    # acessibilidade minima da estrutura
+    precisa "abas com role de tablist"   "role=\"tablist\""
+    precisa "região que narra mudanças"  "aria-live=\"polite\""
+    precisa "gaveta como diálogo modal"  "aria-modal=\"true\""
+
+    # o painel e FERRAMENTA, nao peca de marca: a paleta da Nataly nao entra
+    proibido_vivo "painel sem o creme da marca"     "#F2EEE5"
+    proibido_vivo "painel sem o chocolate da marca" "#6B4F3A"
+    proibido_vivo "painel sem a sálvia da marca"    "#A5B59A"
+
+    # nada de CDN: o painel abre no 4G do celular dela
+    proibido_vivo_re "sem script de CDN externo"  "<script[^>]+src=\"https?://"
+    proibido_vivo_re "sem folha de estilo remota" "<link[^>]+href=\"https?://[^\"]*\.css"
+    proibido_vivo_re "sem fonte remota"           "fonts\.(googleapis|gstatic)"
+    precisa "os gráficos são SVG feito à mão"     "createElementNS"
+
+    comuns_proibidos
+  else
+    falha "não consegui entrar no painel com a conta configurada (resposta: ${ENTROU:0:90})"
+  fi
+  rm -f "$CK"
+fi
+
 # ---- a política cobre o formulário ----
 if baixa_pagina /politica-de-privacidade 10000; then
   precisa "diz que o formulário do presencial coleta dados" "formulário de inscrição no curso presencial"

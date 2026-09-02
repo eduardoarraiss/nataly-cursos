@@ -5,240 +5,454 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="robots" content="noindex, nofollow, noarchive">
 <meta name="referrer" content="no-referrer">
-<title>Leads · Curso presencial</title>
+<title>Leads · Nataly Ribeiro</title>
 <style>
+/* ============================================================
+   PALETA — de FERRAMENTA, não da marca.
+   ============================================================
+   O painel não segue a identidade da Nataly de propósito. Ele é o
+   lugar onde ela trabalha, não uma peça que alguém vê: o que importa
+   aqui é hierarquia, respiro e leitura rápida no celular.
+
+   Todo par de cor abaixo foi MEDIDO (razão de contraste WCAG 2.1
+   contra a superfície em que de fato pousa). Os números estão ao
+   lado. O piso é 4.5:1 para texto e 3:1 para marca de gráfico —
+   inclusive dentro dos gráficos, que é onde contraste costuma ser
+   esquecido.
+   ============================================================ */
 :root{
-  --creme:#F2EEE5; --papel:#FAF7F0; --pedra:#E2D8C8; --filete:#DED3C2;
-  --argila:#C9A48B; --salvia:#A5B59A; --salvia-prof:#7E9072;
-  --chocolate:#6B4F3A; --tinta:#463729; --tinta-2:#7A695A; --pretinho:#241C15;
-  --destaque:#CD4C28; --destaque-esc:#A93C1E; --verde:#27874E; --verde-esc:#1B6338;
+  /* superfícies */
+  --fundo:#F7F8FA;      /* a página */
+  --carta:#FFFFFF;      /* onde o dado pousa */
+  --carta-2:#F2F4F7;    /* trilha de medidor, cabeçalho de tabela */
+  --linha:#E3E6EB;
+  --linha-2:#D5DAE1;
+
+  /* tinta */
+  --ink:#101828;        /* 17.75:1 sobre carta */
+  --ink-2:#54606E;      /*  6.41:1 sobre carta */
+  --ink-3:#667085;      /*  4.97:1 sobre carta */
+  --ink-inv:#FFFFFF;
+
+  /* azul — o acento da ferramenta */
+  --azul:#2a78d6;       /* 4.42:1 — marca de gráfico e preenchimento */
+  --azul-txt:#1c5cab;   /* 6.63:1 — texto e link */
+  --azul-esc:#184f95;   /* 8.10:1 */
+  --azul-luz:#E7EEF8;
+
+  /* rampa ordinal do pipeline (todas ≥3:1 sobre carta) */
+  --e-novo:#3987e5;     /* 3.64:1 */
+  --e-contatado:#2a78d6;/* 4.42:1 */
+  --e-conversa:#256abf; /* 5.39:1 */
+  --e-proposta:#1c5cab; /* 6.63:1 */
+  --e-ganho:#157347;    /* 5.87:1 */
+  --e-perdido:#6B7480;  /* 4.74:1 */
+
+  /* estado */
+  --quente:#C2410C;     /* 5.18:1 */
+  --ok:#157347;         /* 5.87:1 */
+  --alerta:#B42318;     /* 6.31:1 */
+  --cinza-m:#6B7480;    /* 4.74:1 */
+
+  /* WhatsApp — o verde foi pedido, mas o verde da marca (#25D366)
+     dá 1.98:1 com texto branco. Este é o mesmo verde escurecido até
+     passar: 5.27:1 com branco. Continua lendo como WhatsApp. */
+  --wa:#0F7B54;
+  --wa-esc:#0B5F41;
+
   --e1:4px; --e2:8px; --e3:12px; --e4:16px; --e5:24px; --e6:32px; --e7:48px;
-  --f:'Hanken Grotesk',system-ui,-apple-system,'Segoe UI',sans-serif;
-  --r1:12px; --r2:20px;
+  --r1:8px; --r2:12px; --r3:16px;
+  --f:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,'Helvetica Neue',Arial,sans-serif;
+  --fn:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+  --sombra:0 1px 2px rgba(16,24,40,.06), 0 1px 3px rgba(16,24,40,.05);
+  --sombra-2:0 8px 24px rgba(16,24,40,.12);
 }
 *,*::before,*::after{box-sizing:border-box}
 html,body{margin:0;padding:0;max-width:100%;overflow-x:hidden}
 body{
-  background:var(--creme); color:var(--tinta); font-family:var(--f);
+  background:var(--fundo); color:var(--ink); font-family:var(--f);
   font-size:15px; line-height:1.5; -webkit-text-size-adjust:100%;
+  font-variant-numeric:tabular-nums;
 }
-h1,h2,h3{margin:0; font-weight:700; letter-spacing:-.01em}
+h1,h2,h3,h4{margin:0; font-weight:650; letter-spacing:-.011em}
 p{margin:0}
+ul{margin:0; padding:0}
+dl{margin:0}
 button,input,select,textarea{font:inherit; color:inherit}
-a{color:var(--destaque-esc)}
-:focus-visible{outline:3px solid var(--pretinho); outline-offset:2px; border-radius:var(--e1)}
+a{color:var(--azul-txt)}
+:focus-visible{outline:3px solid var(--azul-esc); outline-offset:2px; border-radius:var(--r1)}
 .oculto{display:none !important}
 .sr{position:absolute;width:1px;height:1px;margin:-1px;padding:0;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap;border:0}
 
 /* ---------- estrutura ---------- */
-.envolve{max-width:1280px; margin:0 auto; padding:0 var(--e4) var(--e7)}
+.envolve{max-width:1320px; margin:0 auto; padding:0 var(--e4) var(--e7)}
 @media (max-width:479px){ .envolve{padding:0 var(--e3) var(--e7)} }
 
 /* ---------- cabeçalho ---------- */
-.topo{
-  position:sticky; top:0; z-index:40; background:var(--papel);
-  border-bottom:1px solid var(--filete);
-}
+.topo{position:sticky; top:0; z-index:40; background:var(--carta); border-bottom:1px solid var(--linha)}
 .topo-in{
-  max-width:1280px; margin:0 auto; padding:var(--e3) var(--e4);
-  display:flex; flex-wrap:wrap; gap:var(--e3); align-items:center;
+  max-width:1320px; margin:0 auto; padding:var(--e3) var(--e4);
+  display:flex; gap:var(--e3); align-items:center; flex-wrap:wrap;
 }
 @media (max-width:479px){ .topo-in{padding:var(--e3)} }
-.marca{flex:1 1 220px; min-width:0}
-.marca h1{font-size:clamp(17px,4vw,22px)}
-.marca .sub{font-size:12px; color:var(--tinta-2); letter-spacing:.08em; text-transform:uppercase}
+.marca{flex:1 1 200px; min-width:0}
+.marca h1{font-size:clamp(16px,4vw,19px); line-height:1.2}
+.marca .sub{
+  display:block; font-size:11px; color:var(--ink-3);
+  letter-spacing:.09em; text-transform:uppercase; font-weight:650;
+}
 .acoes-topo{display:flex; gap:var(--e2); flex-wrap:wrap}
-.contadores{
-  flex:1 1 100%; display:flex; gap:var(--e2); flex-wrap:wrap;
-  border-top:1px solid var(--filete); padding-top:var(--e3);
-}
-.cont{
-  border:1px solid var(--filete); border-radius:var(--r1);
-  padding:var(--e2) var(--e3); background:var(--creme); min-width:82px;
-}
-.cont .n{display:block; font-size:19px; font-weight:700; line-height:1.15}
-.cont .r{display:block; font-size:11px; color:var(--tinta-2); text-transform:uppercase; letter-spacing:.06em}
-.cont.total{background:var(--pretinho); border-color:var(--pretinho); color:#fff}
-.cont.total .r{color:#E8E0D4}
 
 /* ---------- botões ---------- */
 .bt{
   display:inline-flex; align-items:center; justify-content:center; gap:var(--e2);
-  min-height:44px; padding:var(--e2) var(--e4); border-radius:var(--r1);
-  border:1px solid var(--filete); background:var(--papel); color:var(--tinta);
+  min-height:40px; padding:var(--e2) var(--e3); border-radius:var(--r1);
+  border:1px solid var(--linha-2); background:var(--carta); color:var(--ink);
   font-weight:600; font-size:14px; cursor:pointer; text-decoration:none;
+  white-space:nowrap;
 }
-.bt:hover{background:var(--pedra)}
-.bt-forte{background:var(--pretinho); border-color:var(--pretinho); color:#fff}
-.bt-forte:hover{background:var(--tinta)}
-.bt-destaque{background:var(--destaque-esc); border-color:var(--destaque-esc); color:#fff}
-.bt-destaque:hover{background:var(--destaque)}
-.bt-peq{min-height:36px; padding:var(--e1) var(--e3); font-size:13px}
-.bt[disabled],.bt[aria-disabled="true"]{opacity:.75; cursor:default}
+.bt:hover{background:var(--carta-2)}
+.bt-forte{background:var(--ink); border-color:var(--ink); color:var(--ink-inv)}
+.bt-forte:hover{background:#25324a}
+.bt-azul{background:var(--azul-txt); border-color:var(--azul-txt); color:var(--ink-inv)}
+.bt-azul:hover{background:var(--azul-esc)}
+/* 🔴 o verde do WhatsApp foi pedido pelo Edu — é o único ponto de cor
+   forte fora do azul, e é de propósito: é a ação mais frequente daqui. */
+.bt-wa{background:var(--wa); border-color:var(--wa); color:var(--ink-inv)}
+.bt-wa:hover{background:var(--wa-esc); border-color:var(--wa-esc)}
+.bt-peq{min-height:36px; padding:6px var(--e3); font-size:13px}
+.bt[disabled],.bt[aria-disabled="true"]{opacity:.6; cursor:default}
+.bt svg{flex:0 0 auto}
 
 /* ---------- faixa de avisos ---------- */
 .faixa{
-  background:var(--destaque); color:#fff; border-radius:var(--r1);
+  background:#FEF3F2; border:1px solid #FDA29B; border-left:4px solid var(--alerta);
+  color:var(--ink); border-radius:var(--r2);
   padding:var(--e3) var(--e4); margin:var(--e4) 0 0;
   display:flex; gap:var(--e3); align-items:center; flex-wrap:wrap;
 }
 .faixa p{flex:1 1 240px; font-weight:600; min-width:0}
-.faixa .bt{background:#fff; border-color:#fff; color:var(--destaque-esc)}
+
+/* ---------- KPIs ---------- */
+.kpis{
+  margin-top:var(--e4); display:grid; gap:var(--e3);
+  grid-template-columns:repeat(auto-fit,minmax(210px,1fr));
+}
+/* No celular os quatro azulejos empilhados comiam a tela inteira antes de
+   chegar em qualquer lead. Em duas colunas eles cabem numa olhada só. */
+@media (max-width:639px){
+  .kpis{grid-template-columns:1fr 1fr; gap:var(--e2)}
+  .kpi{padding:var(--e3)}
+  .kpi__n{font-size:27px}
+  .kpi__p{font-size:11.5px}
+}
+.kpi{
+  text-align:left; background:var(--carta); border:1px solid var(--linha);
+  border-radius:var(--r3); padding:var(--e4); box-shadow:var(--sombra);
+  display:flex; flex-direction:column; gap:var(--e1); min-width:0;
+  cursor:pointer; font:inherit; color:inherit;
+}
+.kpi:hover{border-color:var(--linha-2); background:var(--carta)}
+.kpi[aria-pressed="true"]{border-color:var(--azul); box-shadow:0 0 0 1px var(--azul)}
+.kpi__r{font-size:12px; font-weight:650; color:var(--ink-2); letter-spacing:.02em; overflow-wrap:anywhere}
+.kpi__n{font-size:34px; font-weight:680; line-height:1.05; letter-spacing:-.025em; color:var(--ink)}
+.kpi__p{font-size:12.5px; color:var(--ink-3); overflow-wrap:anywhere}
+.kpi__p b{color:var(--ink-2); font-weight:650}
+.delta{font-size:13px; font-weight:650; display:inline-flex; align-items:center; gap:3px}
+.delta.sobe{color:var(--ok)} .delta.desce{color:var(--alerta)} .delta.igual{color:var(--ink-3)}
+.medidor{display:flex; height:6px; border-radius:999px; overflow:hidden; background:var(--carta-2); margin-top:2px}
+.medidor span{display:block; height:100%}
+.faisca{display:block; margin-top:2px}
+
+.resumo-linha{
+  margin-top:var(--e3); font-size:13px; color:var(--ink-2);
+  display:flex; gap:var(--e3); flex-wrap:wrap; align-items:center;
+}
+.resumo-linha b{color:var(--ink); font-weight:650}
 
 /* ---------- filtros ---------- */
 .filtros{
-  margin-top:var(--e4); background:var(--papel); border:1px solid var(--filete);
-  border-radius:var(--r2); padding:var(--e4);
-  display:grid; gap:var(--e3);
-  grid-template-columns:repeat(auto-fit,minmax(190px,1fr));
+  margin-top:var(--e4); background:var(--carta); border:1px solid var(--linha);
+  border-radius:var(--r3); padding:var(--e4); box-shadow:var(--sombra);
 }
-.campo{display:flex; flex-direction:column; gap:var(--e1); min-width:0}
-.campo label{font-size:12px; font-weight:700; letter-spacing:.05em; text-transform:uppercase; color:var(--tinta-2)}
+.filtros-grade{display:grid; gap:var(--e3); grid-template-columns:repeat(auto-fit,minmax(178px,1fr))}
+/* No celular os sete campos empurravam a lista para baixo da dobra: ela abria
+   o painel e via um formulário, não os leads. Fechados por padrão, com a
+   busca sempre à mão e a contagem de filtros ligados no rótulo. */
+.mais-filtros{margin-top:var(--e3)}
+.mais-filtros>summary{
+  list-style:none; cursor:pointer; min-height:40px; display:flex; align-items:center;
+  gap:var(--e2); font-weight:650; font-size:14px; color:var(--ink);
+  border:1px solid var(--linha-2); border-radius:var(--r1); padding:var(--e2) var(--e3);
+}
+.mais-filtros>summary::-webkit-details-marker{display:none}
+.mais-filtros>summary::after{content:"▾"; margin-left:auto; color:var(--ink-3)}
+.mais-filtros[open]>summary::after{content:"▴"}
+.mais-filtros>summary .qtf{
+  background:var(--azul-txt); color:var(--ink-inv); border-radius:999px;
+  font-size:12px; padding:1px 8px; font-weight:650;
+}
+.mais-filtros>.filtros-grade{margin-top:var(--e3)}
+@media (min-width:900px){
+  .mais-filtros{margin-top:0}
+  .mais-filtros>summary{display:none}
+  .mais-filtros>.filtros-grade{display:grid; margin-top:0}
+}
+.campo{display:flex; flex-direction:column; gap:5px; min-width:0}
+.campo label{font-size:11.5px; font-weight:650; letter-spacing:.05em; text-transform:uppercase; color:var(--ink-3)}
 .campo input,.campo select{
-  min-height:44px; width:100%; max-width:100%; padding:var(--e2) var(--e3);
-  border:1px solid var(--filete); border-radius:var(--r1);
-  background:var(--creme); color:var(--tinta);
+  min-height:42px; width:100%; max-width:100%; padding:var(--e2) var(--e3);
+  border:1px solid var(--linha-2); border-radius:var(--r1);
+  background:var(--carta); color:var(--ink); appearance:none;
 }
+.campo select{
+  padding-right:30px;
+  background-image:url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1.5 6 6.5l5-5' fill='none' stroke='%2354606E' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+  background-repeat:no-repeat; background-position:right 11px center;
+}
+.campo input:focus,.campo select:focus{border-color:var(--azul)}
 .filtros .fim{display:flex; align-items:flex-end}
 .filtros .fim .bt{width:100%}
+.nota-csv{
+  margin-top:var(--e3); font-size:12.5px; color:var(--ink-2);
+  border-top:1px solid var(--linha); padding-top:var(--e3);
+}
 
 /* ---------- abas ---------- */
 .abas{
-  display:flex; gap:var(--e2); margin:var(--e5) 0 var(--e4);
-  border-bottom:1px solid var(--filete); overflow-x:auto; padding-bottom:2px;
+  display:flex; gap:var(--e1); margin:var(--e5) 0 var(--e4);
+  background:var(--carta-2); border:1px solid var(--linha); border-radius:var(--r2);
+  padding:var(--e1); overflow-x:auto; -webkit-overflow-scrolling:touch;
 }
 .aba{
-  min-height:44px; padding:var(--e2) var(--e4); border:1px solid var(--filete);
-  border-bottom:none; border-radius:var(--r1) var(--r1) 0 0; background:transparent;
-  color:var(--tinta-2); font-weight:700; cursor:pointer; white-space:nowrap;
+  min-height:40px; padding:var(--e2) var(--e4); border:1px solid transparent;
+  border-radius:var(--r1); background:transparent; color:var(--ink-2);
+  font-weight:650; font-size:14px; cursor:pointer; white-space:nowrap; flex:0 0 auto;
 }
-.aba[aria-selected="true"]{background:var(--papel); color:var(--tinta); border-color:var(--filete)}
+.aba:hover{color:var(--ink)}
+.aba[aria-selected="true"]{background:var(--carta); color:var(--ink); border-color:var(--linha); box-shadow:var(--sombra)}
+.aba .qt{color:var(--ink-3); font-weight:600}
+.aba[aria-selected="true"] .qt{color:var(--ink-2)}
 
 /* ---------- pílulas ---------- */
 .pil{
-  display:inline-block; padding:2px var(--e2); border-radius:999px;
-  font-size:12px; font-weight:700; border:1px solid transparent; white-space:nowrap;
+  display:inline-flex; align-items:center; gap:5px; padding:3px var(--e2);
+  border-radius:999px; font-size:12px; font-weight:650; white-space:nowrap;
+  border:1px solid transparent;
 }
-.q-quente{background:#F6DDD2; color:var(--destaque-esc); border-color:#E9C2B2}
-.q-morno{background:#F0E4D3; color:var(--chocolate); border-color:var(--pedra)}
-.q-frio{background:#E7EBE3; color:var(--tinta); border-color:#D2DACB}
-.s-novo{background:var(--pedra); color:var(--tinta)}
-.s-contatado{background:#E6DFF0; color:#4A3A66}
-.s-em-conversa{background:#E1E8EE; color:#2F4A5E}
-.s-proposta-enviada{background:#F0E4D3; color:var(--chocolate)}
-.s-ganho{background:#DCEEE2; color:var(--verde-esc)}
-.s-perdido{background:#F1E0DA; color:var(--destaque-esc)}
+.pil::before{content:""; width:7px; height:7px; border-radius:50%; background:currentColor; flex:0 0 auto}
+/* medidos: par texto/fundo de cada pílula */
+.q-quente{background:#FFEDD5; color:#9A3412; border-color:#FED7AA}   /* 6.38:1 */
+.q-morno {background:#FEF3C7; color:#854D0E; border-color:#FDE68A}   /* 6.15:1 */
+.q-frio  {background:#EEF1F5; color:#475569; border-color:#DDE3EA}   /* 6.69:1 */
+.s-novo            {background:#E7EEF8; color:#1E3A5F; border-color:#CBDCF2}  /* 9.85:1 */
+.s-contatado       {background:#E7EEF8; color:#1c5cab; border-color:#CBDCF2}  /* 5.68:1 */
+.s-em-conversa     {background:#E0F2FE; color:#155E75; border-color:#BAE6FD}  /* 6.33:1 */
+.s-proposta-enviada{background:#F3E8FF; color:#6B21A8; border-color:#E9D5FF}  /* 7.39:1 */
+.s-ganho           {background:#DCFCE7; color:#14532D; border-color:#BBF7D0}  /* 8.30:1 */
+.s-perdido         {background:#FEE2E2; color:#7F1D1D; border-color:#FECACA}  /* 8.20:1 */
 
-/* ---------- cartões / mensagens ---------- */
-.cartao{background:var(--papel); border:1px solid var(--filete); border-radius:var(--r2); padding:var(--e4)}
-.msg{background:var(--papel); border:1px solid var(--filete); border-radius:var(--r2); padding:var(--e6) var(--e4); text-align:center}
-.msg p{color:var(--tinta-2)}
+/* ---------- cartões e mensagens ---------- */
+.cartao{background:var(--carta); border:1px solid var(--linha); border-radius:var(--r3); padding:var(--e4); box-shadow:var(--sombra)}
+.msg{background:var(--carta); border:1px solid var(--linha); border-radius:var(--r3); padding:var(--e6) var(--e4); text-align:center; box-shadow:var(--sombra)}
+.msg p{color:var(--ink-2)}
 .msg .bt{margin-top:var(--e3)}
-.erro{border-color:var(--destaque); }
-.erro strong{color:var(--destaque-esc)}
+.erro{border-color:#FDA29B; background:#FFFBFA}
+.erro strong{color:var(--alerta); display:block}
+
+/* ---------- gráficos ---------- */
+.graficos{display:grid; gap:var(--e4)}
+/* `minmax(320px,…)` cru estourava a caixa a 320px de tela: o mínimo da
+   coluna era maior que o pai (296px depois do respiro lateral). O `min()`
+   deixa a coluna encolher com a tela em vez de empurrar a página. */
+.duo{display:grid; gap:var(--e4); grid-template-columns:repeat(auto-fit,minmax(min(100%,320px),1fr))}
+.fig{background:var(--carta); border:1px solid var(--linha); border-radius:var(--r3); padding:var(--e4); box-shadow:var(--sombra); min-width:0}
+.fig h3{font-size:15px; color:var(--ink)}
+.fig .porque{font-size:12.5px; color:var(--ink-2); margin-top:2px}
+.fig .tela{margin-top:var(--e3); position:relative; min-width:0}
+.fig svg{display:block; max-width:100%; overflow:visible}
+.legenda{display:flex; gap:var(--e3); flex-wrap:wrap; margin-top:var(--e3); font-size:12.5px; color:var(--ink-2)}
+.legenda span{display:inline-flex; align-items:center; gap:6px}
+.legenda i{width:11px; height:11px; border-radius:3px; display:block; flex:0 0 auto}
+.dica{
+  position:absolute; z-index:5; pointer-events:none; background:var(--ink); color:var(--ink-inv);
+  font-size:12.5px; padding:6px var(--e2); border-radius:var(--r1); box-shadow:var(--sombra-2);
+  white-space:nowrap; transform:translate(-50%,-100%); margin-top:-8px;
+}
+details.tabela-viz{margin-top:var(--e3); border-top:1px solid var(--linha); padding-top:var(--e2)}
+details.tabela-viz summary{font-size:12.5px; color:var(--azul-txt); cursor:pointer; font-weight:600; min-height:32px; display:flex; align-items:center}
+details.tabela-viz table{margin-top:var(--e2); font-size:13px; width:100%; min-width:0}
+details.tabela-viz th,details.tabela-viz td{padding:5px var(--e2); border-bottom:1px solid var(--linha); text-align:left}
+details.tabela-viz td:last-child,details.tabela-viz th:last-child{text-align:right}
+.viz-vazio{font-size:13px; color:var(--ink-3); padding:var(--e5) 0; text-align:center}
 
 /* ---------- tabela ---------- */
-.rolagem{overflow-x:auto; -webkit-overflow-scrolling:touch; border:1px solid var(--filete); border-radius:var(--r2); background:var(--papel)}
-table{border-collapse:collapse; width:100%; min-width:820px}
+.rolagem{overflow-x:auto; -webkit-overflow-scrolling:touch; border:1px solid var(--linha); border-radius:var(--r3); background:var(--carta); box-shadow:var(--sombra)}
+table{border-collapse:collapse; width:100%}
+.rolagem table{min-width:1060px}
+/* telefone, data e o botão do WhatsApp não podem quebrar em duas linhas:
+   quebrado, cada lead vira uma linha de 3 alturas e cabem 4 na tela */
+.nw{white-space:nowrap}
 thead th{
   text-align:left; font-size:11px; text-transform:uppercase; letter-spacing:.06em;
-  color:var(--tinta-2); padding:var(--e3); border-bottom:1px solid var(--filete); white-space:nowrap;
+  color:var(--ink-3); padding:var(--e3); background:var(--carta-2);
+  border-bottom:1px solid var(--linha); white-space:nowrap; font-weight:650;
 }
-tbody td{padding:var(--e3); border-bottom:1px solid var(--filete); vertical-align:middle}
-tbody tr{cursor:pointer}
-tbody tr:hover{background:var(--creme)}
-tbody tr:focus-visible{outline:3px solid var(--pretinho); outline-offset:-3px}
-.td-nome{font-weight:700}
-.td-sub{display:block; font-size:12px; color:var(--tinta-2); overflow-wrap:anywhere}
+tbody td{padding:var(--e3); border-bottom:1px solid var(--linha); vertical-align:middle}
+tbody tr:last-child td{border-bottom:none}
+tbody tr:hover{background:var(--carta-2)}
+tbody tr:focus-visible{outline:3px solid var(--azul-esc); outline-offset:-3px}
+.td-nome{font-weight:650}
+.td-sub{display:block; font-size:12px; color:var(--ink-3); overflow-wrap:anywhere}
+.td-acao{width:1%; white-space:nowrap}
+tr[data-abre]{cursor:pointer}
 
-@media (max-width:759px){
-  .rolagem{overflow-x:visible; border:none; background:transparent; border-radius:0}
-  table{min-width:0; width:100%; display:block}
+@media (max-width:839px){
+  .rolagem{overflow-x:visible; border:none; background:transparent; border-radius:0; box-shadow:none}
+  .rolagem table{min-width:0; width:100%; display:block}
   thead{display:none}
   tbody{display:block}
   tbody tr{
-    display:block; background:var(--papel); border:1px solid var(--filete);
-    border-radius:var(--r2); padding:var(--e3); margin-bottom:var(--e3);
+    display:block; background:var(--carta); border:1px solid var(--linha);
+    border-radius:var(--r3); padding:var(--e3); margin-bottom:var(--e3); box-shadow:var(--sombra);
   }
+  tbody tr:last-child td{border-bottom:none}
   tbody td{
     display:flex; gap:var(--e3); justify-content:space-between; align-items:baseline;
-    border:none; padding:var(--e1) 0; min-width:0;
+    border:none; padding:5px 0; min-width:0;
   }
   tbody td::before{
     content:attr(data-rot); font-size:11px; text-transform:uppercase; letter-spacing:.06em;
-    color:var(--tinta-2); flex:0 0 auto; font-weight:700;
+    color:var(--ink-3); flex:0 0 auto; font-weight:650;
   }
   tbody td>*{min-width:0; text-align:right; overflow-wrap:anywhere}
+  tbody td.td-acao{width:auto; white-space:normal; padding-top:var(--e2)}
+  tbody td.td-acao::before{content:""}
+  tbody td.td-acao>*{width:100%}
 }
 
 /* ---------- kanban ---------- */
-.kanban{display:flex; gap:var(--e3); overflow-x:auto; -webkit-overflow-scrolling:touch; padding-bottom:var(--e3)}
-.coluna{
-  flex:0 0 264px; max-width:264px; background:var(--papel);
-  border:1px solid var(--filete); border-radius:var(--r2); padding:var(--e3);
-  display:flex; flex-direction:column; gap:var(--e2);
+.k-ajuda{
+  font-size:12.5px; color:var(--ink-2); background:var(--carta); border:1px solid var(--linha);
+  border-radius:var(--r2); padding:var(--e2) var(--e3); margin-bottom:var(--e3);
 }
-.coluna.alvo{border-color:var(--chocolate); background:var(--creme)}
-.coluna h3{font-size:13px; text-transform:uppercase; letter-spacing:.06em; color:var(--tinta-2)}
-.coluna h3 span{color:var(--tinta)}
-.kcard{
-  width:100%; text-align:left; background:var(--creme); border:1px solid var(--filete);
-  border-radius:var(--r1); padding:var(--e3); cursor:pointer; display:block;
+.k-atalhos{display:flex; gap:var(--e2); overflow-x:auto; padding-bottom:var(--e2); margin-bottom:var(--e2); -webkit-overflow-scrolling:touch}
+.k-atalho{
+  flex:0 0 auto; min-height:34px; padding:5px var(--e3); border-radius:999px;
+  border:1px solid var(--linha-2); background:var(--carta); color:var(--ink-2);
+  font-size:12.5px; font-weight:650; cursor:pointer; white-space:nowrap;
 }
-.kcard:hover{background:var(--pedra)}
-.kcard .nome{font-weight:700; display:block; overflow-wrap:anywhere}
-.kcard .meta{display:block; font-size:12px; color:var(--tinta-2); overflow-wrap:anywhere; margin-top:2px}
-.kvazio{font-size:13px; color:var(--tinta-2); padding:var(--e2) 0}
+.k-atalho:hover{background:var(--carta-2); color:var(--ink)}
+@media (min-width:900px){ .k-atalhos{display:none} }
 
-/* ---------- drawer ---------- */
-.fundo{position:fixed; inset:0; background:rgba(36,28,21,.55); z-index:50}
+.kanban{
+  display:flex; gap:var(--e3); overflow-x:auto; -webkit-overflow-scrolling:touch;
+  padding-bottom:var(--e3); scroll-snap-type:x proximity;
+}
+.kanban.arrastando{scroll-snap-type:none}
+.coluna{
+  flex:0 0 min(86vw,320px); background:var(--carta-2);
+  border:1px solid var(--linha); border-radius:var(--r3); padding:var(--e3);
+  display:flex; flex-direction:column; gap:var(--e2); scroll-snap-align:start; min-width:0;
+}
+@media (min-width:900px){ .coluna{flex:0 0 296px} }
+.coluna.alvo{border-color:var(--azul); background:var(--azul-luz); box-shadow:0 0 0 1px var(--azul)}
+.coluna__cab{display:flex; align-items:center; gap:var(--e2); padding:2px 2px var(--e2)}
+.coluna__pt{width:9px; height:9px; border-radius:50%; flex:0 0 auto}
+.coluna h3{font-size:13px; color:var(--ink); font-weight:650; flex:1 1 auto; min-width:0; overflow-wrap:anywhere}
+.coluna__n{font-size:12.5px; color:var(--ink-2); font-weight:650; background:var(--carta); border:1px solid var(--linha); border-radius:999px; padding:1px 8px}
+.kvazio{font-size:12.5px; color:var(--ink-3); padding:var(--e3) var(--e2); text-align:center}
+
+.kcard{
+  background:var(--carta); border:1px solid var(--linha); border-radius:var(--r2);
+  padding:var(--e2) var(--e2) var(--e2) 0; display:grid;
+  grid-template-columns:28px 1fr; align-items:start; gap:0 var(--e1); min-width:0;
+  box-shadow:var(--sombra);
+}
+.kcard.pego{border-color:var(--azul); box-shadow:0 0 0 1px var(--azul)}
+.kcard.fantasma{
+  position:fixed; z-index:80; pointer-events:none; width:264px; opacity:.96;
+  box-shadow:var(--sombra-2); transform:rotate(1.5deg);
+}
+.kcard.origem-arrasto{opacity:.35}
+.kpega{
+  grid-row:1 / span 3; align-self:stretch; min-height:44px; width:28px;
+  border:none; background:transparent; color:var(--ink-3); cursor:grab;
+  display:flex; align-items:center; justify-content:center; padding:0;
+  touch-action:none; border-radius:var(--r1);
+}
+.kpega:hover{color:var(--ink); background:var(--carta-2)}
+.kpega:active{cursor:grabbing}
+.kcard__nome{
+  grid-column:2; text-align:left; background:none; border:none; padding:2px 0 0;
+  font-weight:650; font-size:14px; color:var(--ink); cursor:pointer;
+  overflow-wrap:anywhere; min-width:0; width:100%; border-radius:var(--r1);
+}
+.kcard__nome:hover{color:var(--azul-txt)}
+.kcard__meta{grid-column:2; font-size:12px; color:var(--ink-3); overflow-wrap:anywhere; margin:2px 0 var(--e2)}
+.kcard__pe{grid-column:2; display:flex; gap:var(--e2); align-items:center; min-width:0}
+.kcard__pe .bt{flex:0 0 auto}
+.kmover{
+  flex:1 1 auto; min-width:0; min-height:36px; font-size:13px; font-weight:600;
+  border:1px solid var(--linha-2); border-radius:var(--r1); background:var(--carta);
+  color:var(--ink-2); padding:0 26px 0 var(--e2); appearance:none; cursor:pointer;
+  background-image:url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1.5 6 6.5l5-5' fill='none' stroke='%2354606E' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+  background-repeat:no-repeat; background-position:right 8px center;
+}
+.kcard__pil{grid-column:2; margin-top:var(--e2)}
+
+/* ---------- gaveta de detalhe ---------- */
+.fundo{position:fixed; inset:0; background:rgba(16,24,40,.45); z-index:50}
 .painel{
-  position:fixed; top:0; right:0; bottom:0; z-index:60; width:min(560px,100%);
-  background:var(--papel); border-left:1px solid var(--filete);
-  overflow-y:auto; overscroll-behavior:contain; padding:var(--e4) var(--e4) var(--e7);
+  position:fixed; top:0; right:0; bottom:0; z-index:60; width:min(580px,100%);
+  background:var(--fundo); border-left:1px solid var(--linha);
+  overflow-y:auto; overscroll-behavior:contain; padding:0 var(--e4) var(--e7);
 }
-@media (max-width:479px){ .painel{padding:var(--e3) var(--e3) var(--e7)} }
+@media (max-width:479px){ .painel{padding:0 var(--e3) var(--e7)} }
 .painel-topo{
-  position:sticky; top:calc(var(--e4) * -1); background:var(--papel); z-index:2;
-  display:flex; gap:var(--e3); align-items:flex-start; padding:var(--e3) 0;
-  border-bottom:1px solid var(--filete); margin-bottom:var(--e4);
+  position:sticky; top:0; background:var(--carta); z-index:2;
+  display:flex; gap:var(--e3); align-items:flex-start; padding:var(--e4) 0;
+  border-bottom:1px solid var(--linha); margin-bottom:var(--e4);
 }
-.painel-topo h2{font-size:clamp(19px,5vw,26px); overflow-wrap:anywhere; flex:1 1 auto; min-width:0}
-.bloco{margin-bottom:var(--e5)}
+.painel-topo h2{font-size:clamp(18px,5vw,23px); overflow-wrap:anywhere; flex:1 1 auto; min-width:0}
+.bloco{
+  margin-bottom:var(--e3); background:var(--carta); border:1px solid var(--linha);
+  border-radius:var(--r3); padding:var(--e4); box-shadow:var(--sombra);
+}
 .bloco h3{
-  font-size:12px; text-transform:uppercase; letter-spacing:.08em; color:var(--tinta-2);
-  border-bottom:1px solid var(--filete); padding-bottom:var(--e2); margin-bottom:var(--e3);
+  font-size:11.5px; text-transform:uppercase; letter-spacing:.07em; color:var(--ink-3);
+  margin-bottom:var(--e3); font-weight:650;
 }
 .linhas{display:grid; gap:var(--e2)}
-.linha{display:grid; grid-template-columns:minmax(96px,34%) 1fr; gap:var(--e3); align-items:baseline}
-.linha dt{font-size:12px; color:var(--tinta-2); text-transform:uppercase; letter-spacing:.05em}
+.linha{display:grid; grid-template-columns:minmax(96px,36%) 1fr; gap:var(--e3); align-items:baseline}
+.linha dt{font-size:12px; color:var(--ink-3)}
 .linha dd{margin:0; overflow-wrap:anywhere; word-break:break-word}
-dl{margin:0}
+.acoes-lead{display:flex; flex-wrap:wrap; gap:var(--e2)}
+.acoes-lead .bt{flex:1 1 auto; min-width:150px}
 .status-botoes{display:flex; flex-wrap:wrap; gap:var(--e2); margin-bottom:var(--e3)}
-.status-botoes .bt{flex:1 1 auto; min-width:120px}
+.status-botoes .bt{flex:1 1 auto; min-width:118px}
 textarea{
-  width:100%; max-width:100%; min-height:88px; padding:var(--e3);
-  border:1px solid var(--filete); border-radius:var(--r1); background:var(--creme); resize:vertical;
+  width:100%; max-width:100%; min-height:84px; padding:var(--e3);
+  border:1px solid var(--linha-2); border-radius:var(--r1); background:var(--carta); resize:vertical;
 }
-.tempo{
-  border-left:2px solid var(--filete); padding-left:var(--e3);
-  display:grid; gap:var(--e3);
-}
+.rot-campo{display:block; font-size:11.5px; font-weight:650; text-transform:uppercase; letter-spacing:.05em; color:var(--ink-3); margin-bottom:5px}
+.tempo{border-left:2px solid var(--linha); padding-left:var(--e3); display:grid; gap:var(--e3)}
 .tempo li{list-style:none}
-.tempo .quando{display:block; font-size:12px; color:var(--tinta-2)}
+.tempo .quando{display:block; font-size:12px; color:var(--ink-3)}
 .tempo .nota{display:block; overflow-wrap:anywhere; margin-top:2px}
-ul{margin:0; padding:0}
 .aviso-item{
-  border:1px solid var(--filete); border-radius:var(--r1); padding:var(--e3);
-  background:var(--creme); display:grid; gap:var(--e2); list-style:none;
+  border:1px solid var(--linha); border-radius:var(--r2); padding:var(--e3);
+  background:var(--carta); display:grid; gap:var(--e2); list-style:none;
 }
-.aviso-item .erro-txt{font-size:13px; color:var(--tinta); overflow-wrap:anywhere}
+.aviso-item .erro-txt{font-size:13px; color:var(--ink); overflow-wrap:anywhere}
 .nota-driver{
-  border:1px solid var(--filete); border-left:4px solid var(--chocolate);
-  background:var(--papel); border-radius:var(--r1); padding:var(--e3); margin-bottom:var(--e4);
+  border:1px solid var(--linha); border-left:4px solid var(--azul);
+  background:var(--carta); border-radius:var(--r2); padding:var(--e3); margin-bottom:var(--e4);
 }
-code{background:var(--pedra); border-radius:var(--e1); padding:0 4px; font-size:.92em; overflow-wrap:anywhere}
-.aviso-erro-form{color:var(--destaque-esc); font-weight:600; margin-top:var(--e2)}
+code{background:var(--carta-2); border:1px solid var(--linha); border-radius:var(--e1); padding:0 5px; font-size:.9em; font-family:var(--fn); overflow-wrap:anywhere}
+.aviso-erro-form{color:var(--alerta); font-weight:600; margin-top:var(--e2); font-size:13.5px}
+
+@media (prefers-reduced-motion:reduce){ *{transition:none !important; animation:none !important} }
 </style>
 </head>
 <body>
@@ -247,14 +461,11 @@ code{background:var(--pedra); border-radius:var(--e1); padding:0 4px; font-size:
   <div class="topo-in">
     <div class="marca">
       <span class="sub">Nataly Ribeiro</span>
-      <h1>Leads · Curso presencial</h1>
+      <h1>Painel de leads</h1>
     </div>
     <div class="acoes-topo">
       <a class="bt" id="btCsv" href="/crm/exportar.csv">Exportar CSV</a>
-      <button type="button" class="bt bt-forte" id="btSair">Sair</button>
-    </div>
-    <div class="contadores" id="contadores" aria-live="polite" aria-label="Resumo dos leads">
-      <span class="cont"><span class="n">…</span><span class="r">Carregando</span></span>
+      <button type="button" class="bt" id="btSair">Sair</button>
     </div>
   </div>
 </header>
@@ -262,44 +473,62 @@ code{background:var(--pedra); border-radius:var(--e1); padding:0 4px; font-size:
 <main class="envolve">
   <div id="faixaAvisos" class="faixa oculto" role="status"></div>
 
+  <section aria-labelledby="tKpis">
+    <h2 id="tKpis" class="sr">Os números do dia</h2>
+    <div class="kpis" id="kpis"></div>
+    <p class="resumo-linha" id="resumoLinha"></p>
+  </section>
+
   <form class="filtros" id="filtros" role="search" autocomplete="off">
     <div class="campo">
       <label for="fBusca">Buscar</label>
-      <input type="search" id="fBusca" name="busca" placeholder="Nome, telefone ou Instagram">
+      <input type="search" id="fBusca" name="busca" placeholder="Nome, telefone ou @">
     </div>
-    <div class="campo">
-      <label for="fStatus">Status</label>
-      <select id="fStatus" name="status"></select>
-    </div>
-    <div class="campo">
-      <label for="fQualif">Qualificação</label>
-      <select id="fQualif" name="qualificacao"></select>
-    </div>
-    <div class="campo">
-      <label for="fProduto">Produto indicado</label>
-      <select id="fProduto" name="produto_id"></select>
-    </div>
-    <div class="campo">
-      <label for="fCidade">Cidade</label>
-      <input type="text" id="fCidade" name="cidade" placeholder="Ex.: Cambuí">
-    </div>
-    <div class="campo">
-      <label for="fAnuncio">Anúncio de origem</label>
-      <select id="fAnuncio" name="utm_content"></select>
-    </div>
-    <div class="campo fim">
-      <button type="button" class="bt" id="btLimpar">Limpar filtros</button>
-    </div>
+    <details class="mais-filtros" id="maisFiltros">
+      <summary id="resumoFiltros">Filtros</summary>
+      <div class="filtros-grade">
+        <div class="campo">
+          <label for="fProduto">Produto indicado</label>
+          <select id="fProduto" name="produto_id"></select>
+        </div>
+        <div class="campo">
+          <label for="fQualif">Qualificação</label>
+          <select id="fQualif" name="qualificacao"></select>
+        </div>
+        <div class="campo">
+          <label for="fStatus">Status</label>
+          <select id="fStatus" name="status"></select>
+        </div>
+        <div class="campo">
+          <label for="fAnuncio">Origem</label>
+          <select id="fAnuncio" name="utm_content"></select>
+        </div>
+        <div class="campo">
+          <label for="fPeriodo">Período</label>
+          <select id="fPeriodo" name="periodo"></select>
+        </div>
+        <div class="campo">
+          <label for="fCidade">Cidade</label>
+          <input type="text" id="fCidade" name="cidade" placeholder="Ex.: Cambuí">
+        </div>
+        <div class="campo fim">
+          <button type="button" class="bt" id="btLimpar">Limpar filtros</button>
+        </div>
+      </div>
+    </details>
+    <p class="nota-csv oculto" id="notaCsv"></p>
   </form>
 
   <div class="abas" role="tablist" aria-label="Visões do painel">
     <button type="button" class="aba" role="tab" id="abaLista" aria-controls="pLista" aria-selected="true">Lista</button>
     <button type="button" class="aba" role="tab" id="abaKanban" aria-controls="pKanban" aria-selected="false" tabindex="-1">Kanban</button>
+    <button type="button" class="aba" role="tab" id="abaNumeros" aria-controls="pNumeros" aria-selected="false" tabindex="-1">Números</button>
     <button type="button" class="aba" role="tab" id="abaAvisos" aria-controls="pAvisos" aria-selected="false" tabindex="-1">Avisos</button>
   </div>
 
   <section id="pLista" role="tabpanel" aria-labelledby="abaLista" tabindex="0"></section>
   <section id="pKanban" role="tabpanel" aria-labelledby="abaKanban" tabindex="0" hidden></section>
+  <section id="pNumeros" role="tabpanel" aria-labelledby="abaNumeros" tabindex="0" hidden></section>
   <section id="pAvisos" role="tabpanel" aria-labelledby="abaAvisos" tabindex="0" hidden></section>
 
   <p id="anuncio" class="sr" role="status" aria-live="polite"></p>
@@ -312,11 +541,38 @@ code{background:var(--pedra); border-radius:var(--e1); padding:0 4px; font-size:
 (function () {
   'use strict';
 
+  var SVGNS = 'http://www.w3.org/2000/svg';
+  var STATUS = ['novo', 'contatado', 'em-conversa', 'proposta-enviada', 'ganho', 'perdido'];
+  /* Status em que o lead ainda depende de uma ação dela. `ganho` e `perdido`
+     são terminais: contá-los como "fila" inflaria o trabalho pendente. */
+  var ABERTOS = ['novo', 'contatado', 'em-conversa', 'proposta-enviada'];
+  var QUALIF = ['quente', 'morno', 'frio'];
+  var PRODUTOS = ['profissao-lash', 'profissao-lash-presencial', 'lash2-online', 'lash2-presencial'];
+
+  /* A rampa do pipeline é ORDINAL (uma cor só, clara → escura), não
+     categórica: status não é identidade, é etapa. `ganho` e `perdido` saem
+     da rampa de propósito — são desfecho, e desfecho não é "mais azul". */
+  var COR = {
+    'novo': '#3987e5', 'contatado': '#2a78d6', 'em-conversa': '#256abf',
+    'proposta-enviada': '#1c5cab', 'ganho': '#157347', 'perdido': '#6B7480'
+  };
+  var COR_QUENTE = '#C2410C';
+  var COR_AZUL = '#2a78d6';
+  var COR_GRADE = '#E3E6EB';
+  var COR_INK2 = '#54606E';
+  var COR_INK3 = '#667085';
+
+  var PERIODOS = [
+    { v: '', r: 'Todo o período', d: 0 },
+    { v: '1', r: 'Hoje', d: 1 },
+    { v: '7', r: 'Últimos 7 dias', d: 7 },
+    { v: '30', r: 'Últimos 30 dias', d: 30 },
+    { v: '90', r: 'Últimos 90 dias', d: 90 }
+  ];
+
   /* ============================================================
      Rótulos — nada de código cru na tela
      ============================================================ */
-  var STATUS = ['novo', 'contatado', 'em-conversa', 'proposta-enviada', 'ganho', 'perdido'];
-
   var ROT = {
     status: {
       'novo': 'Novo', 'contatado': 'Contatado', 'em-conversa': 'Em conversa',
@@ -329,6 +585,12 @@ code{background:var(--pedra); border-radius:var(--e1); padding:0 4px; font-size:
     produto_id: {
       'profissao-lash': 'Profissão Lash online',
       'profissao-lash-presencial': 'Profissão Lash online + presencial',
+      'lash2-online': 'Método LED online',
+      'lash2-presencial': 'Método LED presencial'
+    },
+    produto_curto: {
+      'profissao-lash': 'Profissão Lash online',
+      'profissao-lash-presencial': 'Profissão Lash + presencial',
       'lash2-online': 'Método LED online',
       'lash2-presencial': 'Método LED presencial'
     },
@@ -375,20 +637,21 @@ code{background:var(--pedra); border-radius:var(--e1); padding:0 4px; font-size:
     if (m && m[valor]) return m[valor];
     return String(valor);
   }
-
   function texto(v) {
     if (v === null || v === undefined) return '—';
     var s = String(v).trim();
     return s === '' || s === 'null' || s === 'undefined' ? '—' : s;
   }
-
-  function idade(v) {
-    if (!v) return '—';
-    return String(v) + ' anos';
+  function idade(v) { return v ? String(v) + ' anos' : '—'; }
+  function num(n) { return Number(n || 0).toLocaleString('pt-BR'); }
+  function reais(n) {
+    return 'R$ ' + Number(n || 0).toLocaleString('pt-BR', { maximumFractionDigits: 0 });
   }
 
   /* ============================================================
-     DOM sem innerHTML — tudo por createElement/textContent
+     DOM sem innerHTML — tudo por createElement/textContent.
+     Aqui roda dado pessoal de terceiro: um nome com "<" nunca pode
+     virar marcação. A regra vale para o SVG dos gráficos também.
      ============================================================ */
   function el(tag, classe, conteudo) {
     var n = document.createElement(tag);
@@ -396,49 +659,75 @@ code{background:var(--pedra); border-radius:var(--e1); padding:0 4px; font-size:
     if (conteudo !== undefined && conteudo !== null) n.textContent = String(conteudo);
     return n;
   }
+  function svg(tag, attrs) {
+    var n = document.createElementNS(SVGNS, tag);
+    if (attrs) for (var k in attrs) if (Object.prototype.hasOwnProperty.call(attrs, k)) {
+      n.setAttribute(k, String(attrs[k]));
+    }
+    return n;
+  }
   function limpa(no) { while (no.firstChild) no.removeChild(no.firstChild); }
   function poe(pai) {
-    for (var i = 1; i < arguments.length; i++) {
-      var f = arguments[i];
-      if (f) pai.appendChild(f);
-    }
+    for (var i = 1; i < arguments.length; i++) { if (arguments[i]) pai.appendChild(arguments[i]); }
     return pai;
+  }
+  function attr(no, mapa) {
+    for (var k in mapa) if (Object.prototype.hasOwnProperty.call(mapa, k)) no.setAttribute(k, String(mapa[k]));
+    return no;
   }
 
   function pilulaQualif(q, pontuacao) {
     var t = rot('qualificacao', q);
-    if (pontuacao !== null && pontuacao !== undefined && pontuacao !== '') {
-      t += ' · ' + pontuacao + '/100';
-    }
-    var p = el('span', 'pil q-' + (q || 'frio'), t);
-    return p;
+    if (pontuacao !== null && pontuacao !== undefined && pontuacao !== '') t += ' · ' + pontuacao;
+    return el('span', 'pil q-' + (q || 'frio'), t);
   }
-  function pilulaStatus(s) {
-    return el('span', 'pil s-' + (s || 'novo'), rot('status', s));
+  function pilulaStatus(s) { return el('span', 'pil s-' + (s || 'novo'), rot('status', s)); }
+
+  /* ícone do WhatsApp, desenhado à mão — sem CDN, sem fonte de ícone */
+  function iconeWa() {
+    var s = svg('svg', { width: 15, height: 15, viewBox: '0 0 24 24', 'aria-hidden': 'true', focusable: 'false' });
+    s.appendChild(svg('path', {
+      fill: 'currentColor',
+      d: 'M12.04 2C6.6 2 2.2 6.4 2.2 11.84c0 1.74.46 3.44 1.32 4.94L2.1 22l5.34-1.4a9.8 9.8 0 0 0 4.6 1.17h.01c5.43 0 9.84-4.4 9.84-9.84S17.47 2 12.04 2Zm0 17.98h-.01a8.2 8.2 0 0 1-4.16-1.14l-.3-.18-3.17.83.85-3.09-.2-.32a8.14 8.14 0 0 1-1.25-4.34c0-4.51 3.68-8.18 8.2-8.18 2.19 0 4.24.85 5.79 2.4a8.13 8.13 0 0 1 2.4 5.79c0 4.51-3.68 8.23-8.15 8.23Zm4.5-6.16c-.25-.13-1.46-.72-1.68-.8-.23-.08-.39-.13-.55.12-.17.25-.64.8-.78.97-.14.16-.29.18-.53.06-.25-.13-1.04-.38-1.98-1.22-.73-.65-1.23-1.46-1.37-1.7-.15-.25-.02-.39.1-.51.11-.11.25-.29.37-.44.13-.14.17-.25.25-.41.09-.17.04-.31-.02-.43-.06-.13-.55-1.34-.76-1.83-.2-.48-.4-.42-.55-.42h-.47c-.16 0-.43.06-.65.31-.22.25-.86.84-.86 2.05s.88 2.38 1 2.54c.13.17 1.73 2.64 4.2 3.7.58.26 1.04.41 1.4.52.59.19 1.13.16 1.55.1.47-.07 1.46-.6 1.66-1.18.21-.58.21-1.07.15-1.18-.06-.11-.23-.17-.48-.29Z'
+    }));
+    return s;
+  }
+
+  /* 🔴 O link abre a conversa VAZIA, sempre. Quem fala com a aluna é a
+     Nataly, e o texto é dela — não se escreve mensagem na voz de outra
+     pessoa. Já houve aqui uma saudação pronta assinada como ela, em dois
+     lugares; o Edu barrou em 01/09/2026. NÃO reintroduzir `?text=` nem
+     nenhum parâmetro de mensagem, nem "para facilitar". */
+  function linkWhatsApp(telefone, classe, rotulo, nome) {
+    var d = String(telefone || '').replace(/\D/g, '');
+    if (!d) return null;
+    var a = el('a', classe || 'bt bt-wa');
+    a.appendChild(iconeWa());
+    a.appendChild(el('span', null, rotulo || 'WhatsApp'));
+    a.setAttribute('href', 'https://wa.me/' + d);
+    a.setAttribute('target', '_blank');
+    a.setAttribute('rel', 'noopener noreferrer');
+    a.setAttribute('aria-label', 'Abrir a conversa no WhatsApp com ' + texto(nome));
+    return a;
   }
 
   /* ============================================================
      Datas — pt-BR, fuso de São Paulo
      ============================================================ */
-  var FUSO = { timeZone: 'America/Sao_Paulo' };
+  var FUSO = 'America/Sao_Paulo';
+  var fmtDia = new Intl.DateTimeFormat('en-CA', { timeZone: FUSO, year: 'numeric', month: '2-digit', day: '2-digit' });
+  var fmtCurto = new Intl.DateTimeFormat('pt-BR', { timeZone: FUSO, day: '2-digit', month: '2-digit' });
 
+  function chaveDia(d) { return fmtDia.format(d); }        /* 'AAAA-MM-DD' */
   function dataAbsoluta(iso) {
     if (!iso) return '—';
     var d = new Date(iso);
     if (isNaN(d.getTime())) return '—';
     return d.toLocaleString('pt-BR', {
-      timeZone: 'America/Sao_Paulo', day: '2-digit', month: '2-digit', year: 'numeric',
+      timeZone: FUSO, day: '2-digit', month: '2-digit', year: 'numeric',
       hour: '2-digit', minute: '2-digit'
     });
   }
-
-  function diaDe(d) {
-    var s = d.toLocaleDateString('pt-BR', {
-      timeZone: FUSO.timeZone, day: '2-digit', month: '2-digit', year: 'numeric'
-    });
-    return s;
-  }
-
   function dataRelativa(iso) {
     if (!iso) return '—';
     var d = new Date(iso);
@@ -447,18 +736,41 @@ code{background:var(--pedra); border-radius:var(--e1); padding:0 4px; font-size:
     if (seg < 0) seg = 0;
     if (seg < 60) return 'agora há pouco';
     if (seg < 3600) return 'há ' + Math.floor(seg / 60) + ' min';
-    if (seg < 86400) {
-      var h = Math.floor(seg / 3600);
-      return 'há ' + h + ' h';
-    }
-    var ontem = new Date(Date.now() - 86400000);
-    if (diaDe(d) === diaDe(ontem)) return 'ontem';
+    if (seg < 86400) return 'há ' + Math.floor(seg / 3600) + ' h';
+    if (chaveDia(d) === chaveDia(new Date(Date.now() - 86400000))) return 'ontem';
     var dias = Math.floor(seg / 86400);
     if (dias < 30) return 'há ' + dias + ' d';
     var meses = Math.floor(dias / 30);
     if (meses < 12) return 'há ' + meses + (meses === 1 ? ' mês' : ' meses');
     var anos = Math.floor(dias / 365);
     return 'há ' + anos + (anos === 1 ? ' ano' : ' anos');
+  }
+  /* Quantos dias inteiros (no fuso de São Paulo) separam a data de hoje.
+     Usa a CHAVE DO DIA, não a diferença em milissegundos: um lead das 23h
+     de ontem está a 1 dia, não a "0,4 dia".
+
+     ⚠️ A tabela é montada UMA vez, não varrida por lead. A primeira versão
+     desta função andava para trás dia a dia procurando a data, para CADA
+     lead — e `Intl.format` não é barato. Medido: com o teto de 2000 leads
+     espalhados em dois anos, 425 ms por passada; e a passada acontece três
+     vezes por desenho (o recorte de período, os números do topo e os
+     gráficos). Dava 1,3 s de tela travada no celular dela a cada filtro.
+     A tabela inteira custa 400 formatações, uma vez por dia. */
+  var _mapaDias = null, _mapaHoje = null;
+  function tabelaDias() {
+    var hoje = chaveDia(new Date());
+    if (_mapaDias && _mapaHoje === hoje) return _mapaDias;
+    _mapaDias = {};
+    _mapaHoje = hoje;
+    for (var i = 0; i <= 400; i++) _mapaDias[chaveDia(new Date(Date.now() - i * 86400000))] = i;
+    return _mapaDias;
+  }
+  function diasAtras(iso) {
+    if (!iso) return null;
+    var d = new Date(iso);
+    if (isNaN(d.getTime())) return null;
+    var n = tabelaDias()[chaveDia(d)];
+    return n === undefined ? 401 : n;
   }
 
   /* ============================================================
@@ -494,83 +806,685 @@ code{background:var(--pedra); border-radius:var(--e1); padding:0 4px; font-size:
   /* ============================================================
      Estado
      ============================================================ */
+  /* O TETO é explícito. `lista()` corta em 500 por padrão e em 2000 no
+     máximo: se os números do topo fossem calculados sobre uma lista cortada
+     em silêncio, o painel mostraria um total menor que o real e ninguém
+     saberia. Pedimos o teto e AVISAMOS quando ele é alcançado. */
+  var TETO = 2000;
+
   var estado = {
     resumo: null,
     leads: [],
     filtros: { busca: '', status: '', qualificacao: '', produto_id: '', cidade: '', utm_content: '' },
+    periodo: '',            /* client-side: a API de listagem não filtra por data */
     aba: 'lista',
     carregando: false,
     erro: null,
     avisos: null,
     driver: null,
     abridor: null,
-    arrastando: null
+    pego: null              /* arraste em curso (ponteiro ou teclado) */
   };
 
   var pLista = document.getElementById('pLista');
   var pKanban = document.getElementById('pKanban');
+  var pNumeros = document.getElementById('pNumeros');
   var pAvisos = document.getElementById('pAvisos');
   var painel = document.getElementById('painel');
   var fundo = document.getElementById('fundo');
 
   function filtrosAtivos() {
     var q = {};
-    Object.keys(estado.filtros).forEach(function (k) {
-      if (estado.filtros[k]) q[k] = estado.filtros[k];
-    });
+    Object.keys(estado.filtros).forEach(function (k) { if (estado.filtros[k]) q[k] = estado.filtros[k]; });
     return q;
   }
-
-  function queryString() {
+  function queryString(extra) {
     var q = filtrosAtivos();
+    if (extra) for (var k in extra) if (Object.prototype.hasOwnProperty.call(extra, k)) q[k] = extra[k];
     var partes = Object.keys(q).map(function (k) {
       return encodeURIComponent(k) + '=' + encodeURIComponent(q[k]);
     });
     return partes.length ? '?' + partes.join('&') : '';
   }
+  function temFiltro() {
+    return Object.keys(filtrosAtivos()).length > 0 || estado.periodo !== '';
+  }
+
+  /* A lista que a tela inteira enxerga: o que o servidor devolveu, cortado
+     pelo período. O período é o ÚNICO filtro aplicado aqui — os outros vão
+     no WHERE do banco. */
+  function visiveis() {
+    if (!estado.periodo) return estado.leads;
+    var lim = parseInt(estado.periodo, 10);
+    return estado.leads.filter(function (l) {
+      var d = diasAtras(l.criado_em);
+      return d !== null && d < lim;
+    });
+  }
 
   function atualizaLinkCsv() {
     document.getElementById('btCsv').setAttribute('href', '/crm/exportar.csv' + queryString());
+    /* Honestidade sobre o CSV: o período é aplicado só na tela, porque a
+       rota de exportação usa o mesmo WHERE do banco, que não tem data.
+       Deixar isso implícito faria a Nataly exportar 300 linhas achando que
+       exportou as 12 da semana. */
+    marcaFiltros();
+    var nota = document.getElementById('notaCsv');
+    if (estado.periodo) {
+      limpa(nota);
+      var p = PERIODOS.filter(function (x) { return x.v === estado.periodo; })[0];
+      nota.appendChild(document.createTextNode(
+        'Atenção: o CSV exporta por busca, produto, qualificação, status, origem e cidade. ' +
+        'O período (' + (p ? p.r.toLowerCase() : estado.periodo) + ') vale só para esta tela.'));
+      nota.classList.remove('oculto');
+    } else {
+      nota.classList.add('oculto');
+      limpa(nota);
+    }
+  }
+
+  /* Filtro fechado é filtro esquecido: se ela filtrou por "quente" ontem e
+     hoje a gaveta abre fechada, a lista curta parece lead que sumiu. A
+     contagem no rótulo diz que existe filtro ligado sem precisar abrir. */
+  function marcaFiltros() {
+    var s = document.getElementById('resumoFiltros');
+    if (!s) return;
+    var n = 0;
+    ['status', 'qualificacao', 'produto_id', 'cidade', 'utm_content'].forEach(function (k) {
+      if (estado.filtros[k]) n++;
+    });
+    if (estado.periodo) n++;
+    limpa(s);
+    s.appendChild(document.createTextNode('Filtros'));
+    if (n) s.appendChild(el('span', 'qtf', String(n)));
+    s.setAttribute('aria-label', n
+      ? 'Filtros — ' + n + (n === 1 ? ' filtro ligado' : ' filtros ligados')
+      : 'Filtros — nenhum ligado');
+    var d = document.getElementById('maisFiltros');
+    if (d && n && !d.open && !window.matchMedia('(min-width:900px)').matches) d.open = true;
+  }
+
+  /* No desktop os filtros nunca ficam escondidos atrás de um clique. */
+  var mqLargo = window.matchMedia('(min-width:900px)');
+  function ajustaFiltros() {
+    var d = document.getElementById('maisFiltros');
+    if (d && mqLargo.matches) d.open = true;
+  }
+  if (mqLargo.addEventListener) mqLargo.addEventListener('change', ajustaFiltros);
+  else if (mqLargo.addListener) mqLargo.addListener(ajustaFiltros);
+
+  /* ============================================================
+     OS NÚMEROS DO TOPO
+     ============================================================
+     Cada um responde a uma pergunta que ela faz de manhã. O que não
+     responde a nenhuma ficou de fora — número que não muda decisão é
+     ruído com aparência de dado.
+
+       1. "Quem chegou e eu ainda não falei?"      → novos sem contato
+       2. "Quem vale ligar agora?"                 → quentes na fila
+       3. "O anúncio continua trazendo gente?"     → 7 dias + variação
+       4. "Quanto tem em jogo?"                    → propostas + R$
+     ============================================================ */
+  function calcula(leads) {
+    var c = {
+      total: leads.length,
+      porStatus: {}, porQualif: {}, porProduto: {}, porOrigem: {},
+      novos: 0, quentesFila: 0, fila: 0,
+      filaQualif: { quente: 0, morno: 0, frio: 0 },
+      proposta: 0, valorProposta: 0,
+      ganho: 0, perdido: 0,
+      d7: 0, d7ant: 0,
+      serie: [], serie14: []
+    };
+    STATUS.forEach(function (s) { c.porStatus[s] = 0; });
+    QUALIF.forEach(function (q) { c.porQualif[q] = 0; });
+
+    var porDia = {};
+    leads.forEach(function (l) {
+      var s = l.status || 'novo';
+      var q = l.qualificacao || 'frio';
+      if (c.porStatus[s] === undefined) c.porStatus[s] = 0;
+      c.porStatus[s]++;
+      if (c.porQualif[q] === undefined) c.porQualif[q] = 0;
+      c.porQualif[q]++;
+
+      var pid = l.produto_id || '(sem produto)';
+      c.porProduto[pid] = (c.porProduto[pid] || 0) + 1;
+
+      var org = l.utm_content || l.utm_campaign || l.referrer || '(sem origem)';
+      if (!c.porOrigem[org]) c.porOrigem[org] = { n: 0, quentes: 0 };
+      c.porOrigem[org].n++;
+      if (q === 'quente') c.porOrigem[org].quentes++;
+
+      if (s === 'novo') c.novos++;
+      if (s === 'ganho') c.ganho++;
+      if (s === 'perdido') c.perdido++;
+      if (s === 'proposta-enviada') {
+        c.proposta++;
+        c.valorProposta += Number(l.produto_valor || 0);
+      }
+      if (ABERTOS.indexOf(s) !== -1) {
+        c.fila++;
+        if (c.filaQualif[q] === undefined) c.filaQualif[q] = 0;
+        c.filaQualif[q]++;
+        if (q === 'quente') c.quentesFila++;
+      }
+
+      var d = diasAtras(l.criado_em);
+      if (d !== null) {
+        if (d < 7) c.d7++;
+        else if (d < 14) c.d7ant++;
+        var k = chaveDia(new Date(l.criado_em));
+        porDia[k] = (porDia[k] || 0) + 1;
+      }
+    });
+
+    /* A série é construída a partir do CALENDÁRIO, não das chaves que
+       aparecem nos dados: sem isso um dia sem lead nenhum simplesmente
+       sumiria do gráfico e a queda viraria uma linha contínua mentirosa. */
+    for (var i = 29; i >= 0; i--) {
+      var dt = new Date(Date.now() - i * 86400000);
+      var ch = chaveDia(dt);
+      c.serie.push({ dia: ch, data: dt, n: porDia[ch] || 0 });
+    }
+    c.serie14 = c.serie.slice(-14);
+    return c;
+  }
+
+  function tile(rotulo, valor, pos, filtro, ariaExtra) {
+    var b = el('button', 'kpi');
+    b.type = 'button';
+    poe(b, el('span', 'kpi__r', rotulo), el('span', 'kpi__n', num(valor)));
+    if (pos) b.appendChild(pos);
+    if (filtro) {
+      var ligado = true;
+      for (var k in filtro) if (estado.filtros[k] !== filtro[k]) ligado = false;
+      b.setAttribute('aria-pressed', ligado ? 'true' : 'false');
+      b.setAttribute('title', ligado ? 'Clique para tirar o filtro' : 'Clique para filtrar');
+      b.addEventListener('click', function () {
+        var desligando = b.getAttribute('aria-pressed') === 'true';
+        Object.keys(filtro).forEach(function (k) {
+          estado.filtros[k] = desligando ? '' : filtro[k];
+        });
+        escreveFiltros();
+        carregaLeads();
+        anuncia(desligando ? 'Filtro removido.' : 'Filtrando por ' + rotulo.toLowerCase() + '.');
+      });
+    } else {
+      b.disabled = true;
+      b.style.cursor = 'default';
+    }
+    b.setAttribute('aria-label', rotulo + ': ' + num(valor) + (ariaExtra ? '. ' + ariaExtra : ''));
+    return b;
+  }
+
+  function desenhaKpis() {
+    var alvo = document.getElementById('kpis');
+    var linha = document.getElementById('resumoLinha');
+    limpa(alvo); limpa(linha);
+
+    if (estado.carregando && !estado.leads.length) {
+      for (var i = 0; i < 4; i++) {
+        var v = el('div', 'kpi');
+        poe(v, el('span', 'kpi__r', 'Carregando'), el('span', 'kpi__n', '—'));
+        alvo.appendChild(v);
+      }
+      return;
+    }
+
+    var c = calcula(visiveis());
+    estado.calc = c;
+
+    /* 1 — a fila de quem chegou e ainda não recebeu resposta */
+    var p1 = el('span', 'kpi__p');
+    p1.appendChild(document.createTextNode(
+      c.novos === 0 ? 'Ninguém esperando. ' : 'Esperando o primeiro contato. '));
+    alvo.appendChild(tile('Novos sem contato', c.novos, p1, { status: 'novo' },
+      'Leads que ainda não foram contatados.'));
+
+    /* 2 — quem vale ligar agora, com a mistura da fila num medidor */
+    var p2 = el('span', 'kpi__p');
+    var b2 = el('b', null, num(c.fila));
+    p2.appendChild(document.createTextNode('de '));
+    p2.appendChild(b2);
+    p2.appendChild(document.createTextNode(' em aberto'));
+    /* Medidor de DUAS partes, não de três. A versão de três (quente/morno/
+       frio) precisava de um âmbar e de um cinza claro que mediam 2.35:1 e
+       1.88:1 contra o azulejo — abaixo do piso de 3:1 para marca. E três
+       tons quentes vizinhos num traço de 6px não se distinguem mesmo com
+       contraste bom, muito menos para quem não separa vermelho de verde.
+       Duas partes respondem a pergunta do azulejo ("quanto da fila é
+       quente?") e passam com folga. Morno e frio saem exatos na linha de
+       resumo, logo abaixo, onde número é melhor que cor. */
+    var med = el('div', 'medidor');
+    med.setAttribute('role', 'img');
+    med.setAttribute('aria-label',
+      'Da fila em aberto, ' + c.quentesFila + ' de ' + c.fila + ' são leads quentes.');
+    [['quente', COR_QUENTE, c.quentesFila],
+     ['resto', '#6B7480', Math.max(0, c.fila - c.quentesFila)]].forEach(function (par) {
+      if (!par[2]) return;
+      var s = el('span');
+      s.style.background = par[1];
+      s.style.width = (100 * par[2] / Math.max(1, c.fila)) + '%';
+      med.appendChild(s);
+    });
+    var caixa2 = el('span');
+    poe(caixa2, p2, c.fila ? med : null);
+    alvo.appendChild(tile('Quentes na fila', c.quentesFila, caixa2, { qualificacao: 'quente' },
+      'Leads quentes ainda em aberto.'));
+
+    /* 3 — o pulso do anúncio: 7 dias, variação contra os 7 anteriores,
+       e a faísca dos últimos 14 dias (tendência sem virar gráfico). */
+    var dif = c.d7 - c.d7ant;
+    var cls = dif > 0 ? 'sobe' : (dif < 0 ? 'desce' : 'igual');
+    var p3 = el('span', 'kpi__p');
+    var dd = el('span', 'delta ' + cls,
+      (dif > 0 ? '▲ +' : (dif < 0 ? '▼ ' : '● ')) + (dif === 0 ? 'igual' : num(Math.abs(dif))));
+    p3.appendChild(dd);
+    p3.appendChild(document.createTextNode(' vs. os 7 dias antes (' + num(c.d7ant) + ')'));
+    var caixa3 = el('span');
+    poe(caixa3, p3, faisca(c.serie14));
+    alvo.appendChild(tile('Chegaram em 7 dias', c.d7, caixa3, null,
+      'Variação de ' + (dif >= 0 ? 'mais ' : 'menos ') + num(Math.abs(dif)) +
+      ' contra os sete dias anteriores, que tiveram ' + num(c.d7ant) + '.'));
+
+    /* 4 — o dinheiro que está na mesa */
+    var p4 = el('span', 'kpi__p');
+    var b4 = el('b', null, reais(c.valorProposta));
+    p4.appendChild(b4);
+    p4.appendChild(document.createTextNode(' em propostas abertas'));
+    alvo.appendChild(tile('Em proposta', c.proposta, p4, { status: 'proposta-enviada' },
+      reais(c.valorProposta) + ' em propostas abertas.'));
+
+    /* a linha de contexto: o que é bom saber, mas não merece um azulejo */
+    var taxa = c.total ? Math.round(1000 * c.ganho / c.total) / 10 : 0;
+    var partes = [
+      ['Total', num(c.total) + (temFiltro() ? ' (filtrado)' : '')],
+      ['Ganhos', num(c.ganho) + (c.total ? ' · ' + String(taxa).replace('.', ',') + '%' : '')],
+      ['Perdidos', num(c.perdido)],
+      ['Quente/morno/frio', num(c.porQualif.quente) + ' · ' + num(c.porQualif.morno) + ' · ' + num(c.porQualif.frio)]
+    ];
+    partes.forEach(function (par, i) {
+      if (i) linha.appendChild(document.createTextNode(' '));
+      var s = el('span');
+      s.appendChild(document.createTextNode(par[0] + ': '));
+      s.appendChild(el('b', null, par[1]));
+      linha.appendChild(s);
+    });
+    if (estado.leads.length >= TETO) {
+      var av = el('span', null, '⚠ mostrando os ' + num(TETO) + ' leads mais recentes');
+      av.style.color = 'var(--alerta)';
+      linha.appendChild(av);
+    }
+  }
+
+  /* faísca: 14 dias, área de uma série só. Sem eixo e sem rótulo — é
+     contexto dentro do azulejo, não um gráfico. */
+  function faisca(serie) {
+    var W = 132, H = 26;
+    var s = svg('svg', { width: W, height: H, viewBox: '0 0 ' + W + ' ' + H, class: 'faisca', 'aria-hidden': 'true', focusable: 'false' });
+    var max = 1;
+    serie.forEach(function (p) { if (p.n > max) max = p.n; });
+    var passo = W / Math.max(1, serie.length - 1);
+    var pts = serie.map(function (p, i) {
+      return (i * passo).toFixed(1) + ',' + (H - 2 - (H - 5) * (p.n / max)).toFixed(1);
+    });
+    s.appendChild(svg('polygon', {
+      points: '0,' + H + ' ' + pts.join(' ') + ' ' + W + ',' + H,
+      fill: COR_AZUL, 'fill-opacity': '.14'
+    }));
+    s.appendChild(svg('polyline', {
+      points: pts.join(' '), fill: 'none', stroke: COR_AZUL,
+      'stroke-width': '2', 'stroke-linejoin': 'round', 'stroke-linecap': 'round'
+    }));
+    return s;
   }
 
   /* ============================================================
-     Cabeçalho: contadores e faixa de avisos
-     ============================================================ */
-  function desenhaResumo() {
-    var alvo = document.getElementById('contadores');
-    limpa(alvo);
-    var r = estado.resumo;
-    if (!r) {
-      poe(alvo, poe(el('span', 'cont'), el('span', 'n', '…'), el('span', 'r', 'Carregando')));
-      return;
-    }
-    var total = el('span', 'cont total');
-    poe(total, el('span', 'n', r.total), el('span', 'r', 'Leads'));
-    alvo.appendChild(total);
+     GRÁFICOS — SVG à mão, sem biblioteca e sem CDN
+     ============================================================
+     O painel é interno e precisa abrir rápido no celular da Nataly. Uma
+     biblioteca de gráfico custaria mais bytes que a página inteira para
+     desenhar quatro barras. Tudo aqui é <svg> montado por createElementNS.
 
-    var mapa = {};
-    (r.porStatus || []).forEach(function (linha) { mapa[linha.status] = linha.n; });
-    STATUS.forEach(function (s) {
-      var c = el('span', 'cont');
-      poe(c, el('span', 'n', mapa[s] || 0), el('span', 'r', rot('status', s)));
-      alvo.appendChild(c);
+     Os gráficos são desenhados em PIXEL, medindo a largura do contêiner e
+     redesenhando no resize — e não escalados por viewBox. Escalar o viewBox
+     esticaria o texto dos eixos junto, e um rótulo de 9px deformado é pior
+     que rótulo nenhum.
+     ============================================================ */
+  var _redraw = null;
+
+  function figura(titulo, porque) {
+    var f = el('figure', 'fig');
+    f.style.margin = '0';
+    var cab = el('figcaption');
+    poe(cab, el('h3', null, titulo), el('p', 'porque', porque));
+    f.appendChild(cab);
+    var tela = el('div', 'tela');
+    f.appendChild(tela);
+    f.tela = tela;
+    return f;
+  }
+
+  function tabelaViz(rotuloCol, linhas, rotuloVal) {
+    /* Toda figura carrega a mesma informação em tabela. Não é enfeite: é o
+       caminho de quem usa leitor de tela, de quem não distingue as cores e
+       de quem só quer o número exato. */
+    var d = el('details', 'tabela-viz');
+    d.appendChild(el('summary', null, 'Ver os números em tabela'));
+    var t = document.createElement('table');
+    var thead = document.createElement('thead');
+    var trh = document.createElement('tr');
+    [rotuloCol, rotuloVal || 'Leads'].forEach(function (r) {
+      var th = el('th', null, r); th.setAttribute('scope', 'col'); trh.appendChild(th);
+    });
+    thead.appendChild(trh); t.appendChild(thead);
+    var tb = document.createElement('tbody');
+    linhas.forEach(function (l) {
+      var tr = document.createElement('tr');
+      poe(tr, el('td', null, l[0]), el('td', null, l[1]));
+      tb.appendChild(tr);
+    });
+    t.appendChild(tb);
+    d.appendChild(t);
+    return d;
+  }
+
+  function dica(tela, texto_, x, y) {
+    var d = tela.querySelector('.dica');
+    if (!d) { d = el('div', 'dica'); tela.appendChild(d); }
+    d.textContent = texto_;
+    d.style.left = x + 'px';
+    d.style.top = y + 'px';
+    d.classList.remove('oculto');
+  }
+  function tiraDica(tela) {
+    var d = tela.querySelector('.dica');
+    if (d) d.classList.add('oculto');
+  }
+
+  /* Eixo com número REDONDO. Sem isto a escala herda o pico cru e a régua
+     sai "0, 10, 20, 29, 39" — ninguém lê altura contra 29. */
+  function escala(max) {
+    if (max <= 5) return { max: Math.max(1, max), passos: Math.max(1, max) };
+    var exp = Math.pow(10, Math.floor(Math.log(max) / Math.LN10));
+    var cand = [1, 2, 2.5, 5, 10];
+    for (var i = 0; i < cand.length; i++) {
+      var p = cand[i] * exp;
+      var n = Math.ceil(max / p);
+      if (n <= 5) return { max: n * p, passos: n };
+    }
+    return { max: max, passos: 4 };
+  }
+
+  /* ---------- 1. colunas por dia ---------- */
+  function grafDias(tela, serie) {
+    limpa(tela);
+    var L = Math.max(260, tela.clientWidth || 320);
+    var H = 190, mE = 32, mD = 8, mT = 18, mB = 26;
+    var lg = L - mE - mD, ag = H - mT - mB;
+    var pico = 1;
+    serie.forEach(function (p) { if (p.n > pico) pico = p.n; });
+    var esc = escala(pico);
+    var max = esc.max, passos = esc.passos;
+    var s = svg('svg', { width: L, height: H, role: 'img' });
+    s.appendChild(attr(svg('title'), {}));
+    s.querySelector('title').textContent =
+      'Leads por dia nos últimos 30 dias. Pico de ' + pico + ' num dia.';
+
+    /* grade recessiva + eixo y */
+    for (var i = 0; i <= passos; i++) {
+      var v = Math.round(max * i / passos);
+      var y = mT + ag - ag * (v / max);
+      s.appendChild(svg('line', { x1: mE, x2: L - mD, y1: y, y2: y, stroke: COR_GRADE, 'stroke-width': 1 }));
+      var t = svg('text', { x: mE - 6, y: y + 3.5, 'text-anchor': 'end', 'font-size': 10.5, fill: COR_INK3 });
+      t.textContent = String(v);
+      s.appendChild(t);
+    }
+
+    var larg = lg / serie.length;
+    var lb = Math.max(3, Math.min(18, larg - 3));
+    var iMax = 0;
+    serie.forEach(function (p, i) { if (p.n > serie[iMax].n) iMax = i; });
+    var picoDia = serie[iMax].n;
+
+    serie.forEach(function (p, i) {
+      var cx = mE + larg * i + larg / 2;
+      var h = ag * (p.n / max);
+      if (p.n > 0) {
+        var y0 = mT + ag - h;
+        var r = Math.min(4, lb / 2, h);
+        /* topo arredondado, base ancorada na linha de base */
+        var d = 'M' + (cx - lb / 2) + ' ' + (mT + ag) +
+                ' V' + (y0 + r) + ' Q' + (cx - lb / 2) + ' ' + y0 + ' ' + (cx - lb / 2 + r) + ' ' + y0 +
+                ' H' + (cx + lb / 2 - r) + ' Q' + (cx + lb / 2) + ' ' + y0 + ' ' + (cx + lb / 2) + ' ' + (y0 + r) +
+                ' V' + (mT + ag) + ' Z';
+        s.appendChild(svg('path', { d: d, fill: COR_AZUL }));
+      }
+      /* Alvo de toque generoso e invisível, bem maior que a barra — e FORA
+         da ordem de tabulação de propósito: trinta colunas seriam trinta
+         paradas de Tab antes do próximo controle da página, e ninguém lê um
+         gráfico assim. Quem usa teclado ou leitor de tela tem a tabela logo
+         abaixo, que dá dia e número exatos, mais rápido. */
+      var alvo = svg('rect', {
+        x: mE + larg * i, y: mT, width: larg, height: ag, fill: 'transparent',
+        'aria-hidden': 'true'
+      });
+      var msg = fmtCurto.format(p.data) + ' · ' + p.n + (p.n === 1 ? ' lead' : ' leads');
+      alvo.addEventListener('mouseenter', function () {
+        dica(tela, msg, Math.round(cx), Math.round(mT + ag - h));
+      });
+      alvo.addEventListener('mouseleave', function () { tiraDica(tela); });
+      s.appendChild(alvo);
+
+      /* rótulo direto só onde vale: o pico e o último dia. Número em cima
+         de cada coluna vira ruído e some com 30 colunas. */
+      if ((i === iMax && p.n > 0) || (i === serie.length - 1 && p.n > 0 && i !== iMax)) {
+        var rl = svg('text', {
+          x: cx, y: mT + ag - h - 5, 'text-anchor': 'middle',
+          'font-size': 10.5, 'font-weight': 650, fill: COR_INK2
+        });
+        rl.textContent = String(p.n);
+        s.appendChild(rl);
+      }
     });
 
-    var faixa = document.getElementById('faixaAvisos');
-    limpa(faixa);
-    if (r.avisosFalhos > 0) {
-      faixa.classList.remove('oculto');
-      var n = r.avisosFalhos;
-      var txt = n === 1
-        ? '1 aviso de WhatsApp não saiu.'
-        : n + ' avisos de WhatsApp não saíram.';
-      var b = el('button', 'bt bt-peq', 'Ver avisos');
-      b.type = 'button';
-      b.addEventListener('click', function () { trocaAba('avisos', true); });
-      poe(faixa, el('p', null, txt), b);
-    } else {
-      faixa.classList.add('oculto');
+    /* eixo x: três marcas, nunca 30 — rótulo colado é rótulo ilegível */
+    [0, Math.floor(serie.length / 2), serie.length - 1].forEach(function (i, k) {
+      var t = svg('text', {
+        x: mE + larg * i + larg / 2, y: H - 8, 'font-size': 10.5, fill: COR_INK3,
+        'text-anchor': k === 0 ? 'start' : (k === 2 ? 'end' : 'middle')
+      });
+      t.textContent = fmtCurto.format(serie[i].data);
+      s.appendChild(t);
+    });
+    tela.appendChild(s);
+  }
+
+  /* ---------- 2/3/4. barras horizontais (com pilha opcional) ---------- */
+  function grafBarras(tela, itens, opcoes) {
+    /* itens: [{rot, n, cor, seg:[{n,cor,rot}]}] */
+    limpa(tela);
+    var o = opcoes || {};
+    var L = Math.max(260, tela.clientWidth || 320);
+    var gut = Math.max(96, Math.min(o.gutter || 150, Math.round(L * 0.42)));
+    var mD = 40, alt = 26, esp = 10;
+    var H = itens.length * (alt + esp) + 4;
+    var max = 1;
+    itens.forEach(function (it) { if (it.n > max) max = it.n; });
+    var lg = L - gut - mD;
+    var s = svg('svg', { width: L, height: H, role: 'img' });
+
+    itens.forEach(function (it, i) {
+      var y = i * (alt + esp) + 2;
+      var rl = svg('text', { x: gut - 10, y: y + alt / 2 + 4, 'text-anchor': 'end', 'font-size': 12, fill: COR_INK2 });
+      /* Cortar em 30 caracteres fixos era chute: no celular a calha tem
+         ~120px e "Profissão Lash + presencial" cabe em 30 caracteres mas
+         NÃO em 120px — o rótulo sangrava para fora do cartão. O limite tem
+         de sair da largura disponível, ~6,3px por caractere a 12px. */
+      var cabe = Math.max(8, Math.floor((gut - 14) / 6.3));
+      var cortado = it.rot.length > cabe;
+      rl.textContent = cortado ? it.rot.slice(0, cabe - 1) + '…' : it.rot;
+      if (cortado) { var tt = svg('title'); tt.textContent = it.rot; rl.appendChild(tt); }
+      s.appendChild(rl);
+
+      var w = Math.round(lg * (it.n / max));
+      var segs = it.seg && it.seg.length ? it.seg : [{ n: it.n, cor: it.cor || COR_AZUL, rot: '' }];
+      var x = gut;
+      segs.forEach(function (sg, k) {
+        if (!sg.n) return;
+        var sw = Math.round(lg * (sg.n / max));
+        if (sw < 3) sw = 3;
+        /* 2px de superfície entre segmentos: sem a folga, dois azuis
+           vizinhos viram um bloco só e a divisão some. */
+        var gap = (k < segs.length - 1) ? 2 : 0;
+        var ultimo = (k === segs.length - 1);
+        var r = 4;
+        var largura = Math.max(3, sw - gap);
+        var d;
+        if (ultimo) {
+          d = 'M' + x + ' ' + y + ' H' + (x + largura - r) +
+              ' Q' + (x + largura) + ' ' + y + ' ' + (x + largura) + ' ' + (y + r) +
+              ' V' + (y + alt - r) + ' Q' + (x + largura) + ' ' + (y + alt) + ' ' + (x + largura - r) + ' ' + (y + alt) +
+              ' H' + x + ' Z';
+        } else {
+          d = 'M' + x + ' ' + y + ' h' + largura + ' v' + alt + ' h' + (-largura) + ' Z';
+        }
+        var p = svg('path', { d: d, fill: sg.cor });
+        var tt2 = svg('title');
+        tt2.textContent = it.rot + (sg.rot ? ' · ' + sg.rot : '') + ': ' + sg.n;
+        p.appendChild(tt2);
+        s.appendChild(p);
+        x += sw;
+      });
+
+      var vt = svg('text', { x: gut + w + 8, y: y + alt / 2 + 4, 'font-size': 12.5, 'font-weight': 650, fill: '#101828' });
+      vt.textContent = num(it.n) + (o.sufixo || '');
+      s.appendChild(vt);
+
+      var alvo = svg('rect', {
+        x: 0, y: y - esp / 2, width: L, height: alt + esp, fill: 'transparent', tabindex: 0, role: 'img',
+        'aria-label': it.rot + ': ' + it.n + (o.sufixoAria || '') +
+          (it.seg && it.seg.length > 1
+            ? '. ' + it.seg.map(function (g) { return g.n + ' ' + g.rot; }).join(', ') : '')
+      });
+      var msg = it.rot + ' · ' + num(it.n) +
+        (it.seg && it.seg.length > 1
+          ? ' (' + it.seg.map(function (g) { return g.n + ' ' + g.rot; }).join(', ') + ')' : '');
+      function mostra() { dica(tela, msg, Math.min(L - 20, gut + w / 2), y); }
+      alvo.addEventListener('mouseenter', mostra);
+      alvo.addEventListener('focus', mostra);
+      alvo.addEventListener('mouseleave', function () { tiraDica(tela); });
+      alvo.addEventListener('blur', function () { tiraDica(tela); });
+      s.appendChild(alvo);
+    });
+    tela.appendChild(s);
+  }
+
+  function legenda(pares) {
+    var l = el('div', 'legenda');
+    pares.forEach(function (p) {
+      var s = el('span');
+      var i = el('i'); i.style.background = p[1];
+      poe(s, i, el('span', null, p[0]));
+      l.appendChild(s);
+    });
+    return l;
+  }
+
+  function desenhaNumeros() {
+    var alvo = pNumeros;
+    if (estado.carregando && !estado.leads.length) return desenhaCarregando(alvo);
+    if (estado.erro) return desenhaErro(alvo, estado.erro, carregaLeads);
+
+    var leads = visiveis();
+    limpa(alvo);
+    if (!leads.length) {
+      return desenhaVazio(alvo, temFiltro()
+        ? 'Nenhum lead com esses filtros — não há o que somar.'
+        : 'Nenhum lead ainda. Os gráficos aparecem quando o primeiro chegar.');
     }
+
+    var c = calcula(leads);
+    var caixa = el('div', 'graficos');
+
+    /* --- 1. tendência: o único que responde "e agora?" --- */
+    var f1 = figura('Leads por dia · últimos 30 dias',
+      'Se o anúncio parou de trazer gente, é aqui que aparece primeiro — no dia em que aparece.');
+    caixa.appendChild(f1);
+    f1.appendChild(tabelaViz('Dia', c.serie.filter(function (p) { return p.n > 0; }).map(function (p) {
+      return [fmtCurto.format(p.data), num(p.n)];
+    })));
+
+    /* --- 2 e 3 lado a lado --- */
+    var duo = el('div', 'duo');
+
+    var f2 = figura('Onde os leads estão agora',
+      'Mostra em qual etapa a fila empoça. Muitos contatados e pouca proposta é gargalo de conversa, não de tráfego.');
+    duo.appendChild(f2);
+    f2.appendChild(tabelaViz('Status', STATUS.map(function (s) {
+      return [rot('status', s), num(c.porStatus[s] || 0)];
+    })));
+
+    var f3 = figura('Produto que a árvore indicou',
+      'É o que ela vai defender na conversa. Se um produto some daqui, o problema está na árvore ou no anúncio.');
+    duo.appendChild(f3);
+    var prodItens = PRODUTOS.map(function (p) {
+      return { rot: rot('produto_curto', p), n: c.porProduto[p] || 0, cor: COR_AZUL };
+    }).sort(function (a, b) { return b.n - a.n; });
+    if (c.porProduto['(sem produto)']) {
+      prodItens.push({ rot: 'Sem produto', n: c.porProduto['(sem produto)'], cor: '#6B7480' });
+    }
+    f3.appendChild(tabelaViz('Produto', prodItens.map(function (p) { return [p.rot, num(p.n)]; })));
+    caixa.appendChild(duo);
+
+    /* --- 4. origem × qualidade --- */
+    var f4 = figura('Origem — e quanta gente quente ela traz',
+      'Volume sozinho engana: um anúncio pode encher a lista de gente que não compra. A barra escura é o que interessa.');
+    var origens = Object.keys(c.porOrigem).map(function (k) {
+      return { rot: k, n: c.porOrigem[k].n, quentes: c.porOrigem[k].quentes };
+    }).sort(function (a, b) { return b.n - a.n; });
+    var topo = origens.slice(0, 8);
+    var resto = origens.slice(8);
+    if (resto.length) {
+      var rn = 0, rq = 0;
+      resto.forEach(function (o) { rn += o.n; rq += o.quentes; });
+      topo.push({ rot: 'Outras (' + resto.length + ')', n: rn, quentes: rq });
+    }
+    f4.appendChild(legenda([['Quentes', COR_QUENTE], ['Demais', COR_AZUL]]));
+    f4.appendChild(tabelaViz('Origem', topo.map(function (o) {
+      return [o.rot, num(o.quentes) + ' quentes de ' + num(o.n)];
+    }), 'Quentes / total'));
+    caixa.appendChild(f4);
+
+    alvo.appendChild(caixa);
+
+    /* desenho medido em pixel — e redesenhado quando a largura muda */
+    _redraw = function () {
+      grafDias(f1.tela, c.serie);
+      grafBarras(f2.tela, STATUS.map(function (s) {
+        return { rot: rot('status', s), n: c.porStatus[s] || 0, cor: COR[s] };
+      }), { gutter: 128, sufixoAria: ' leads' });
+      grafBarras(f3.tela, prodItens, { gutter: 150, sufixoAria: ' leads' });
+      grafBarras(f4.tela, topo.map(function (o) {
+        return {
+          rot: o.rot, n: o.n,
+          seg: [{ n: o.quentes, cor: COR_QUENTE, rot: 'quentes' },
+                { n: o.n - o.quentes, cor: COR_AZUL, rot: 'demais' }]
+        };
+      }), { gutter: 150, sufixoAria: ' leads' });
+    };
+    _redraw();
+  }
+
+  /* ============================================================
+     Selects dos filtros
+     ============================================================ */
+  function opcao(valor, rotulo) {
+    var o = document.createElement('option');
+    o.value = valor;
+    o.textContent = rotulo;
+    return o;
   }
 
   function preencheSelects() {
@@ -582,24 +1496,27 @@ code{background:var(--pedra); border-radius:var(--e1); padding:0 4px; font-size:
 
     var q = document.getElementById('fQualif');
     limpa(q);
-    q.appendChild(opcao('', 'Todas'));   /* o rótulo acima já diz "Qualificação" */
-    ['quente', 'morno', 'frio'].forEach(function (v) {
-      q.appendChild(opcao(v, rot('qualificacao', v)));
-    });
+    q.appendChild(opcao('', 'Todas'));
+    QUALIF.forEach(function (v) { q.appendChild(opcao(v, rot('qualificacao', v))); });
     q.value = estado.filtros.qualificacao;
+
+    var p = document.getElementById('fPeriodo');
+    limpa(p);
+    PERIODOS.forEach(function (x) { p.appendChild(opcao(x.v, x.r)); });
+    p.value = estado.periodo;
 
     preencheProdutos();
   }
 
-  /* O select de produto é montado com a CONTAGEM do resumo ao lado — assim ele
+  /* O select de produto vem com a CONTAGEM do resumo ao lado — assim ele
      responde "quantos leads de cada produto" sem precisar filtrar um por um.
-     Os quatro aparecem sempre, mesmo zerados: um produto que some da lista por
-     não ter lead é indistinguível de um produto esquecido.
+     Os quatro aparecem sempre, mesmo zerados: um produto que some da lista
+     por não ter lead é indistinguível de um produto esquecido.
 
      ⚠️ Fica em função PRÓPRIA porque o resumo chega DEPOIS do primeiro
-     desenho. Se ele só fosse montado no `preencheSelects()` da partida, as
-     contagens ficariam congeladas em (0) para sempre — que é pior do que não
-     mostrar contagem nenhuma, porque parece dado. */
+     desenho. Se ele só fosse montado na partida, as contagens ficariam
+     congeladas em (0) para sempre — pior que não mostrar contagem, porque
+     parece dado. */
   function preencheProdutos() {
     var pr = document.getElementById('fProduto');
     if (!pr) return;
@@ -609,37 +1526,37 @@ code{background:var(--pedra); border-radius:var(--e1); padding:0 4px; font-size:
     ((estado.resumo && estado.resumo.porProduto) || []).forEach(function (l) {
       contagem[l.produto_id] = l.n;
     });
-    ['profissao-lash', 'profissao-lash-presencial', 'lash2-online', 'lash2-presencial']
-      .forEach(function (v) {
-        pr.appendChild(opcao(v, rot('produto_id', v) + ' (' + (contagem[v] || 0) + ')'));
-      });
+    PRODUTOS.forEach(function (v) {
+      pr.appendChild(opcao(v, rot('produto_curto', v) + ' (' + (contagem[v] || 0) + ')'));
+    });
     pr.value = estado.filtros.produto_id;
-  }
-
-
-  function opcao(valor, rotulo) {
-    var o = document.createElement('option');
-    o.value = valor;
-    o.textContent = rotulo;
-    return o;
   }
 
   function preencheAnuncios() {
     var a = document.getElementById('fAnuncio');
     var atual = estado.filtros.utm_content;
     limpa(a);
-    a.appendChild(opcao('', 'Todos os anúncios'));
-    var lista = (estado.resumo && estado.resumo.porAnuncio) || [];
-    lista.forEach(function (linha) {
+    a.appendChild(opcao('', 'Todas as origens'));
+    ((estado.resumo && estado.resumo.porAnuncio) || []).forEach(function (linha) {
       var origem = linha.origem === null || linha.origem === undefined ? '' : String(linha.origem);
       a.appendChild(opcao(origem, texto(origem) + ' (' + linha.n + ')'));
     });
     a.value = atual;
     if (a.value !== atual) {
-      // valor filtrado não está entre os 20 primeiros: mantém como opção avulsa
-      a.appendChild(opcao(atual, texto(atual)));
+      a.appendChild(opcao(atual, texto(atual)));   /* fora dos 20 primeiros */
       a.value = atual;
     }
+  }
+
+  function escreveFiltros() {
+    document.getElementById('fBusca').value = estado.filtros.busca;
+    document.getElementById('fCidade').value = estado.filtros.cidade;
+    document.getElementById('fStatus').value = estado.filtros.status;
+    document.getElementById('fQualif').value = estado.filtros.qualificacao;
+    document.getElementById('fProduto').value = estado.filtros.produto_id;
+    document.getElementById('fAnuncio').value = estado.filtros.utm_content;
+    document.getElementById('fPeriodo').value = estado.periodo;
+    atualizaLinkCsv();
   }
 
   /* ============================================================
@@ -648,7 +1565,7 @@ code{background:var(--pedra); border-radius:var(--e1); padding:0 4px; font-size:
   function carregaResumo() {
     return api('/crm/api/resumo').then(function (r) {
       estado.resumo = r;
-      desenhaResumo();
+      desenhaFaixaAvisos();
       preencheAnuncios();
       preencheProdutos();
     }).catch(function (e) {
@@ -660,16 +1577,20 @@ code{background:var(--pedra); border-radius:var(--e1); padding:0 4px; font-size:
   function carregaLeads() {
     estado.carregando = true;
     estado.erro = null;
+    desenhaKpis();
     desenhaConteudo();
-    return api('/crm/api/leads' + queryString()).then(function (r) {
+    return api('/crm/api/leads' + queryString({ limite: TETO })).then(function (r) {
       estado.leads = (r && r.leads) || [];
       estado.carregando = false;
+      desenhaKpis();
+      desenhaContadoresAba();
       desenhaConteudo();
-      anuncia(estado.leads.length + ' leads na lista.');
+      anuncia(visiveis().length + ' leads na lista.');
     }).catch(function (e) {
       if (e.message === 'sessao') return;
       estado.carregando = false;
       estado.erro = 'Não consegui carregar os leads. Verifique a conexão.';
+      desenhaKpis();
       desenhaConteudo();
     });
   }
@@ -682,10 +1603,34 @@ code{background:var(--pedra); border-radius:var(--e1); padding:0 4px; font-size:
     }).catch(function (e) {
       if (e.message === 'sessao') return;
       estado.avisos = null;
-      if (estado.aba === 'avisos') {
-        desenhaErro(pAvisos, 'Não consegui carregar os avisos.', carregaAvisos);
-      }
+      if (estado.aba === 'avisos') desenhaErro(pAvisos, 'Não consegui carregar os avisos.', carregaAvisos);
     });
+  }
+
+  function desenhaFaixaAvisos() {
+    var faixa = document.getElementById('faixaAvisos');
+    limpa(faixa);
+    var n = (estado.resumo && estado.resumo.avisosFalhos) || 0;
+    if (n > 0) {
+      faixa.classList.remove('oculto');
+      var b = el('button', 'bt bt-peq', 'Ver avisos');
+      b.type = 'button';
+      b.addEventListener('click', function () { trocaAba('avisos', true); });
+      poe(faixa, el('p', null, n === 1 ? '1 aviso de WhatsApp não saiu.' : n + ' avisos de WhatsApp não saíram.'), b);
+    } else {
+      faixa.classList.add('oculto');
+    }
+  }
+
+  function desenhaContadoresAba() {
+    var n = visiveis().length;
+    var b = document.getElementById('abaLista');
+    limpa(b);
+    b.appendChild(document.createTextNode('Lista '));
+    b.appendChild(el('span', 'qt', '(' + num(n) + ')'));
+    var k = document.getElementById('abaKanban');
+    limpa(k);
+    k.appendChild(document.createTextNode('Kanban'));
   }
 
   /* ============================================================
@@ -695,12 +1640,10 @@ code{background:var(--pedra); border-radius:var(--e1); padding:0 4px; font-size:
     limpa(alvo);
     poe(alvo, poe(el('div', 'msg'), el('p', null, 'Carregando...')));
   }
-
   function desenhaVazio(alvo, msg) {
     limpa(alvo);
     poe(alvo, poe(el('div', 'msg'), el('p', null, msg)));
   }
-
   function desenhaErro(alvo, msg, tentaDeNovo) {
     limpa(alvo);
     var caixa = el('div', 'msg erro');
@@ -716,14 +1659,8 @@ code{background:var(--pedra); border-radius:var(--e1); padding:0 4px; font-size:
      Lista
      ============================================================ */
   var COLUNAS = [
-    { rot: 'Nome', campo: 'nome' },
-    { rot: 'WhatsApp', campo: 'telefone' },
-    { rot: 'Cidade', campo: 'cidade' },
-    { rot: 'Qualificação', campo: 'qualificacao' },
-    { rot: 'Produto indicado', campo: 'produto_id' },
-    { rot: 'Origem', campo: 'utm_content' },
-    { rot: 'Status', campo: 'status' },
-    { rot: 'Quando', campo: 'criado_em' }
+    { rot: 'Nome' }, { rot: 'WhatsApp' }, { rot: 'Cidade' }, { rot: 'Qualificação' },
+    { rot: 'Produto indicado' }, { rot: 'Origem' }, { rot: 'Status' }, { rot: 'Quando' }, { rot: 'Ação' }
   ];
 
   function telefoneBonito(lead) {
@@ -733,29 +1670,26 @@ code{background:var(--pedra); border-radius:var(--e1); padding:0 4px; font-size:
        normalizado pelo servidor e sempre rende o mesmo formato. */
     var t = lead.telefone ? String(lead.telefone) : '';
     var d = t.replace(/\D/g, '');
-    if (d.length === 13 && d.indexOf('55') === 0) {
-      return '(' + d.slice(2, 4) + ') ' + d.slice(4, 9) + '-' + d.slice(9);
-    }
-    if (d.length === 12 && d.indexOf('55') === 0) {
-      return '(' + d.slice(2, 4) + ') ' + d.slice(4, 8) + '-' + d.slice(8);
-    }
+    if (d.length === 13 && d.indexOf('55') === 0) return '(' + d.slice(2, 4) + ') ' + d.slice(4, 9) + '-' + d.slice(9);
+    if (d.length === 12 && d.indexOf('55') === 0) return '(' + d.slice(2, 4) + ') ' + d.slice(4, 8) + '-' + d.slice(8);
     return lead.telefone_exibicao || t || '—';
   }
 
-  function celula(rotulo, filho) {
+  function celula(rotulo, filho, classe) {
     var td = document.createElement('td');
     td.setAttribute('data-rot', rotulo);
+    if (classe) td.className = classe;
     td.appendChild(filho);
     return td;
   }
 
   function desenhaLista() {
     var alvo = pLista;
-    if (estado.carregando) return desenhaCarregando(alvo);
+    if (estado.carregando && !estado.leads.length) return desenhaCarregando(alvo);
     if (estado.erro) return desenhaErro(alvo, estado.erro, carregaLeads);
-    if (!estado.leads.length) {
-      var temFiltro = Object.keys(filtrosAtivos()).length > 0;
-      return desenhaVazio(alvo, temFiltro
+    var leads = visiveis();
+    if (!leads.length) {
+      return desenhaVazio(alvo, temFiltro()
         ? 'Nenhum lead com esses filtros. Tente limpar a busca.'
         : 'Nenhum lead ainda. Assim que alguém preencher o formulário, aparece aqui.');
     }
@@ -763,8 +1697,8 @@ code{background:var(--pedra); border-radius:var(--e1); padding:0 4px; font-size:
     limpa(alvo);
     var caixa = el('div', 'rolagem');
     var tabela = document.createElement('table');
-    var cap = el('caption', 'sr', 'Leads do curso presencial. Clique numa linha para abrir o detalhe.');
-    tabela.appendChild(cap);
+    tabela.appendChild(el('caption', 'sr',
+      'Leads. Clique numa linha para abrir o detalhe; o botão verde abre a conversa no WhatsApp.'));
 
     var thead = document.createElement('thead');
     var trh = document.createElement('tr');
@@ -777,28 +1711,27 @@ code{background:var(--pedra); border-radius:var(--e1); padding:0 4px; font-size:
     tabela.appendChild(thead);
 
     var tbody = document.createElement('tbody');
-    estado.leads.forEach(function (lead) {
+    leads.forEach(function (lead) {
       var tr = document.createElement('tr');
+      tr.setAttribute('data-abre', '1');
       tr.setAttribute('tabindex', '0');
       tr.setAttribute('role', 'button');
       tr.setAttribute('aria-label', 'Abrir detalhe de ' + texto(lead.nome));
 
-      var nome = el('span', 'td-nome', texto(lead.nome));
       var envNome = document.createElement('span');
-      poe(envNome, nome);
+      poe(envNome, el('span', 'td-nome', texto(lead.nome)));
       if (lead.instagram) envNome.appendChild(el('span', 'td-sub', '@' + lead.instagram));
       tr.appendChild(celula('Nome', envNome));
 
-      tr.appendChild(celula('WhatsApp', el('span', null, telefoneBonito(lead))));
+      tr.appendChild(celula('WhatsApp', el('span', null, telefoneBonito(lead)), 'nw'));
       tr.appendChild(celula('Cidade', el('span', null,
         texto(lead.cidade) + (lead.estado ? ' · ' + lead.estado : ''))));
       tr.appendChild(celula('Qualificação', pilulaQualif(lead.qualificacao, lead.pontuacao)));
 
       var envProd = document.createElement('span');
-      poe(envProd, el('span', null, rot('produto_id', lead.produto_id)));
+      poe(envProd, el('span', null, rot('produto_curto', lead.produto_id)));
       if (lead.produto_valor) {
-        envProd.appendChild(el('span', 'td-sub', 'R$ ' +
-          String(lead.produto_valor).replace(/\B(?=(\d{3})+(?!\d))/g, '.') +
+        envProd.appendChild(el('span', 'td-sub', reais(lead.produto_valor) +
           (lead.produto_formato === 'presencial' ? ' · sem checkout' : ' · checkout enviado')));
       }
       tr.appendChild(celula('Produto indicado', envProd));
@@ -808,10 +1741,19 @@ code{background:var(--pedra); border-radius:var(--e1); padding:0 4px; font-size:
 
       var quando = el('span', null, dataRelativa(lead.criado_em));
       quando.setAttribute('title', dataAbsoluta(lead.criado_em));
-      tr.appendChild(celula('Quando', quando));
+      tr.appendChild(celula('Quando', quando, 'nw'));
 
-      tr.addEventListener('click', function () { abreLead(lead.id, tr); });
+      var wa = linkWhatsApp(lead.telefone, 'bt bt-wa bt-peq', 'WhatsApp', lead.nome);
+      tr.appendChild(celula('Ação', wa || el('span', 'td-sub', 'sem telefone'), 'td-acao'));
+
+      /* O clique da linha abre o detalhe — menos quando o alvo é o botão do
+         WhatsApp, senão a gaveta abriria por cima da conversa que ela quis. */
+      tr.addEventListener('click', function (ev) {
+        if (ev.target.closest && ev.target.closest('a,button')) return;
+        abreLead(lead.id, tr);
+      });
       tr.addEventListener('keydown', function (ev) {
+        if (ev.target !== tr) return;
         if (ev.key === 'Enter' || ev.key === ' ' || ev.key === 'Spacebar') {
           ev.preventDefault();
           abreLead(lead.id, tr);
@@ -825,86 +1767,322 @@ code{background:var(--pedra); border-radius:var(--e1); padding:0 4px; font-size:
   }
 
   /* ============================================================
-     Kanban
+     KANBAN
+     ============================================================
+     Arrastar sozinho EXCLUI gente. O HTML5 drag-and-drop nativo (que este
+     painel usava) simplesmente não existe no toque: no celular da Nataly o
+     cartão não saía do lugar. E quem navega por teclado nunca teve como
+     mover nada.
+
+     Então são TRÊS caminhos para a mesma ação, e nenhum é o "de verdade":
+
+       1. PONTEIRO  — pointer events na alça, funciona igual no mouse e no
+                      dedo. A alça é separada do cartão de propósito: se o
+                      cartão inteiro capturasse o toque, rolar a coluna com
+                      o dedo viraria arrastar sem querer.
+       2. TECLADO   — foca a alça, Espaço pega, ← → escolhem a coluna,
+                      Espaço solta, Esc cancela. Tudo narrado no aria-live.
+       3. MENU      — um <select> nativo em cada cartão. É o caminho mais
+                      rápido no celular e o único que não exige coordenação
+                      motora nenhuma. Um toque, o seletor do sistema, pronto.
      ============================================================ */
+  var kFaixa = null;
+  var kFantasma = null;
+  var kRolagem = null;
+
+  function moveOtimista(id, novo) {
+    /* Move na hora e persiste depois. Recarregar a lista inteira a cada
+       gota (que era o que acontecia) apagava a rolagem das colunas e fazia
+       o cartão "voltar" por um instante — parecia bug e parecia lentidão. */
+    var lead = null;
+    for (var i = 0; i < estado.leads.length; i++) if (estado.leads[i].id === id) lead = estado.leads[i];
+    if (!lead || lead.status === novo) return Promise.resolve(false);
+    var antes = lead.status;
+    lead.status = novo;
+    desenhaKpis();
+    desenhaKanban();
+    /* O redesenho joga fora o elemento que estava com o foco — e quem moveu
+       pelo teclado ou pelo menu ficaria com o foco no corpo da pagina,
+       tendo que tabular de novo desde o topo ate onde estava. Devolve o
+       foco para a alca do mesmo cartao, agora na coluna nova. */
+    devolveFoco(id);
+    anuncia(texto(lead.nome) + ' movido para ' + rot('status', novo) + '.');
+
+    return api('/crm/api/lead/' + encodeURIComponent(id) + '/status', {
+      method: 'POST',
+      body: JSON.stringify({ status: novo, anotacao: '' })
+    }).then(function () {
+      return carregaResumo();
+    }).catch(function (e) {
+      if (e.message === 'sessao') return;
+      lead.status = antes;                 /* desfaz: o banco manda, não a tela */
+      desenhaKpis();
+      desenhaKanban();
+      devolveFoco(id);
+      anuncia('Não consegui salvar. ' + texto(lead.nome) + ' voltou para ' + rot('status', antes) + '.');
+    });
+  }
+
+  function devolveFoco(id) {
+    var alca = kFaixa && kFaixa.querySelector('.kcard[data-id="' + id + '"] .kpega');
+    if (alca) alca.focus();
+  }
+
+  function colunaSob(x, y) {
+    var n = document.elementFromPoint(x, y);
+    while (n && n !== document.body) {
+      if (n.classList && n.classList.contains('coluna')) return n;
+      n = n.parentElement;
+    }
+    return null;
+  }
+
+  function marcaAlvo(col) {
+    if (!kFaixa) return;
+    var cols = kFaixa.querySelectorAll('.coluna');
+    for (var i = 0; i < cols.length; i++) cols[i].classList.toggle('alvo', cols[i] === col);
+  }
+
+  function autoRola(x) {
+    /* Sem isto, arrastar no celular só alcança as colunas que já estão na
+       tela — e são no máximo uma e um pedaço. */
+    if (!kFaixa) return;
+    var r = kFaixa.getBoundingClientRect();
+    var zona = 56, passo = 0;
+    if (x < r.left + zona) passo = -14;
+    else if (x > r.right - zona) passo = 14;
+    if (!passo) { pararRolagem(); return; }
+    if (kRolagem) return;
+    kRolagem = window.setInterval(function () { kFaixa.scrollLeft += passo; }, 16);
+  }
+  function pararRolagem() {
+    if (kRolagem) { window.clearInterval(kRolagem); kRolagem = null; }
+  }
+
+  function iniciaArrasto(cartao, lead, ev) {
+    estado.pego = { id: lead.id, nome: lead.nome, de: lead.status, modo: 'ponteiro' };
+    kFaixa.classList.add('arrastando');
+    cartao.classList.add('origem-arrasto');
+    kFantasma = cartao.cloneNode(true);
+    kFantasma.classList.add('fantasma');
+    kFantasma.classList.remove('origem-arrasto');
+    document.body.appendChild(kFantasma);
+    posicionaFantasma(ev.clientX, ev.clientY);
+  }
+  function posicionaFantasma(x, y) {
+    if (!kFantasma) return;
+    kFantasma.style.left = (x - 40) + 'px';
+    kFantasma.style.top = (y - 22) + 'px';
+  }
+  function terminaArrasto(cartao) {
+    pararRolagem();
+    if (kFantasma && kFantasma.parentNode) kFantasma.parentNode.removeChild(kFantasma);
+    kFantasma = null;
+    if (kFaixa) kFaixa.classList.remove('arrastando');
+    if (cartao) cartao.classList.remove('origem-arrasto');
+    marcaAlvo(null);
+    estado.pego = null;
+  }
+
+  function fazCartao(lead) {
+    var art = el('article', 'kcard');
+    art.setAttribute('data-id', String(lead.id));
+
+    /* --- alça: ponteiro e teclado --- */
+    var pega = el('button', 'kpega');
+    pega.type = 'button';
+    pega.setAttribute('aria-label', 'Mover ' + texto(lead.nome) + ' de coluna arrastando ou com as setas');
+    pega.setAttribute('aria-describedby', 'kAjuda');
+    var gs = svg('svg', { width: 12, height: 18, viewBox: '0 0 12 18', 'aria-hidden': 'true', focusable: 'false' });
+    [[3, 3], [9, 3], [3, 9], [9, 9], [3, 15], [9, 15]].forEach(function (p) {
+      gs.appendChild(svg('circle', { cx: p[0], cy: p[1], r: 1.6, fill: 'currentColor' }));
+    });
+    pega.appendChild(gs);
+
+    pega.addEventListener('pointerdown', function (ev) {
+      if (ev.pointerType === 'mouse' && ev.button !== 0) return;
+      ev.preventDefault();
+      try { pega.setPointerCapture(ev.pointerId); } catch (e) { /* ok */ }
+      iniciaArrasto(art, lead, ev);
+    });
+    pega.addEventListener('pointermove', function (ev) {
+      if (!estado.pego || estado.pego.modo !== 'ponteiro') return;
+      ev.preventDefault();
+      posicionaFantasma(ev.clientX, ev.clientY);
+      marcaAlvo(colunaSob(ev.clientX, ev.clientY));
+      autoRola(ev.clientX);
+    });
+    function solta(ev) {
+      if (!estado.pego || estado.pego.modo !== 'ponteiro') return;
+      var col = colunaSob(ev.clientX, ev.clientY);
+      var id = estado.pego.id;
+      terminaArrasto(art);
+      if (col) {
+        var novo = col.getAttribute('data-status');
+        if (novo && novo !== lead.status) moveOtimista(id, novo);
+      }
+    }
+    pega.addEventListener('pointerup', solta);
+    pega.addEventListener('pointercancel', function () { terminaArrasto(art); });
+
+    pega.addEventListener('keydown', function (ev) {
+      var i = STATUS.indexOf(lead.status);
+      if (ev.key === ' ' || ev.key === 'Spacebar' || ev.key === 'Enter') {
+        ev.preventDefault();
+        if (estado.pego && estado.pego.modo === 'teclado' && estado.pego.id === lead.id) {
+          var alvoS = estado.pego.alvo;
+          estado.pego = null;
+          art.classList.remove('pego');
+          marcaAlvo(null);
+          if (alvoS !== lead.status) moveOtimista(lead.id, alvoS);
+          else anuncia('Solto no mesmo lugar.');
+        } else {
+          estado.pego = { id: lead.id, modo: 'teclado', alvo: lead.status };
+          art.classList.add('pego');
+          anuncia('Peguei ' + texto(lead.nome) + ', em ' + rot('status', lead.status) +
+                  '. Use as setas para escolher a coluna, Espaço para soltar, Escape para cancelar.');
+        }
+        return;
+      }
+      if (ev.key === 'Escape' || ev.key === 'Esc') {
+        if (estado.pego && estado.pego.modo === 'teclado') {
+          ev.preventDefault();
+          estado.pego = null;
+          art.classList.remove('pego');
+          marcaAlvo(null);
+          anuncia('Cancelado. ' + texto(lead.nome) + ' continua em ' + rot('status', lead.status) + '.');
+        }
+        return;
+      }
+      var passo = ev.key === 'ArrowRight' ? 1 : (ev.key === 'ArrowLeft' ? -1 : 0);
+      if (!passo) return;
+      ev.preventDefault();
+      if (!estado.pego || estado.pego.modo !== 'teclado' || estado.pego.id !== lead.id) {
+        /* sem ter pegado, as setas rolam entre as colunas — o comportamento
+           que a pessoa espera antes de saber que existe "pegar" */
+        if (kFaixa) kFaixa.scrollLeft += passo * 260;
+        return;
+      }
+      var j = STATUS.indexOf(estado.pego.alvo);
+      j = Math.max(0, Math.min(STATUS.length - 1, j + passo));
+      estado.pego.alvo = STATUS[j];
+      var col = kFaixa.querySelector('.coluna[data-status="' + STATUS[j] + '"]');
+      if (col) {
+        marcaAlvo(col);
+        col.scrollIntoView({ block: 'nearest', inline: 'nearest' });
+      }
+      anuncia('Coluna ' + rot('status', STATUS[j]) + '. Espaço para soltar aqui.');
+    });
+    art.appendChild(pega);
+
+    /* --- nome (abre o detalhe) --- */
+    var bn = el('button', 'kcard__nome', texto(lead.nome));
+    bn.type = 'button';
+    bn.setAttribute('aria-label', 'Abrir detalhe de ' + texto(lead.nome));
+    bn.addEventListener('click', function () { abreLead(lead.id, bn); });
+    art.appendChild(bn);
+
+    var meta = texto(lead.cidade);
+    if (lead.utm_content) meta += ' · ' + texto(lead.utm_content);
+    if (lead.produto_id) meta += ' · ' + rot('produto_curto', lead.produto_id);
+    art.appendChild(el('p', 'kcard__meta', meta));
+
+    var pe = el('div', 'kcard__pe');
+    var wa = linkWhatsApp(lead.telefone, 'bt bt-wa bt-peq', 'WhatsApp', lead.nome);
+    if (wa) pe.appendChild(wa);
+
+    /* --- o menu: o caminho sem arrastar --- */
+    var sel = el('select', 'kmover');
+    sel.setAttribute('aria-label', 'Mover ' + texto(lead.nome) + ' para outra coluna');
+    var cab = opcao('', 'Mover…');
+    cab.disabled = true; cab.selected = true;
+    sel.appendChild(cab);
+    STATUS.forEach(function (s) {
+      if (s === lead.status) return;
+      sel.appendChild(opcao(s, rot('status', s)));
+    });
+    sel.addEventListener('change', function () {
+      var v = sel.value;
+      sel.value = '';
+      if (v) moveOtimista(lead.id, v);
+    });
+    pe.appendChild(sel);
+    art.appendChild(pe);
+
+    var pil = el('div', 'kcard__pil');
+    pil.appendChild(pilulaQualif(lead.qualificacao, lead.pontuacao));
+    art.appendChild(pil);
+    return art;
+  }
+
   function desenhaKanban() {
     var alvo = pKanban;
-    if (estado.carregando) return desenhaCarregando(alvo);
+    if (estado.carregando && !estado.leads.length) return desenhaCarregando(alvo);
     if (estado.erro) return desenhaErro(alvo, estado.erro, carregaLeads);
 
+    var leads = visiveis();
+    var rolagemAntes = kFaixa ? kFaixa.scrollLeft : 0;
     limpa(alvo);
-    var aviso = el('p', 'kvazio', 'Arraste um cartão para mudar o status, ou abra o lead e use os botões de status.');
-    alvo.appendChild(aviso);
 
-    var faixa = el('div', 'kanban');
-    faixa.setAttribute('role', 'group');
-    faixa.setAttribute('aria-label', 'Pipeline de leads');
+    var ajuda = el('p', 'k-ajuda',
+      'Arraste pela alça (⠿), ou use o menu "Mover" de cada cartão. ' +
+      'Com o teclado: foque a alça, Espaço para pegar, ← → para escolher a coluna, Espaço para soltar.');
+    ajuda.id = 'kAjuda';
+    alvo.appendChild(ajuda);
+
+    /* atalhos de coluna: no celular só cabe uma coluna na tela, e rolar
+       cinco colunas com o dedo para conferir "quantos em proposta" é caro */
+    var atalhos = el('div', 'k-atalhos');
+    atalhos.setAttribute('role', 'group');
+    atalhos.setAttribute('aria-label', 'Ir para uma coluna');
+    alvo.appendChild(atalhos);
+
+    kFaixa = el('div', 'kanban');
+    kFaixa.setAttribute('role', 'group');
+    kFaixa.setAttribute('aria-label', 'Quadro de leads por status');
 
     STATUS.forEach(function (s) {
-      var doStatus = estado.leads.filter(function (l) { return l.status === s; });
-      var col = el('div', 'coluna');
+      var doStatus = leads.filter(function (l) { return l.status === s; });
+
+      var at = el('button', 'k-atalho', rot('status', s) + ' · ' + doStatus.length);
+      at.type = 'button';
+      at.addEventListener('click', function () {
+        var col = kFaixa.querySelector('.coluna[data-status="' + s + '"]');
+        if (col) col.scrollIntoView({ block: 'nearest', inline: 'start', behavior: 'smooth' });
+      });
+      atalhos.appendChild(at);
+
+      var col = el('section', 'coluna');
       col.setAttribute('data-status', s);
+      col.setAttribute('aria-label', rot('status', s) + ': ' + doStatus.length +
+        (doStatus.length === 1 ? ' lead' : ' leads'));
 
-      var h = el('h3', null, rot('status', s) + ' ');
-      h.appendChild(el('span', null, '(' + doStatus.length + ')'));
-      col.appendChild(h);
+      var cab = el('div', 'coluna__cab');
+      var pt = el('span', 'coluna__pt');
+      pt.style.background = COR[s];
+      poe(cab, pt, el('h3', null, rot('status', s)), el('span', 'coluna__n', String(doStatus.length)));
+      col.appendChild(cab);
 
-      if (!doStatus.length) {
-        col.appendChild(el('p', 'kvazio', 'Nenhum lead aqui.'));
-      }
+      if (!doStatus.length) col.appendChild(el('p', 'kvazio', 'Nenhum lead aqui.'));
+      doStatus.forEach(function (lead) { col.appendChild(fazCartao(lead)); });
 
-      doStatus.forEach(function (lead) {
-        var c = el('button', 'kcard');
-        c.type = 'button';
-        c.setAttribute('draggable', 'true');
-        c.setAttribute('aria-label', 'Abrir detalhe de ' + texto(lead.nome));
-        c.appendChild(el('span', 'nome', texto(lead.nome)));
-        var meta = el('span', 'meta',
-          texto(lead.cidade) + ' · ' + texto(lead.utm_content));
-        c.appendChild(meta);
-        var pil = pilulaQualif(lead.qualificacao, lead.pontuacao);
-        var linhaPil = document.createElement('span');
-        linhaPil.style.display = 'block';
-        linhaPil.style.marginTop = '8px';
-        linhaPil.appendChild(pil);
-        c.appendChild(linhaPil);
-
-        c.addEventListener('click', function () { abreLead(lead.id, c); });
-        c.addEventListener('dragstart', function (ev) {
-          estado.arrastando = lead.id;
-          if (ev.dataTransfer) {
-            ev.dataTransfer.effectAllowed = 'move';
-            try { ev.dataTransfer.setData('text/plain', String(lead.id)); } catch (e) { /* IE */ }
-          }
-        });
-        c.addEventListener('dragend', function () { estado.arrastando = null; });
-        col.appendChild(c);
-      });
-
-      col.addEventListener('dragover', function (ev) {
-        if (estado.arrastando === null) return;
-        ev.preventDefault();
-        col.classList.add('alvo');
-      });
-      col.addEventListener('dragleave', function () { col.classList.remove('alvo'); });
-      col.addEventListener('drop', function (ev) {
-        ev.preventDefault();
-        col.classList.remove('alvo');
-        var id = estado.arrastando;
-        estado.arrastando = null;
-        if (id === null) return;
-        var lead = estado.leads.filter(function (l) { return l.id === id; })[0];
-        if (!lead || lead.status === s) return;
-        salvaStatus(id, s, '', null).then(function () {
-          anuncia(texto(lead.nome) + ' movido para ' + rot('status', s) + '.');
-        });
-      });
-
-      faixa.appendChild(col);
+      /* o arraste nativo do mouse continua valendo: quem já arrastava não
+         perde o gesto, e o ponteiro cobre o resto */
+      col.addEventListener('dragover', function (ev) { ev.preventDefault(); });
+      kFaixa.appendChild(col);
     });
 
-    alvo.appendChild(faixa);
+    alvo.appendChild(kFaixa);
+    kFaixa.scrollLeft = rolagemAntes;
   }
+
+  /* solta fora de qualquer coluna: cancela em vez de sumir com o cartão */
+  document.addEventListener('pointerup', function () {
+    if (estado.pego && estado.pego.modo === 'ponteiro') {
+      var c = kFaixa && kFaixa.querySelector('.kcard.origem-arrasto');
+      terminaArrasto(c);
+    }
+  });
 
   /* ============================================================
      Avisos
@@ -912,7 +2090,6 @@ code{background:var(--pedra); border-radius:var(--e1); padding:0 4px; font-size:
   function desenhaAvisos() {
     var alvo = pAvisos;
     if (estado.avisos === null) return desenhaCarregando(alvo);
-
     limpa(alvo);
 
     if (estado.driver) {
@@ -931,36 +2108,34 @@ code{background:var(--pedra); border-radius:var(--e1); padding:0 4px; font-size:
     }
 
     if (!estado.avisos.length) {
-      var ok = el('div', 'msg');
-      poe(ok, el('p', null, 'Nenhum aviso pendente. Tudo que era para sair, saiu.'));
-      alvo.appendChild(ok);
+      poe(alvo, poe(el('div', 'msg'), el('p', null, 'Nenhum aviso pendente. Tudo que era para sair, saiu.')));
       return;
     }
 
     var lista = el('ul', 'linhas');
     estado.avisos.forEach(function (a) {
       var li = el('li', 'aviso-item');
-      var topo = el('div', null, null);
+      var topo = el('div');
       topo.appendChild(el('strong', null, texto(a.nome)));
-      var sub = el('span', 'td-sub', telefoneBonito({ telefone: a.telefone }));
-      topo.appendChild(sub);
+      topo.appendChild(el('span', 'td-sub', telefoneBonito({ telefone: a.telefone })));
       li.appendChild(topo);
 
       var meta = el('p', 'td-sub',
         rot('aviso', a.status) + ' · ' + (a.tentativas || 0) +
-        (Number(a.tentativas) === 1 ? ' tentativa' : ' tentativas') +
-        ' · ' + dataRelativa(a.criado_em));
+        (Number(a.tentativas) === 1 ? ' tentativa' : ' tentativas') + ' · ' + dataRelativa(a.criado_em));
       meta.setAttribute('title', dataAbsoluta(a.criado_em));
       li.appendChild(meta);
 
-      if (a.ultimo_erro) {
-        li.appendChild(el('p', 'erro-txt', 'Último erro: ' + texto(a.ultimo_erro)));
-      }
+      if (a.ultimo_erro) li.appendChild(el('p', 'erro-txt', 'Último erro: ' + texto(a.ultimo_erro)));
 
+      var acoes = el('div', 'acoes-lead');
       var b = el('button', 'bt bt-peq bt-forte', 'Reenviar');
       b.type = 'button';
       b.addEventListener('click', function () { reenviaAviso(a.id, b, li); });
-      li.appendChild(b);
+      acoes.appendChild(b);
+      var wa = linkWhatsApp(a.telefone, 'bt bt-wa bt-peq', 'Falar agora', a.nome);
+      if (wa) acoes.appendChild(wa);
+      li.appendChild(acoes);
       lista.appendChild(li);
     });
     alvo.appendChild(lista);
@@ -989,7 +2164,7 @@ code{background:var(--pedra); border-radius:var(--e1); padding:0 4px; font-size:
   }
 
   /* ============================================================
-     Detalhe do lead (drawer)
+     Detalhe do lead (gaveta)
      ============================================================ */
   var painelAberto = false;
 
@@ -998,24 +2173,16 @@ code{background:var(--pedra); border-radius:var(--e1); padding:0 4px; font-size:
     b.appendChild(el('h3', null, titulo));
     return b;
   }
-
   function linhaDado(rotulo, valor) {
     var d = el('div', 'linha');
     poe(d, el('dt', null, rotulo), el('dd', null, valor));
     return d;
   }
-
   function listaDados(pares) {
     var dl = document.createElement('dl');
     dl.className = 'linhas';
     pares.forEach(function (par) { dl.appendChild(linhaDado(par[0], par[1])); });
     return dl;
-  }
-
-  function primeiroNome(nome) {
-    var s = texto(nome);
-    if (s === '—') return 'tudo bem';
-    return s.split(' ')[0];
   }
 
   function abreLead(id, abridor) {
@@ -1035,9 +2202,7 @@ code{background:var(--pedra); border-radius:var(--e1); padding:0 4px; font-size:
         painel.appendChild(cabecalhoPainel('Não deu certo'));
         var caixaErro = el('div', 'bloco');
         painel.appendChild(caixaErro);
-        desenhaErro(caixaErro, 'Não consegui carregar esse lead.', function () {
-          abreLead(id, estado.abridor);
-        });
+        desenhaErro(caixaErro, 'Não consegui carregar esse lead.', function () { abreLead(id, estado.abridor); });
         var fecha = painel.querySelector('.painel-topo button');
         if (fecha) fecha.focus();
       });
@@ -1063,26 +2228,18 @@ code{background:var(--pedra); border-radius:var(--e1); padding:0 4px; font-size:
     limpa(painel);
     painel.appendChild(cabecalhoPainel(texto(lead.nome)));
 
-    /* pílula + ações rápidas */
     var cabeca = el('div', 'bloco');
-    var linhaPil = el('p', null, null);
+    var linhaPil = el('p');
     linhaPil.appendChild(pilulaQualif(lead.qualificacao, lead.pontuacao));
     linhaPil.appendChild(document.createTextNode(' '));
     linhaPil.appendChild(pilulaStatus(lead.status));
     cabeca.appendChild(linhaPil);
 
-    var acoes = el('div', 'status-botoes');
-    acoes.style.marginTop = '12px';
-    if (lead.telefone) {
-      /* 🔴 Abre a conversa VAZIA. Quem fala com a aluna é a Nataly, e o texto
-         é dela — não escrever mensagem na voz de outra pessoa sem autorização.
-         Havia aqui uma saudação pronta assinada como ela; o Edu barrou. */
-      var wa = el('a', 'bt bt-destaque', 'Responder no WhatsApp');
-      wa.setAttribute('href', 'https://wa.me/' + String(lead.telefone).replace(/\D/g, ''));
-      wa.setAttribute('target', '_blank');
-      wa.setAttribute('rel', 'noopener noreferrer');
-      acoes.appendChild(wa);
-    }
+    var acoes = el('div', 'acoes-lead');
+    acoes.style.marginTop = '14px';
+    /* 🔴 conversa VAZIA — ver o comentário de linkWhatsApp(). Nada de `?text=`. */
+    var wa = linkWhatsApp(lead.telefone, 'bt bt-wa', 'Responder no WhatsApp', lead.nome);
+    if (wa) acoes.appendChild(wa);
     if (lead.instagram) {
       var ig = el('a', 'bt', 'Abrir o Instagram');
       ig.setAttribute('href', 'https://instagram.com/' + encodeURIComponent(String(lead.instagram)));
@@ -1093,7 +2250,6 @@ code{background:var(--pedra); border-radius:var(--e1); padding:0 4px; font-size:
     cabeca.appendChild(acoes);
     painel.appendChild(cabeca);
 
-    /* contato */
     var bContato = bloco('Contato');
     bContato.appendChild(listaDados([
       ['WhatsApp', telefoneBonito(lead)],
@@ -1104,7 +2260,6 @@ code{background:var(--pedra); border-radius:var(--e1); padding:0 4px; font-size:
     ]));
     painel.appendChild(bContato);
 
-    /* qualificação */
     var bQualif = bloco('Qualificação');
     bQualif.appendChild(listaDados([
       ['Pontuação', (lead.pontuacao === null || lead.pontuacao === undefined ? '—' : lead.pontuacao + '/100')],
@@ -1123,16 +2278,15 @@ code{background:var(--pedra); border-radius:var(--e1); padding:0 4px; font-size:
     painel.appendChild(bQualif);
 
     /* O QUE A ÁRVORE DECIDIU, e por quê. Sem os motivos aqui, revisar um
-       roteamento estranho exigiria reconstruir a regra de cabeça a partir das
-       respostas — que é justamente o trabalho que o registro existe para
-       poupar. E se a Nataly discordar da indicação, ela precisa ver o
+       roteamento estranho exigiria reconstruir a regra de cabeça a partir
+       das respostas — que é justamente o trabalho que o registro existe
+       para poupar. E se a Nataly discordar da indicação, ela precisa ver o
        raciocínio para saber o que contra-argumentar na conversa. */
     var bProd = bloco('Produto indicado');
     bProd.appendChild(listaDados([
       ['Produto', rot('produto_id', lead.produto_id)],
       ['Formato', rot('produto_formato', lead.produto_formato)],
-      ['Valor mostrado a ela', lead.produto_valor
-        ? 'R$ ' + String(lead.produto_valor).replace(/\B(?=(\d{3})+(?!\d))/g, '.') : '—'],
+      ['Valor mostrado a ela', lead.produto_valor ? reais(lead.produto_valor) : '—'],
       ['Checkout', lead.produto_formato === 'presencial'
         ? 'NÃO enviado — combine a data antes'
         : (lead.produto_id ? 'Link mostrado na tela final' : '—')],
@@ -1140,7 +2294,6 @@ code{background:var(--pedra); border-radius:var(--e1); padding:0 4px; font-size:
     ]));
     painel.appendChild(bProd);
 
-    /* origem */
     var bOrigem = bloco('Origem do lead');
     bOrigem.appendChild(listaDados([
       ['utm_source', texto(lead.utm_source)],
@@ -1157,7 +2310,6 @@ code{background:var(--pedra); border-radius:var(--e1); padding:0 4px; font-size:
     ]));
     painel.appendChild(bOrigem);
 
-    /* mudança de status */
     var bStatus = bloco('Mudar o status');
     var botoes = el('div', 'status-botoes');
     var area = document.createElement('textarea');
@@ -1194,20 +2346,11 @@ code{background:var(--pedra); border-radius:var(--e1); padding:0 4px; font-size:
       botoes.appendChild(b);
     });
 
-    var lbl = el('label', null, 'Anotação');
+    var lbl = el('label', 'rot-campo', 'Anotação');
     lbl.setAttribute('for', 'anotacaoNova');
-    lbl.style.display = 'block';
-    lbl.style.fontSize = '12px';
-    lbl.style.fontWeight = '700';
-    lbl.style.textTransform = 'uppercase';
-    lbl.style.letterSpacing = '.05em';
-    lbl.style.color = 'var(--tinta-2)';
-    lbl.style.marginBottom = '4px';
-
     poe(bStatus, botoes, lbl, area, recado);
     painel.appendChild(bStatus);
 
-    /* histórico */
     var bHist = bloco('Histórico');
     if (!historico.length) {
       bHist.appendChild(el('p', 'kvazio', 'Sem mudanças de status até agora.'));
@@ -1215,8 +2358,8 @@ code{background:var(--pedra); border-radius:var(--e1); padding:0 4px; font-size:
       var ul = el('ul', 'tempo');
       historico.forEach(function (h) {
         var li = document.createElement('li');
-        var frase = 'de ' + rot('status', h.de_status) + ' para ' + rot('status', h.para_status);
-        li.appendChild(el('strong', null, frase));
+        li.appendChild(el('strong', null,
+          'de ' + rot('status', h.de_status) + ' para ' + rot('status', h.para_status)));
         var quando = el('span', 'quando',
           dataRelativa(h.criado_em) + (h.autor ? ' · ' + texto(h.autor) : ''));
         quando.setAttribute('title', dataAbsoluta(h.criado_em));
@@ -1228,7 +2371,6 @@ code{background:var(--pedra); border-radius:var(--e1); padding:0 4px; font-size:
     }
     painel.appendChild(bHist);
 
-    /* avisos do lead */
     var bAvisos = bloco('Aviso no WhatsApp');
     if (!avisos.length) {
       bAvisos.appendChild(el('p', 'kvazio', 'Nenhum aviso registrado para esse lead.'));
@@ -1246,10 +2388,10 @@ code{background:var(--pedra); border-radius:var(--e1); padding:0 4px; font-size:
         if (a.destino) li.appendChild(el('p', 'td-sub', 'Destino: ' + texto(a.destino)));
         if (a.ultimo_erro) li.appendChild(el('p', 'erro-txt', 'Último erro: ' + texto(a.ultimo_erro)));
         if (a.status !== 'enviado') {
-          var b = el('button', 'bt bt-peq bt-forte', 'Reenviar aviso');
-          b.type = 'button';
-          b.addEventListener('click', function () { reenviaAviso(a.id, b, li); });
-          li.appendChild(b);
+          var b2 = el('button', 'bt bt-peq bt-forte', 'Reenviar aviso');
+          b2.type = 'button';
+          b2.addEventListener('click', function () { reenviaAviso(a.id, b2, li); });
+          li.appendChild(b2);
         }
         ulA.appendChild(li);
       });
@@ -1269,9 +2411,7 @@ code{background:var(--pedra); border-radius:var(--e1); padding:0 4px; font-size:
     }).then(function () {
       if (aoTerminar) aoTerminar(null);
       return Promise.all([carregaLeads(), carregaResumo()]).then(function () {
-        if (painelAberto) {
-          return api('/crm/api/lead/' + encodeURIComponent(id)).then(desenhaDetalhe);
-        }
+        if (painelAberto) return api('/crm/api/lead/' + encodeURIComponent(id)).then(desenhaDetalhe);
       });
     }).catch(function (e) {
       if (e.message === 'sessao') return;
@@ -1287,7 +2427,6 @@ code{background:var(--pedra); border-radius:var(--e1); padding:0 4px; font-size:
     document.body.style.overflow = 'hidden';
     painelAberto = true;
   }
-
   function fechaPainel() {
     if (!painelAberto) return;
     painelAberto = false;
@@ -1296,29 +2435,20 @@ code{background:var(--pedra); border-radius:var(--e1); padding:0 4px; font-size:
     document.body.style.overflow = '';
     limpa(painel);
     try { window.history.replaceState(null, '', window.location.pathname + window.location.search); } catch (e) { /* ok */ }
-    if (estado.abridor && document.contains(estado.abridor)) {
-      estado.abridor.focus();
-    } else {
-      document.getElementById('abaLista').focus();
-    }
+    if (estado.abridor && document.contains(estado.abridor)) estado.abridor.focus();
+    else document.getElementById('abaLista').focus();
     estado.abridor = null;
   }
-
   fundo.addEventListener('click', fechaPainel);
 
   document.addEventListener('keydown', function (ev) {
     if (!painelAberto) return;
-    if (ev.key === 'Escape' || ev.key === 'Esc') {
-      ev.preventDefault();
-      fechaPainel();
-      return;
-    }
+    if (ev.key === 'Escape' || ev.key === 'Esc') { ev.preventDefault(); fechaPainel(); return; }
     if (ev.key !== 'Tab') return;
     var focaveis = painel.querySelectorAll(
       'a[href], button:not([disabled]), textarea, input, select, [tabindex]:not([tabindex="-1"])');
     if (!focaveis.length) { ev.preventDefault(); painel.focus(); return; }
-    var primeiro = focaveis[0];
-    var ultimo = focaveis[focaveis.length - 1];
+    var primeiro = focaveis[0], ultimo = focaveis[focaveis.length - 1];
     if (ev.shiftKey && (document.activeElement === primeiro || document.activeElement === painel)) {
       ev.preventDefault(); ultimo.focus();
     } else if (!ev.shiftKey && document.activeElement === ultimo) {
@@ -1332,6 +2462,7 @@ code{background:var(--pedra); border-radius:var(--e1); padding:0 4px; font-size:
   var ABAS = [
     { id: 'lista', botao: 'abaLista', painel: pLista },
     { id: 'kanban', botao: 'abaKanban', painel: pKanban },
+    { id: 'numeros', botao: 'abaNumeros', painel: pNumeros },
     { id: 'avisos', botao: 'abaAvisos', painel: pAvisos }
   ];
 
@@ -1342,7 +2473,7 @@ code{background:var(--pedra); border-radius:var(--e1); padding:0 4px; font-size:
       var ativa = a.id === qual;
       b.setAttribute('aria-selected', ativa ? 'true' : 'false');
       b.setAttribute('tabindex', ativa ? '0' : '-1');
-      if (ativa) { a.painel.hidden = false; } else { a.painel.hidden = true; }
+      a.painel.hidden = !ativa;
       if (ativa && foca) b.focus();
     });
     desenhaConteudo();
@@ -1356,14 +2487,15 @@ code{background:var(--pedra); border-radius:var(--e1); padding:0 4px; font-size:
       var passo = ev.key === 'ArrowRight' ? 1 : (ev.key === 'ArrowLeft' ? -1 : 0);
       if (!passo) return;
       ev.preventDefault();
-      var novo = (i + passo + ABAS.length) % ABAS.length;
-      trocaAba(ABAS[novo].id, true);
+      trocaAba(ABAS[(i + passo + ABAS.length) % ABAS.length].id, true);
     });
   });
 
   function desenhaConteudo() {
+    _redraw = null;
     if (estado.aba === 'lista') desenhaLista();
     else if (estado.aba === 'kanban') desenhaKanban();
+    else if (estado.aba === 'numeros') desenhaNumeros();
     else desenhaAvisos();
   }
 
@@ -1383,6 +2515,7 @@ code{background:var(--pedra); border-radius:var(--e1); padding:0 4px; font-size:
     estado.filtros.produto_id = document.getElementById('fProduto').value;
     estado.filtros.cidade = document.getElementById('fCidade').value.trim();
     estado.filtros.utm_content = document.getElementById('fAnuncio').value;
+    estado.periodo = document.getElementById('fPeriodo').value;
     atualizaLinkCsv();
   }
 
@@ -1392,23 +2525,37 @@ code{background:var(--pedra); border-radius:var(--e1); padding:0 4px; font-size:
     else { if (relogio) window.clearTimeout(relogio); carregaLeads(); }
   }
 
+  /* O período é o único filtro que NÃO vai ao servidor — recortar a lista
+     que já está na memória é instantâneo e evita uma ida à rede. */
+  function aplicaPeriodo() {
+    leFiltros();
+    desenhaKpis();
+    desenhaContadoresAba();
+    desenhaConteudo();
+    anuncia(visiveis().length + ' leads no período escolhido.');
+  }
+
   document.getElementById('fBusca').addEventListener('input', function () { aplicaFiltros(true); });
   document.getElementById('fCidade').addEventListener('input', function () { aplicaFiltros(true); });
-  document.getElementById('fStatus').addEventListener('change', function () { aplicaFiltros(false); });
-  document.getElementById('fQualif').addEventListener('change', function () { aplicaFiltros(false); });
-  document.getElementById('fAnuncio').addEventListener('change', function () { aplicaFiltros(false); });
+  ['fStatus', 'fQualif', 'fProduto', 'fAnuncio'].forEach(function (id) {
+    /* ⚠️ `fProduto` estava FORA desta lista: o filtro de produto existia na
+       tela, entrava no estado e ia no CSV, mas nunca recarregava a lista.
+       Escolher um produto não fazia nada. Corrigido em 01/09/2026. */
+    document.getElementById(id).addEventListener('change', function () { aplicaFiltros(false); });
+  });
+  document.getElementById('fPeriodo').addEventListener('change', aplicaPeriodo);
   document.getElementById('filtros').addEventListener('submit', function (ev) {
     ev.preventDefault();
     aplicaFiltros(false);
   });
 
   document.getElementById('btLimpar').addEventListener('click', function () {
-    document.getElementById('fBusca').value = '';
-    document.getElementById('fCidade').value = '';
-    document.getElementById('fStatus').value = '';
-    document.getElementById('fQualif').value = '';
-    document.getElementById('fAnuncio').value = '';
-    aplicaFiltros(false);
+    /* limpa TODOS, inclusive produto e período — deixar um de fora faz a
+       tela mentir sobre estar sem filtro */
+    estado.filtros = { busca: '', status: '', qualificacao: '', produto_id: '', cidade: '', utm_content: '' };
+    estado.periodo = '';
+    escreveFiltros();
+    carregaLeads();
     anuncia('Filtros limpos.');
   });
 
@@ -1416,24 +2563,34 @@ code{background:var(--pedra); border-radius:var(--e1); padding:0 4px; font-size:
      Sair
      ============================================================ */
   document.getElementById('btSair').addEventListener('click', function () {
-    api('/crm/sair', { method: 'POST' })
-      .then(paraLogin)
-      .catch(function () { paraLogin(); });
+    api('/crm/sair', { method: 'POST' }).then(paraLogin).catch(paraLogin);
+  });
+
+  /* ============================================================
+     Redesenho dos gráficos quando a largura muda
+     ============================================================ */
+  var timerResize = null;
+  window.addEventListener('resize', function () {
+    if (!_redraw) return;
+    if (timerResize) window.clearTimeout(timerResize);
+    timerResize = window.setTimeout(function () { if (_redraw) _redraw(); }, 150);
   });
 
   /* ============================================================
      Início
      ============================================================ */
+  ajustaFiltros();
   preencheSelects();
   atualizaLinkCsv();
-  desenhaResumo();
+  desenhaKpis();
+  desenhaContadoresAba();
   carregaResumo();
   carregaLeads().then(function () {
     var m = /(?:^|#|&)lead=(\d+)/.exec(window.location.hash || '');
     if (m) abreLead(parseInt(m[1], 10), null);
   });
 
-  // Recarrega o resumo de tempos em tempos para o contador não envelhecer.
+  /* Recarrega o resumo de tempos em tempos para o contador não envelhecer. */
   window.setInterval(carregaResumo, 120000);
 })();
 </script>
