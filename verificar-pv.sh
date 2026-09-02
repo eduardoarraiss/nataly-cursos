@@ -412,6 +412,12 @@ if baixa_pagina /inscricao-presencial 20000; then
   # -- eventos --
   precisa "evento da etapa do investimento"  "'ViuInvestimento'"
   precisa "GA4 na etapa do investimento"     "'view_price_step'"
+  precisa "evento por ETAPA (Meta)"          "'EtapaFormulario'"
+  precisa "evento por ETAPA (GA4)"           "'form_step'"
+  precisa "etapa conta uma vez por sessão"   "nr_etapa_"
+  # Sem o +1 de propósito: a abertura ocupa a casa 0 da fila, então o índice da
+  # pergunta 1 já é 1. Com o +1 a última saía como "12 de 11".
+  proibido "posição da etapa não soma 1 a mais" "indexOf(String(id)) + 1"
   precisa "intenção do GA4 na chegada"       "'select_item'"
   precisa "evento da recomendação"           "'ViuRecomendacao'"
   precisa "GA4 na recomendação"              "'view_recommendation'"

@@ -790,6 +790,42 @@ privacidade</a>.</span></p>
   /* ---------- navegação ----------
      `atual` é o ID da etapa (string), não a posição. A posição é derivada da
      fila na hora, porque a fila muda quando ela responde a pergunta 5. */
+  /* ---------- evento por ETAPA ----------
+     Hoje sabemos quem chega e quem termina, e nao sabemos EM QUAL PERGUNTA
+     desistem — que e onde esta o dinheiro: cada pergunta que derruba gente
+     custa lead. Este evento fecha essa lacuna.
+
+     Conta UMA VEZ por etapa por sessao: quem volta para corrigir passaria de
+     novo e inflaria o numero, que e o mesmo erro que deixou o A/B do Metodo LED
+     ilegivel. O sessionStorage sobrevive ao refresh (o rascunho tambem), entao
+     recarregar a pagina no meio nao recomeça a contagem.
+
+     ⚠️ Nao usa `transport_type:'beacon'` porque aqui NAO ha navegacao: a troca
+     de etapa e na mesma pagina. O beacon so importa quando o hit corre contra
+     o unload. */
+  var etapasContadas = {};
+  function contaEtapa(id) {
+    if (!id || id === '0') return;                 /* a abertura nao e pergunta */
+    if (etapasContadas[id]) return;
+    etapasContadas[id] = true;
+    var chave = 'nr_etapa_' + id;
+    try {
+      if (sessionStorage.getItem(chave)) return;
+      sessionStorage.setItem(chave, '1');
+    } catch (e) {}
+
+    var f = fila();
+    var dados = Object.assign({}, COMUNS, {
+      etapa: id,                                   /* '1'..'10', inclui a '5.5' */
+      /* SEM +1: a abertura ('0') ja ocupa a casa 0 da fila, entao o indice da
+         pergunta 1 ja e 1. Com o +1 a ultima saia como "12 de 11". */
+      etapa_posicao: f.indexOf(String(id)),        /* posicao real na fila dela */
+      etapa_total: f.length - 1                    /* quem ja e lash ve uma a mais */
+    });
+    try { if (window.fbq) fbq('trackCustom', 'EtapaFormulario', dados); } catch (e) {}
+    try { if (window.gtag) gtag('event', 'form_step', dados); } catch (e) {}
+  }
+
   function vaiPara(id, focar) {
     var f = fila();
     if (f.indexOf(String(id)) < 0) id = f[0];
@@ -805,6 +841,7 @@ privacidade</a>.</span></p>
     btAvanca.textContent = (pos === ultimo) ? 'Ver o que eu indico para você' : 'Avançar';
     erroGeral.hidden = true;
     numera();
+    contaEtapa(atual);
     if (atual === ETAPA_VALOR) viuInvestimento();
     if (focar) {
       var alvo = etapas.filter(function (el) { return !el.hidden; })[0];
