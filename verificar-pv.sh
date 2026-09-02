@@ -493,6 +493,52 @@ ROTAS
 
 # ============================================================
 echo
+echo "== 5b. A pagina de links da bio (/links e /bio)"
+# ============================================================
+# Ela e o link da bio do Instagram: se um destino estiver errado, TODO o trafego
+# organico vai pro lugar errado sem ninguem perceber. Confere ORDEM e DESTINO.
+for rota in /links /bio; do
+  if baixa_pagina "$rota" 6000; then
+    # 1. o destino ANTIGO do cartao 2 nao pode voltar: /captacao-iniciante-online
+    #    e a captacao da aula gratuita, NAO a pagina de venda do iniciante.
+    proibido "$rota nao aponta pro destino antigo do iniciante" "/captacao-iniciante-online"
+
+    # 2. os 6 destinos, NA ORDEM. Extrai os href dos cartoes e compara a sequencia.
+    #    Sem a ordem, um cartao trocado de lugar passaria batido.
+    ORDEM_ESPERADA="/profissao-lash-presencial /profissao-lash-curso /lash-2-metodo-led /presencial /apostila /led-pro/"
+    ORDEM_ACHADA=$(grep -oE 'href="https://natalyribeiro\.com\.br[^"?]*' "$TMP" \
+      | sed 's|href="https://natalyribeiro.com.br||' | tr '\n' ' ' | sed 's/ *$//')
+    if [ "$ORDEM_ACHADA" = "$ORDEM_ESPERADA" ]; then
+      ok "$rota tem os 6 destinos na ordem certa"
+    else
+      falha "$rota com destinos fora de ordem — esperado [$ORDEM_ESPERADA], achei [$ORDEM_ACHADA]"
+    fi
+
+    # 3. UTM de bio em TODOS os 6 cartoes (sem isso nao da pra medir o que a bio traz)
+    N_UTM=$(grep -c 'utm_source=instagram&utm_medium=bio' "$TMP")
+    if [ "$N_UTM" -ge 6 ]; then ok "$rota: os 6 cartoes tem UTM de bio ($N_UTM)"
+    else falha "$rota: so $N_UTM cartao(oes) com UTM de bio, precisa de 6"; fi
+
+    # 4. nenhum placeholder de template pode ficar em pagina de producao
+    proibido "$rota sem placeholder de usuario"  "SEU_USUARIO"
+    proibido "$rota sem placeholder de telefone" "SEUNUMERO"
+
+    # 5. o pedido do Edu: fundo marrom escuro e voz grotesca, nao cursiva
+    precisa "$rota com fundo marrom escuro" "#241C15"
+    precisa "$rota com Hanken Grotesk"      "Hanken+Grotesk"
+    proibido "$rota sem Cormorant (cursiva a mais)" "Cormorant"
+
+    # 6. regra do design system: filete 1px, nunca sombra
+    # a PROPRIEDADE, nao a palavra: o comentario do CSS explica a regra e
+    # citaria o termo sem que exista uma sombra de verdade na pagina.
+    proibido_re "$rota sem sombra (filete 1px, nunca box-shadow)" "box-shadow[[:space:]]*:"
+
+    comuns_proibidos
+  fi
+done
+
+# ============================================================
+echo
 echo "== 6. Assets pesados respondem de verdade"
 # ============================================================
 for a in /video/vsl-profissao-lash.mp4 /img/iniciante/vsl-poster.jpg /img/nataly-bio-led.jpg /js/pixel.js /js/analytics.js; do

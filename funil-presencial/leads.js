@@ -6,18 +6,29 @@
    pessoa que preencheu continua no banco.
    ============================================================ */
 const db = require('./db');
+const PRD = require('./produtos');
 
 /* ---------- vocabulário fechado ----------
    Campo de escolha nunca aceita texto livre do cliente: se chegar algo
    fora da lista, é erro de validação e não linha suja no banco. */
 const OPCOES = {
   situacao:        ['ja-lash', 'area-beleza', 'outra-area'],
+  /* só aparece para quem já trabalha com cílios */
+  busca:           PRD.OPCOES_ARVORE.busca,
   disponibilidade: ['sim', 'talvez', 'nao'],
+  prefere_formato: PRD.OPCOES_ARVORE.prefere_formato,
+  faixa_investimento: PRD.OPCOES_ARVORE.faixa_investimento,
+  /* DERIVADO da faixa, nunca mais vindo do formulário — ver deriveAceitaValor().
+     Continua no vocabulário porque a coluna existe, o CSV exporta e o painel lê. */
   aceita_valor:    ['sim', 'preciso-parcelar', 'nao'],
   quando_comecar:  ['agora', '30-dias', '90-dias', 'so-olhando'],
   faixa_idade:     ['18-24', '25-34', '35-44', '45+'],
   meta_renda:      ['ate-2k', '2k-5k', '5k-10k', 'mais-10k', 'nao-sei'],
 };
+
+/* Os ids válidos de produto. Fecha o filtro do painel do mesmo jeito que
+   OPCOES fecha os campos do formulário: nada de string livre no WHERE. */
+const PRODUTO_IDS = Object.keys(PRD.PRODUTOS());
 
 const STATUS = ['novo', 'contatado', 'em-conversa', 'proposta-enviada', 'ganho', 'perdido'];
 
@@ -76,21 +87,55 @@ function opcao(campo, v) {
   return OPCOES[campo].includes(s) ? s : null;
 }
 
+/* ---------- a faixa vira `aceita_valor` ----------
+   A nona pergunta antiga ("você aceita R$ 1.497?") morreu junto com o produto
+   único: com quatro preços ela mentiria para três quartos das pessoas. No
+   lugar entrou a FAIXA DE INVESTIMENTO, perguntada sem revelar preço nenhum.
+
+   `aceita_valor` continua existindo, mas agora é DERIVADO — e é derivado da
+   comparação com o produto que a árvore recomendou, não de um número fixo.
+   Por construção a árvore nunca recomenda acima da faixa marcada, então
+   'nao' só aparece se alguém adulterar o envio. */
+function deriveAceitaValor(faixa, produto) {
+  if (faixa === 'depende-parcelamento') return 'preciso-parcelar';
+  if (!produto) return 'sim';
+  return PRD.cabeNaFaixa(produto, faixa) ? 'sim' : 'nao';
+}
+
 /* ---------- qualificação ----------
    Pontuação declarada, não adivinhada: só usa o que a pessoa respondeu.
-   O peso maior é da disponibilidade porque a aula é presencial em Cambuí —
-   quem não pode vir não compra, por mais quente que esteja em tudo o mais. */
-function qualifica(l) {
-  let p = 0;
-  p += ({ sim: 40, talvez: 15, nao: 0 })[l.disponibilidade] || 0;
-  p += ({ sim: 30, 'preciso-parcelar': 20, nao: 0 })[l.aceita_valor] || 0;
-  p += ({ 'ja-lash': 10, 'area-beleza': 10, 'outra-area': 5 })[l.situacao] || 0;
-  p += ({ agora: 20, '30-dias': 12, '90-dias': 5, 'so-olhando': 0 })[l.quando_comecar] || 0;
 
-  // Trava dura: sem poder vir a Cambuí, ou sem aceitar o valor, o lead não é
-  // quente — nem que pontue alto no resto. Comprar seria impossível.
+   ⚠️ MUDOU EM 01/09/2026, junto com a árvore. A trava antiga dizia que quem
+   não podia vir a Cambuí nunca era quente — e era verdade quando existia UM
+   produto, presencial. Com quatro produtos ela virou mentira cara: quem não
+   pode vir agora recebe o online, que é uma venda perfeitamente boa. Manter a
+   trava marcaria de FRIO justamente o lead que compra sem sair de casa.
+
+   No lugar dela, a trava honesta é a que a própria pessoa declarou: quem diz
+   que está SÓ PESQUISANDO não é lead quente, por mais que pontue no resto. */
+function qualifica(l, rec) {
+  const presencial = rec && rec.formato === 'presencial';
+  let p = 0;
+
+  // 1. o prazo — é o que mais separa quem compra de quem olha
+  p += ({ agora: 30, '30-dias': 20, '90-dias': 8, 'so-olhando': 0 })[l.quando_comecar] || 0;
+
+  // 2. a situação — quem já atende decide mais rápido
+  p += ({ 'ja-lash': 20, 'area-beleza': 15, 'outra-area': 10 })[l.situacao] || 0;
+
+  // 3. o dinheiro, lido contra o produto recomendado (não contra um preço fixo)
+  if (l.faixa_investimento === 'depende-parcelamento') p += 18;
+  else if (presencial) p += 30;                       // a faixa alcançou a oferta cara
+  else if (rec && rec.mencionaPresencial) p += 10;    // podia vir, mas a faixa travou
+  else p += 22;                                       // online por distância ou escolha
+
+  // 4. o encaixe do formato. Para produto online a distância deixou de ser
+  //    obstáculo, então ela não pode pesar contra o lead.
+  if (!presencial) p += 18;
+  else p += ({ sim: 20, talvez: 12, nao: 0 })[l.disponibilidade] || 0;
+
   let nivel;
-  if (l.disponibilidade === 'nao' || l.aceita_valor === 'nao') nivel = 'frio';
+  if (l.quando_comecar === 'so-olhando') nivel = 'frio';
   else if (p >= 70) nivel = 'quente';
   else if (p >= 40) nivel = 'morno';
   else nivel = 'frio';
@@ -119,20 +164,85 @@ function valida(body) {
   l.disponibilidade = opcao('disponibilidade', body.disponibilidade);
   if (!l.disponibilidade) erros.disponibilidade = 'Escolha uma das opções.';
 
-  l.aceita_valor = opcao('aceita_valor', body.aceita_valor);
-  if (!l.aceita_valor) erros.aceita_valor = 'Escolha uma das opções.';
+  /* Os três campos que ALIMENTAM A ÁRVORE viraram obrigatórios: sem eles não
+     há recomendação, e uma recomendação chutada é pior que nenhuma.
+     `aceita_valor` saiu daqui — hoje é derivado da faixa (deriveAceitaValor). */
+  l.situacao = opcao('situacao', body.situacao);
+  if (!l.situacao) erros.situacao = 'Escolha a opção que mais parece com você hoje.';
+
+  l.prefere_formato = opcao('prefere_formato', body.prefere_formato);
+  if (!l.prefere_formato) erros.prefere_formato = 'Me diz como você prefere aprender.';
+
+  l.faixa_investimento = opcao('faixa_investimento', body.faixa_investimento);
+  if (!l.faixa_investimento) erros.faixa_investimento = 'Escolha a faixa que cabe no seu momento.';
+
+  /* A pergunta condicional: obrigatória SÓ para quem já trabalha com cílios.
+     Quem não é lash nunca a vê, então exigi-la de todas travaria o envio de
+     quem respondeu tudo o que lhe foi perguntado. E quem NÃO é lash mas manda
+     o campo assim mesmo tem o valor descartado — a resposta não teria contexto. */
+  if (l.situacao === 'ja-lash') {
+    l.busca = opcao('busca', body.busca);
+    if (!l.busca) erros.busca = 'Me diz o que você está buscando agora.';
+  } else {
+    l.busca = null;
+  }
 
   // opcionais — inválido vira null, não vira erro que trava o envio
   l.estado = texto(body.estado, 2);
   if (l.estado) l.estado = l.estado.toUpperCase();
   l.email = normalizaEmail(body.email);
   l.faixa_idade = opcao('faixa_idade', body.faixa_idade);
-  l.situacao = opcao('situacao', body.situacao);
   l.meta_renda = opcao('meta_renda', body.meta_renda);
   l.quando_comecar = opcao('quando_comecar', body.quando_comecar);
   l.objetivo = texto(body.objetivo, 1000);
 
   return { erros, lead: l, ok: Object.keys(erros).length === 0 };
+}
+
+/* ---------- roteamento ----------
+   Roda a árvore e devolve, num objeto só, o que vai para o banco, o que vai
+   para o WhatsApp e o que a tela final mostra. Chamado UMA vez, no servidor:
+   o formulário nunca decide o produto sozinho, senão a tela e a linha do
+   banco poderiam discordar. */
+function roteia(l) {
+  const rec = PRD.recomenda(l);
+  const colunas = {
+    produto_id:      rec.produto.id,
+    produto_nome:    rec.produto.nome,
+    produto_formato: rec.formato,
+    produto_valor:   rec.produto.valor,
+    recomendacao_motivos: rec.motivos.join('\n').slice(0, 2000),
+    aceita_valor:    deriveAceitaValor(l.faixa_investimento, rec.produto),
+  };
+  return { rec, colunas };
+}
+
+/* O que a tela final precisa saber. Sai do servidor pronto: nenhum preço e
+   nenhum checkout é escrito no HTML do formulário, então não existe jeito de
+   ela ver o número de um produto que não é o dela. */
+function paraTela(rec) {
+  const p = rec.produto;
+  return {
+    id: p.id,
+    nome: p.nome,
+    nome_meta: p.nome_meta,
+    formato: rec.formato,
+    preco: p.preco,
+    parcela: p.parcela,
+    valor: p.valor,
+    inclui: p.inclui,
+    // Checkout SÓ no caminho online. No presencial a Nataly combina a data
+    // antes de cobrar — mandar link aqui seria vender uma vaga sem data.
+    checkout: rec.formato === 'online' ? 'https://pay.kiwify.com.br/' + p.checkout : null,
+    porque: PRD.porQue(rec),
+    // Ela pode vir e só o dinheiro travou: dizer que o presencial existe.
+    presencial_possivel: rec.mencionaPresencial ? {
+      nome: rec.presencialDaFamilia.nome,
+      preco: rec.presencialDaFamilia.preco,
+      parcela: rec.presencialDaFamilia.parcela,
+    } : null,
+    sugestao: rec.familiaIncerta,
+  };
 }
 
 /* ---------- atribuição ----------
@@ -165,8 +275,10 @@ function ipDe(req) {
 /* ---------- gravação ---------- */
 const CAMPOS = [
   'nome', 'telefone', 'telefone_exibicao', 'email', 'instagram', 'cidade', 'estado',
-  'faixa_idade', 'situacao', 'meta_renda', 'objetivo', 'disponibilidade', 'aceita_valor',
-  'quando_comecar', 'pontuacao', 'qualificacao', 'utm_source', 'utm_medium', 'utm_campaign',
+  'faixa_idade', 'situacao', 'busca', 'meta_renda', 'objetivo', 'disponibilidade',
+  'prefere_formato', 'faixa_investimento', 'aceita_valor', 'quando_comecar',
+  'produto_id', 'produto_nome', 'produto_formato', 'produto_valor', 'recomendacao_motivos',
+  'pontuacao', 'qualificacao', 'utm_source', 'utm_medium', 'utm_campaign',
   'utm_content', 'utm_term', 'fbclid', 'gclid', 'referrer', 'pagina', 'user_agent', 'ip',
   'lead_uid',
 ];
@@ -247,6 +359,9 @@ async function lista(f = {}) {
   if (f.status && STATUS.includes(f.status)) add('status = ?', f.status);
   if (f.qualificacao && ['quente', 'morno', 'frio'].includes(f.qualificacao))
     add('qualificacao = ?', f.qualificacao);
+  if (f.produto_id && PRODUTO_IDS.includes(f.produto_id)) add('produto_id = ?', f.produto_id);
+  if (f.produto_formato && ['online', 'presencial'].includes(f.produto_formato))
+    add('produto_formato = ?', f.produto_formato);
   if (f.cidade)      add('LOWER(cidade) LIKE ?', '%' + String(f.cidade).toLowerCase() + '%');
   if (f.utm_content) add('utm_content = ?', f.utm_content);
   if (f.utm_campaign) add('utm_campaign = ?', f.utm_campaign);
@@ -266,10 +381,12 @@ async function lista(f = {}) {
 
 /* ---------- números do topo do painel ---------- */
 async function resumo() {
-  const [total, porStatus, porQualif, porAnuncio, avisosFalhos] = await Promise.all([
+  const [total, porStatus, porQualif, porProduto, porAnuncio, avisosFalhos] = await Promise.all([
     db.consulta('SELECT COUNT(*)::int AS n FROM leads'),
     db.consulta('SELECT status, COUNT(*)::int AS n FROM leads GROUP BY status'),
     db.consulta('SELECT qualificacao, COUNT(*)::int AS n FROM leads GROUP BY qualificacao'),
+    db.consulta("SELECT COALESCE(produto_id, '(sem produto)') AS produto_id, " +
+                'COUNT(*)::int AS n FROM leads GROUP BY 1 ORDER BY n DESC'),
     db.consulta('SELECT COALESCE(utm_content, referrer, \'(sem origem)\') AS origem, ' +
                 'COUNT(*)::int AS n FROM leads GROUP BY 1 ORDER BY n DESC LIMIT 20'),
     db.consulta("SELECT COUNT(*)::int AS n FROM avisos WHERE status <> 'enviado'"),
@@ -278,6 +395,7 @@ async function resumo() {
     total: total.rows[0].n,
     porStatus: porStatus.rows,
     porQualif: porQualif.rows,
+    porProduto: porProduto.rows,
     porAnuncio: porAnuncio.rows,
     avisosFalhos: avisosFalhos.rows[0].n,
   };
@@ -292,8 +410,8 @@ async function avisosProblema() {
 }
 
 module.exports = { apaga,
-  OPCOES, STATUS,
-  valida, atribuicao, qualifica, ipDe,
+  OPCOES, STATUS, PRODUTO_IDS,
+  valida, atribuicao, qualifica, ipDe, roteia, paraTela, deriveAceitaValor,
   normalizaTelefone, formataTelefone, normalizaInstagram, normalizaEmail,
   cria, porId, historico, avisosDo, mudaStatus, lista, resumo, avisosProblema,
 };

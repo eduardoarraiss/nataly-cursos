@@ -1,6 +1,7 @@
 -- ============================================================
 -- FUNIL DE QUALIFICAÇÃO — Profissão Lash Online + Presencial
--- Nataly Ribeiro · Cambuí, MG · R$ 1.497
+-- Nataly Ribeiro · Cambuí, MG · quatro produtos, roteados por árvore de decisão
+-- (ver funil-presencial/produtos.js)
 --
 -- Banco PRÓPRIO da Nataly. Não tem relação nenhuma com a Haus,
 -- com o Roberta OS nem com o haus-comercial-crm.
@@ -26,11 +27,24 @@ CREATE TABLE IF NOT EXISTS leads (
 
   -- ---- qualificação declarada ----
   situacao          TEXT,        -- 'ja-lash' | 'area-beleza' | 'outra-area'
+  busca             TEXT,        -- só quem já é lash: 'aperfeicoar-cilios'|'tecnica-led'|'nao-sei'
   meta_renda        TEXT,        -- faixa de renda desejada
   objetivo          TEXT,        -- texto livre: o que ela quer com o curso
   disponibilidade   TEXT         NOT NULL,   -- 'sim' | 'talvez' | 'nao'
-  aceita_valor      TEXT         NOT NULL,   -- 'sim' | 'preciso-parcelar' | 'nao'
+  prefere_formato   TEXT,        -- 'presencial' | 'online' | 'nao-sei'
+  faixa_investimento TEXT,       -- 'ate-500'|'500-1500'|'1500-2000'|'acima-2000'|'depende-parcelamento'
+  aceita_valor      TEXT         NOT NULL,   -- derivado da faixa: 'sim'|'preciso-parcelar'|'nao'
   quando_comecar    TEXT,        -- 'agora' | '30-dias' | '90-dias' | 'so-olhando'
+
+  -- ---- o que a árvore decidiu ----
+  -- Sem isto não dá para auditar o roteamento depois: a regra muda com o
+  -- tempo, e um lead de setembro precisa continuar dizendo para qual produto
+  -- ELE foi mandado, com a regra que valia no dia.
+  produto_id        TEXT,        -- 'profissao-lash'|'profissao-lash-presencial'|'lash2-online'|'lash2-presencial'
+  produto_nome      TEXT,        -- nome legível, como apareceu para ela
+  produto_formato   TEXT,        -- 'online' | 'presencial'
+  produto_valor     INTEGER,     -- o preço que ELA viu, em reais
+  recomendacao_motivos TEXT,     -- por que a árvore decidiu assim (uma frase por linha)
 
   -- ---- qualificação calculada ----
   pontuacao         INTEGER      NOT NULL DEFAULT 0,
@@ -66,6 +80,30 @@ CREATE INDEX IF NOT EXISTS idx_leads_utm_content ON leads (utm_content);
 CREATE INDEX IF NOT EXISTS idx_leads_utm_camp    ON leads (utm_campaign);
 CREATE INDEX IF NOT EXISTS idx_leads_cidade      ON leads (cidade);
 CREATE INDEX IF NOT EXISTS idx_leads_telefone    ON leads (telefone);
+CREATE INDEX IF NOT EXISTS idx_leads_produto     ON leads (produto_id);
+
+-- ---------- 1b. MIGRAÇÃO — a árvore de decisão (01/09/2026) ----
+-- O CREATE TABLE acima só vale para banco novo. O de produção já existe,
+-- então as colunas da árvore entram por ALTER. IF NOT EXISTS mantém o
+-- arquivo idempotente: roda em todo boot sem quebrar nada.
+ALTER TABLE leads ADD COLUMN IF NOT EXISTS busca                TEXT;
+ALTER TABLE leads ADD COLUMN IF NOT EXISTS prefere_formato      TEXT;
+ALTER TABLE leads ADD COLUMN IF NOT EXISTS faixa_investimento   TEXT;
+ALTER TABLE leads ADD COLUMN IF NOT EXISTS produto_id           TEXT;
+ALTER TABLE leads ADD COLUMN IF NOT EXISTS produto_nome         TEXT;
+ALTER TABLE leads ADD COLUMN IF NOT EXISTS produto_formato      TEXT;
+ALTER TABLE leads ADD COLUMN IF NOT EXISTS produto_valor        INTEGER;
+ALTER TABLE leads ADD COLUMN IF NOT EXISTS recomendacao_motivos TEXT;
+
+-- Os leads gravados ANTES da árvore existiam num mundo de um produto só:
+-- o Profissão Lash online + presencial (R$ 1.497). Marcá-los assim é
+-- verdade histórica, e sem isso o filtro por produto no painel esconderia
+-- todos eles atrás de um "(sem produto)".
+UPDATE leads SET produto_id = 'profissao-lash-presencial',
+                 produto_nome = 'Profissão Lash — online + presencial',
+                 produto_formato = 'presencial',
+                 produto_valor = 1497
+ WHERE produto_id IS NULL;
 
 -- ---------- 2. HISTÓRICO DE STATUS --------------------------
 -- Toda mudança de status vira uma linha aqui. Nunca se apaga:

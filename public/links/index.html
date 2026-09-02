@@ -4,137 +4,153 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="robots" content="index, follow">
+<meta name="theme-color" content="#241C15">
 <title>Nataly Ribeiro — Links</title>
-<meta name="description" content="Nataly Ribeiro · Lash Designer. O Método LED — online, presencial e a Pinça LED Pro.">
+<meta name="description" content="Nataly Ribeiro · Lash Designer. Formação do zero, o Método LED — online e presencial — apostila e a Pinça LED Pro.">
 
 <!-- Open Graph -->
 <meta property="og:type" content="website">
 <meta property="og:title" content="Nataly Ribeiro — Links">
-<meta property="og:description" content="O Método LED — online, presencial e a Pinça LED Pro.">
+<meta property="og:description" content="Formação do zero, o Método LED — online e presencial — apostila e a Pinça LED Pro.">
 <meta property="og:image" content="https://natalyribeiro.com.br/img/nataly-hero.jpg">
 <meta property="og:url" content="https://natalyribeiro.com.br/links">
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@1,500;1,600&family=Hanken+Grotesk:wght@400;500;600;700&family=Cormorant+Garamond:ital@1&display=swap" rel="stylesheet">
+<!-- Voz principal: Hanken Grotesk (grotesca). A serifa itálica entra em UM lugar só: o nome dela. -->
+<link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@400;500;600;700&family=Playfair+Display:ital,wght@1,500&display=swap" rel="stylesheet">
 
 <style>
-  /* ===== Nataly Ribeiro · O Método LED — página de links (bio) =====
-     Fundo CLARO (receita travada): fundo #F2EEE5 · card #FAF7F0
-     texto #463729 · texto2 #8A7766 · acento #6B4F3A · eyebrow #6B4F3A + ponto #7E9072
-     filete #DED3C2 · CTA #6B4F3A/#F2EEE5. 70/20/10. Filetes 1px, SEM box-shadow. */
+  /* ===== Nataly Ribeiro · página de links (bio) — versão escura, sóbria =====
+     Receita de fundo PRETINHO (travada no design system):
+       fundo #241C15 · texto creme #F2EEE5 · texto 2º creme 70% · acento argila #C9A48B
+       filete creme 16% · superfície de cartão levemente acima do fundo.
+     Contrastes medidos sobre a superfície do cartão (#2E241B):
+       creme #F2EEE5 = 13,1:1 · creme 70% #B7B1A8 = 7,1:1 · argila #C9A48B = 6,6:1.
+     Profundidade so por filete de 1px e contraste de superficie —
+     sombra e proibida no design system (vira quadrado preto ao exportar). */
 
   :root{
-    --branco:#F2EEE5;   --papel:#FAF7F0;   --pedra:#E2D8C8;
-    --argila:#C9A48B;   --verde:#A5B59A;   --verde-p:#7E9072;
-    --choco:#6B4F3A;    --tinta:#463729;    --tinta2:#8A7766;
-    --filete:#DED3C2;
+    --fundo:#241C15;        /* marrom escuro — base */
+    --superficie:#2E241B;   /* cartão, um degrau acima do fundo */
+    --superficie-2:#372B20; /* cartão em toque/hover */
+    --creme:#F2EEE5;        /* texto principal — 13,1:1 */
+    --creme-2:#B7B1A8;      /* texto secundário (creme 70%) — 7,1:1 */
+    --argila:#C9A48B;       /* acento e rótulo — 6,6:1 */
+    --ponto:#A5B59A;        /* verde do ponto do rótulo — detalhe, nunca texto */
+    --filete:#4D443B;       /* creme 16% sobre a superfície */
+    --filete-fundo:#453E36; /* creme 16% sobre o fundo */
   }
 
   *{margin:0;padding:0;box-sizing:border-box}
 
-  html{-webkit-text-size-adjust:100%}
+  html{-webkit-text-size-adjust:100%;background:var(--fundo)}
 
   body{
-    background:var(--branco);
-    color:var(--tinta);
-    font-family:'Hanken Grotesk',system-ui,sans-serif;
+    background:var(--fundo);
+    color:var(--creme);
+    font-family:'Hanken Grotesk',-apple-system,BlinkMacSystemFont,'Helvetica Neue',Helvetica,system-ui,sans-serif;
     line-height:1.5;
     -webkit-font-smoothing:antialiased;
+    -moz-osx-font-smoothing:grayscale;
     min-height:100dvh;
     display:flex;
     justify-content:center;
-    padding:env(safe-area-inset-top) 22px calc(28px + env(safe-area-inset-bottom));
+    padding:env(safe-area-inset-top) 20px calc(36px + env(safe-area-inset-bottom));
   }
 
   .wrap{
     width:100%;
-    max-width:460px;
+    max-width:440px;
     margin:0 auto;
-    padding-top:44px;
+    padding-top:52px;
   }
 
   /* ===== Cabeçalho ===== */
-  .head{text-align:center;margin-bottom:34px}
+  .head{text-align:center;margin-bottom:38px}
 
   .avatar{
-    width:112px;height:112px;
+    width:104px;height:104px;
     border-radius:50%;
     object-fit:cover;
     object-position:center 22%;
-    border:1px solid var(--filete);
-    display:block;margin:0 auto 20px;
+    border:1px solid var(--filete-fundo);
+    background:var(--superficie);
+    display:block;margin:0 auto 22px;
   }
 
   .eyebrow{
-    font-size:12px;font-weight:600;letter-spacing:.26em;
-    text-transform:uppercase;color:var(--choco);
-    display:inline-flex;align-items:center;gap:.55em;
+    font-size:11px;font-weight:600;letter-spacing:.24em;
+    text-transform:uppercase;color:var(--argila);
+    display:inline-flex;align-items:center;gap:.6em;
   }
   .eyebrow::before{
-    content:"";width:5px;height:5px;border-radius:50%;
-    background:var(--verde-p);display:inline-block;
+    content:"";width:4px;height:4px;border-radius:50%;
+    background:var(--ponto);display:inline-block;
   }
 
+  /* único ponto cursivo da página: a assinatura dela */
   .nome{
-    font-family:'Playfair Display',serif;font-style:italic;font-weight:600;
-    font-size:38px;line-height:1.05;color:var(--tinta);
-    margin:14px 0 12px;
+    font-family:'Playfair Display',Georgia,serif;
+    font-style:italic;font-weight:500;
+    font-size:40px;line-height:1.06;letter-spacing:-.005em;
+    color:var(--creme);
+    margin:16px 0 10px;
   }
 
   .tagline{
-    font-family:'Cormorant Garamond',serif;font-style:italic;
-    font-size:20px;color:var(--tinta2);
+    font-size:15px;font-weight:400;letter-spacing:.01em;
+    color:var(--creme-2);
   }
 
-  /* filete divisor */
-  .rule{height:1px;background:var(--filete);border:0;width:52px;margin:26px auto 30px}
+  .rule{height:1px;background:var(--filete-fundo);border:0;width:40px;margin:30px auto 32px}
 
-  /* ===== Links ===== */
-  .links{display:flex;flex-direction:column;gap:14px}
+  /* ===== Cartões ===== */
+  .links{display:flex;flex-direction:column;gap:10px}
 
   .card{
-    display:flex;align-items:center;gap:16px;
-    background:var(--papel);
+    display:flex;align-items:center;gap:14px;
+    min-height:76px;                    /* alvo de toque folgado */
+    background:var(--superficie);
     border:1px solid var(--filete);
-    border-radius:18px;
-    padding:18px 18px;
+    border-radius:20px;
+    padding:16px 16px 16px 18px;
     text-decoration:none;color:inherit;
-    transition:border-color .2s ease, background .2s ease, transform .12s ease;
+    transition:background .18s ease, border-color .18s ease, transform .12s ease;
   }
-  .card:hover{border-color:var(--argila);background:#F6F1E8}
-  .card:active{transform:translateY(1px)}
+  .card:hover{background:var(--superficie-2);border-color:#6B5B4C}
+  .card:active{transform:scale(.988)}
+  .card:focus-visible{outline:2px solid var(--argila);outline-offset:3px}
 
   .card__body{flex:1;min-width:0}
 
   .card__label{
-    font-size:11px;font-weight:600;letter-spacing:.22em;
-    text-transform:uppercase;color:var(--tinta2);
-    display:block;margin-bottom:5px;
+    font-size:10.5px;font-weight:600;letter-spacing:.2em;
+    text-transform:uppercase;color:var(--argila);
+    display:block;margin-bottom:7px;
   }
 
   .card__titulo{
-    font-family:'Playfair Display',serif;font-style:italic;font-weight:500;
-    font-size:23px;line-height:1.12;color:var(--tinta);
+    font-size:19px;font-weight:600;line-height:1.2;letter-spacing:-.012em;
+    color:var(--creme);
   }
-  .card__titulo .acento{color:var(--choco)}
 
   .card__sub{
-    font-size:14px;color:var(--tinta2);margin-top:5px;line-height:1.4;
+    font-size:13.5px;font-weight:400;color:var(--creme-2);
+    margin-top:5px;line-height:1.45;
   }
 
-  /* badge do card em destaque — filete 1px, sem sombra */
-  .card--destaque{border-color:var(--argila);background:var(--branco)}
-  .card--destaque:hover{border-color:var(--choco);background:#F6F1E8}
+  /* o primeiro cartão é o destaque — sem sombra, só superfície e filete */
+  .card--destaque{background:var(--superficie-2);border-color:#7A6552}
+  .card--destaque:hover{border-color:var(--argila)}
 
   .badge{
     display:inline-block;vertical-align:middle;
     margin-left:8px;
-    font-family:'Hanken Grotesk',system-ui,sans-serif;
-    font-style:normal;font-weight:600;
-    font-size:10px;letter-spacing:.16em;text-transform:uppercase;
-    color:var(--verde-p);
-    border:1px solid var(--verde);
+    font-size:9.5px;font-weight:600;
+    letter-spacing:.14em;text-transform:uppercase;
+    color:var(--creme);
+    border:1px solid #7A6552;
     border-radius:999px;
     padding:4px 9px 3px;
     white-space:nowrap;
@@ -142,27 +158,36 @@
 
   .card__arw{
     flex-shrink:0;
-    width:34px;height:34px;border-radius:50%;
-    border:1px solid var(--filete);
+    width:30px;height:30px;
     display:flex;align-items:center;justify-content:center;
-    color:var(--choco);font-size:17px;line-height:1;
-    transition:border-color .2s ease, background .2s ease;
+    color:var(--creme-2);
+    transition:color .18s ease, transform .18s ease;
   }
-  .card:hover .card__arw{border-color:var(--argila);background:var(--branco)}
+  .card__arw svg{display:block}
+  .card:hover .card__arw{color:var(--creme);transform:translateX(2px)}
 
   /* ===== Rodapé ===== */
   .foot{
-    text-align:center;margin-top:34px;
-    font-size:12px;letter-spacing:.04em;color:var(--tinta2);
+    text-align:center;margin-top:38px;
+    font-size:12px;letter-spacing:.02em;color:var(--creme-2);
   }
   .foot .marca{
-    font-family:'Playfair Display',serif;font-style:italic;
-    color:var(--tinta);
+    font-family:'Playfair Display',Georgia,serif;font-style:italic;
+    color:var(--creme);
+  }
+
+  @media (prefers-reduced-motion:reduce){
+    *{transition:none !important}
   }
 
   @media (max-width:360px){
-    .nome{font-size:33px}
-    .card__titulo{font-size:21px}
+    body{padding-left:16px;padding-right:16px}
+    .nome{font-size:34px}
+    .card__titulo{font-size:17.5px}
+    .card__sub{font-size:13px}
+    .card{padding:15px 14px 15px 16px;gap:10px}
+    /* o rotulo quebrava em 2 linhas a 320px; aperta o tracking em vez de encurtar o texto */
+    .card__label{font-size:10px;letter-spacing:.12em}
   }
 </style>
 </head>
@@ -170,7 +195,12 @@
   <main class="wrap">
 
     <header class="head">
-      <img class="avatar" src="/img/nataly-hero.jpg" alt="Nataly Ribeiro, Lash Designer">
+      <!-- Sem loading="lazy": este avatar e a maior imagem da primeira tela,
+           entao e ele que define o tempo de abertura. Adiar o carregamento da
+           propria dobra atrasa exatamente o que a pessoa veio ver. -->
+      <img class="avatar" src="/img/nataly-hero.jpg" width="104" height="104"
+           fetchpriority="high" decoding="async"
+           alt="Nataly Ribeiro, Lash Designer">
       <span class="eyebrow">Lash Designer · O Método LED</span>
       <h1 class="nome">Nataly Ribeiro</h1>
       <p class="tagline">Beleza atemporal, feita com calma.</p>
@@ -180,92 +210,75 @@
 
     <nav class="links" aria-label="Meus links">
 
-      <!-- 0 · CAPTAÇÃO curso iniciante (campanha ativa) -->
-      <a class="card card--destaque" href="https://natalyribeiro.com.br/captacao-iniciante-online?utm_source=instagram&utm_medium=bio&utm_campaign=profissao-lash-iniciante-0708&utm_content=link-na-bio">
+      <!-- 1 · PROFISSÃO LASH online + presencial (o que tem o formulário de inscrição) -->
+      <a class="card card--destaque" href="https://natalyribeiro.com.br/profissao-lash-presencial?utm_source=instagram&utm_medium=bio&utm_campaign=bio-profissao-lash-presencial&utm_content=link-na-bio">
         <div class="card__body">
-          <span class="card__label">Para quem está começando</span>
-          <div class="card__titulo">Curso de lash <span class="acento">iniciante</span><span class="badge">Entrar no grupo VIP</span></div>
-          <p class="card__sub">Aula online e ao vivo. Quem está no grupo é avisada antes.</p>
+          <span class="card__label">Formação do zero · Presencial</span>
+          <div class="card__titulo">Profissão Lash<span class="badge">Inscrições abertas</span></div>
+          <p class="card__sub">O curso online completo mais um dia de prática comigo em Cambuí, MG. A vaga começa pelo formulário.</p>
         </div>
-        <span class="card__arw" aria-hidden="true">&rarr;</span>
+        <span class="card__arw" aria-hidden="true"><svg width="18" height="18" viewBox="0 0 18 18" fill="none"><path d="M6.5 3.5L12 9l-5.5 5.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
       </a>
 
-      <!-- 1 · Método LED ONLINE -->
-      <a class="card" href="https://natalyribeiro.com.br/lash-2-metodo-led">
+      <!-- 2 · PROFISSÃO LASH iniciante, 100% online -->
+      <a class="card" href="https://natalyribeiro.com.br/profissao-lash-curso?utm_source=instagram&utm_medium=bio&utm_campaign=bio-profissao-lash-curso&utm_content=link-na-bio">
         <div class="card__body">
-          <span class="card__label">Curso online</span>
-          <div class="card__titulo">O Método <span class="acento">LED</span></div>
-          <p class="card__sub">Formação completa em vídeo, no seu tempo.</p>
+          <span class="card__label">Formação do zero · Online</span>
+          <div class="card__titulo">Profissão Lash Iniciante</div>
+          <p class="card__sub">Para quem nunca aplicou. 100% online, aulas gravadas no seu tempo, com suporte e certificado.</p>
         </div>
-        <span class="card__arw" aria-hidden="true">&rarr;</span>
+        <span class="card__arw" aria-hidden="true"><svg width="18" height="18" viewBox="0 0 18 18" fill="none"><path d="M6.5 3.5L12 9l-5.5 5.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
       </a>
 
-      <!-- 2 · Método LED PRESENCIAL -->
-      <a class="card" href="https://natalyribeiro.com.br/presencial">
+      <!-- 3 · MÉTODO LED online -->
+      <a class="card" href="https://natalyribeiro.com.br/lash-2-metodo-led?utm_source=instagram&utm_medium=bio&utm_campaign=bio-metodo-led-online&utm_content=link-na-bio">
         <div class="card__body">
-          <span class="card__label">Formação presencial</span>
-          <div class="card__titulo">Turma presencial <span class="acento">Método LED</span></div>
-          <p class="card__sub">Aprenda na prática, ao vivo, comigo.</p>
+          <span class="card__label">Aperfeiçoamento · Online</span>
+          <div class="card__titulo">O Método LED</div>
+          <p class="card__sub">Para quem já aplica cílios: a técnica em que o adesivo cura com luz em três segundos.</p>
         </div>
-        <span class="card__arw" aria-hidden="true">&rarr;</span>
+        <span class="card__arw" aria-hidden="true"><svg width="18" height="18" viewBox="0 0 18 18" fill="none"><path d="M6.5 3.5L12 9l-5.5 5.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
       </a>
 
-      <!-- 3 · Apostila digital (low-ticket) -->
-      <a class="card" href="https://natalyribeiro.com.br/apostila">
+      <!-- 4 · MÉTODO LED presencial -->
+      <a class="card" href="https://natalyribeiro.com.br/presencial?utm_source=instagram&utm_medium=bio&utm_campaign=bio-metodo-led-presencial&utm_content=link-na-bio">
         <div class="card__body">
-          <span class="card__label">Apostila digital · PDF</span>
-          <div class="card__titulo">A Apostila do <span class="acento">Método LED</span></div>
-          <p class="card__sub">O método em PDF, pra você começar agora mesmo.</p>
+          <span class="card__label">Aperfeiçoamento · Presencial</span>
+          <div class="card__titulo">Método LED Presencial</div>
+          <p class="card__sub">Um dia ao vivo, em turma reduzida, para ver a técnica de perto e pegar no aparelho.</p>
         </div>
-        <span class="card__arw" aria-hidden="true">&rarr;</span>
+        <span class="card__arw" aria-hidden="true"><svg width="18" height="18" viewBox="0 0 18 18" fill="none"><path d="M6.5 3.5L12 9l-5.5 5.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
       </a>
 
-      <!-- 4 · Pinça LED Pro (pré-venda) -->
-      <a class="card" href="https://natalyribeiro.com.br/led-pro/">
+      <!-- 5 · APOSTILA digital -->
+      <a class="card" href="https://natalyribeiro.com.br/apostila?utm_source=instagram&utm_medium=bio&utm_campaign=bio-apostila&utm_content=link-na-bio">
         <div class="card__body">
-          <span class="card__label">Pré-venda · Produto</span>
-          <div class="card__titulo">Pinça <span class="acento">LED</span> Pro</div>
-          <p class="card__sub">A pinça que fotopolimeriza enquanto você aplica.</p>
+          <span class="card__label">Material de estudo · PDF</span>
+          <div class="card__titulo">A Apostila do Método LED</div>
+          <p class="card__sub">O método por escrito, em PDF, para estudar e consultar na bancada. Acesso imediato.</p>
         </div>
-        <span class="card__arw" aria-hidden="true">&rarr;</span>
+        <span class="card__arw" aria-hidden="true"><svg width="18" height="18" viewBox="0 0 18 18" fill="none"><path d="M6.5 3.5L12 9l-5.5 5.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
       </a>
 
-      <!-- 5 · Instagram (perfil oficial) -->
+      <!-- 6 · PINÇA LED PRO -->
+      <a class="card" href="https://natalyribeiro.com.br/led-pro/?utm_source=instagram&utm_medium=bio&utm_campaign=bio-led-pro&utm_content=link-na-bio">
+        <div class="card__body">
+          <span class="card__label">Produto · Pré-venda</span>
+          <div class="card__titulo">Pinça LED Pro</div>
+          <p class="card__sub">A pinça que fotopolimeriza enquanto você aplica. A luz vai junto com a mão.</p>
+        </div>
+        <span class="card__arw" aria-hidden="true"><svg width="18" height="18" viewBox="0 0 18 18" fill="none"><path d="M6.5 3.5L12 9l-5.5 5.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+      </a>
+
+      <!-- 7 · Instagram (perfil oficial) -->
       <a class="card" href="https://www.instagram.com/nataly.estetica/" rel="noopener" target="_blank">
         <div class="card__body">
           <span class="card__label">Instagram</span>
-          <div class="card__titulo">Me seguir no <span class="acento">Instagram</span></div>
+          <div class="card__titulo">Me seguir no Instagram</div>
           <p class="card__sub">Bastidores, resultados das alunas e dicas do dia a dia.</p>
         </div>
-        <span class="card__arw" aria-hidden="true">&rarr;</span>
+        <span class="card__arw" aria-hidden="true"><svg width="18" height="18" viewBox="0 0 18 18" fill="none"><path d="M6.5 3.5L12 9l-5.5 5.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
       </a>
-
-      <!-- =========================================================
-           ESPAÇO PARA LINKS FUTUROS (WhatsApp, etc.)
-           ⚠️ Os blocos abaixo estão COMENTADOS de propósito — são template,
-              não links vivos. O do WhatsApp segue esperando o número.
-           É só duplicar um bloco <a class="card"> abaixo, ajustar
-           o href, o card__label, o card__titulo e o card__sub.
-           Exemplo pronto (comentado) — trocar @seu_usuario:
-
-      <a class="card" href="https://instagram.com/SEU_USUARIO">
-        <div class="card__body">
-          <span class="card__label">Instagram</span>
-          <div class="card__titulo">Meu <span class="acento">perfil</span></div>
-          <p class="card__sub">Bastidores, resultados e dicas do dia a dia.</p>
-        </div>
-        <span class="card__arw" aria-hidden="true">&rarr;</span>
-      </a>
-
-      <a class="card" href="https://wa.me/55SEUNUMERO">
-        <div class="card__body">
-          <span class="card__label">WhatsApp</span>
-          <div class="card__titulo">Falar <span class="acento">comigo</span></div>
-          <p class="card__sub">Tire suas dúvidas com a nossa equipe.</p>
-        </div>
-        <span class="card__arw" aria-hidden="true">&rarr;</span>
-      </a>
-           ========================================================= -->
 
     </nav>
 

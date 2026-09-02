@@ -14,9 +14,11 @@ const CH='/Applications/Google Chrome.app/Contents/MacOS/Google Chrome';
 const BASE=process.argv[2]||'http://127.0.0.1:3999';
 const SENHA=process.argv[3]||process.env.CRM_SENHA||'';
 const USUARIO=process.env.CRM_USUARIO||'nataly';
-const ROTAS=['/profissao-lash-presencial','/inscricao-presencial','/obrigado-profissao-lash','/obrigado-profissao-lash-presencial'];
+const ROTAS=['/links','/bio','/profissao-lash-presencial','/inscricao-presencial','/obrigado-profissao-lash','/obrigado-profissao-lash-presencial'];
 const LARGURAS=[320,390,430,900,1280];
 const SELETORES='.bloco,.bio,.nums,.oferta,.estreito,.largo,.wrap,.par,'+
+  /* pagina de links (bio): o cartao ja transbordou 232px aqui uma vez */
+  '.head,.links,.card,.card__body,.card__titulo,.card__sub,.badge,.card__arw,'+
   '.tela,.abertura,.etapa,.ops,.op,.campo,.dupla,.valor,.valor__l,.acoes,.passos,.setas';
 
 /* mede a pagina ja carregada: body que rola de lado + caixa que vaza do pai */
