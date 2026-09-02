@@ -142,6 +142,36 @@ const evM=u=>{try{return new URL(u).searchParams.get('ev')}catch(e){return '?'}}
   // "enfileirado"). O fbq sobrevive, por isso o Meta recebe no clique.
   t('chegada: GA4 select_item (intenção)', todosG.includes('select_item'));
   t('investimento: etapa 10 visível', etapa.visivel);
+
+  /* ---------- A CAPTURA PARCIAL (02/09/2026) ----------
+     Enquanto ela preenchia, o formulário gravou o lead. O que se mede aqui é
+     que essa gravação NÃO se disfarçou de conversão.
+
+     🔴 ESTE É O CHECK MAIS CARO DA SEÇÃO. `Lead` é o evento pelo qual a
+        campanha do Meta otimiza (R$ 120/dia, subindo agora). Se ele
+        disparasse a cada etapa, o algoritmo aprenderia a procurar gente que
+        abandona o formulário — e a gente pagaria, todo dia, para trazer mais
+        abandono. O erro não apareceria em lugar nenhum: o painel continuaria
+        certo, os leads continuariam chegando, e só o custo por venda subiria
+        sem explicação.
+     ⚠️ Contado nos BALDES ANTERIORES ao envio (venda + clique + preço). No
+        balde do envio o `Lead` é obrigatório — é lá que ele nasce. */
+  const antesDoEnvio = vendaM.concat(cliqueM, precoM);
+  t('🔴 o parcial NÃO dispara Lead antes do envio',
+    antesDoEnvio.filter(e => e === 'Lead').length === 0,
+    'saiu Lead antes de ela terminar: ' + antesDoEnvio.join(', '));
+  t('o parcial tem evento PRÓPRIO no Meta (LeadParcial)',
+    antesDoEnvio.includes('LeadParcial'),
+    'nenhum LeadParcial durante o preenchimento — a gravação parcial não rodou? ' +
+    antesDoEnvio.join(', '));
+  t('o parcial dispara LeadParcial UMA vez por sessão',
+    todosM.filter(e => e === 'LeadParcial').length === 1,
+    'saíram ' + todosM.filter(e => e === 'LeadParcial').length + ' LeadParcial');
+  t('e o GA4 recebe lead_partial (nome próprio, nunca generate_lead)',
+    todosG.includes('lead_partial'));
+  t('🔴 generate_lead do GA4 também só no envio',
+    vendaG.concat(cliqueG, precoG).filter(e => e === 'generate_lead').length === 0,
+    'o GA4 contou uma conversão antes de ela terminar');
   /* 🔴 O check que sustenta o pedido inteiro do Eduardo: ela não pode ver um
      preço que não é o dela. Na etapa da faixa, preço nosso NENHUM. */
   t('investimento: NENHUM preço nosso na tela', !/297|497|1\.497|1\.997/.test(etapa.texto||''),

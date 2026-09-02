@@ -572,6 +572,114 @@ function medida(SEL){
         ? console.log('ok     /crm  ARRASTAR NO CELULAR funciona ('+src.de+' -> '+dep2+')')
         : (console.log('FALHA  /crm  arrastar no celular NAO moveu o cartao (continua em '+dep2+')'), falhas++);
     }
+    /* --- 5f. A VISTA DOS QUE PARARAM NO MEIO (02/09/2026) ---
+       O painel passou a mostrar dois mundos: quem terminou o formulario e
+       quem parou no meio. Este check prova as tres coisas que o Eduardo
+       pediu — distinguir, filtrar, e dizer ONDE parou — medindo a tela de
+       verdade em vez de procurar palavra no fonte.
+
+       Roda numa aba propria porque ele SEMEIA um parcial pela API publica
+       antes de olhar: sem semente, o filtro "Pararam no meio" devolveria
+       lista vazia e todos os checks passariam sem ter visto nada. Um gate
+       que aprova a lista vazia e um gate que mente. */
+    const pp=await b.newPage();
+    pp.on('pageerror',e=>errosJs.push('parcial: '+e.message));
+    await pp.setViewport({width:390,height:844,deviceScaleFactor:1});
+    await pp.goto(BASE+'/inscricao-presencial',{waitUntil:'networkidle2'});
+    const semeou=await pp.evaluate(async()=>{
+      const uid='layout-parcial-'+Date.now();
+      const r=await fetch('/api/lead-parcial',{method:'POST',
+        headers:{'Content-Type':'application/json'},
+        body:JSON.stringify({nome:'Layout Parou No Preco',telefone:'(35) 99716-4668',
+          cidade:'Cambui',instagram:'@layout_parcial',situacao:'ja-lash',busca:'tecnica-led',
+          disponibilidade:'sim',prefere_formato:'presencial',
+          ultima_etapa:'10',lead_uid:uid})});
+      return (await r.json()).gravado===true;
+    });
+    semeou? dizOk('semeei um parcial que parou na pergunta do preco')
+      : dizMal('nao consegui semear um parcial pela API publica — o resto desta secao nao prova nada');
+
+    await pp.goto(BASE+'/crm/entrar',{waitUntil:'networkidle2'});
+    await pp.evaluate(async(u,s)=>{ await fetch('/crm/entrar',{method:'POST',
+      headers:{'Content-Type':'application/json'},body:JSON.stringify({usuario:u,senha:s})}); },USUARIO,SENHA);
+    await pp.goto(BASE+'/crm',{waitUntil:'networkidle2'});
+    await new Promise(r=>setTimeout(r,1500));
+
+    /* o azulejo com o numero, e o subtitulo do preco */
+    const az=await pp.evaluate(()=>{
+      const k=[...document.querySelectorAll('.kpi')]
+        .find(x=>x.querySelector('.kpi__r') && x.querySelector('.kpi__r').textContent.indexOf('Pararam no meio')!==-1);
+      if(!k) return null;
+      return {n:parseInt(k.querySelector('.kpi__n').textContent.replace(/\D/g,''),10),
+              sub:(k.querySelector('.kpi__p')||{textContent:''}).textContent,
+              clicavel:k.tagName==='BUTTON'};
+    });
+    if(!az) dizMal('o azulejo "Pararam no meio" nao esta no topo — o numero mais comercial do painel esta escondido');
+    else{
+      az.n>=1? dizOk('o azulejo "Pararam no meio" mostra '+az.n)
+        : dizMal('o azulejo diz 0 mesmo com um parcial semeado');
+      /* O PEDIDO LITERAL: "um parcial que travou no preco e uma informacao
+         comercial forte — deixe-a visivel, nao escondida no detalhe". */
+      az.sub.indexOf('pergunta do preço')!==-1
+        ? dizOk('e diz, ali mesmo, quantas pararam na pergunta do preco')
+        : dizMal('o azulejo nao diz quantas pararam no preco: "'+az.sub.slice(0,60)+'"');
+      az.clicavel? dizOk('o azulejo leva a lista dessas pessoas (e um botao)')
+        : dizMal('o azulejo nao e clicavel — o dado esta la e nao leva a lugar nenhum');
+    }
+
+    /* a lista, com o filtro ligado */
+    const antesP=await pp.evaluate(()=>document.querySelectorAll('tbody tr').length);
+    await pp.select('#fCompleto','nao');
+    await new Promise(r=>setTimeout(r,1200));
+    const vista=await pp.evaluate(()=>({
+      linhas:document.querySelectorAll('tbody tr').length,
+      marcadas:document.querySelectorAll('tbody tr.lin-parcial').length,
+      pilulas:[...document.querySelectorAll('tbody .pil.q-parcial')].map(x=>x.textContent),
+      ondeParou:[...document.querySelectorAll('tbody td[data-rot="Produto indicado"]')].map(t=>t.textContent),
+      csv:document.getElementById('btCsv').getAttribute('href')
+    }));
+    vista.linhas>0? dizOk('o filtro "Pararam no meio" devolve '+vista.linhas+' pessoa(s)')
+      : dizMal('o filtro "Pararam no meio" devolveu lista vazia');
+    vista.marcadas===vista.linhas && vista.linhas>0
+      ? dizOk('toda linha de parcial esta marcada visualmente ('+vista.marcadas+')')
+      : dizMal('so '+vista.marcadas+' de '+vista.linhas+' linhas marcadas como parcial');
+    vista.pilulas.length===vista.linhas && vista.pilulas.every(t=>t.indexOf('Parou no meio')!==-1)
+      ? dizOk('cada uma traz a pilula propria "Parou no meio" (e nao "frio")')
+      : dizMal('faltou a pilula de parcial em alguma linha: '+JSON.stringify(vista.pilulas.slice(0,3)));
+    vista.ondeParou.some(t=>t.indexOf('Parou na')!==-1)
+      ? dizOk('a lista diz em qual pergunta cada uma parou')
+      : dizMal('a lista nao diz onde a pessoa parou: '+JSON.stringify(vista.ondeParou.slice(0,2)));
+    vista.ondeParou.some(t=>t.indexOf('faixa de investimento')!==-1)
+      ? dizOk('e quem travou no preco aparece dizendo isso, por extenso')
+      : dizMal('quem parou no preco nao esta identificada na lista');
+    vista.csv.indexOf('completo=nao')!==-1? dizOk('o CSV leva junto o filtro de completo')
+      : dizMal('o CSV nao leva o filtro de completo: '+vista.csv);
+
+    /* a gaveta: quem abre a ficha precisa saber que NAO e inscricao */
+    await pp.evaluate(()=>document.querySelector('tbody tr').click());
+    await new Promise(r=>setTimeout(r,1000));
+    const gav=await pp.evaluate(()=>{
+      const g=document.querySelector('.gaveta, [aria-modal="true"]')||document.body;
+      return {texto:g.textContent, alerta:!!g.querySelector('.faixa-parcial')};
+    });
+    gav.alerta? dizOk('a gaveta abre com o aviso de formulario incompleto')
+      : dizMal('a gaveta de um parcial nao avisa que ela nao terminou');
+    gav.texto.indexOf('não viu preço nenhum')!==-1
+      ? dizOk('a gaveta diz que ela NAO viu preco nenhum')
+      : dizMal('a gaveta nao diz que ela nao viu preco — a Nataly ligaria falando de um curso que ninguem indicou');
+    gav.texto.indexOf('Onde parou')!==-1? dizOk('a gaveta diz onde ela parou')
+      : dizMal('a gaveta nao diz onde ela parou');
+
+    /* e o corpo nao pode rolar de lado com essas linhas novas */
+    for(const w of [320,390]){
+      await pp.setViewport({width:w,height:800,deviceScaleFactor:1});
+      await new Promise(r=>setTimeout(r,500));
+      const rl=await pp.evaluate(()=>({d:document.documentElement.scrollWidth,c:document.documentElement.clientWidth}));
+      rl.d<=rl.c? dizOk('a lista de parciais @'+w+'px nao rola de lado')
+        : dizMal('a lista de parciais @'+w+'px faz o CORPO rolar de lado ('+rl.d+' > '+rl.c+')');
+    }
+    await pp.close();
+
     /* nenhuma tela pode rolar de lado a 320px — o kanban rola por dentro */
     const est=await b.newPage();
     await est.setViewport({width:320,height:800,deviceScaleFactor:1});

@@ -132,6 +132,10 @@ a{color:var(--azul-txt)}
   display:flex; gap:var(--e3); align-items:center; flex-wrap:wrap;
 }
 .faixa p{flex:1 1 240px; font-weight:600; min-width:0}
+/* A mesma caixa, em outro tom. O vermelho da `.faixa` diz "algo quebrou"; um
+   formulário incompleto não quebrou nada — é uma oportunidade aberta, e pintá-la
+   de alarme ensinaria a Nataly a ignorar o vermelho quando ele importar. */
+.faixa-parcial{background:#F0FDFA; border-color:#5EEAD4; border-left-color:#14B8A6}
 
 /* ---------- KPIs ---------- */
 .kpis{
@@ -245,6 +249,16 @@ a{color:var(--azul-txt)}
 .q-quente{background:#FFEDD5; color:#9A3412; border-color:#FED7AA}   /* 6.38:1 */
 .q-morno {background:#FEF3C7; color:#854D0E; border-color:#FDE68A}   /* 6.15:1 */
 .q-frio  {background:#EEF1F5; color:#475569; border-color:#DDE3EA}   /* 6.69:1 */
+/* Quem parou no meio. Verde-azulado de propósito: não é quente, não é morno,
+   não é frio — é OUTRA COISA, e não pode ser lida como um degrau da mesma
+   régua. Um cinza aqui faria o parcial parecer "lead ruim", e ele não é: ele
+   é lead que ninguém terminou de perguntar.
+   Medido: 8.41:1 (#134E4A sobre #CCFBF1). */
+.q-parcial{background:#CCFBF1; color:#134E4A; border-color:#99F6E4}  /* 8.41:1 */
+/* A linha inteira do parcial ganha um filete à esquerda: dá para varrer a
+   lista com o olho e ver quem terminou e quem não, sem ler pílula nenhuma. */
+tbody tr.lin-parcial td:first-child{box-shadow:inset 3px 0 0 #14B8A6}
+.parou{font-weight:650; color:#134E4A}
 .s-novo            {background:#E7EEF8; color:#1E3A5F; border-color:#CBDCF2}  /* 9.85:1 */
 .s-contatado       {background:#E7EEF8; color:#1c5cab; border-color:#CBDCF2}  /* 5.68:1 */
 .s-em-conversa     {background:#E0F2FE; color:#155E75; border-color:#BAE6FD}  /* 6.33:1 */
@@ -488,6 +502,10 @@ code{background:var(--carta-2); border:1px solid var(--linha); border-radius:var
       <summary id="resumoFiltros">Filtros</summary>
       <div class="filtros-grade">
         <div class="campo">
+          <label for="fCompleto">Terminou o formulário?</label>
+          <select id="fCompleto" name="completo"></select>
+        </div>
+        <div class="campo">
           <label for="fProduto">Produto indicado</label>
           <select id="fProduto" name="produto_id"></select>
         </div>
@@ -628,8 +646,28 @@ code{background:var(--carta-2); border:1px solid var(--linha); border-radius:var
       'ate-2k': 'Até R$ 2 mil', '2k-5k': 'R$ 2 a 5 mil', '5k-10k': 'R$ 5 a 10 mil',
       'mais-10k': 'Mais de R$ 10 mil', 'nao-sei': 'Ainda não sabe'
     },
-    aviso: { 'enviado': 'Enviado', 'pendente': 'Pendente', 'falhou': 'Falhou', 'erro': 'Falhou' }
+    aviso: { 'enviado': 'Enviado', 'pendente': 'Pendente', 'falhou': 'Falhou', 'erro': 'Falhou' },
+    /* Onde ela parou. Tem de ser a MESMA lista de `ETAPAS` em leads.js — se
+       uma pergunta nascer lá e não aqui, o painel diz "parou na etapa 11" e
+       manda a Nataly adivinhar qual era. */
+    etapa: {
+      '1': 'o nome', '2': 'a cidade', '3': 'o WhatsApp', '4': 'o Instagram',
+      '5': 'a situação dela hoje', '5.5': 'o que ela está buscando',
+      '6': 'a meta de renda e quando quer começar', '7': 'o objetivo (pergunta aberta)',
+      '8': 'se consegue vir a Cambuí', '9': 'como prefere aprender',
+      '10': 'a faixa de investimento'
+    }
   };
+
+  /* A pergunta do dinheiro. Vive numa constante porque é a única etapa que
+     muda o TOM do que o painel diz: parar aqui é objeção de preço, e é a
+     conversa que o comercial fecha. */
+  var ETAPA_PRECO = '10';
+  var COMPLETOS = [
+    { v: 'sim',  r: 'Terminaram o formulário' },
+    { v: 'nao',  r: 'Pararam no meio' },
+    { v: 'tudo', r: 'Todas as duas' }
+  ];
 
   function rot(campo, valor) {
     if (valor === null || valor === undefined || valor === '') return '—';
@@ -682,6 +720,39 @@ code{background:var(--carta-2); border:1px solid var(--linha); border-radius:var
     return el('span', 'pil q-' + (q || 'frio'), t);
   }
   function pilulaStatus(s) { return el('span', 'pil s-' + (s || 'novo'), rot('status', s)); }
+
+  /* Um parcial NÃO tem qualificação: a pontuação depende da árvore, e a árvore
+     depende de respostas que ela não deu. Mostrar "frio · 0" seria pior que
+     não mostrar nada — a Nataly leria como "esse não presta", quando o que
+     houve foi que ninguém terminou de perguntar. */
+  function pilulaCompleto(lead) {
+    if (lead.completo === false) return el('span', 'pil q-parcial', 'Parou no meio');
+    return pilulaQualif(lead.qualificacao, lead.pontuacao);
+  }
+
+  /* "parou na pergunta 10 de 11: a faixa de investimento" */
+  function ondeParou(lead) {
+    var id = lead.ultima_etapa ? String(lead.ultima_etapa) : '';
+    if (!ROT.etapa[id]) return null;
+    var lash = lead.situacao === 'ja-lash';
+    var fila = ['1','2','3','4','5','5.5','6','7','8','9','10']
+      .filter(function (e) { return e !== '5.5' || lash; });
+    var pos = fila.indexOf(id);
+    return {
+      id: id,
+      rotulo: ROT.etapa[id],
+      posicao: pos < 0 ? null : pos + 1,
+      total: fila.length,
+      noPreco: id === ETAPA_PRECO
+    };
+  }
+  function textoOndeParou(lead) {
+    var o = ondeParou(lead);
+    if (!o) return 'Parou antes de responder as perguntas';
+    return o.posicao
+      ? 'Parou na ' + o.posicao + ' de ' + o.total + ': ' + o.rotulo
+      : 'Parou em: ' + o.rotulo;
+  }
 
   /* ícone do WhatsApp, desenhado à mão — sem CDN, sem fonte de ícone */
   function iconeWa() {
@@ -817,6 +888,12 @@ code{background:var(--carta-2); border:1px solid var(--linha); border-radius:var
     leads: [],
     filtros: { busca: '', status: '', qualificacao: '', produto_id: '', cidade: '', utm_content: '' },
     periodo: '',            /* client-side: a API de listagem não filtra por data */
+    /* Fica FORA de `estado.filtros` de propósito. Ele tem valor padrão ('sim'),
+       e um filtro com valor padrão dentro de `filtrosAtivos()` faria
+       `temFiltro()` ser sempre verdadeiro — a lista diria "(filtrado)" o tempo
+       todo e o aviso do CSV nunca calaria. Ele vai à query pelo `queryString`,
+       como o parâmetro que é. */
+    completo: 'sim',
     aba: 'lista',
     carregando: false,
     erro: null,
@@ -840,6 +917,10 @@ code{background:var(--carta-2); border:1px solid var(--linha); border-radius:var
   }
   function queryString(extra) {
     var q = filtrosAtivos();
+    /* SEMPRE explícito, inclusive no padrão. O servidor também tem 'sim' como
+       padrão, mas depender disso faria o CSV e a tela discordarem no dia em
+       que um dos dois mudasse de ideia. */
+    q.completo = estado.completo || 'sim';
     if (extra) for (var k in extra) if (Object.prototype.hasOwnProperty.call(extra, k)) q[k] = extra[k];
     var partes = Object.keys(q).map(function (k) {
       return encodeURIComponent(k) + '=' + encodeURIComponent(q[k]);
@@ -847,7 +928,8 @@ code{background:var(--carta-2); border:1px solid var(--linha); border-radius:var
     return partes.length ? '?' + partes.join('&') : '';
   }
   function temFiltro() {
-    return Object.keys(filtrosAtivos()).length > 0 || estado.periodo !== '';
+    return Object.keys(filtrosAtivos()).length > 0 || estado.periodo !== ''
+        || (estado.completo && estado.completo !== 'sim');
   }
 
   /* A lista que a tela inteira enxerga: o que o servidor devolveu, cortado
@@ -991,6 +1073,7 @@ code{background:var(--carta-2); border:1px solid var(--linha); border-radius:var
     return c;
   }
 
+  /* devolve o <button> para quem precisar amarrar comportamento próprio */
   function tile(rotulo, valor, pos, filtro, ariaExtra) {
     var b = el('button', 'kpi');
     b.type = 'button';
@@ -1095,6 +1178,46 @@ code{background:var(--carta-2); border:1px solid var(--linha); border-radius:var
     p4.appendChild(document.createTextNode(' em propostas abertas'));
     alvo.appendChild(tile('Em proposta', c.proposta, p4, { status: 'proposta-enviada' },
       reais(c.valorProposta) + ' em propostas abertas.'));
+
+    /* 5 — QUEM PAROU NO MEIO (02/09/2026)
+       Este número NÃO sai da lista carregada, e não podia sair: a lista está
+       filtrada pelas inscrições completas. Ele vem do resumo do servidor, que
+       conta o banco inteiro.
+
+       Ele é um azulejo e não uma linha de rodapé porque é a informação
+       comercial que estava faltando: um parcial que travou no preço é alguém
+       que chegou perto de comprar e desistiu por um motivo que se conversa.
+       Escondê-lo no detalhe seria ter o dado e não usá-lo. */
+    var par = (estado.resumo && estado.resumo.parciais) || null;
+    if (par) {
+      var p5 = el('span', 'kpi__p');
+      if (par.noPreco > 0) {
+        var b5 = el('b', null, num(par.noPreco));
+        p5.appendChild(b5);
+        p5.appendChild(document.createTextNode(
+          par.noPreco === 1 ? ' parou na pergunta do preço' : ' pararam na pergunta do preço'));
+      } else {
+        p5.appendChild(document.createTextNode(par.total
+          ? 'Nenhuma parou no preço. '
+          : 'Ninguém abandonou o formulário. '));
+      }
+      var t5 = tile('Pararam no meio', par.total, p5, null,
+        par.total + ' pessoas deixaram o formulário sem terminar' +
+        (par.noPreco ? ', ' + par.noPreco + ' delas na pergunta do investimento' : '') + '.');
+      /* O azulejo LEVA à lista delas. `tile` só sabe filtrar por campo de
+         `estado.filtros`, e `completo` mora fora dele (ver o comentário no
+         estado), então a ligação é feita aqui à mão. */
+      t5.setAttribute('aria-pressed', estado.completo === 'nao' ? 'true' : 'false');
+      t5.setAttribute('title', estado.completo === 'nao'
+        ? 'Clique para voltar às inscrições completas'
+        : 'Clique para ver quem parou no meio');
+      t5.addEventListener('click', function () {
+        estado.completo = (estado.completo === 'nao') ? 'sim' : 'nao';
+        escreveFiltros();
+        carregaLeads();
+      });
+      alvo.appendChild(t5);
+    }
 
     /* a linha de contexto: o que é bom saber, mas não merece um azulejo */
     var taxa = c.total ? Math.round(1000 * c.ganho / c.total) / 10 : 0;
@@ -1505,6 +1628,11 @@ code{background:var(--carta-2); border:1px solid var(--linha); border-radius:var
     PERIODOS.forEach(function (x) { p.appendChild(opcao(x.v, x.r)); });
     p.value = estado.periodo;
 
+    var cp = document.getElementById('fCompleto');
+    limpa(cp);
+    COMPLETOS.forEach(function (x) { cp.appendChild(opcao(x.v, x.r)); });
+    cp.value = estado.completo || 'sim';
+
     preencheProdutos();
   }
 
@@ -1556,6 +1684,7 @@ code{background:var(--carta-2); border:1px solid var(--linha); border-radius:var
     document.getElementById('fProduto').value = estado.filtros.produto_id;
     document.getElementById('fAnuncio').value = estado.filtros.utm_content;
     document.getElementById('fPeriodo').value = estado.periodo;
+    document.getElementById('fCompleto').value = estado.completo || 'sim';
     atualizaLinkCsv();
   }
 
@@ -1568,6 +1697,10 @@ code{background:var(--carta-2); border:1px solid var(--linha); border-radius:var
       desenhaFaixaAvisos();
       preencheAnuncios();
       preencheProdutos();
+      /* O azulejo "Pararam no meio" só existe depois que o resumo chega —
+         ele conta o banco inteiro, não a lista carregada. Sem este redesenho
+         ele só apareceria na próxima vez que algo mais mexesse na tela. */
+      desenhaKpis();
     }).catch(function (e) {
       if (e.message === 'sessao') return;
       console.error('resumo:', e);
@@ -1718,21 +1851,39 @@ code{background:var(--carta-2); border:1px solid var(--linha); border-radius:var
       tr.setAttribute('role', 'button');
       tr.setAttribute('aria-label', 'Abrir detalhe de ' + texto(lead.nome));
 
+      /* Filete à esquerda: dá para varrer a coluna e ver quem terminou sem
+         ler uma pílula sequer. A pílula continua lá para quem precisa do
+         nome da coisa, e para quem não distingue a cor. */
+      if (lead.completo === false) tr.className = 'lin-parcial';
+
       var envNome = document.createElement('span');
       poe(envNome, el('span', 'td-nome', texto(lead.nome)));
       if (lead.instagram) envNome.appendChild(el('span', 'td-sub', '@' + lead.instagram));
+      else if (lead.completo === false) envNome.appendChild(el('span', 'td-sub', 'não chegou a dar o @'));
       tr.appendChild(celula('Nome', envNome));
 
       tr.appendChild(celula('WhatsApp', el('span', null, telefoneBonito(lead)), 'nw'));
       tr.appendChild(celula('Cidade', el('span', null,
         texto(lead.cidade) + (lead.estado ? ' · ' + lead.estado : ''))));
-      tr.appendChild(celula('Qualificação', pilulaQualif(lead.qualificacao, lead.pontuacao)));
+      tr.appendChild(celula('Qualificação', pilulaCompleto(lead)));
 
       var envProd = document.createElement('span');
-      poe(envProd, el('span', null, rot('produto_curto', lead.produto_id)));
-      if (lead.produto_valor) {
-        envProd.appendChild(el('span', 'td-sub', reais(lead.produto_valor) +
-          (lead.produto_formato === 'presencial' ? ' · sem checkout' : ' · checkout enviado')));
+      if (lead.completo === false) {
+        /* A coluna do produto ficaria vazia num parcial — não há árvore sem
+           respostas. Em vez de um "—" mudo, ela passa a dizer ONDE ELA PAROU,
+           que é a informação que decide a conversa. */
+        var o = ondeParou(lead);
+        poe(envProd, el('span', o && o.noPreco ? 'parou' : null,
+          o ? (o.posicao ? 'Parou na ' + o.posicao + ' de ' + o.total : 'Parou em ' + o.rotulo)
+            : 'Parou logo no começo'));
+        if (o) envProd.appendChild(el('span', 'td-sub',
+          o.noPreco ? '💰 ' + o.rotulo + ' — é aqui que dá para converter' : o.rotulo));
+      } else {
+        poe(envProd, el('span', null, rot('produto_curto', lead.produto_id)));
+        if (lead.produto_valor) {
+          envProd.appendChild(el('span', 'td-sub', reais(lead.produto_valor) +
+            (lead.produto_formato === 'presencial' ? ' · sem checkout' : ' · checkout enviado')));
+        }
       }
       tr.appendChild(celula('Produto indicado', envProd));
 
@@ -2230,10 +2381,32 @@ code{background:var(--carta-2); border:1px solid var(--linha); border-radius:var
 
     var cabeca = el('div', 'bloco');
     var linhaPil = el('p');
-    linhaPil.appendChild(pilulaQualif(lead.qualificacao, lead.pontuacao));
+    linhaPil.appendChild(pilulaCompleto(lead));
     linhaPil.appendChild(document.createTextNode(' '));
     linhaPil.appendChild(pilulaStatus(lead.status));
     cabeca.appendChild(linhaPil);
+
+    /* O aviso mais importante da gaveta, e por isso ele vem ANTES de tudo:
+       quem abre a ficha de um parcial precisa saber, antes de ler qualquer
+       campo, que ela NÃO terminou, NÃO viu preço e NÃO tem curso indicado.
+       Sem isto a ficha parece uma inscrição com campos faltando — e a Nataly
+       ligaria falando de um curso que ninguém indicou para essa pessoa. */
+    if (lead.completo === false) {
+      var alerta = el('p', 'faixa faixa-parcial');
+      alerta.style.marginTop = '12px';
+      alerta.appendChild(el('b', null, textoOndeParou(lead) + '. '));
+      var o2 = ondeParou(lead);
+      alerta.appendChild(document.createTextNode(o2 && o2.noPreco
+        /* A frase "não viu preço nenhum" é a MESMA nos dois ramos de propósito:
+           é o fato que evita o pior erro de atendimento possível — ligar
+           falando de um curso e de um valor que essa pessoa nunca viu. */
+        ? 'Ela parou justamente na pergunta do investimento — é onde mais gente '
+          + 'desiste, e é a conversa que costuma virar venda. Ela não viu preço '
+          + 'nenhum e não tem curso indicado.'
+        : 'Ela não terminou o formulário, então não viu preço nenhum e não tem '
+          + 'curso indicado. Não é uma inscrição: é alguém para chamar.'));
+      cabeca.appendChild(alerta);
+    }
 
     var acoes = el('div', 'acoes-lead');
     acoes.style.marginTop = '14px';
@@ -2260,8 +2433,22 @@ code{background:var(--carta-2); border:1px solid var(--linha); border-radius:var
     ]));
     painel.appendChild(bContato);
 
-    var bQualif = bloco('Qualificação');
-    bQualif.appendChild(listaDados([
+    var bQualif = bloco(lead.completo === false ? 'O que ela chegou a responder' : 'Qualificação');
+    bQualif.appendChild(listaDados(lead.completo === false ? [
+      /* Sem pontuação e sem nível: os dois vêm da árvore, e a árvore não
+         rodou. Imprimir "frio · 0" aqui seria inventar um veredito. */
+      ['Onde parou', textoOndeParou(lead)],
+      ['Faixa de idade', idade(lead.faixa_idade)],
+      ['Situação', rot('situacao', lead.situacao)],
+      ['O que busca', rot('busca', lead.busca)],
+      ['Meta de renda', rot('meta_renda', lead.meta_renda)],
+      ['Disponibilidade', rot('disponibilidade', lead.disponibilidade)],
+      ['Prefere', rot('prefere_formato', lead.prefere_formato)],
+      ['Faixa de investimento', rot('faixa_investimento', lead.faixa_investimento)],
+      ['Quando começar', rot('quando_comecar', lead.quando_comecar)],
+      ['Objetivo', texto(lead.objetivo)],
+      ['Anotação', texto(lead.anotacao)]
+    ] : [
       ['Pontuação', (lead.pontuacao === null || lead.pontuacao === undefined ? '—' : lead.pontuacao + '/100')],
       ['Nível', rot('qualificacao', lead.qualificacao)],
       ['Faixa de idade', idade(lead.faixa_idade)],
@@ -2282,7 +2469,16 @@ code{background:var(--carta-2); border:1px solid var(--linha); border-radius:var
        das respostas — que é justamente o trabalho que o registro existe
        para poupar. E se a Nataly discordar da indicação, ela precisa ver o
        raciocínio para saber o que contra-argumentar na conversa. */
+    /* Num parcial não existe produto indicado — e um bloco com cinco travessões
+       faria parecer erro de sistema em vez de pergunta que não foi feita. */
     var bProd = bloco('Produto indicado');
+    if (lead.completo === false) {
+      bProd.appendChild(listaDados([
+        ['Produto', 'Ainda não — ela parou antes da árvore decidir'],
+        ['O que fazer', 'Chamar no WhatsApp e terminar a conversa com ela']
+      ]));
+      painel.appendChild(bProd);
+    } else {
     bProd.appendChild(listaDados([
       ['Produto', rot('produto_id', lead.produto_id)],
       ['Formato', rot('produto_formato', lead.produto_formato)],
@@ -2293,6 +2489,7 @@ code{background:var(--carta-2); border:1px solid var(--linha); border-radius:var
       ['Por que foi indicado', texto(lead.recomendacao_motivos)]
     ]));
     painel.appendChild(bProd);
+    }
 
     var bOrigem = bloco('Origem do lead');
     bOrigem.appendChild(listaDados([
@@ -2516,6 +2713,7 @@ code{background:var(--carta-2); border:1px solid var(--linha); border-radius:var
     estado.filtros.cidade = document.getElementById('fCidade').value.trim();
     estado.filtros.utm_content = document.getElementById('fAnuncio').value;
     estado.periodo = document.getElementById('fPeriodo').value;
+    estado.completo = document.getElementById('fCompleto').value || 'sim';
     atualizaLinkCsv();
   }
 
@@ -2537,7 +2735,7 @@ code{background:var(--carta-2); border:1px solid var(--linha); border-radius:var
 
   document.getElementById('fBusca').addEventListener('input', function () { aplicaFiltros(true); });
   document.getElementById('fCidade').addEventListener('input', function () { aplicaFiltros(true); });
-  ['fStatus', 'fQualif', 'fProduto', 'fAnuncio'].forEach(function (id) {
+  ['fStatus', 'fQualif', 'fProduto', 'fAnuncio', 'fCompleto'].forEach(function (id) {
     /* ⚠️ `fProduto` estava FORA desta lista: o filtro de produto existia na
        tela, entrava no estado e ia no CSV, mas nunca recarregava a lista.
        Escolher um produto não fazia nada. Corrigido em 01/09/2026. */
@@ -2554,6 +2752,11 @@ code{background:var(--carta-2); border:1px solid var(--linha); border-radius:var
        tela mentir sobre estar sem filtro */
     estado.filtros = { busca: '', status: '', qualificacao: '', produto_id: '', cidade: '', utm_content: '' };
     estado.periodo = '';
+    /* Volta ao PADRÃO ('sim'), não ao vazio: "sem filtro" aqui significa a
+       lista de inscrições completas, que é o que o painel sempre mostrou.
+       Zerar para '' mandaria uma query sem o parâmetro e a tela passaria a
+       depender do padrão do servidor — dois lugares decidindo a mesma coisa. */
+    estado.completo = 'sim';
     escreveFiltros();
     carregaLeads();
     anuncia('Filtros limpos.');

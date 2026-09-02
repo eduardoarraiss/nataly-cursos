@@ -122,6 +122,8 @@ echo
 echo "== 2. PV online + presencial — $BASE/profissao-lash-presencial"
 # ============================================================
 if baixa_pagina /profissao-lash-presencial 40000; then
+  # A versao SEM COMENTARIO tem de existir antes do primeiro `proibido_vivo`.
+  sem_comentarios
   # -- o que a página É, em 2 segundos --
   precisa "headline diz o produto"           "Curso de extensão de cílios do zero"
   # a cidade saiu do h1 (a tarja já a diz, logo acima). O que NÃO pode sair do h1
@@ -164,6 +166,15 @@ if baixa_pagina /profissao-lash-presencial 40000; then
   precisa "VSL avisa o que vem a mais"       "mais o dia de prática presencial comigo em Cambuí"
   # -- o player COMPLETO, igual ao da /profissao-lash-curso --
   precisa_re1 "o autoplay é MUDO e em laço"  "<video[^>]*muted[^>]*loop[^>]*autoplay"
+  # 🔴 VELOCIDADE (02/09/2026): a VSL tem 21 MB. Com preload="auto" o navegador
+  #    começaria a baixar o filme inteiro junto com a página, competindo com o
+  #    texto que a pessoa precisa ler. `metadata` baixa só o cabeçalho.
+  #    Já voltou para "auto" uma vez; este check existe para não voltar de novo.
+  precisa_re1 "a VSL de 21 MB carrega só o cabeçalho" '<video[^>]*preload="metadata"'
+  proibido_vivo_re "a VSL NÃO voltou para preload=auto" 'preload="auto"'
+  # os dois domínios mais pesados abrem conexão em paralelo (~351 KB de script)
+  precisa "preconnect ao domínio do pixel" "preconnect\" href=\"https://connect.facebook.net"
+  precisa "preconnect ao domínio do GA4"   "preconnect\" href=\"https://www.googletagmanager.com"
   precisa "véu do laço mudo"                 "Seu vídeo já começou"
   precisa "fallback quando o autoplay é bloqueado" "Toque para assistir"
   precisa "overlay de retenção na pausa"     'id="retencao"'
@@ -296,12 +307,34 @@ echo
 echo "== 2b. Formulário de qualificação — $BASE/inscricao-presencial"
 # ============================================================
 if baixa_pagina /inscricao-presencial 20000; then
+  # A versao SEM COMENTARIO precisa existir ANTES do primeiro `proibido_vivo`.
+  # Sem esta linha, `$TMP.vivo` seria o resto da pagina anterior e os checks
+  # abaixo estariam auditando o arquivo errado — passando por acidente.
+  sem_comentarios
   # -- a abertura --
   precisa "tela de boas-vindas"              'data-etapa="0"'
-  precisa "TEM a foto da Nataly"             "/img/nataly-smile-shoulder.jpg"
-  precisa_re1 "a foto declara width/height"  'nataly-smile-shoulder\.jpg"[^>]*width="1400" height="1400"'
+  # 🔴 Foto trocada em 02/09/2026 a pedido da NATALY: a anterior era gerada por
+  #    IA e ela pediu uma real. Esta e' ela com uma aluna e o certificado
+  #    assinado por ela como coordenadora.
+  precisa "TEM a foto real da Nataly com a aluna" "/img/nataly-alunas-certificado.jpg"
+  precisa_re1 "a foto declara width/height"  'nataly-alunas-certificado-700\.jpg"[^>]*width="1400" height="1400"'
+  # a versao grande continua servida para tela 3x — nao pode sumir do srcset
+  precisa "a foto tem as duas larguras (srcset)" 'nataly-alunas-certificado.jpg 1400w'
+  precisa "e diz o tamanho da caixa medido"      'sizes="340px"'
+  # os dois dominios mais pesados abrem conexao em paralelo
+  precisa "preconnect ao dominio do pixel"       "preconnect\" href=\"https://connect.facebook.net"
+  precisa "preconnect ao dominio do GA4"         "preconnect\" href=\"https://www.googletagmanager.com"
+  proibido "a foto gerada por IA não voltou"  "/img/nataly-smile-shoulder.jpg"
+  # A outra marca não pode entrar aqui: o certificado da Resnichka e' de um
+  # curso em que a Nataly e' INSTRUTORA, e confunde com o que a aluna recebe.
+  proibido_vivo "sem certificado de outra marca (Resnichka)" "resnichka"
   precisa "botão de começar"                 'id="comecar"'
-  precisa "diz quantas perguntas são"        "dez perguntas rápidas"
+  # 🔴 NENHUM NÚMERO DE PERGUNTAS. São 10, ou 11 para quem já trabalha com
+  #    cílios — e a própria tela mostra "Pergunta 11 de 11". Prometer um
+  #    número fixo mente para metade das pessoas logo na abertura.
+  precisa "não promete um número fixo de perguntas" "São poucas perguntas, menos de dois minutos"
+  proibido_vivo "sem contagem de perguntas cravada (nove)" "nove perguntas"
+  proibido_vivo "sem contagem de perguntas cravada (dez)"  "dez perguntas"
   precisa "promete a recomendação já na abertura" "dos meus cursos é o certo para você"
   precisa "barra de progresso"               'id="barra"'
   # As setas eram fixas no canto, como na referência, mas medido em 390px
@@ -436,6 +469,39 @@ if baixa_pagina /inscricao-presencial 20000; then
   precisa "trava de 1 InitiateCheckout por sessão" "window.IC_UNICO = true"
   precisa "o produto certo assume os eventos"      "window.NR_PRODUTO ="
   proibido "NUNCA Purchase aqui"             "'Purchase'"
+
+  # ---- CAPTURA PARCIAL (02/09/2026) -----------------------------------
+  # O formulário tem de gravar o lead ANTES do fim. Quem abandona some — e
+  # some justamente quem chegou perto de comprar.
+  precisa "o formulário grava o parcial"        "/api/lead-parcial"
+  precisa "a gravação parcial existe"           "function mandaParcial"
+  precisa "o gatilho é nome + WhatsApp"         "function temContato"
+  precisa "manda a etapa onde ela está"         "ultima_etapa: String(etapaId)"
+  precisa "o uid atravessa o preenchimento"     "function garanteUid"
+  precisa "o uid vive no rascunho"              "d._uid = LEAD_UID"
+  precisa "o envio final reusa o MESMO uid"     "lead_uid: garanteUid()"
+  precisa "salva também quando ela fecha a aba" "navigator.sendBeacon"
+  precisa "cobre o app indo para segundo plano" "visibilitychange"
+  precisa "as chamadas são enfileiradas (ordem)" "filaParcial = filaParcial.then"
+  # 🔴 O EVENTO. `Lead` é por onde a campanha do Meta otimiza: dispará-lo no
+  #    parcial ensinaria o algoritmo a buscar quem abandona.
+  precisa "o parcial tem evento PRÓPRIO no Meta" "'LeadParcial'"
+  precisa "e no GA4 também"                      "'lead_partial'"
+  precisa "o LeadParcial conta uma vez por sessão" "nr_lead_parcial"
+  # O `Lead` de verdade continua existindo, e existe UMA VEZ SÓ: dentro de
+  # `sucesso()`. Duas ocorrências significam que alguém o copiou para o
+  # caminho do parcial.
+  N_LEAD=$(grep -c "fbq('track', 'Lead'" "$TMP")
+  if [ "$N_LEAD" = "1" ]; then ok "o evento Lead é disparado em UM lugar só (o envio final)"
+  else falha "achei $N_LEAD disparos de Lead no formulário — o parcial NÃO pode disparar Lead"; fi
+  proibido "o parcial não dispara Lead (nem por engano)" "'Lead', COMUNS"
+
+  # ---- HONESTIDADE COM QUEM PREENCHE ----
+  # Se a gente guarda antes do fim, a gente conta. Aqui, onde ela está olhando.
+  precisa "o rodapé diz que as respostas já são salvas" "As suas respostas vão sendo salvas conforme você"
+  precisa "e diz para que serve isso"                   "eu ainda consigo te"
+  proibido "o rodapé não diz mais 'ao enviar' (era mentira por omissão)" "Ao enviar, você concorda"
+
   comuns_precisa
   comuns_proibidos
   proibido "sem cidade sem acento"           "Cambui"
@@ -514,6 +580,75 @@ else
     ok "e o preço do presencial do LED é R\$ 1.997"
   else
     falha "o preço do LED presencial não bate com a página de venda"
+  fi
+fi
+
+# ============================================================
+echo
+echo "== 2d. A CAPTURA PARCIAL — a API de verdade"
+# ============================================================
+# ⚠️ Grava lead. Só roda em local, pelo mesmo motivo da árvore.
+if [ "$ALVO" != "local" ]; then
+  # Em produção dá para conferir o que NÃO grava nada: que a rota existe e
+  # recusa o método errado. É pouco, mas é honesto — e é melhor que silêncio.
+  COD=$(curl -s -o /dev/null -w "%{http_code}" --max-time 20 "$BASE/api/lead-parcial")
+  if [ "$COD" = "405" ]; then ok "a rota do parcial existe (GET devolve 405)"
+  else falha "GET em /api/lead-parcial devolveu $COD — a rota sumiu ou o catch-all pegou"; fi
+  echo "aviso  gravação parcial não exercitada em produção (grava lead) — rode ./verificar-pv.sh local"
+else
+  UIDP="gate-parcial-$RANDOM$RANDOM"
+  PJSON(){ curl -s --max-time 20 -X POST "$BASE/api/lead-parcial" \
+             -H 'Content-Type: application/json' -d "$1"; }
+
+  # 1. sem contato utilizável não grava nada
+  R=$(PJSON "{\"nome\":\"So Nome\",\"lead_uid\":\"$UIDP\",\"ultima_etapa\":\"2\"}")
+  if echo "$R" | grep -q '"motivo":"sem-contato"'; then
+    ok "sem WhatsApp válido o parcial NÃO grava (linha que ninguém consegue chamar)"
+  else falha "o parcial gravou sem telefone (veio: ${R:0:120})"; fi
+
+  # 2. o gatilho: nome + WhatsApp
+  R=$(PJSON "{\"nome\":\"Gate Parcial\",\"telefone\":\"(35) 99716-4668\",\"cidade\":\"Cambui\",\"lead_uid\":\"$UIDP\",\"ultima_etapa\":\"4\"}")
+  if echo "$R" | grep -q '"gravado":true'; then ok "nome + WhatsApp é o gatilho: o parcial grava"
+  else falha "o gatilho do parcial não gravou (veio: ${R:0:160})"; fi
+
+  # 3. a segunda etapa cai na MESMA linha, e não apaga o que já sabia
+  PJSON "{\"nome\":\"Gate Parcial\",\"telefone\":\"(35) 99716-4668\",\"instagram\":\"@gate_parcial\",\"situacao\":\"ja-lash\",\"busca\":\"tecnica-led\",\"disponibilidade\":\"sim\",\"prefere_formato\":\"presencial\",\"lead_uid\":\"$UIDP\",\"ultima_etapa\":\"10\"}" > /dev/null
+
+  # 4. o envio FINAL com o MESMO uid tem de PROMOVER a linha — e a Nataly
+  #    precisa continuar sendo avisada. Se isto quebrar, o funil parece
+  #    funcionar e ninguém recebe aviso de venda nenhuma.
+  R=$(curl -s --max-time 20 -X POST "$BASE/api/lead-presencial" -H 'Content-Type: application/json' \
+      -d "{\"nome\":\"Gate Parcial\",\"telefone\":\"(35) 99716-4668\",\"cidade\":\"Cambui\",\"instagram\":\"@gate_parcial\",\"situacao\":\"ja-lash\",\"busca\":\"tecnica-led\",\"quando_comecar\":\"agora\",\"disponibilidade\":\"sim\",\"prefere_formato\":\"presencial\",\"faixa_investimento\":\"acima-2000\",\"lead_uid\":\"$UIDP\"}")
+  if echo "$R" | grep -q '"dedupe":true'; then
+    falha "🔴 o envio final caiu no ramo de DEDUPE por causa do parcial — a Nataly PARARIA DE SER AVISADA"
+  elif echo "$R" | grep -q '"id":"lash2-presencial"'; then
+    ok "o envio final promove o parcial e sai com a recomendação certa"
+  else
+    falha "o envio final depois do parcial não devolveu a recomendação (veio: ${R:0:160})"
+  fi
+
+  # 5. o beacon atrasado NÃO pode estragar o lead pronto
+  R=$(PJSON "{\"nome\":\"Gate Parcial\",\"telefone\":\"(35) 99716-4668\",\"lead_uid\":\"$UIDP\",\"ultima_etapa\":\"10\"}")
+  if echo "$R" | grep -q '"ja_completo":true'; then
+    ok "o parcial atrasado é recusado depois do envio final"
+  else falha "um parcial atrasado sobrescreveria o lead pronto (veio: ${R:0:120})"; fi
+
+  # 6. sem uid não grava: sete etapas viariam sete leads gêmeos da mesma pessoa
+  R=$(PJSON "{\"nome\":\"Sem Uid\",\"telefone\":\"(35) 99716-4668\",\"ultima_etapa\":\"4\"}")
+  if echo "$R" | grep -q '"motivo":"sem-uid"'; then ok "sem lead_uid o parcial não grava (evita gêmeos)"
+  else falha "o parcial gravou sem uid — cada etapa viraria um lead novo"; fi
+
+  # 7. a armadilha de robô vale aqui também
+  R=$(PJSON "{\"nome\":\"Robo\",\"telefone\":\"(35) 99716-4668\",\"sobrenome_confirmacao\":\"x\",\"lead_uid\":\"gate-robo-$RANDOM\"}")
+  if echo "$R" | grep -q '"ignorado":"robo"'; then ok "a armadilha de robô também protege o parcial"
+  else falha "o honeypot não pegou no parcial (veio: ${R:0:120})"; fi
+
+  # 8. e a suíte de unidade do parcial, que cobre a MIGRAÇÃO em banco antigo
+  if FUNIL_DEV_DIR=.dados-teste node funil-presencial/teste-parcial.js > /tmp/nr-parcial.txt 2>&1; then
+    ok "a suíte do parcial passa (migração em banco antigo, upsert, aviso e texto)"
+  else
+    falha "teste-parcial.js falhou — veja /tmp/nr-parcial.txt"
+    grep "FALHA" /tmp/nr-parcial.txt | head -8 | sed 's/^/       /'
   fi
 fi
 
@@ -679,6 +814,19 @@ else
 
     # filtros — o de produto ja existiu sem listener e nao filtrava nada
     precisa "filtro de produto"      "fProduto"
+    # o filtro que separa quem terminou de quem parou no meio
+    precisa "filtro de completo x parcial"   "fCompleto"
+    precisa "o filtro tem as três opções"    "Pararam no meio"
+    precisa_re "o filtro de completo tem listener de change" "'fAnuncio', 'fCompleto'"
+    # o azulejo, com o número que o Eduardo quer visível
+    precisa "azulejo dos que pararam no meio" "Pararam no meio', par.total"
+    precisa "e ele diz quantas pararam no preço" "pararam na pergunta do preço"
+    # onde ela parou, na lista e na gaveta
+    precisa "a lista mostra ONDE ela parou"   "function textoOndeParou"
+    precisa "a linha do parcial é marcada"    "lin-parcial"
+    precisa "a pílula própria de incompleto"  "q-parcial"
+    precisa "a gaveta avisa que não é lead pronto" "é alguém para chamar"
+    precisa "e que ela não viu preço"         "não viu preço nenhum"
     precisa "filtro de período"      "fPeriodo"
     precisa "filtro de qualificação" "fQualif"
     precisa "filtro de origem"       "fAnuncio"
@@ -719,6 +867,14 @@ if baixa_pagina /politica-de-privacidade 10000; then
   precisa "diz por quanto tempo guarda"     "até dois anos"
   precisa "dá o canal para pedir exclusão"  "natalysamribeiro@gmail.com"
   precisa "cita a base legal"               "procedimentos preliminares"
+  # ---- LGPD: a política tem de cobrir quem NÃO terminou ----
+  # A gravação passou a acontecer antes do fim; se o texto não disser isso, a
+  # gente guarda dado de gente que a política não menciona.
+  precisa "diz que as respostas são salvas conforme ela avança" "As respostas vão sendo salvas conforme você avança"
+  precisa "diz o que acontece se ela parar no meio" "continua guardado"
+  precisa "diz que pode haver contato mesmo sem terminar" "mesmo se você não terminar"
+  precisa "dá a base legal do formulário incompleto" "que você começou e não"
+  precisa "diz por quanto tempo guarda o incompleto" "ficou pela metade"
   comuns_proibidos
 fi
 

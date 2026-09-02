@@ -46,7 +46,7 @@ Banco próprio, instância de WhatsApp própria, pasta própria.
 | `leads.js` | Validação, normalização, qualificação e persistência |
 | `notificador.js` | Aviso no WhatsApp, com fila e nova tentativa |
 | `auth.js` | Sessão do painel, freio de força bruta |
-| `rotas.js` | `POST /api/lead-presencial` e tudo em `/crm` |
+| `rotas.js` | `POST /api/lead-presencial`, `POST /api/lead-parcial` e tudo em `/crm` |
 | `painel/entrar.html` | Login |
 | `painel/crm.html` | Lista, kanban, detalhe, avisos e exportação |
 
@@ -74,7 +74,8 @@ produção.
 ## Testes
 
 ```bash
-npm run teste              # árvore + unidade + avisos (banco isolado)
+npm run teste              # árvore + unidade + avisos + parcial (banco isolado)
+npm run teste:parcial      # SÓ o parcial: migração em banco ANTIGO, upsert, aviso
 npm run teste:arvore       # SÓ a árvore: 405 combinações, sem banco e sem rede
 npm run teste:formulario   # as duas passadas num Chrome de verdade (67 checagens)
 npm run teste:rastreamento # pixel Meta + GA4, em Chrome COM JANELA
@@ -172,6 +173,110 @@ produto recomendado**, não contra um preço fixo:
 > Com quatro produtos ela virou mentira cara: quem não pode vir agora recebe o
 > online, que é uma venda pronta. Manter a trava marcaria de FRIO justamente o
 > lead que compra sem sair de casa.
+
+---
+
+## A captura parcial — o lead que não terminou (02/09/2026)
+
+**O problema:** o lead só era gravado no envio final. Quem abandonava sumia — e
+sumia justamente quem chegou perto de comprar, porque o funil tem 11 perguntas
+e a do investimento é a **última**.
+
+**O gatilho é nome + WhatsApp válido** (perguntas 1 e 3). A partir daí, cada
+etapa que ela abre atualiza a **mesma linha**, pelo mesmo `lead_uid` que já
+existia para o duplo clique. Não foi preciso inventar chave nova.
+
+| Rota | Quando | Valida | Roda a árvore | Avisa |
+|---|---|---|---|---|
+| `POST /api/lead-parcial` | a cada etapa | nome + telefone, e só | não | uma vez, depois de 20 min |
+| `POST /api/lead-presencial` | no envio final | tudo | sim | na hora |
+
+Duas colunas novas em `leads`: **`completo`** (boolean) e **`ultima_etapa`** —
+a pergunta que ela estava **vendo** quando parou, não a última que respondeu.
+A diferença é comercial: quem responde a 9 e some parou **na 10**, que é a do
+dinheiro.
+
+### As travas que sustentam isso
+
+- **`COALESCE(EXCLUDED.x, leads.x)`** no upsert do parcial: uma chamada que
+  chega fora de ordem nunca apaga o que a anterior gravou.
+- **`WHERE leads.completo = false`** no mesmo upsert: o beacon de saída, que
+  chega depois do envio final, é recusado em vez de sobrescrever o lead pronto.
+- **`cria()` não usa mais `xmax = 0`** para decidir se avisa. A partir de agora
+  há conflito em *todo* envio bem-sucedido (a linha parcial já existe), e o
+  `xmax` faria todo lead completo cair no ramo de "dedupe" — **a Nataly
+  pararia de ser avisada**. Hoje a decisão vem de um `SELECT` do estado
+  anterior: avisa se ainda não era um lead completo.
+- **As chamadas são enfileiradas no navegador** (uma por vez). Numa rede móvel
+  duas requisições podem chegar fora de ordem, e o `ultima_etapa` da pergunta 4
+  chegando depois da 10 diria que ela parou no Instagram quando travou no preço.
+
+### O aviso de incompleto
+
+**Uma mensagem por pessoa, para sempre**, e só depois de **20 minutos** sem
+concluir (`FUNIL_PARCIAL_MIN`, ajustável sem deploy; `FUNIL_PARCIAL=0` desliga
+o aviso sem desligar a gravação).
+
+Avisar a cada etapa daria sete mensagens por pessoa — e um grupo que toca o
+tempo todo é um grupo que ninguém abre. Os 20 minutos ficam acima do maior
+tempo plausível de preenchimento e abaixo do ponto em que a conversa esfria.
+
+A mensagem abre com `🟠 *FORMULÁRIO INCOMPLETO*`, diz em qual pergunta ela
+parou, lista só o que ela chegou a responder e avisa, com todas as letras, que
+**ela não viu preço nenhum e não tem curso indicado**. Se ela terminar depois,
+o aviso normal de lead sai como sempre — e é a mesma linha, não duas.
+
+### Rastreamento
+
+🔴 **O parcial NUNCA dispara `Lead`.** O `Lead` é o evento pelo qual a campanha
+do Meta otimiza: dispará-lo no parcial ensinaria o algoritmo a procurar quem
+abandona. O parcial tem nome próprio — `LeadParcial` no Meta e `lead_partial`
+no GA4 — uma vez por sessão. `teste:rastreamento` prova isso em Chrome de
+verdade, conferindo que nenhum `Lead` sai antes do envio.
+
+### No painel
+
+O padrão de `/crm` continua sendo **as inscrições completas** — todo número que
+existia continua significando o que significava. Os parciais entram por um
+azulejo próprio no topo (**"Pararam no meio"**, com quantas travaram no preço),
+que é clicável e leva à lista delas. Na lista, filete e pílula próprios, e a
+coluna do produto passa a dizer **onde ela parou**.
+
+### LGPD
+
+A política de privacidade foi ajustada em quatro pontos: o que é coletado (diz
+que as respostas são salvas conforme ela avança e que o que ficou pela metade
+continua guardado), para que serve (contato mesmo sem terminar), a base legal
+(os mesmos procedimentos preliminares) e o prazo (dois anos, contados da última
+resposta). O rodapé do formulário deixou de dizer *"ao enviar"* — era mentira
+por omissão, porque o nome e o WhatsApp já saíram do navegador antes disso.
+
+---
+
+## Velocidade (02/09/2026)
+
+O site servia **tudo sem compressão** e os estáticos com `max-age=0`.
+
+- **gzip** para tipos de texto, com `zlib` do próprio Node (sem dependência
+  nova). `/api/` e `/crm` **não passam** por ele, requisição com `Range` passa
+  direto (é assim que a VSL de 21 MB é buscada) e binário já comprimido é
+  ignorado.
+- **`Cache-Control`** por extensão: vídeo 30 dias, imagem e fonte 7 dias, js e
+  css **1 hora** — pouco de propósito, para um conserto no `pixel.js` no meio
+  de uma campanha chegar no mesmo dia.
+- **`srcset`** na foto de abertura do formulário: a caixa nunca passa de 340
+  CSS px (medido no Chrome), então o celular comum baixa a versão de 700px em
+  vez da de 1400px.
+- **`preconnect`** para `connect.facebook.net` e `www.googletagmanager.com` —
+  ~351 KB de script de terceiro que agora abrem conexão em paralelo.
+
+**O que NÃO foi mexido, de propósito:** a prova social inteira (já é `lazy`), a
+mecânica da VSL aprovada pelo Eduardo, e a foto do hero da PV — ela já está
+comprimida a ponto de uma segunda passada render 10 KB em troca de perda de
+qualidade empilhada.
+
+`medir-velocidade.js` mede as duas rotas em 390px, três passadas, e reporta a
+mediana. Rode antes e depois de mexer.
 
 ---
 

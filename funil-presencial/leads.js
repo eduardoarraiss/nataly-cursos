@@ -32,6 +32,49 @@ const PRODUTO_IDS = Object.keys(PRD.PRODUTOS());
 
 const STATUS = ['novo', 'contatado', 'em-conversa', 'proposta-enviada', 'ganho', 'perdido'];
 
+/* ---------- ONDE ELA PAROU ----------
+   `ultima_etapa` guarda a pergunta que ela estava VENDO quando desistiu — não
+   a última que respondeu. A diferença importa comercialmente: quem responde a
+   9 e some parou NA 10, que é a do investimento. Dizer "parou na 9" mandaria a
+   Nataly conversar sobre o assunto errado.
+
+   A '5.5' só existe para quem já trabalha com cílios, então o TOTAL muda de
+   pessoa para pessoa (10 ou 11). É a mesma fila do formulário; se uma pergunta
+   nascer ou morrer lá, ela tem de nascer ou morrer aqui — senão o aviso diz
+   "pergunta 7 de 10" para um formulário de 11. */
+const ORDEM_ETAPAS = ['1', '2', '3', '4', '5', '5.5', '6', '7', '8', '9', '10'];
+const ETAPA_PRECO  = '10';
+
+const ETAPAS = {
+  '1':   'o nome',
+  '2':   'a cidade',
+  '3':   'o WhatsApp',
+  '4':   'o Instagram',
+  '5':   'a situação dela hoje',
+  '5.5': 'o que ela está buscando',
+  '6':   'a meta de renda e quando quer começar',
+  '7':   'o objetivo dela (pergunta aberta)',
+  '8':   'se consegue vir a Cambuí',
+  '9':   'como prefere aprender',
+  '10':  'a faixa de investimento',
+};
+
+/* Descreve a parada em português, com posição REAL na fila daquela pessoa. */
+function descreveEtapa(l) {
+  const id = l && l.ultima_etapa ? String(l.ultima_etapa) : null;
+  if (!id || !ETAPAS[id]) return null;
+  const lash = l.situacao === 'ja-lash';
+  const fila = ORDEM_ETAPAS.filter((e) => e !== '5.5' || lash);
+  const pos = fila.indexOf(id);
+  return {
+    id,
+    rotulo: ETAPAS[id],
+    posicao: pos < 0 ? null : pos + 1,
+    total: fila.length,
+    noPreco: id === ETAPA_PRECO,
+  };
+}
+
 /* ---------- normalizações ---------- */
 
 function texto(v, max) {
@@ -199,6 +242,49 @@ function valida(body) {
   return { erros, lead: l, ok: Object.keys(erros).length === 0 };
 }
 
+/* ---------- validação do PARCIAL ----------
+   Regra oposta à do envio final, e de propósito: aqui NADA trava.
+
+   O gatilho é o mínimo que torna o registro útil para o comercial: um nome e
+   um WhatsApp que dá para discar. Sem os dois, gravar seria acumular linha que
+   ninguém consegue chamar. Com os dois, tudo o mais que vier é bônus — e o
+   que vier errado (um e-mail pela metade, um @ com espaço) vira null em vez de
+   erro, porque recusar o parcial por causa de um campo opcional devolveria
+   exatamente o problema que este caminho existe para resolver.
+
+   `aceita_valor`, `produto_*`, `pontuacao` e `qualificacao` NÃO são preenchidos
+   aqui: todos dependem da árvore, e a árvore precisa de respostas que ela ainda
+   não deu. Chutar um produto para ela seria inventar um dado comercial — e a
+   Nataly leria esse chute como se fosse a indicação de verdade. */
+function validaParcial(body) {
+  const l = {};
+
+  l.nome = texto(body.nome, 120);
+  l.telefone = normalizaTelefone(body.telefone);
+  if (!l.nome || l.nome.length < 2 || !l.telefone) {
+    return { ok: false, motivo: 'sem-contato', lead: null };
+  }
+  l.telefone_exibicao = texto(body.telefone, 40);
+
+  l.cidade    = texto(body.cidade, 80);
+  l.instagram = normalizaInstagram(body.instagram);
+  l.email     = normalizaEmail(body.email);
+  l.estado    = texto(body.estado, 2);
+  if (l.estado) l.estado = l.estado.toUpperCase();
+  l.objetivo  = texto(body.objetivo, 1000);
+
+  ['situacao', 'busca', 'faixa_idade', 'meta_renda', 'quando_comecar',
+   'disponibilidade', 'prefere_formato', 'faixa_investimento']
+    .forEach((c) => { l[c] = opcao(c, body[c]); });
+
+  /* A etapa tem de vir do vocabulário fechado, como qualquer outro campo de
+     escolha: sem isso o painel imprimiria texto do cliente na cara da Nataly. */
+  const et = String(body.ultima_etapa === undefined ? '' : body.ultima_etapa).trim();
+  l.ultima_etapa = ETAPAS[et] ? et : null;
+
+  return { ok: true, motivo: null, lead: l };
+}
+
 /* ---------- roteamento ----------
    Roda a árvore e devolve, num objeto só, o que vai para o banco, o que vai
    para o WhatsApp e o que a tela final mostra. Chamado UMA vez, no servidor:
@@ -283,19 +369,123 @@ const CAMPOS = [
   'lead_uid',
 ];
 
-async function cria(dados) {
-  const vals = CAMPOS.map((c) => (dados[c] === undefined ? null : dados[c]));
-  const ph = CAMPOS.map((_, i) => '$' + (i + 1)).join(', ');
+/* Os campos que o PARCIAL escreve. É um subconjunto estrito de CAMPOS: nada
+   que dependa da árvore entra aqui. */
+const CAMPOS_PARCIAL = [
+  'nome', 'telefone', 'telefone_exibicao', 'email', 'instagram', 'cidade', 'estado',
+  'faixa_idade', 'situacao', 'busca', 'meta_renda', 'objetivo', 'disponibilidade',
+  'prefere_formato', 'faixa_investimento', 'quando_comecar', 'ultima_etapa',
+  'utm_source', 'utm_medium', 'utm_campaign', 'utm_content', 'utm_term',
+  'fbclid', 'gclid', 'referrer', 'pagina', 'user_agent', 'ip', 'lead_uid',
+];
 
-  // ON CONFLICT no lead_uid: se a pessoa apertar o botão duas vezes (ou a rede
-  // reenviar), volta o lead que já existe em vez de criar um gêmeo.
+/* ---------- gravação do PARCIAL (02/09/2026) ----------
+   Reaproveita o `lead_uid` e o `ON CONFLICT` que já existiam para o duplo
+   clique: o mesmo formulário manda o mesmo uid a cada etapa, então as sete
+   chamadas caem sempre na MESMA linha. Não foi preciso inventar chave nova —
+   o mecanismo de não duplicar já estava pronto.
+
+   Duas travas, e as duas já custaram raciocínio:
+
+   1. COALESCE(EXCLUDED.x, leads.x) — o parcial NUNCA apaga o que já sabia.
+      As chamadas podem chegar fora de ordem (rede móvel reordena, o beacon do
+      `pagehide` sai por último mas pode chegar antes), e sem o COALESCE uma
+      chamada antiga zeraria os campos que a nova tinha acabado de gravar.
+
+   2. WHERE leads.completo = false — um parcial jamais toca num lead COMPLETO.
+      Se o beacon de saída chegar depois do envio final (que é o caso comum:
+      ela envia e fecha a aba), sem esta linha ele sobrescreveria o lead pronto
+      com uma foto pela metade e apagaria a indicação de produto. */
+async function criaParcial(dados) {
+  const vals = CAMPOS_PARCIAL.map((c) => (dados[c] === undefined ? null : dados[c]));
+  const ph = CAMPOS_PARCIAL.map((_, i) => '$' + (i + 1)).join(', ');
+  const set = CAMPOS_PARCIAL
+    .filter((c) => c !== 'lead_uid')
+    .map((c) => c + ' = COALESCE(EXCLUDED.' + c + ', leads.' + c + ')')
+    .join(', ');
+
   const sql =
-    'INSERT INTO leads (' + CAMPOS.join(', ') + ') VALUES (' + ph + ') ' +
-    'ON CONFLICT (lead_uid) DO UPDATE SET atualizado_em = now() ' +
-    'RETURNING *, (xmax = 0) AS novo';
+    'INSERT INTO leads (' + CAMPOS_PARCIAL.join(', ') + ', completo) ' +
+    'VALUES (' + ph + ', false) ' +
+    'ON CONFLICT (lead_uid) DO UPDATE SET ' + set + ', atualizado_em = now() ' +
+    'WHERE leads.completo = false ' +
+    'RETURNING *';
 
   const r = await db.consulta(sql, vals);
-  return r.rows[0];
+  /* Zero linhas = o ON CONFLICT bateu num lead que JÁ ESTÁ COMPLETO e o WHERE
+     recusou a atualização. Não é erro: é a trava funcionando. */
+  return r.rows[0] || null;
+}
+
+async function cria(dados) {
+  /* Quem já estava aqui ANTES deste envio? Três respostas possíveis, e cada
+     uma leva a um caminho diferente:
+       · ninguém          → lead novo, avisa a Nataly;
+       · um PARCIAL       → ela terminou! promove a completo e avisa (é a
+                            primeira vez que este lead vira inscrição);
+       · um COMPLETO      → duplo clique ou reenvio de rede: não avisa de novo.
+
+     Isto substitui o `(xmax = 0) AS novo` que existia aqui. O xmax dizia
+     apenas "houve conflito?" — e a partir de 02/09/2026 HÁ conflito em todo
+     envio bem-sucedido, porque a linha parcial foi gravada durante o
+     preenchimento. Mantê-lo faria todo lead completo cair no ramo de "dedupe"
+     e a Nataly PARARIA DE SER AVISADA. */
+  const anterior = dados.lead_uid
+    ? (await db.consulta('SELECT id, completo FROM leads WHERE lead_uid = $1',
+                         [dados.lead_uid])).rows[0] || null
+    : null;
+
+  const vals = CAMPOS.map((c) => (dados[c] === undefined ? null : dados[c]));
+  const ph = CAMPOS.map((_, i) => '$' + (i + 1)).join(', ');
+  /* Aqui NÃO tem COALESCE: o envio final é a versão definitiva das respostas.
+     Se ela corrigiu a cidade na última tela, é a correção que vale. */
+  const set = CAMPOS
+    .filter((c) => c !== 'lead_uid')
+    .map((c) => c + ' = EXCLUDED.' + c)
+    .join(', ');
+
+  const sql =
+    'INSERT INTO leads (' + CAMPOS.join(', ') + ', completo) VALUES (' + ph + ', true) ' +
+    'ON CONFLICT (lead_uid) DO UPDATE SET ' + set +
+    ", completo = true, ultima_etapa = NULL, atualizado_em = now() " +
+    'RETURNING *';
+
+  const r = await db.consulta(sql, vals);
+  const linha = r.rows[0];
+  /* `novo` continua significando o que sempre significou para quem chama:
+     "vale avisar a Nataly?". */
+  linha.novo = !(anterior && anterior.completo);
+  return linha;
+}
+
+/* ---------- os parciais que já esfriaram ----------
+   Quem parou no meio e não voltou. `avisado_parcial_em IS NULL` garante UMA
+   mensagem por pessoa, para sempre — a Nataly não pode receber lembrete de
+   lead pela metade, senão ela para de ler o grupo e o aviso que importa se
+   perde no meio do ruído.
+
+   O corte por `criado_em` existe para o dia em que o worker ficar horas fora
+   do ar: sem ele, a volta despejaria de uma vez todo mundo que parou desde
+   ontem. Melhor perder o aviso de um parcial de 3 dias atrás — que já está
+   frio de qualquer jeito — do que inundar o celular dela. */
+async function parciaisParaAvisar(minutos, limite = 20) {
+  const min = Math.max(1, parseInt(minutos, 10) || 20);
+  const r = await db.consulta(
+    'SELECT * FROM leads ' +
+    'WHERE completo = false ' +
+    '  AND avisado_parcial_em IS NULL ' +
+    '  AND nome IS NOT NULL AND telefone IS NOT NULL ' +
+    "  AND atualizado_em <= now() - ($1 || ' minutes')::interval " +
+    "  AND criado_em >= now() - interval '2 days' " +
+    'ORDER BY atualizado_em ASC LIMIT ' + parseInt(limite, 10),
+    [String(min)]);
+  return r.rows;
+}
+
+async function marcaAvisadoParcial(id) {
+  await db.consulta(
+    'UPDATE leads SET avisado_parcial_em = now() WHERE id = $1 AND avisado_parcial_em IS NULL',
+    [id]);
 }
 
 async function porId(id) {
@@ -356,6 +546,26 @@ async function lista(f = {}) {
   const p = [];
   const add = (sql, v) => { p.push(v); cond.push(sql.replace('?', '$' + p.length)); };
 
+  /* 🔴 O PADRÃO É "SÓ AS COMPLETAS", e é uma escolha, não um descuido.
+     Quem já chamava esta função — o painel antigo, a exportação em CSV, os
+     gráficos do funil — pedia leads que responderam tudo. Se os parciais
+     entrassem na lista por omissão, cada número do painel mudaria de
+     significado da noite para o dia: a taxa de ganho despencaria, o funil
+     encheria de "frio" e ninguém saberia que a régua tinha mudado.
+     Quem quer os parciais pede por eles: `completo=nao` (só os que pararam no
+     meio) ou `completo=tudo` (os dois juntos). */
+  const quaisCompleto = String(f.completo || 'sim');
+  if (quaisCompleto === 'nao')      cond.push('completo = false');
+  else if (quaisCompleto !== 'tudo') cond.push('completo = true');
+
+  /* Filtrar pela pergunta onde ela travou. `preco` é atalho para a etapa 10 —
+     é a pergunta que o comercial mais quer, e obrigar a decorar o número dela
+     seria esconder a informação atrás de trivia. */
+  if (f.parou) {
+    const et = f.parou === 'preco' ? ETAPA_PRECO : String(f.parou);
+    if (ETAPAS[et]) add('ultima_etapa = ?', et);
+  }
+
   if (f.status && STATUS.includes(f.status)) add('status = ?', f.status);
   if (f.qualificacao && ['quente', 'morno', 'frio'].includes(f.qualificacao))
     add('qualificacao = ?', f.qualificacao);
@@ -381,16 +591,31 @@ async function lista(f = {}) {
 
 /* ---------- números do topo do painel ---------- */
 async function resumo() {
-  const [total, porStatus, porQualif, porProduto, porAnuncio, avisosFalhos] = await Promise.all([
-    db.consulta('SELECT COUNT(*)::int AS n FROM leads'),
-    db.consulta('SELECT status, COUNT(*)::int AS n FROM leads GROUP BY status'),
-    db.consulta('SELECT qualificacao, COUNT(*)::int AS n FROM leads GROUP BY qualificacao'),
+  /* Todo agregado de FUNIL é contado só entre as inscrições completas —
+     mesma razão do padrão de `lista()`. Um parcial não tem produto indicado
+     nem pontuação: jogá-lo nesses gráficos criaria uma fatia "(sem produto)"
+     enorme e um monte de "frio" que ninguém respondeu.
+     Os parciais têm bloco PRÓPRIO, logo abaixo. */
+  const [total, porStatus, porQualif, porProduto, porAnuncio, avisosFalhos,
+         parciais, parciaisEtapa] = await Promise.all([
+    db.consulta('SELECT COUNT(*)::int AS n FROM leads WHERE completo = true'),
+    db.consulta('SELECT status, COUNT(*)::int AS n FROM leads WHERE completo = true GROUP BY status'),
+    db.consulta('SELECT qualificacao, COUNT(*)::int AS n FROM leads WHERE completo = true GROUP BY qualificacao'),
     db.consulta("SELECT COALESCE(produto_id, '(sem produto)') AS produto_id, " +
-                'COUNT(*)::int AS n FROM leads GROUP BY 1 ORDER BY n DESC'),
+                'COUNT(*)::int AS n FROM leads WHERE completo = true GROUP BY 1 ORDER BY n DESC'),
     db.consulta('SELECT COALESCE(utm_content, referrer, \'(sem origem)\') AS origem, ' +
-                'COUNT(*)::int AS n FROM leads GROUP BY 1 ORDER BY n DESC LIMIT 20'),
+                'COUNT(*)::int AS n FROM leads WHERE completo = true GROUP BY 1 ORDER BY n DESC LIMIT 20'),
     db.consulta("SELECT COUNT(*)::int AS n FROM avisos WHERE status <> 'enviado'"),
+    db.consulta('SELECT COUNT(*)::int AS n FROM leads WHERE completo = false'),
+    db.consulta('SELECT ultima_etapa, COUNT(*)::int AS n FROM leads ' +
+                'WHERE completo = false GROUP BY 1 ORDER BY n DESC'),
   ]);
+
+  const etapas = parciaisEtapa.rows;
+  const noPreco = etapas
+    .filter((e) => String(e.ultima_etapa) === ETAPA_PRECO)
+    .reduce((a, e) => a + e.n, 0);
+
   return {
     total: total.rows[0].n,
     porStatus: porStatus.rows,
@@ -398,6 +623,17 @@ async function resumo() {
     porProduto: porProduto.rows,
     porAnuncio: porAnuncio.rows,
     avisosFalhos: avisosFalhos.rows[0].n,
+    /* O número que o Eduardo quer VISÍVEL: quantas pararam, e quantas
+       pararam exatamente na pergunta do dinheiro. */
+    parciais: {
+      total: parciais.rows[0].n,
+      noPreco,
+      porEtapa: etapas.map((e) => ({
+        etapa: e.ultima_etapa,
+        rotulo: ETAPAS[String(e.ultima_etapa)] || '(não sei onde parou)',
+        n: e.n,
+      })),
+    },
   };
 }
 
@@ -410,8 +646,10 @@ async function avisosProblema() {
 }
 
 module.exports = { apaga,
-  OPCOES, STATUS, PRODUTO_IDS,
-  valida, atribuicao, qualifica, ipDe, roteia, paraTela, deriveAceitaValor,
+  OPCOES, STATUS, PRODUTO_IDS, ETAPAS, ORDEM_ETAPAS, ETAPA_PRECO,
+  valida, validaParcial, atribuicao, qualifica, ipDe, roteia, paraTela,
+  deriveAceitaValor, descreveEtapa,
   normalizaTelefone, formataTelefone, normalizaInstagram, normalizaEmail,
-  cria, porId, historico, avisosDo, mudaStatus, lista, resumo, avisosProblema,
+  cria, criaParcial, parciaisParaAvisar, marcaAvisadoParcial,
+  porId, historico, avisosDo, mudaStatus, lista, resumo, avisosProblema,
 };

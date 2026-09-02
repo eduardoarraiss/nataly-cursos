@@ -44,6 +44,18 @@ const _janela = new Map();
 const LIMITE_ENVIOS = 5;
 const JANELA_MS = 10 * 60 * 1000;
 
+/* O parcial tem freio PRÓPRIO, e muito mais folgado, porque ele é chamado
+   uma vez por etapa: um preenchimento honesto sozinho já gasta sete chamadas,
+   e o teto de 5 do envio final barraria a segunda pessoa da mesma rede (dois
+   celulares no wi-fi do salão saem pelo mesmo IP). O que este freio impede é o
+   script que quer encher o banco — e para isso 80 por 10 minutos já é apertado.
+
+   Vale lembrar por que o risco aqui é menor: o parcial NÃO manda mensagem no
+   WhatsApp na hora. O pior que um flood consegue é escrever linha no banco,
+   nunca tocar o celular da Nataly. */
+const _janelaParcial = new Map();
+const LIMITE_PARCIAL = 80;
+
 function passouDoLimite(ip) {
   const agora = Date.now();
   const lista = (_janela.get(ip) || []).filter((t) => agora - t < JANELA_MS);
@@ -51,6 +63,15 @@ function passouDoLimite(ip) {
   _janela.set(ip, lista);
   if (_janela.size > 5000) _janela.clear();   // teto de memória
   return lista.length > LIMITE_ENVIOS;
+}
+
+function passouDoLimiteParcial(ip) {
+  const agora = Date.now();
+  const lista = (_janelaParcial.get(ip) || []).filter((t) => agora - t < JANELA_MS);
+  lista.push(agora);
+  _janelaParcial.set(ip, lista);
+  if (_janelaParcial.size > 5000) _janelaParcial.clear();
+  return lista.length > LIMITE_PARCIAL;
 }
 
 /* Cabeçalhos que valem para tudo que envolve dado pessoal. */
@@ -137,6 +158,81 @@ router.post('/api/lead-presencial', express.json({ limit: '32kb' }), async (req,
       mensagem: 'Deu um problema aqui do nosso lado. Tenta de novo em instantes.',
     });
   }
+});
+
+/* ============================================================
+   1b. API PÚBLICA — o lead PARCIAL (02/09/2026)
+   ============================================================
+   Pedido do Eduardo, nas palavras dele: "se certifique do forms captar o
+   lead, independente de ele finalizar o preenchimento ou não. Às vezes a
+   pessoa se assusta com o preço, e o comercial pode converter".
+
+   Rota SEPARADA da do envio final, e não um parâmetro na mesma, porque as
+   duas têm regras opostas em tudo o que importa:
+
+     | | envio final | parcial |
+     |validação| trava se faltar campo | nunca trava |
+     |árvore| roda | não roda (faltam respostas) |
+     |aviso| na hora | uma vez, depois de 20 min parada |
+     |freio| 5 / 10 min | 80 / 10 min (é chamada por etapa) |
+     |Meta| dispara `Lead` | dispara `LeadParcial`, NUNCA `Lead` |
+
+   Enfiar isso tudo em ifs dentro de uma rota só significaria que um erro no
+   caminho do parcial poderia derrubar o envio final — que é a rota que fecha
+   venda. Separadas, o pior caso do parcial é o parcial não gravar.
+
+   🔴 ESTA ROTA NÃO DISPARA `Lead` NEM NADA PARECIDO. O `Lead` é o evento pelo
+      qual a campanha do Meta otimiza; ensiná-lo a procurar quem abandona
+      seria pagar para trazer mais gente que abandona. O evento do parcial tem
+      nome próprio e vive só no navegador (`LeadParcial` / `lead_partial`). */
+router.post('/api/lead-parcial', express.json({ limit: '32kb' }), async (req, res) => {
+  semRastro(res);
+  try {
+    const body = req.body || {};
+
+    // Mesma armadilha de robô da rota final, mesma resposta mansa.
+    if (body.sobrenome_confirmacao) return res.json({ ok: true, ignorado: 'robo' });
+
+    const ip = L.ipDe(req);
+    const ehDev = !process.env.DATABASE_URL;
+    const local = ip === '127.0.0.1' || ip === '::1';
+    if (!(ehDev && local) && passouDoLimiteParcial(ip)) {
+      /* 429 sem drama: quem está preenchendo não vê nada, o formulário
+         continua funcionando e o envio final é outra rota, com outro freio. */
+      return res.status(429).json({ ok: false, erro: 'limite' });
+    }
+
+    const { ok, motivo, lead } = L.validaParcial(body);
+    /* Sem nome ou sem telefone não há o que guardar: não é erro da pessoa, é
+       só cedo demais. 200 de propósito — o formulário não tem o que mostrar
+       nem o que corrigir, e um 400 aqui viraria erro no console dela. */
+    if (!ok) return res.json({ ok: false, motivo });
+
+    Object.assign(lead, L.atribuicao(body, req));
+    lead.lead_uid = String(body.lead_uid || '').slice(0, 80) || null;
+    /* Sem uid não dá para atualizar a mesma linha depois, e cada etapa viraria
+       um lead novo. Melhor não gravar do que gravar sete gêmeas da mesma
+       pessoa: a Nataly abriria o painel achando que teve sete interessadas. */
+    if (!lead.lead_uid) return res.json({ ok: false, motivo: 'sem-uid' });
+
+    const salvo = await L.criaParcial(lead);
+    /* null = a trava do `WHERE completo = false` recusou porque este lead já
+       está completo (o beacon de saída chegou depois do envio final). É o
+       comportamento correto, e para o navegador é sucesso: não há nada a
+       fazer. */
+    return res.json({ ok: true, gravado: !!salvo, ja_completo: !salvo });
+  } catch (e) {
+    /* Um parcial que não grava NÃO pode virar erro na tela de quem está
+       preenchendo. Ela continua no formulário, e o envio final — que é o que
+       fecha a venda — segue por outro caminho, intacto. */
+    console.error('[funil] erro ao gravar parcial:', e.message);
+    return res.status(200).json({ ok: false, motivo: 'servidor' });
+  }
+});
+
+router.all('/api/lead-parcial', (req, res) => {
+  semRastro(res);
+  res.status(405).json({ erro: 'metodo-nao-permitido' });
 });
 
 /* Qualquer outra coisa em /api do funil devolve 404 em JSON.
@@ -274,6 +370,7 @@ const COLUNAS = [
   ['produto_id', 'Produto indicado'], ['produto_nome', 'Produto (nome)'],
   ['produto_formato', 'Formato'], ['produto_valor', 'Valor indicado'],
   ['recomendacao_motivos', 'Por que foi indicado'],
+  ['completo', 'Terminou o formulário'], ['ultima_etapa', 'Parou na pergunta'],
   ['pontuacao', 'Pontuação'], ['qualificacao', 'Qualificação'], ['status', 'Status'],
   ['anotacao', 'Anotação'], ['utm_source', 'utm_source'], ['utm_medium', 'utm_medium'],
   ['utm_campaign', 'utm_campaign'], ['utm_content', 'utm_content'], ['utm_term', 'utm_term'],

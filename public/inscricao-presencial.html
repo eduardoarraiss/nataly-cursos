@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="robots" content="noindex, nofollow">
 <title>Inscrição · Curso presencial em Cambuí — Nataly Ribeiro</title>
-<meta name="description" content="Nove perguntas rápidas para a Nataly entender se o curso presencial em Cambuí faz sentido para você.">
+<meta name="description" content="Poucas perguntas rápidas para a Nataly entender se o curso presencial em Cambuí faz sentido para você.">
 
 <!-- Tracking: Meta Pixel 1511752107118676 + GA4 G-MZS1VCZ89D.
      ⚠️ A rota contém "presencial": o ramo próprio no pixel.js e no analytics.js
@@ -13,6 +13,13 @@
      ⚠️ Esta página dispara Lead no envio. NUNCA Purchase (quem dispara é a
      Kiwify) e NUNCA InitiateCheckout (ninguém entra em checkout aqui). -->
 
+<!-- O pixel e o GA4 vem de outros dominios e sao os arquivos mais pesados da
+     pagina (~351 KB juntos). O preconnect faz o DNS e o TLS acontecerem em
+     paralelo com o resto, em vez de so comecarem quando o script for pedido —
+     no 4G isso vale algumas centenas de milissegundos, e nao muda NADA no
+     que e' disparado nem em quando. -->
+<link rel="preconnect" href="https://connect.facebook.net" crossorigin>
+<link rel="preconnect" href="https://www.googletagmanager.com" crossorigin>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@400;600;700;800;900&family=Playfair+Display:ital,wght@1,600;1,700&display=swap" rel="stylesheet">
@@ -293,12 +300,30 @@ img{max-width:100%; display:block; height:auto}
 
     <!-- ============ 0. BOAS-VINDAS ============ -->
     <section class="abertura etapa" data-etapa="0">
-      <img class="abertura__foto" src="/img/nataly-smile-shoulder.jpg"
+      <!-- 🔴 Foto trocada em 02/09 a pedido da NATALY: a anterior era gerada
+           por IA e ela pediu uma real. Esta e' ela com uma aluna e o
+           certificado ASSINADO POR ELA como coordenadora.
+           Nao usar as fotos com certificado RESNICHKA: aquela e' outra marca,
+           em que ela aparece como instrutora, e confunde com o certificado
+           que a aluna do Profissao Lash recebe. -->
+      <!-- Duas larguras do MESMO arquivo. Medido no Chrome: a caixa nunca passa
+           de 340 CSS px, então um celular comum (2x) precisa de 680px e recebia
+           1400px — 226 KB para desenhar 680. A versão de 700px cobre 2x com
+           sobra e pesa 123 KB; quem tem tela 3x (precisa de 1020px) continua
+           recebendo a de 1400. Ninguém perde nitidez, e o celular que clica no
+           anúncio baixa 103 KB a menos.
+           Qualidade da versão menor medida contra a referência sem perda:
+           PSNR 41,9 dB (acima de 40 dB a diferença é imperceptível). -->
+      <img class="abertura__foto"
+           src="/img/nataly-alunas-certificado-700.jpg"
+           srcset="/img/nataly-alunas-certificado-700.jpg 700w,
+                   /img/nataly-alunas-certificado.jpg 1400w"
+           sizes="340px"
            width="1400" height="1400" fetchpriority="high"
-           alt="Nataly Ribeiro, que lê e responde pessoalmente cada inscrição">
+           alt="Nataly Ribeiro ao lado de uma aluna que segura o certificado do curso">
       <p class="rot">Sou eu que vou te responder</p>
       <h1>Me conta de você antes de <em>garantir a sua vaga</em></h1>
-      <p>São dez perguntas rápidas, menos de dois minutos. No fim eu te digo qual
+      <p>São poucas perguntas, menos de dois minutos. No fim eu te digo qual
       dos meus cursos é o certo para você — e eu leio cada resposta antes de te
       chamar no WhatsApp.</p>
       <div class="acoes" style="justify-content:center">
@@ -570,9 +595,17 @@ img{max-width:100%; display:block; height:auto}
          style="color:var(--chocolate)">(35) 99716-4668</a>.</p>
     </section>
 
-    <p class="rodape" id="rodape"><span>Ao enviar, você concorda que a Nataly entre em contato
-pelo WhatsApp sobre o curso presencial. Os seus dados não são vendidos nem repassados a
-terceiros. <a href="/politica-de-privacidade" target="_blank" rel="noopener">Política de
+    <!-- 🔴 ESTE TEXTO MUDOU EM 02/09/2026 e não pode voltar ao que era.
+         A partir de agora as respostas são gravadas CONFORME ela avança, e não
+         só quando ela aperta o botão do fim. Dizer "ao enviar" seria mentira
+         por omissão: o nome e o WhatsApp dela já saíram do navegador antes
+         disso. Se a gente guarda, a gente conta — em português, aqui, onde ela
+         está olhando, e não só na política de privacidade. -->
+    <p class="rodape" id="rodape"><span>As suas respostas vão sendo salvas conforme você
+avança, então, se a sua internet cair ou você precisar parar no meio, eu ainda consigo te
+chamar no WhatsApp para a gente terminar junta.
+Os seus dados não são vendidos nem repassados a terceiros.
+<a href="/politica-de-privacidade" target="_blank" rel="noopener">Política de
 privacidade</a>.</span></p>
   </div>
 </main>
@@ -634,6 +667,19 @@ privacidade</a>.</span></p>
   var rodape   = document.getElementById('rodape');
   var atual    = '0';
   var enviando = false;
+  var enviado  = false;   /* virou inscrição completa: nenhum parcial depois disso */
+
+  /* ---------- O UID QUE ATRAVESSA O PREENCHIMENTO ----------
+     Antes de 02/09/2026 ele nascia no clique de enviar e morria ali. Agora ele
+     tem de ser o MESMO desde a primeira gravação parcial até o envio final:
+     é ele que faz as sete chamadas do preenchimento caírem sempre na mesma
+     linha do banco, em vez de criarem sete leads gêmeos da mesma pessoa.
+
+     Por isso ele mora no rascunho, junto das respostas: se ela recarregar a
+     página ou voltar amanhã, volta com o mesmo uid e continua a MESMA linha.
+     Some junto com o rascunho quando a inscrição é concluída — a próxima
+     pessoa (ou a próxima inscrição no mesmo celular) começa com uid novo. */
+  var LEAD_UID = null;
 
   /* Regras por ID de etapa, não por posição num array: com uma etapa que
      entra e sai da fila, índice numérico apontaria para a pergunta errada. */
@@ -759,14 +805,16 @@ privacidade</a>.</span></p>
       TEXTOS.forEach(function (n) { var el = campo(n); if (el) d[n] = el.value; });
       ESCOLHAS.forEach(function (n) { var v = valorDe(n); if (v) d[n] = v; });
       d._etapa = atual;
+      d._uid = LEAD_UID;
       localStorage.setItem(CHAVE, JSON.stringify(d));
     } catch (e) {}
   }
   function leRascunho() {
     try {
       var d = JSON.parse(localStorage.getItem(CHAVE) || '{}');
+      if (typeof d._uid === 'string' && d._uid) LEAD_UID = d._uid;
       Object.keys(d).forEach(function (n) {
-        if (n === '_etapa') return;
+        if (n === '_etapa' || n === '_uid') return;
         var r = form.querySelector('[name="' + n + '"][value="' + d[n] + '"]');
         if (r) { r.checked = true; return; }
         var el = campo(n);
@@ -776,6 +824,10 @@ privacidade</a>.</span></p>
     } catch (e) {}
     return '0';
   }
+  /* Fora do try: se o localStorage estiver bloqueado (aba anônima, cookie de
+     terceiro desligado), o rascunho falha inteiro — mas o uid tem de existir
+     assim mesmo, senão a gravação parcial não teria como não duplicar. */
+  function garanteUid() { if (!LEAD_UID) LEAD_UID = uid(); return LEAD_UID; }
   form.addEventListener('input', salvaRascunho);
   form.addEventListener('change', salvaRascunho);
 
@@ -826,6 +878,129 @@ privacidade</a>.</span></p>
     try { if (window.gtag) gtag('event', 'form_step', dados); } catch (e) {}
   }
 
+  /* ============================================================
+     GRAVAÇÃO PARCIAL — captar o lead mesmo sem finalizar (02/09/2026)
+     ============================================================
+     Pedido do Eduardo: "se certifique do forms captar o lead, independente de
+     ele finalizar o preenchimento ou não. Às vezes a pessoa se assusta com o
+     preço, e o comercial pode converter".
+
+     O gatilho é NOME + WHATSAPP VÁLIDO — as perguntas 1 e 3. Antes disso não
+     há o que guardar: uma linha sem telefone é uma pessoa que ninguém
+     consegue chamar. A partir daí, cada etapa concluída ATUALIZA a mesma
+     linha (mesmo `lead_uid`), então o banco sempre tem a versão mais recente
+     do que ela respondeu, e nunca uma cópia por etapa.
+
+     Por que aqui e não só no fim: o formulário tem 11 perguntas e a do
+     investimento é a ÚLTIMA. É o ponto de maior desistência — e é justamente
+     quem chegou perto de comprar. Antes disto, essa pessoa simplesmente não
+     existia para a Nataly.
+
+     🔴 O EVENTO DAQUI NUNCA É `Lead`. O `Lead` é por onde a campanha do Meta
+        otimiza (R$ 120/dia subindo agora): dispará-lo no parcial ensinaria o
+        algoritmo a procurar gente que abandona, e a gente pagaria para trazer
+        mais abandono. O parcial tem nome próprio, `LeadParcial`, que não é
+        otimizável por engano.
+     ============================================================ */
+  var ultimoParcial = '';        /* assinatura do último corpo enviado */
+  var parcialContado = false;
+  /* ---------- UMA CHAMADA POR VEZ, NA ORDEM ----------
+     🔴 As gravações parciais são ENFILEIRADAS, e não disparadas em paralelo.
+
+     O motivo é o campo `ultima_etapa`: o servidor grava a última coisa que
+     chega, e numa rede móvel duas requisições disparadas com segundos de
+     diferença podem chegar fora de ordem. Se a da pergunta 4 chegasse depois
+     da pergunta 10, o banco passaria a dizer que ela parou na 4 — e a Nataly
+     ligaria falando de Instagram para alguém que na verdade travou no preço.
+     Justamente o dado mais valioso do funil, invertido por um detalhe de rede.
+
+     A fila custa nada: as etapas são separadas por segundos de digitação, e a
+     chamada anterior já terminou muito antes de a próxima nascer. */
+  var filaParcial = Promise.resolve();
+
+  function temContato() { return valida('nome') && valida('telefone'); }
+
+  function corpoParcial(etapaId) {
+    return {
+      nome: valorDe('nome'), telefone: valorDe('telefone'), email: valorDe('email'),
+      instagram: valorDe('instagram'), cidade: valorDe('cidade'), estado: valorDe('estado'),
+      faixa_idade: valorDe('faixa_idade'), situacao: valorDe('situacao'),
+      busca: ehLash() ? valorDe('busca') : null,
+      meta_renda: valorDe('meta_renda'), objetivo: valorDe('objetivo'),
+      quando_comecar: valorDe('quando_comecar'),
+      disponibilidade: valorDe('disponibilidade'),
+      prefere_formato: valorDe('prefere_formato'),
+      faixa_investimento: valorDe('faixa_investimento'),
+      sobrenome_confirmacao: valorDe('sobrenome_confirmacao'),
+      /* A etapa que ela está VENDO agora — não a última que respondeu. Se ela
+         sumir aqui, foi AQUI que ela parou, e é isso que a Nataly precisa
+         ouvir para saber que conversa ter. */
+      ultima_etapa: String(etapaId),
+      lead_uid: garanteUid(), atribuicao: ATRIB
+    };
+  }
+
+  /* `saindo` = a pessoa está fechando a aba ou trocando de app. Nesse caso o
+     `fetch` normal morre no unload e o hit se perde; o `sendBeacon` sobrevive.
+     É o caminho que salva o caso mais valioso de todos: ela responde a última
+     pergunta, se assusta e fecha antes de apertar o botão. */
+  function mandaParcial(etapaId, saindo) {
+    if (enviado || enviando) return;      /* já é (ou está virando) inscrição completa */
+    if (!etapaId || etapaId === '0') return;
+    if (!temContato()) return;            /* ainda não há contato utilizável */
+
+    var corpo = JSON.stringify(corpoParcial(etapaId));
+    /* Nada mudou desde a última chamada: não gasta requisição nem escrita.
+       Vale inclusive na saída — se o servidor já tem esta exata foto, o beacon
+       só repetiria o que está gravado. */
+    if (corpo === ultimoParcial) return;
+    ultimoParcial = corpo;
+
+    if (saindo && navigator.sendBeacon) {
+      try {
+        navigator.sendBeacon('/api/lead-parcial',
+          new Blob([corpo], { type: 'application/json' }));
+        contaLeadParcial();
+        return;
+      } catch (e) { /* cai no fetch abaixo */ }
+    }
+
+    filaParcial = filaParcial.then(function () {
+      return fetch('/api/lead-parcial', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: corpo,
+        keepalive: true
+      }).then(function () { contaLeadParcial(); });
+    /* 🔴 Silêncio absoluto no erro, e o `catch` PRECISA ficar no fim da
+       corrente: sem ele uma falha de rede quebraria a fila e nenhuma gravação
+       posterior sairia — o formulário pararia de guardar sem avisar ninguém.
+       Para quem está preenchendo, nada disso existe: ela não pediu esta
+       gravação, não tem o que corrigir, e o envio final segue por outra rota. */
+    }).catch(function () {});
+  }
+
+  /* Uma vez por sessão, e nunca com o nome `Lead`. */
+  function contaLeadParcial() {
+    if (parcialContado) return;
+    parcialContado = true;
+    try {
+      if (sessionStorage.getItem('nr_lead_parcial')) return;
+      sessionStorage.setItem('nr_lead_parcial', '1');
+    } catch (e) {}
+    try { if (window.fbq) fbq('trackCustom', 'LeadParcial', COMUNS); } catch (e) {}
+    try { if (window.gtag) gtag('event', 'lead_partial', COMUNS); } catch (e) {}
+  }
+
+  /* Ela fechou a aba, trocou de app ou bloqueou o celular. Os dois eventos
+     existem porque nenhum sozinho cobre todo mundo: o `pagehide` não dispara
+     de forma confiável quando o Safari do iPhone manda a aba para segundo
+     plano, e o `visibilitychange` não dispara em algumas navegações de saída. */
+  window.addEventListener('pagehide', function () { mandaParcial(atual, true); });
+  document.addEventListener('visibilitychange', function () {
+    if (document.visibilityState === 'hidden') mandaParcial(atual, true);
+  });
+
   function vaiPara(id, focar) {
     var f = fila();
     if (f.indexOf(String(id)) < 0) id = f[0];
@@ -842,6 +1017,9 @@ privacidade</a>.</span></p>
     erroGeral.hidden = true;
     numera();
     contaEtapa(atual);
+    /* Grava o que ela já respondeu, agora. Não espera o fim: quem abandona
+       some justamente aqui, entre uma pergunta e a próxima. */
+    mandaParcial(atual, false);
     if (atual === ETAPA_VALOR) viuInvestimento();
     if (focar) {
       var alvo = etapas.filter(function (el) { return !el.hidden; })[0];
@@ -992,7 +1170,11 @@ privacidade</a>.</span></p>
       prefere_formato: valorDe('prefere_formato'),
       faixa_investimento: valorDe('faixa_investimento'),
       sobrenome_confirmacao: valorDe('sobrenome_confirmacao'),
-      lead_uid: uid(), atribuicao: ATRIB
+      /* O MESMO uid das gravações parciais: é ele que promove aquela linha a
+         inscrição completa em vez de criar uma segunda. Sem isto a Nataly
+         veria a mesma pessoa duas vezes no painel — uma "incompleta" e uma
+         "completa" — e não saberia que são a mesma. */
+      lead_uid: garanteUid(), atribuicao: ATRIB
     };
 
     fetch('/api/lead-presencial', {
@@ -1136,6 +1318,7 @@ privacidade</a>.</span></p>
     function mostra() {
       if (jaMostrou) return;
       jaMostrou = true;
+      enviado = true;   /* trava qualquer parcial atrasado (o beacon de saída) */
       form.hidden = true;
       etapas.forEach(function (f) { f.hidden = true; });
       rodape.hidden = true;
@@ -1188,7 +1371,9 @@ privacidade</a>.</span></p>
      InitiateCheckout por clique infla a métrica — foi o que deixou o A/B do
      Método LED ilegível. Um por sessão e por produto. */
   window.IC_UNICO = true;
-  vaiPara(leRascunho(), false);
+  var _inicio = leRascunho();
+  garanteUid();
+  vaiPara(_inicio, false);
 })();
 </script>
 
