@@ -10,6 +10,11 @@
 //   • InitiateCheckout — clique no botão que leva ao checkout Kiwify
 //   • Lead             — disparado na /entrar (grupo VIP) — ver entrar.html
 //   • Purchase         — disparado pela própria Kiwify (Pixel + API de Conversões)
+//
+//  ⚠️ PRODUTO POR ROTA **OU** POR `window.NR_PRODUTO`. A detecção por rota
+//  resolve as páginas de venda, onde uma URL = um produto. Não resolve a
+//  /inscricao-presencial, que serve os QUATRO produtos na mesma URL conforme
+//  a árvore de decisão decide. Ver `atual()` mais abaixo.
 // ============================================================
 
 var META_PIXEL_ID = "1511752107118676"; // Pixel da Nataly
@@ -32,7 +37,7 @@ var META_PIXEL_ID = "1511752107118676"; // Pixel da Nataly
 
   // --- Detecção do produto pela rota ---
   var path = (location.pathname || "").toLowerCase();
-  var isPresencial = path.indexOf("presencial") !== -1;
+  var isPresencial = path.indexOf("presencial") !== -1;   // refinado logo abaixo por isFunil
   var isObrigadoApostila = path.indexOf("obrigado-apostila") !== -1;
   var isApostila = !isObrigadoApostila && path.indexOf("apostila") !== -1; // LP low-ticket (PDF R$67,90)
   // PV do Profissão Lash (curso iniciante) — produto e valor PRÓPRIOS.
@@ -43,9 +48,20 @@ var META_PIXEL_ID = "1511752107118676"; // Pixel da Nataly
   // LED" (R$ 1.997), que é outro produto. E a checagem do online foi alargada de
   // "profissao-lash-curso" para "profissao-lash" para cobrir também a página de
   // obrigado; sem isso ela cairia no default "Lash 2.0 R$ 197".
-  var isProfLashPresencial = path.indexOf("profissao-lash-presencial") !== -1;
-  var isProfissaoLash = !isProfLashPresencial && path.indexOf("profissao-lash") !== -1;
-  var produto = isProfLashPresencial
+  // 🔴 A ROTA DO FORMULÁRIO NÃO TEM PRODUTO ATÉ A ÁRVORE RODAR.
+  // Ela contém "presencial", então sem esta linha o ViewContent/view_item de
+  // carregamento sairia como "Formação Presencial LED · R$ 1.997" para TODA
+  // pessoa que abre o formulário — inclusive as que vão terminar no produto de
+  // R$ 297. Isso não é um erro de rótulo: é R$ 1.997 de valor declarado ao Meta
+  // em cada abertura de formulário. Enquanto o produto é desconhecido, o
+  // honesto é dizer que é o funil, e com valor zero. A partir da tela final,
+  // `window.NR_PRODUTO` assume e os eventos passam a valer o produto certo.
+  var isFunil = path.indexOf("inscricao-presencial") !== -1;
+  var isProfLashPresencial = !isFunil && path.indexOf("profissao-lash-presencial") !== -1;
+  var isProfissaoLash = !isFunil && !isProfLashPresencial && path.indexOf("profissao-lash") !== -1;
+  var produto = isFunil
+    ? { id: "funil-qualificacao", name: "Funil de qualificação", value: 0 }
+    : isProfLashPresencial
     ? { id: "profissao-lash-presencial", name: "Profissão Lash — Online + Presencial", value: 1497 }
     : isProfissaoLash
     ? { id: "profissao-lash",      name: "Profissão Lash — Iniciante", value: 497 }
@@ -61,12 +77,28 @@ var META_PIXEL_ID = "1511752107118676"; // Pixel da Nataly
   // pra desdobrar no Meta. Páginas sem variante ficam sem tag (não atrapalha).
   var VARIANT = (window.PAGE_VARIANT || "").toString().toUpperCase() || null;
 
+
+  // --- OVERRIDE DE PRODUTO EM TEMPO DE EXECUÇÃO ---
+  // A /inscricao-presencial serve QUATRO produtos na mesma URL: qual deles
+  // ela recebe só se sabe depois que o servidor roda a árvore. A detecção por
+  // rota não tem como acertar isso — pior, a rota contém "presencial", então
+  // ela cairia em "Formação Presencial LED" (R$ 1.997) e mandaria esse valor
+  // até para quem clicou no checkout do Método LED online (R$ 297).
+  // Por isso a tela final publica `window.NR_PRODUTO` e TODO evento lê daqui,
+  // no momento em que dispara, e não do que a rota disse no carregamento.
+  function atual() {
+    var o = window.NR_PRODUTO;
+    if (o && o.id && typeof o.value === 'number') return o;
+    return produto;
+  }
+
   function dados() {
+    var p = atual();
     var d = {
-      content_name: produto.name,
-      content_ids: [produto.id],
+      content_name: p.name,
+      content_ids: [p.id],
       content_type: "product",
-      value: produto.value,
+      value: p.value,
       currency: "BRL"
     };
     if (VARIANT) { d.content_category = "pv_" + VARIANT.toLowerCase(); d.page_variant = VARIANT; }
@@ -84,7 +116,7 @@ var META_PIXEL_ID = "1511752107118676"; // Pixel da Nataly
     if (icJaFoi) return false;
     icJaFoi = true;
     try {
-      var chave = "ic_" + produto.id;
+      var chave = "ic_" + atual().id;
       if (sessionStorage.getItem(chave)) return false;
       sessionStorage.setItem(chave, "1");
     } catch (e) {}

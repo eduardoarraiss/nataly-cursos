@@ -28,7 +28,7 @@ var GA_MEASUREMENT_ID = "G-MZS1VCZ89D"; // Nataly — GA4
 
   // --- Detecção do produto pela rota ---
   var path = (location.pathname || "").toLowerCase();
-  var isPresencial = path.indexOf("presencial") !== -1;
+  var isPresencial = path.indexOf("presencial") !== -1;   // refinado logo abaixo por isFunil
   var isObrigadoApostila = path.indexOf("obrigado-apostila") !== -1;
   var isApostila = !isObrigadoApostila && path.indexOf("apostila") !== -1; // LP low-ticket (PDF R$67,90)
   // PV do Profissão Lash (curso iniciante) — produto e valor PRÓPRIOS.
@@ -39,9 +39,20 @@ var GA_MEASUREMENT_ID = "G-MZS1VCZ89D"; // Nataly — GA4
   // LED" (R$ 1.997), que é outro produto. E a checagem do online foi alargada de
   // "profissao-lash-curso" para "profissao-lash" para cobrir também a página de
   // obrigado; sem isso ela cairia no default "Lash 2.0 R$ 197".
-  var isProfLashPresencial = path.indexOf("profissao-lash-presencial") !== -1;
-  var isProfissaoLash = !isProfLashPresencial && path.indexOf("profissao-lash") !== -1;
-  var produto = isProfLashPresencial
+  // 🔴 A ROTA DO FORMULÁRIO NÃO TEM PRODUTO ATÉ A ÁRVORE RODAR.
+  // Ela contém "presencial", então sem esta linha o ViewContent/view_item de
+  // carregamento sairia como "Formação Presencial LED · R$ 1.997" para TODA
+  // pessoa que abre o formulário — inclusive as que vão terminar no produto de
+  // R$ 297. Isso não é um erro de rótulo: é R$ 1.997 de valor declarado ao Meta
+  // em cada abertura de formulário. Enquanto o produto é desconhecido, o
+  // honesto é dizer que é o funil, e com valor zero. A partir da tela final,
+  // `window.NR_PRODUTO` assume e os eventos passam a valer o produto certo.
+  var isFunil = path.indexOf("inscricao-presencial") !== -1;
+  var isProfLashPresencial = !isFunil && path.indexOf("profissao-lash-presencial") !== -1;
+  var isProfissaoLash = !isFunil && !isProfLashPresencial && path.indexOf("profissao-lash") !== -1;
+  var produto = isFunil
+    ? { id: "funil-qualificacao", name: "Funil de qualificação", value: 0 }
+    : isProfLashPresencial
     ? { id: "profissao-lash-presencial", name: "Profissão Lash — Online + Presencial", value: 1497 }
     : isProfissaoLash
     ? { id: "profissao-lash",      name: "Profissão Lash — Iniciante", value: 497 }
@@ -65,14 +76,31 @@ var GA_MEASUREMENT_ID = "G-MZS1VCZ89D"; // Nataly — GA4
     return base;
   }
 
+
+  // --- OVERRIDE DE PRODUTO EM TEMPO DE EXECUÇÃO ---
+  // A /inscricao-presencial serve QUATRO produtos na mesma URL: qual deles
+  // ela recebe só se sabe depois que o servidor roda a árvore. A detecção por
+  // rota não tem como acertar isso — pior, a rota contém "presencial", então
+  // ela cairia em "Formação Presencial LED" (R$ 1.997) e mandaria esse valor
+  // até para quem clicou no checkout do Método LED online (R$ 297).
+  // Por isso a tela final publica `window.NR_PRODUTO` e TODO evento lê daqui,
+  // no momento em que dispara, e não do que a rota disse no carregamento.
+  function atual() {
+    var o = window.NR_PRODUTO;
+    if (o && o.id && typeof o.value === 'number') return o;
+    return produto;
+  }
+
   function itens() {
+    var p = atual();
     return [{
-      item_id: produto.id,
-      item_name: produto.name,
-      price: produto.value,
+      item_id: p.id,
+      item_name: p.name,
+      price: p.value,
       quantity: 1
     }];
   }
+  function valorAtual() { return atual().value; }
 
   // TRAVA DE 1 begin_checkout POR SESSÃO — opt-in: a página declara window.IC_UNICO.
   // Mesma razão do pixel: página com muitos CTAs contaria um evento por clique.
@@ -82,7 +110,7 @@ var GA_MEASUREMENT_ID = "G-MZS1VCZ89D"; // Nataly — GA4
     if (bcJaFoi) return false;
     bcJaFoi = true;
     try {
-      var chave = "bc_" + produto.id;
+      var chave = "bc_" + atual().id;
       if (sessionStorage.getItem(chave)) return false;
       sessionStorage.setItem(chave, "1");
     } catch (e) {}
@@ -96,7 +124,7 @@ var GA_MEASUREMENT_ID = "G-MZS1VCZ89D"; // Nataly — GA4
     var href = (a.getAttribute("href") || "").toLowerCase();
     if (href.indexOf("pay.kiwify") !== -1 && bcPodeDisparar()) {
       gtag("event", "begin_checkout", ev_extra({
-        currency: "BRL", value: produto.value, items: itens()
+        currency: "BRL", value: valorAtual(), items: itens()
       }));
       // Evento EXCLUSIVO da variante (nome próprio) — filtro fácil no relatório.
       if (VARIANT) gtag("event", "begin_checkout_" + VARIANT.toLowerCase(), { page_variant: VARIANT });
@@ -127,7 +155,7 @@ var GA_MEASUREMENT_ID = "G-MZS1VCZ89D"; // Nataly — GA4
     if (!temConversao) return; // não é página de venda
 
     gtag("event", "view_item", ev_extra({
-      currency: "BRL", value: produto.value, items: itens()
+      currency: "BRL", value: valorAtual(), items: itens()
     }));
     // PageView EXCLUSIVO da variante (topo do funil A/B).
     if (VARIANT) gtag("event", "page_view_" + VARIANT.toLowerCase(), { page_variant: VARIANT });
@@ -141,7 +169,7 @@ var GA_MEASUREMENT_ID = "G-MZS1VCZ89D"; // Nataly — GA4
           if (entries[i].isIntersecting) {
             fired = true;
             gtag("event", "scroll_to_offer", ev_extra({
-              currency: "BRL", value: produto.value, items: itens()
+              currency: "BRL", value: valorAtual(), items: itens()
             }));
             io.disconnect();
             break;
@@ -231,6 +259,18 @@ var GA_MEASUREMENT_ID = "G-MZS1VCZ89D"; // Nataly — GA4
   } else {
     apply();
   }
+
+  // Exposto para quem INJETA link depois do load. A /inscricao-presencial só
+  // sabe qual é o checkout depois que a árvore roda, então o botão nasce fora
+  // do `apply()` de carregamento.
+  //
+  // ⚠️ A garantia do clique NÃO basta para um link injetado. Ela cobre a
+  // navegação, mas não cobre "copiar endereço do link" (que não dispara
+  // clique) nem o clique do meio em vários navegadores — e nesses casos a
+  // pessoa levaria para o checkout uma URL sem utm_*, sem src e sem fbclid,
+  // e a venda chegaria na Kiwify sem origem. Decorar na hora de desenhar
+  // resolve os três casos com a MESMA implementação.
+  window.NR_DECORA_UTM = apply;
 
   // Garantia no clique (links injetados ou reescritos depois do load).
   // Capture=true → roda antes da navegação, então o href já vai decorado.

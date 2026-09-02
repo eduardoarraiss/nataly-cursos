@@ -59,21 +59,26 @@ function medida(SEL){
   }
 
   /* ---------- 2. o FORMULARIO, etapa por etapa ----------
-     O formulario virou ROTA PROPRIA (/inscricao-presencial). As 9 etapas
+     O formulario virou ROTA PROPRIA (/inscricao-presencial). As etapas
      escondidas nao tem caixa: sem percorre-las, uma etapa que vaza passaria
-     despercebida porque a medida so ve a etapa visivel. A etapa 9 (o
-     investimento) e a mais alta de todas e a que mais arrisca vazar. */
+     despercebida porque a medida so ve a etapa visivel.
+
+     ⚠️ A LISTA E DE IDs, NAO UM CONTADOR DE 0 A 9. A arvore trouxe a etapa
+     '5.5' (condicional, so para quem ja e lash) e levou o total ate '10'. Um
+     `for(i=0;i<=9;i++)` com parseInt deixaria a 5.5 e a 10 SEM MEDIR — e a
+     etapa 10, com cinco opcoes de faixa, e das mais altas que existem aqui. */
+  const ETAPAS=['0','1','2','3','4','5','5.5','6','7','8','9','10'];
   for(const w of LARGURAS){
     const p=await b.newPage();
     await p.setViewport({width:w,height:900,deviceScaleFactor:1});
     await p.goto(BASE+'/inscricao-presencial',{waitUntil:'networkidle2'});
     let ruins=0;
-    for(let i=0;i<=9;i++){
+    for(const i of ETAPAS){
       const r=await p.evaluate((sel,etapa)=>{
         document.querySelectorAll('.etapa').forEach(f=>{
-          f.hidden=(parseInt(f.getAttribute('data-etapa'),10)!==etapa); });
+          f.hidden=(f.getAttribute('data-etapa')!==etapa); });
         const form=document.getElementById('insc-form');
-        if(form) form.hidden=(etapa===0);
+        if(form) form.hidden=(etapa==='0');
         const maus=[];
         const doc=document.documentElement;
         if(doc.scrollWidth>doc.clientWidth) maus.push('BODY rola de lado ('+doc.scrollWidth+' > '+doc.clientWidth+')');
@@ -90,24 +95,80 @@ function medida(SEL){
       },SELETORES,i);
       if(r.length){ falhas+=r.length; ruins+=r.length; r.forEach(m=>console.log('FALHA  formulario @'+w+'px  '+m)); }
     }
-    // a tela de agradecimento tambem precisa caber
-    const rf=await p.evaluate((sel)=>{
-      document.querySelectorAll('.etapa').forEach(f=>f.hidden=true);
-      document.getElementById('insc-form').hidden=true;
-      document.getElementById('obrigado').hidden=false;
-      const maus=[];
-      const doc=document.documentElement;
-      if(doc.scrollWidth>doc.clientWidth) maus.push('BODY rola de lado na tela final');
-      document.querySelectorAll(sel).forEach(el=>{
-        if(el.offsetParent===null) return;
-        const pa=el.parentElement; if(!pa) return;
-        const a=el.getBoundingClientRect(), pb=pa.getBoundingClientRect();
-        if(a.width>pb.width+1) maus.push('tela final: '+(el.className||el.tagName));
-      });
-      return maus;
-    },SELETORES);
+    /* A tela final agora e QUATRO telas: uma por produto, e a versao online
+       ganha ainda o botao de checkout e a caixa "o presencial existe". Medir
+       so a generica deixaria de fora justamente a mais cheia. Os nomes sao
+       longos de proposito — e o nome longo que estoura a caixa. */
+    const FINAIS=[
+      {nome:'presencial LED', d:{id:'lash2-presencial',nome:'Método LED — presencial',
+        preco:'R$ 1.997',parcela:'12x de R$ 206,54',formato:'presencial',checkout:null,
+        porque:'Você consegue vir até Cambuí e o valor cabe no que você me disse.',
+        inclui:['Um dia inteiro de formação ao vivo comigo, em Cambuí, MG',
+                'Demonstração prática do Método LED, de perto',
+                'Dois encontros online comigo depois da formação'],
+        presencial_possivel:null,sugestao:false}},
+      {nome:'online com menção ao presencial', d:{id:'lash2-online',nome:'Método LED — online',
+        preco:'R$ 297',parcela:'12x de R$ 30,72',formato:'online',
+        checkout:'https://pay.kiwify.com.br/FfyBeg0',
+        porque:'Dá para começar hoje pelo online, no seu ritmo, sem apertar o seu bolso agora.',
+        inclui:['A técnica do Método LED em vídeo, passo a passo',
+                'O protocolo de durabilidade que eu uso no estúdio','Acesso vitalício, no seu ritmo'],
+        presencial_possivel:{nome:'Método LED — presencial',preco:'R$ 1.997',parcela:'12x de R$ 206,54'},
+        sugestao:true}},
+      {nome:'combo Profissão Lash', d:{id:'profissao-lash-presencial',
+        nome:'Profissão Lash — online + presencial',preco:'R$ 1.497',parcela:'12x de R$ 154,82',
+        formato:'presencial',checkout:null,
+        porque:'É o caminho que combina com o que você me contou sobre a sua rotina.',
+        inclui:['Um dia de prática ao vivo comigo, em Cambuí, MG',
+                'Todo o material da prática incluso, você não leva nada',
+                'O curso online completo, com as 39 aulas teóricas'],
+        presencial_possivel:null,sugestao:false}},
+    ];
+    let rf=[];
+    for(const caso of FINAIS){
+      const r2=await p.evaluate((sel,dado,rotulo)=>{
+        document.querySelectorAll('.etapa').forEach(f=>f.hidden=true);
+        document.getElementById('insc-form').hidden=true;
+        document.getElementById('obrigado').hidden=false;
+        /* desenha a recomendacao pelos mesmos ids que o JS da pagina usa */
+        document.getElementById('rec-nome').textContent=dado.nome;
+        document.getElementById('rec-porque').textContent=dado.porque;
+        document.getElementById('rec-preco').textContent=dado.preco;
+        document.getElementById('rec-parcela').textContent='ou '+dado.parcela;
+        const ul=document.getElementById('rec-inclui'); ul.innerHTML='';
+        dado.inclui.forEach(t=>{const li=document.createElement('li');li.textContent=t;ul.appendChild(li);});
+        const cta=document.getElementById('rec-cta');
+        cta.hidden=!dado.checkout; if(dado.checkout) cta.setAttribute('href',dado.checkout);
+        const ex=document.getElementById('rec-extra');
+        ex.hidden=!dado.presencial_possivel;
+        if(dado.presencial_possivel){
+          document.getElementById('rec-extra-txt').textContent=
+            'E fica sabendo: o '+dado.presencial_possivel.nome+' existe, por '+
+            dado.presencial_possivel.preco+' ('+dado.presencial_possivel.parcela+
+            '). Se você quiser fazer a prática ao vivo comigo, me fala no WhatsApp '+
+            'que a gente vê as condições juntas.';
+        }
+        document.getElementById('rec').hidden=false;
+        const maus=[];
+        const doc=document.documentElement;
+        if(doc.scrollWidth>doc.clientWidth)
+          maus.push('BODY rola de lado na tela final ('+rotulo+'): '+doc.scrollWidth+' > '+doc.clientWidth);
+        document.querySelectorAll(sel).forEach(el=>{
+          if(el.offsetParent===null) return;
+          const pa=el.parentElement; if(!pa) return;
+          const cs=getComputedStyle(pa);
+          if(cs.overflowX==='auto'||cs.overflowX==='scroll') return;
+          const a=el.getBoundingClientRect(), pb=pa.getBoundingClientRect();
+          if(a.width>pb.width+1)
+            maus.push('tela final ('+rotulo+'): '+(el.className||el.tagName)+
+                      ' — '+Math.round(a.width)+'px em pai de '+Math.round(pb.width)+'px');
+        });
+        return maus;
+      },SELETORES+',.rec,.rec__porque,.rec__extra,.rec__cta,.valor__l',caso.d,caso.nome);
+      rf=rf.concat(r2);
+    }
     if(rf.length){ falhas+=rf.length; ruins+=rf.length; rf.forEach(m=>console.log('FALHA  formulario @'+w+'px  '+m)); }
-    if(!ruins) console.log('ok     formulario @'+w+'px  as 9 etapas e a tela final cabem na caixa');
+    if(!ruins) console.log('ok     formulario @'+w+'px  as '+(ETAPAS.length-1)+' etapas e as telas finais cabem na caixa');
     await p.close();
   }
 

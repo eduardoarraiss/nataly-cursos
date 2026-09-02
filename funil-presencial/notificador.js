@@ -37,7 +37,15 @@ const MAX_TENTATIVAS = ESPERAS_MIN.length;
 const ROTULO = {
   situacao: { 'ja-lash':'já trabalha com cílios', 'area-beleza':'já é da área da beleza',
               'outra-area':'vem de outra área' },
+  busca: { 'aperfeicoar-cilios':'quer se aperfeiçoar na extensão',
+           'tecnica-led':'quer aprender a técnica com LED',
+           'nao-sei':'ainda não sabe o que buscar — pediu ajuda para decidir' },
   disponibilidade: { sim:'PODE vir a Cambuí', talvez:'talvez consiga vir', nao:'NÃO pode vir' },
+  prefere_formato: { presencial:'prefere aprender ao vivo', online:'prefere no próprio ritmo, online',
+                     'nao-sei':'não tem preferência de formato' },
+  faixa_investimento: { 'ate-500':'até R$ 500', '500-1500':'de R$ 500 a R$ 1.500',
+                        '1500-2000':'de R$ 1.500 a R$ 2.000', 'acima-2000':'mais de R$ 2.000',
+                        'depende-parcelamento':'consegue mais se parcelar' },
   aceita_valor: { sim:'aceita o valor', 'preciso-parcelar':'aceita, quer parcelar', nao:'NÃO aceita o valor' },
   quando_comecar: { agora:'quer começar agora', '30-dias':'em até 30 dias',
                     '90-dias':'em até 90 dias', 'so-olhando':'só olhando' },
@@ -45,6 +53,20 @@ const ROTULO = {
                 'mais-10k':'mais de R$ 10 mil', 'nao-sei':'ainda não sabe' },
   qualificacao: { quente:'🔥 QUENTE', morno:'🟡 MORNO', frio:'🔵 FRIO' },
 };
+
+/* Nome curto do produto, para o CABEÇALHO. Pedido literal do Eduardo: o
+   título tem de dizer para qual produto ela se qualificou, senão a Nataly
+   abre a mensagem sem saber que conversa vai ter. Cai no nome gravado na
+   linha (leads antigos) e, em último caso, no genérico — nunca em vazio. */
+const PRODUTO_CURTO = {
+  'profissao-lash':            'Profissão Lash online',
+  'profissao-lash-presencial': 'Profissão Lash online + presencial',
+  'lash2-online':              'Método LED online',
+  'lash2-presencial':          'Método LED presencial',
+};
+function tituloProduto(l) {
+  return PRODUTO_CURTO[l.produto_id] || l.produto_nome || 'Profissao Lash';
+}
 
 /* Origem em portugues, nao em jargao de UTM: quem le no celular as 23h
    nao deve precisar decifrar "utm_content". Mostra o anuncio quando existe,
@@ -68,7 +90,7 @@ function montaMensagem(l) {
   const linha = [];
 
   // Cabecalho: em UM olhar a Nataly sabe o que e, quao quente esta e quem e.
-  linha.push('🔔 *LEAD NOVO* · Profissao Lash');
+  linha.push('🔔 *LEAD NOVO* · ' + tituloProduto(l));
   linha.push(ROTULO.qualificacao[l.qualificacao] + '  ·  ' + l.pontuacao + '/100');
   linha.push('━━━━━━━━━━━━━━━');
   linha.push('');
@@ -81,16 +103,36 @@ function montaMensagem(l) {
   linha.push('');
 
   // As respostas dela, em topicos curtos.
-  if (l.situacao)        linha.push('• ' + ROTULO.situacao[l.situacao]);
-  if (l.faixa_idade)     linha.push('• ' + l.faixa_idade + ' anos');
-  if (l.meta_renda)      linha.push('• meta: ' + ROTULO.meta_renda[l.meta_renda]);
-  if (l.quando_comecar)  linha.push('• ' + ROTULO.quando_comecar[l.quando_comecar]);
+  if (l.situacao)           linha.push('• ' + ROTULO.situacao[l.situacao]);
+  if (l.busca)              linha.push('• ' + ROTULO.busca[l.busca]);
+  if (l.faixa_idade)        linha.push('• ' + l.faixa_idade + ' anos');
+  if (l.meta_renda)         linha.push('• meta: ' + ROTULO.meta_renda[l.meta_renda]);
+  if (l.quando_comecar)     linha.push('• ' + ROTULO.quando_comecar[l.quando_comecar]);
   linha.push('• ' + ROTULO.disponibilidade[l.disponibilidade]);
-  linha.push('• ' + ROTULO.aceita_valor[l.aceita_valor]);
+  if (l.prefere_formato)    linha.push('• ' + ROTULO.prefere_formato[l.prefere_formato]);
+  if (l.faixa_investimento) linha.push('• investe: ' + ROTULO.faixa_investimento[l.faixa_investimento]);
 
   if (l.objetivo) {
     linha.push('');
     linha.push('💬 _"' + l.objetivo.slice(0, 400) + '"_');
+  }
+
+  /* O que a árvore decidiu, e POR QUÊ. Sem o motivo a Nataly recebe um nome
+     de produto sem saber de onde ele saiu — e não consegue discordar. */
+  if (l.produto_id) {
+    linha.push('');
+    linha.push('━━━━━━━━━━━━━━━');
+    const p = PRODUTO_CURTO[l.produto_id] || l.produto_nome;
+    const preco = l.produto_valor ? ' · R$ ' + precoBR(l.produto_valor) : '';
+    linha.push('🎯 *Indicado:* ' + p + preco);
+    if (l.produto_formato === 'online') {
+      linha.push('_Ela já recebeu o link do checkout na tela._');
+    } else {
+      linha.push('_Sem checkout: combine a data antes de mandar o link._');
+    }
+    String(l.recomendacao_motivos || '').split('\n')
+      .filter(Boolean).slice(0, 4)
+      .forEach((m) => linha.push('  ↳ ' + m));
   }
 
   linha.push('');
@@ -109,6 +151,10 @@ function montaMensagem(l) {
   const corpo = linha.join('\n');
   return CFG().teste ? PREFIXO_TESTE + '\n\n' + corpo : corpo;
 }
+
+/* 1497 -> "1.497". A mensagem vai para o celular da Nataly, e "R$ 1497"
+   lido de relance vira R$ 149,70 na cabeça de quem já leu os dois. */
+function precoBR(v) { return String(v).replace(/\B(?=(\d{3})+(?!\d))/g, '.'); }
 
 function primeiroNome(n) { return String(n || '').trim().split(/\s+/)[0] || ''; }
 
@@ -214,6 +260,6 @@ function iniciaWorker(intervaloMs = 60000) {
 function paraWorker() { if (_timer) { clearInterval(_timer); _timer = null; } }
 
 module.exports = {
-  CFG, PREFIXO_TESTE, montaMensagem, enfileira, processaFila,
+  CFG, PREFIXO_TESTE, montaMensagem, tituloProduto, ROTULO, enfileira, processaFila,
   reenfileira, iniciaWorker, paraWorker, MAX_TENTATIVAS,
 };

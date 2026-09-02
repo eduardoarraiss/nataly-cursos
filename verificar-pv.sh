@@ -58,6 +58,26 @@ comuns_precisa(){
   precisa "GA4 instalado"        "/js/analytics.js"
 }
 
+# ---- o HTML SEM COMENTARIO ----
+# `proibido` grep no arquivo cru, e o arquivo cru tem os comentarios que
+# EXPLICAM por que aquele preco nao pode estar la. Resultado: o comentario
+# "nao cravar R$ 1.997 aqui" faz o check de "sem R$ 1.997" falhar — o gate
+# reprovaria justamente a pagina que esta certa, e a saida obvia (apagar o
+# comentario) apagaria o aviso que impede o erro de voltar.
+# Entao: para o que precisa olhar o que a PESSOA VE, olha-se a versao sem
+# comentario de HTML e sem comentario de JS.
+sem_comentarios(){
+  perl -0777 -pe 's/<!--.*?-->//gs; s{/\*.*?\*/}{}gs; s{^\s*//.*$}{}gm' "$TMP" > "$TMP.vivo"
+}
+# proibido_vivo <rótulo> <marcador> — proibido, mas só no que é servido de fato
+proibido_vivo(){
+  if grep -qF "$2" "$TMP.vivo"; then falha "$1 (achei: $2)"; else ok "$1"; fi
+}
+# proibido_vivo_re <rótulo> <regex>
+proibido_vivo_re(){
+  if grep -qE "$2" "$TMP.vivo"; then falha "$1 (casou: $2)"; else ok "$1"; fi
+}
+
 # confere_checkout <código esperado>
 confere_checkout(){
   if grep -q 'data-checkout="pendente"' "$TMP"; then
@@ -281,7 +301,8 @@ if baixa_pagina /inscricao-presencial 20000; then
   precisa "TEM a foto da Nataly"             "/img/nataly-smile-shoulder.jpg"
   precisa_re1 "a foto declara width/height"  'nataly-smile-shoulder\.jpg"[^>]*width="1400" height="1400"'
   precisa "botão de começar"                 'id="comecar"'
-  precisa "diz quantas perguntas são"        "nove perguntas rápidas"
+  precisa "diz quantas perguntas são"        "dez perguntas rápidas"
+  precisa "promete a recomendação já na abertura" "dos meus cursos é o certo para você"
   precisa "barra de progresso"               'id="barra"'
   # As setas eram fixas no canto, como na referência, mas medido em 390px
   # cobriam o aviso de privacidade e as opções. Foram para o fluxo, ao lado do
@@ -289,32 +310,76 @@ if baixa_pagina /inscricao-presencial 20000; then
   precisa "botão de voltar"                  'id="subir"'
   precisa "botão de avançar"                 'id="avancar"'
 
-  # -- as NOVE perguntas, uma a uma --
+  # -- as perguntas, uma a uma. A 5.5 é CONDICIONAL: só quem já trabalha
+  #    com cílios a vê. Ela existe no HTML de todo mundo; quem a tira da
+  #    fila é o JS, conforme a resposta da pergunta 5.
   precisa "pergunta 1 — nome"                'data-etapa="1"'
   precisa "pergunta 2 — cidade"              'data-etapa="2"'
   precisa "pergunta 3 — WhatsApp"            'data-etapa="3"'
   precisa "pergunta 4 — Instagram"           'data-etapa="4"'
   precisa "pergunta 5 — situação e idade"    'data-etapa="5"'
+  precisa "pergunta 5.5 — o que ela busca"   'data-etapa="5.5"'
   precisa "pergunta 6 — meta e prazo"        'data-etapa="6"'
   precisa "pergunta 7 — objetivo"            'data-etapa="7"'
   precisa "pergunta 8 — pode vir a Cambuí"   'data-etapa="8"'
-  precisa "pergunta 9 — o investimento"      'data-etapa="9"'
+  precisa "pergunta 9 — como prefere aprender" 'data-etapa="9"'
+  precisa "pergunta 10 — faixa de investimento" 'data-etapa="10"'
 
-  # -- É AQUI, E SÓ AQUI, QUE O PREÇO APARECE --
-  precisa "o valor está na última pergunta"  "R\$ 1.497"
-  precisa "o parcelamento também"            "12x de R\$ 154,82"
-  precisa "diz o que está incluso"           "Todo o material da prática incluso"
-  precisa "a apostila impressa"              "Apostila impressa"
-  precisa "o curso online vem junto"         "39 aulas teóricas"
-  precisa "pergunta se ela topa o valor"     'name="aceita_valor"'
-  # a ordem importa: o preço vem DEPOIS do fácil e da pergunta de Cambuí
+  # -- a ramificação de quem já é lash --
+  precisa "opção: aperfeiçoar a extensão"    'value="aperfeicoar-cilios"'
+  precisa "opção: aprender a técnica com LED" 'value="tecnica-led"'
+  precisa "opção: ainda não sei, me ajuda"   'value="nao-sei"'
+  precisa "a condicional é marcada como tal" 'etapa--se-lash'
+
+  # -- 🔴 NENHUM PREÇO DE PRODUTO NO HTML DO FORMULÁRIO --
+  # Este é o coração do pedido: ela nunca pode ver um preço que não é o dela.
+  # Como o HTML é servido igual para as quatro rotas da árvore, qualquer preço
+  # cravado aqui MENTE para pelo menos três quartos de quem abre a página.
+  # O único preço que ela vê é o do produto recomendado, escrito pelo JS na
+  # tela final com o que o servidor devolveu.
+  sem_comentarios
+  proibido_vivo_re "sem preço de produto cravado no HTML" 'R\$ ?(297|497|1\.497|1\.997|247)'
+  # Parcelamento NENHUM: as parcelas so existem para os nossos produtos, entao
+  # um "12x de" no HTML e prova de que um preco nosso vazou para ca.
+  # ⚠️ "Metodo LED" NAO entra nesta lista: ele aparece, corretamente, como
+  # NOME DA TECNICA na opcao "Aprender a tecnica com LED" da pergunta 5.5.
+  # Proibir o nome barraria a pergunta que o Eduardo pediu. O que nao pode
+  # aparecer e PRECO — e disso cuida a regra acima, que e precisa.
+  proibido_vivo_re "sem parcelamento cravado"        '1[02]x de R\$'
+  proibido_vivo "sem checkout cravado"               "pay.kiwify"
+
+  # -- a faixa de investimento pergunta o BOLSO DELA, sem revelar o nosso --
+  precisa "pergunta a faixa de investimento" 'name="faixa_investimento"'
+  precisa "faixa até R\$ 500"                'value="ate-500"'
+  precisa "faixa de R\$ 500 a R\$ 1.500"      'value="500-1500"'
+  precisa "faixa de R\$ 1.500 a R\$ 2.000"    'value="1500-2000"'
+  precisa "faixa acima de R\$ 2.000"         'value="acima-2000"'
+  precisa "faixa de quem depende de parcelar" 'value="depende-parcelamento"'
+
+  # -- a ORDEM da árvore: distância → preferência → dinheiro --
+  # Se o dinheiro perguntasse antes da distância, quem mora perto e faria o
+  # presencial seria empurrada para a oferta barata. A ordem é a regra.
   P_CAMBUI=$(grep -boF 'data-etapa="8"' "$TMP" | head -1 | cut -d: -f1)
-  P_VALOR=$(grep -boF 'data-etapa="9"' "$TMP" | head -1 | cut -d: -f1)
-  if [ -n "$P_CAMBUI" ] && [ -n "$P_VALOR" ] && [ "$P_CAMBUI" -lt "$P_VALOR" ]; then
-    ok "o preço vem depois das perguntas fáceis e da de Cambuí"
+  P_PREF=$(grep -boF 'data-etapa="9"' "$TMP" | head -1 | cut -d: -f1)
+  P_VALOR=$(grep -boF 'data-etapa="10"' "$TMP" | head -1 | cut -d: -f1)
+  if [ -n "$P_CAMBUI" ] && [ -n "$P_PREF" ] && [ -n "$P_VALOR" ] \
+     && [ "$P_CAMBUI" -lt "$P_PREF" ] && [ "$P_PREF" -lt "$P_VALOR" ]; then
+    ok "a ordem é Cambuí → preferência → investimento"
   else
-    falha "o preço aparece cedo demais (Cambuí em $P_CAMBUI, valor em $P_VALOR)"
+    falha "a ordem da árvore quebrou (Cambuí $P_CAMBUI, preferência $P_PREF, valor $P_VALOR)"
   fi
+
+  # -- a TELA FINAL: recomendação, e checkout só no online --
+  precisa "a tela da recomendação existe"    'id="rec"'
+  precisa "diz qual é a opção ideal"         "opção ideal para você"
+  precisa "espaço para o nome do produto"    'id="rec-nome"'
+  precisa "espaço para o porquê"             'id="rec-porque"'
+  precisa "espaço para o preço"              'id="rec-preco"'
+  precisa "espaço para o que está incluso"   'id="rec-inclui"'
+  precisa "botão de checkout, escondido por padrão" 'id="rec-cta" hidden'
+  precisa "caixa do presencial para quem só travou no bolso" 'id="rec-extra"'
+  precisa "o produto vem do SERVIDOR"        "res.j.recomendacao"
+  precisa "o presencial não recebe checkout" "primeiro a"
 
   # -- campos obrigatórios pedidos pelo Eduardo --
   precisa "campo nome"                       'name="nome"'
@@ -322,7 +387,9 @@ if baixa_pagina /inscricao-presencial 20000; then
   precisa "campo cidade"                     'name="cidade"'
   precisa "campo Instagram"                  'name="instagram"'
   precisa "campo disponibilidade"            'name="disponibilidade"'
-  precisa "campo ciência do valor"           'name="aceita_valor"'
+  precisa "campo preferência de formato"     'name="prefere_formato"'
+  precisa "campo faixa de investimento"      'name="faixa_investimento"'
+  precisa "campo do que ela busca"           'name="busca"'
 
   # -- UX e acessibilidade --
   precisa "teclado numérico no telefone"     'inputmode="numeric"'
@@ -343,19 +410,105 @@ if baixa_pagina /inscricao-presencial 20000; then
   precisa "fora do índice do Google"         'content="noindex'
 
   # -- eventos --
-  precisa "evento da etapa do preço"         "'ViuInvestimento'"
-  precisa "GA4 na etapa do preço"            "'view_price_step'"
+  precisa "evento da etapa do investimento"  "'ViuInvestimento'"
+  precisa "GA4 na etapa do investimento"     "'view_price_step'"
   precisa "intenção do GA4 na chegada"       "'select_item'"
+  precisa "evento da recomendação"           "'ViuRecomendacao'"
+  precisa "GA4 na recomendação"              "'view_recommendation'"
   precisa "Lead no envio"                    "'Lead'"
+  precisa "o Lead DIZ QUAL PRODUTO"          "content_ids: [prod.id]"
+  precisa "evento com nome próprio por produto" "'Lead_' + prod.id"
   precisa "GA4 generate_lead no envio"       "'generate_lead'"
+  precisa "o GA4 também diz o produto"       "produto: prod.id"
   precisa "beacon no evento antes de sair"   "transport_type: 'beacon'"
   precisa "event_callback coordenado"        "event_callback: mostra"
-  proibido "NUNCA InitiateCheckout aqui"     "'InitiateCheckout'"
+  # ⚠️ MUDOU EM 01/09/2026. Antes da árvore, nenhum caminho desta página levava
+  # a checkout, e disparar InitiateCheckout aqui era erro. Hoje metade dos
+  # caminhos termina num checkout Kiwify, então o evento é OBRIGATÓRIO — e a
+  # trava de 1 por sessão é obrigatória junto, senão volta o vício que deixou
+  # o A/B do Método LED ilegível (um IC por clique).
+  precisa "trava de 1 InitiateCheckout por sessão" "window.IC_UNICO = true"
+  precisa "o produto certo assume os eventos"      "window.NR_PRODUTO ="
   proibido "NUNCA Purchase aqui"             "'Purchase'"
   comuns_precisa
   comuns_proibidos
   proibido "sem cidade sem acento"           "Cambui"
-  proibido "sem checkout nesta página"       "pay.kiwify"
+fi
+
+# ============================================================
+echo
+echo "== 2c. A ÁRVORE DE DECISÃO — os sete caminhos, na API de verdade"
+# ============================================================
+# ⚠️ Estes casos GRAVAM lead. Só rodam em local: contra produção encheriam o
+# banco da Nataly de lead falso e o WhatsApp dela de aviso de mentira.
+if [ "$ALVO" != "local" ]; then
+  echo "aviso  árvore não exercitada em produção (grava lead) — rode ./verificar-pv.sh local"
+else
+  # A árvore pura roda sem rede e cobre as 405 combinações possíveis.
+  if node funil-presencial/teste-arvore.js > /tmp/nr-arvore.txt 2>&1; then
+    ok "a árvore passa nas 405 combinações (teste-arvore.js)"
+  else
+    falha "teste-arvore.js falhou — veja /tmp/nr-arvore.txt"
+    tail -20 /tmp/nr-arvore.txt | sed 's/^/       /'
+  fi
+
+  # E aqui os sete caminhos que o Eduardo listou, batendo na API DE VERDADE:
+  # a árvore pode estar certa e a rota errada, e é a rota que a aluna usa.
+  BASE_LEAD='"nome":"Gate Arvore","telefone":"(35) 99716-4668","cidade":"Cambui","instagram":"@gate_arvore","quando_comecar":"agora"'
+  caminho(){  # $1=rótulo  $2=respostas  $3=produto esperado  $4=formato esperado
+    local corpo resp prod fmt
+    corpo="{$BASE_LEAD,\"lead_uid\":\"gate-$RANDOM$RANDOM\",$2}"
+    resp=$(curl -s --max-time 20 -X POST "$BASE/api/lead-presencial" \
+             -H 'Content-Type: application/json' -d "$corpo")
+    prod=$(echo "$resp" | sed -n 's/.*"id":"\([a-z0-9-]*\)".*/\1/p')
+    fmt=$(echo  "$resp" | sed -n 's/.*"formato":"\([a-z]*\)".*/\1/p')
+    if [ "$prod" = "$3" ] && [ "$fmt" = "$4" ]; then
+      ok "$1 → $3 ($4)"
+    else
+      falha "$1: esperava $3/$4 e veio ${prod:-nada}/${fmt:-nada}"
+    fi
+  }
+
+  caminho "não é lash"                '"situacao":"outra-area","disponibilidade":"sim","prefere_formato":"presencial","faixa_investimento":"acima-2000"' profissao-lash-presencial presencial
+  caminho "é lash + quer LED"         '"situacao":"ja-lash","busca":"tecnica-led","disponibilidade":"sim","prefere_formato":"presencial","faixa_investimento":"acima-2000"' lash2-presencial presencial
+  caminho "é lash + quer aperfeiçoar" '"situacao":"ja-lash","busca":"aperfeicoar-cilios","disponibilidade":"sim","prefere_formato":"presencial","faixa_investimento":"acima-2000"' profissao-lash-presencial presencial
+  caminho "não pode vir"              '"situacao":"ja-lash","busca":"tecnica-led","disponibilidade":"nao","prefere_formato":"presencial","faixa_investimento":"acima-2000"' lash2-online online
+  caminho "pode vir e prefere online" '"situacao":"outra-area","disponibilidade":"sim","prefere_formato":"online","faixa_investimento":"acima-2000"' profissao-lash online
+  caminho "pode vir e quer presencial" '"situacao":"outra-area","disponibilidade":"sim","prefere_formato":"presencial","faixa_investimento":"500-1500"' profissao-lash-presencial presencial
+
+  # O caso mais delicado: ela PODE vir, quer o ao vivo, e só o bolso travou.
+  # O presencial não pode sumir em silêncio — tem de aparecer na resposta.
+  CORPO="{$BASE_LEAD,\"lead_uid\":\"gate-bolso-$RANDOM$RANDOM\",\"situacao\":\"ja-lash\",\"busca\":\"tecnica-led\",\"disponibilidade\":\"sim\",\"prefere_formato\":\"presencial\",\"faixa_investimento\":\"ate-500\"}"
+  R=$(curl -s --max-time 20 -X POST "$BASE/api/lead-presencial" -H 'Content-Type: application/json' -d "$CORPO")
+  if echo "$R" | grep -q '"id":"lash2-online"'; then
+    ok "pode vir mas investimento baixo → online"
+  else
+    falha "pode vir mas investimento baixo NÃO foi para o online (veio: ${R:0:160})"
+  fi
+  if echo "$R" | grep -q '"presencial_possivel":{'; then
+    ok "...e o presencial é MENCIONADO, não descartado em silêncio"
+  else
+    falha "o presencial foi descartado em silêncio — o Eduardo pediu explicitamente que não fosse"
+  fi
+  if echo "$R" | grep -q '"checkout":null'; then
+    falha "a menção ao presencial veio com checkout (a data vem antes do pagamento)"
+  else
+    ok "o caminho online levou o link do checkout"
+  fi
+
+  # E o inverso: no presencial NÃO pode sair link de checkout nenhum.
+  CORPO="{$BASE_LEAD,\"lead_uid\":\"gate-pres-$RANDOM$RANDOM\",\"situacao\":\"ja-lash\",\"busca\":\"tecnica-led\",\"disponibilidade\":\"sim\",\"prefere_formato\":\"presencial\",\"faixa_investimento\":\"acima-2000\"}"
+  R=$(curl -s --max-time 20 -X POST "$BASE/api/lead-presencial" -H 'Content-Type: application/json' -d "$CORPO")
+  if echo "$R" | grep -q '"checkout":null'; then
+    ok "o presencial NÃO recebe link de checkout"
+  else
+    falha "saiu checkout num caminho presencial — a Nataly combina a data antes de cobrar"
+  fi
+  if echo "$R" | grep -q '"preco":"R\$ 1.997"'; then
+    ok "e o preço do presencial do LED é R\$ 1.997"
+  else
+    falha "o preço do LED presencial não bate com a página de venda"
+  fi
 fi
 
 # ============================================================

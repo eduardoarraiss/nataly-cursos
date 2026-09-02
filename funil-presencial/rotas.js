@@ -78,7 +78,16 @@ router.post('/api/lead-presencial', express.json({ limit: '32kb' }), async (req,
     }
 
     const ip = L.ipDe(req);
-    if (passouDoLimite(ip)) {
+    /* O freio de spam não pode barrar o GATE. `verificar-pv.sh local` exercita
+       os sete caminhos da árvore de uma vez, e com o teto de 5 envios por IP
+       ele bateria em 429 no meio — reportando falha na árvore quando o que
+       falhou foi o próprio freio.
+       A isenção é estreita de propósito: SÓ em desenvolvimento (sem
+       DATABASE_URL, que produção sempre tem) e SÓ vinda do loopback. Em
+       produção nada muda, nem para quem estiver na mesma máquina. */
+    const ehDev = !process.env.DATABASE_URL;
+    const local = ip === '127.0.0.1' || ip === '::1';
+    if (!(ehDev && local) && passouDoLimite(ip)) {
       return res.status(429).json({
         ok: false, erro: 'limite',
         mensagem: 'Você já enviou o formulário. A Nataly vai te chamar no WhatsApp.',
@@ -88,15 +97,27 @@ router.post('/api/lead-presencial', express.json({ limit: '32kb' }), async (req,
     const { ok, erros, lead } = L.valida(body);
     if (!ok) return res.status(400).json({ ok: false, erros });
 
-    Object.assign(lead, L.qualifica(lead), L.atribuicao(body, req));
+    /* A ÁRVORE RODA AQUI, no servidor, e em lugar nenhum mais.
+       O formulário manda respostas e recebe o produto de volta — ele não
+       calcula nada. Se a decisão fosse repetida no navegador, um dia as duas
+       cópias divergiriam e a tela mostraria um produto e o banco gravaria
+       outro. Uma fonte só, e a tela é consequência dela. */
+    const { rec, colunas } = L.roteia(lead);
+    Object.assign(lead, colunas);
+    Object.assign(lead, L.qualifica(lead, rec), L.atribuicao(body, req));
     lead.lead_uid = String(body.lead_uid || '').slice(0, 80) || null;
+
+    const recomendacao = L.paraTela(rec);
 
     // ---- GRAVA PRIMEIRO. Só depois pensa em avisar. ----
     const salvo = await L.cria(lead);
 
-    // Reenvio do mesmo formulário: não avisa a Nataly de novo.
+    /* Reenvio do mesmo formulário: não avisa a Nataly de novo — mas a
+       recomendação VAI JUNTO. Sem ela, quem apertasse o botão duas vezes (ou
+       tivesse a rede reenviando) cairia numa tela final sem produto, sem
+       preço e sem checkout: o pior lugar possível para ficar. */
     if (salvo.novo === false) {
-      return res.json({ ok: true, dedupe: true, qualificacao: salvo.qualificacao });
+      return res.json({ ok: true, dedupe: true, qualificacao: salvo.qualificacao, recomendacao });
     }
 
     // ---- Aviso: enfileira e tenta. Falhar aqui NÃO derruba o lead. ----
@@ -108,7 +129,7 @@ router.post('/api/lead-presencial', express.json({ limit: '32kb' }), async (req,
                     ' está salvo): ' + e.message);
     }
 
-    res.json({ ok: true, qualificacao: salvo.qualificacao });
+    res.json({ ok: true, qualificacao: salvo.qualificacao, recomendacao });
   } catch (e) {
     console.error('[funil] erro ao receber lead:', e);
     res.status(500).json({
@@ -245,9 +266,14 @@ router.post('/crm/api/aviso/:id/reenviar', auth.exige({ api: true }), async (req
 const COLUNAS = [
   ['id', 'ID'], ['criado_em', 'Criado em'], ['nome', 'Nome'], ['telefone', 'WhatsApp'],
   ['email', 'E-mail'], ['instagram', 'Instagram'], ['cidade', 'Cidade'], ['estado', 'UF'],
-  ['faixa_idade', 'Idade'], ['situacao', 'Situação'], ['meta_renda', 'Meta de renda'],
+  ['faixa_idade', 'Idade'], ['situacao', 'Situação'], ['busca', 'O que busca'],
+  ['meta_renda', 'Meta de renda'],
   ['quando_comecar', 'Quando começar'], ['disponibilidade', 'Pode vir a Cambuí'],
+  ['prefere_formato', 'Prefere'], ['faixa_investimento', 'Faixa de investimento'],
   ['aceita_valor', 'Aceita o valor'], ['objetivo', 'Objetivo'],
+  ['produto_id', 'Produto indicado'], ['produto_nome', 'Produto (nome)'],
+  ['produto_formato', 'Formato'], ['produto_valor', 'Valor indicado'],
+  ['recomendacao_motivos', 'Por que foi indicado'],
   ['pontuacao', 'Pontuação'], ['qualificacao', 'Qualificação'], ['status', 'Status'],
   ['anotacao', 'Anotação'], ['utm_source', 'utm_source'], ['utm_medium', 'utm_medium'],
   ['utm_campaign', 'utm_campaign'], ['utm_content', 'utm_content'], ['utm_term', 'utm_term'],

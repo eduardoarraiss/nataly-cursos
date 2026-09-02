@@ -6,9 +6,12 @@ node_modules
 .env.*
 !.env.exemplo
 
-# Banco local de desenvolvimento (PGlite) — dados de teste, não vão para o repo
-funil-presencial/.dados-dev/
-funil-presencial/.dados-teste/
+# Banco local de desenvolvimento (PGlite) — dados de teste, não vão para o repo.
+# ⚠️ O padrão é CURINGA de propósito: listar os dois diretórios pelo nome deixava
+# de fora qualquer FUNIL_DEV_DIR novo, e em 01/09/2026 um `.dados-dev-arvore`
+# criado para testar a árvore ficou visível para o `git add` de outra sessão.
+# Diretório de banco local nenhum entra no repo, tenha o nome que tiver.
+funil-presencial/.dados-*/
 
 # Backups datados
 *.bak-*

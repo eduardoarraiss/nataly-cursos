@@ -36,30 +36,67 @@ const eq = (nome, a, b) => ok(nome, a === b, 'esperava ' + JSON.stringify(b) + '
   eq('com espaço no meio é rejeitado', L.normalizaInstagram('nataly ribeiro'), null);
 
   console.log('\n-- qualificação --');
-  const q1 = L.qualifica({ disponibilidade:'sim', aceita_valor:'sim', situacao:'ja-lash', quando_comecar:'agora' });
+  /* A pontuação passou a depender do PRODUTO recomendado (a mesma faixa de
+     investimento vale muito num caminho presencial e pouco num online), então
+     ela recebe a recomendação junto. `rec()` roda a árvore para o mesmo lead,
+     que é exatamente o que a rota faz. A árvore em si é testada à parte, em
+     teste-arvore.js, nas 405 combinações. */
+  const PRD = require('./produtos');
+  const rec = (l) => PRD.recomenda(l);
+  const comArvore = (l) => L.qualifica(l, rec(l));
+
+  const q1 = comArvore({ disponibilidade:'sim', prefere_formato:'presencial',
+    faixa_investimento:'acima-2000', situacao:'ja-lash', busca:'tecnica-led',
+    quando_comecar:'agora' });
   eq('lead perfeito pontua 100', q1.pontuacao, 100);
   eq('lead perfeito é quente',   q1.qualificacao, 'quente');
 
-  const q2 = L.qualifica({ disponibilidade:'nao', aceita_valor:'sim', situacao:'ja-lash', quando_comecar:'agora' });
-  ok('quem não pode vir a Cambuí NUNCA é quente', q2.qualificacao === 'frio', 'veio ' + q2.qualificacao);
+  /* ⚠️ A TRAVA MUDOU EM 01/09/2026, e este teste mudou de LADO junto.
+     Antes: "quem não pode vir a Cambuí nunca é quente" — verdade enquanto
+     existia um produto só, presencial. Com quatro produtos, quem não pode vir
+     recebe o online, que é uma venda pronta: marcá-la de fria escondia da
+     Nataly justamente o lead que compra sem sair de casa. */
+  const q2 = comArvore({ disponibilidade:'nao', prefere_formato:'online',
+    faixa_investimento:'acima-2000', situacao:'ja-lash', busca:'tecnica-led',
+    quando_comecar:'agora' });
+  ok('quem não pode vir mas quer começar agora É quente (recebe o online)',
+     q2.qualificacao === 'quente', 'veio ' + q2.qualificacao);
 
-  const q3 = L.qualifica({ disponibilidade:'sim', aceita_valor:'nao', situacao:'ja-lash', quando_comecar:'agora' });
-  ok('quem não aceita o valor NUNCA é quente', q3.qualificacao === 'frio', 'veio ' + q3.qualificacao);
+  /* A trava honesta é a que ela mesma declarou. */
+  const q3 = comArvore({ disponibilidade:'sim', prefere_formato:'presencial',
+    faixa_investimento:'acima-2000', situacao:'ja-lash', busca:'tecnica-led',
+    quando_comecar:'so-olhando' });
+  ok('quem diz que só está pesquisando NUNCA é quente',
+     q3.qualificacao === 'frio', 'veio ' + q3.qualificacao);
 
-  const q4 = L.qualifica({ disponibilidade:'talvez', aceita_valor:'preciso-parcelar', situacao:'outra-area', quando_comecar:'30-dias' });
+  const q4 = comArvore({ disponibilidade:'talvez', prefere_formato:'nao-sei',
+    faixa_investimento:'depende-parcelamento', situacao:'outra-area',
+    quando_comecar:'30-dias' });
   eq('lead intermediário é morno', q4.qualificacao, 'morno');
 
   console.log('\n-- validação --');
   const vazio = L.valida({});
   ok('formulário vazio é recusado', !vazio.ok);
-  ok('acusa os 6 campos obrigatórios', Object.keys(vazio.erros).length === 6,
-     'acusou ' + Object.keys(vazio.erros).join(','));
+  /* Eram 6; a árvore trouxe mais 2 (`prefere_formato` e `faixa_investimento`)
+     porque sem eles não há como decidir o produto — e recomendar no chute é
+     pior do que não recomendar. `situacao` também virou obrigatório: era
+     opcional quando existia um produto só, e agora é a raiz da árvore.
+     A lista é conferida por NOME, não por contagem: "são 8" passaria mesmo se
+     um campo certo tivesse sido trocado por outro. */
+  const OBRIGATORIOS = ['nome','telefone','cidade','instagram','disponibilidade',
+                        'situacao','prefere_formato','faixa_investimento'];
+  const acusados = Object.keys(vazio.erros).sort().join(',');
+  ok('acusa exatamente os 8 campos obrigatórios',
+     acusados === OBRIGATORIOS.slice().sort().join(','), 'acusou ' + acusados);
+  /* Quem não é lash não pode ser cobrada pela pergunta que nunca viu. */
+  ok('e NÃO cobra a pergunta condicional de quem não a viu', !vazio.erros.busca);
   ok('a mensagem de erro é útil, não genérica',
      /DDD/.test(vazio.erros.telefone), vazio.erros.telefone);
 
   const bom = L.valida({
     nome:'Maria Silva', telefone:'(35) 99716-4668', cidade:'Cambuí', instagram:'@maria',
-    disponibilidade:'sim', aceita_valor:'sim', situacao:'outra-area', quando_comecar:'agora',
+    disponibilidade:'sim', prefere_formato:'presencial', faixa_investimento:'acima-2000',
+    situacao:'outra-area', quando_comecar:'agora',
     email:'maria@exemplo.com', estado:'mg', faixa_idade:'25-34', objetivo:'Quero mudar de vida',
   });
   ok('formulário completo passa', bom.ok, JSON.stringify(bom.erros));
@@ -68,12 +105,14 @@ const eq = (nome, a, b) => ok(nome, a === b, 'esperava ' + JSON.stringify(b) + '
 
   const injecao = L.valida({
     nome:'Maria', telefone:'35997164668', cidade:'Cambuí', instagram:'maria',
-    disponibilidade:"sim'; DROP TABLE leads; --", aceita_valor:'sim',
+    disponibilidade:"sim'; DROP TABLE leads; --", faixa_investimento:'acima-2000',
+    prefere_formato:'presencial', situacao:'outra-area',
   });
   ok('opção fora da lista vira erro, não vai para o banco', !injecao.ok && !!injecao.erros.disponibilidade);
 
   console.log('\n-- gravação --');
-  const base = Object.assign({}, bom.lead, L.qualifica(bom.lead), {
+  const base = Object.assign({}, bom.lead, L.roteia(bom.lead).colunas,
+    L.qualifica(bom.lead, rec(bom.lead)), {
     utm_source:'ig', utm_campaign:'presencial-set', utm_content:'ad-video-01',
     ip:'1.2.3.4', lead_uid:'uid-teste-1',
   });

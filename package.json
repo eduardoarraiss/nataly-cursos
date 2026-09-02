@@ -5,7 +5,8 @@
   "main": "server.js",
   "scripts": {
     "start": "node server.js",
-    "teste": "npm run teste:unidade && npm run teste:aviso",
+    "teste": "npm run teste:arvore && npm run teste:unidade && npm run teste:aviso",
+    "teste:arvore": "node funil-presencial/teste-arvore.js",
     "teste:unidade": "FUNIL_DEV_DIR=.dados-teste node funil-presencial/teste-unidade.js",
     "teste:aviso": "FUNIL_DEV_DIR=.dados-teste node funil-presencial/teste-aviso.js",
     "teste:formulario": "node funil-presencial/teste-formulario.js",

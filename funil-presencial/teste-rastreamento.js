@@ -1,5 +1,6 @@
 /* Mapa de eventos do funil, medido de ponta a ponta:
-   página de venda → clique no CTA → formulário → etapa do preço → envio.
+   página de venda → clique no CTA → formulário (11 etapas) → etapa da faixa
+   de investimento → envio → recomendação → clique no checkout.
 
    ⚠️ headless:false de propósito: o Meta suprime o pixel em Chrome headless
       (proteção anti-bot) e o teste daria falso negativo.
@@ -56,24 +57,56 @@ const evM=u=>{try{return new URL(u).searchParams.get('ev')}catch(e){return '?'}}
     const r=(n,val)=>{const e=document.querySelector(`input[name="${n}"][value="${val}"]`);e.checked=true;e.dispatchEvent(new Event('change',{bubbles:true}))};
     v('f-nome','Mapa Eventos'); v('f-cidade','Cambuí'); v('f-estado','MG');
     v('f-telefone','35991117777'); v('f-instagram','@mapa.eventos');
-    r('situacao','ja-lash'); r('faixa_idade','25-34'); r('meta_renda','5k-10k');
+    /* 'ja-lash' faz a pergunta CONDICIONAL entrar na fila, então este percurso
+       tem 11 etapas — é o caminho mais longo, e o que exercita a árvore
+       inteira. A resposta 'tecnica-led' + 'online' leva ao Método LED online
+       (R$ 297), que é o caminho COM checkout: é ele que prova que o
+       InitiateCheckout sai com o valor certo. */
+    r('situacao','ja-lash'); r('busca','tecnica-led');
+    r('faixa_idade','25-34'); r('meta_renda','5k-10k');
     r('quando_comecar','agora'); r('disponibilidade','sim');
+    r('prefere_formato','online'); r('faixa_investimento','acima-2000');
   });
-  for(let i=0;i<8;i++){ await p.evaluate(()=>document.getElementById('avancar').click()); await new Promise(r=>setTimeout(r,300)); }
+  for(let i=0;i<10;i++){ await p.evaluate(()=>document.getElementById('avancar').click()); await new Promise(r=>setTimeout(r,300)); }
   await new Promise(r=>setTimeout(r,2500));
   const etapa=await p.evaluate(()=>{
-    const v=document.querySelector('.etapa[data-etapa="9"]');
-    return {visivel:!v.hidden, preco:(document.querySelector('.valor__n')||{}).textContent};
+    const v=document.querySelector('.etapa[data-etapa="10"]');
+    /* Aqui NÃO pode haver preço nosso: a etapa pergunta a faixa DELA.
+       Devolvemos o texto inteiro para o veredito medir isso. */
+    return {visivel:!v.hidden, texto:v.textContent};
   });
   const precoM=meta.slice(nM2).map(evM), precoG=ga.slice(nG2);
   const nM3=meta.length, nG3=ga.length;
 
   // ---------- 4. envio ----------
-  await p.evaluate(()=>{const e=document.querySelector('input[name="aceita_valor"][value="sim"]');e.checked=true;e.dispatchEvent(new Event('change',{bubbles:true}))});
   await p.evaluate(()=>document.getElementById('avancar').click());
   await new Promise(r=>setTimeout(r,12000));   // GA4 agrupa com ~5s de atraso
   const envioM=meta.slice(nM3).map(evM), envioG=ga.slice(nG3);
-  const fim=await p.evaluate(()=>!document.getElementById('obrigado').hidden);
+  const fim=await p.evaluate(()=>({
+    visivel:!document.getElementById('obrigado').hidden,
+    produto:document.getElementById('rec-nome').textContent,
+    preco:document.getElementById('rec-preco').textContent,
+    href:document.getElementById('rec-cta').getAttribute('href'),
+    ctaVisivel:!document.getElementById('rec-cta').hidden
+  }));
+  const nM4=meta.length, nG4=ga.length;
+
+  // ---------- 5. o clique no checkout ----------
+  // 🔴 A parte NOVA de 01/09/2026. Antes da árvore nenhum caminho desta página
+  // levava a checkout; hoje metade leva. O que se mede aqui é o valor: a rota
+  // /inscricao-presencial contém "presencial", então sem o override de produto
+  // este clique sairia valendo R$ 1.997 — para quem comprou um curso de R$ 297.
+  await p.evaluate(()=>{
+    const a=document.getElementById('rec-cta');
+    if(!a||a.hidden) return;
+    a.setAttribute('target','_blank');   // não navega, para o CDP não perder o resto
+    a.click();
+  });
+  await new Promise(r=>setTimeout(r,3000));
+  const checkoutM=meta.slice(nM4).map(evM), checkoutG=ga.slice(nG4);
+  // segundo clique: a trava de 1 por sessão tem de segurar
+  await p.evaluate(()=>{const a=document.getElementById('rec-cta'); if(a&&!a.hidden) a.click();});
+  await new Promise(r=>setTimeout(r,2000));
 
   // ---------- relatório ----------
   console.log('\n================ MAPA DE EVENTOS ================');
@@ -82,9 +115,11 @@ const evM=u=>{try{return new URL(u).searchParams.get('ev')}catch(e){return '?'}}
   linha('2. clique no CTA', cliqueM, cliqueG);
   linha('3. etapa do preço', precoM, precoG);
   linha('4. envio', envioM, envioG);
+  linha('5. clique no checkout', checkoutM, checkoutG);
   console.log('\n  rota depois do clique:', rota);
-  console.log('  etapa do preço visível:', etapa.visivel, '| valor exibido:', etapa.preco);
-  console.log('  tela de agradecimento:', fim);
+  console.log('  etapa do investimento visível:', etapa.visivel);
+  console.log('  produto recomendado:', fim.produto, '·', fim.preco);
+  console.log('  checkout na tela:', fim.ctaVisivel, '|', fim.href);
 
   const todosM=meta.map(evM), todosG=ga;
   let F=0; const t=(n,c,e)=>{if(!c)F++;console.log((c?'ok     ':'FALHA  ')+n+(!c&&e?'  → '+e:''))};
@@ -106,25 +141,64 @@ const evM=u=>{try{return new URL(u).searchParams.get('ev')}catch(e){return '?'}}
   // o gtag não sobrevive ao unload (ele agrupa; o event_callback só diz
   // "enfileirado"). O fbq sobrevive, por isso o Meta recebe no clique.
   t('chegada: GA4 select_item (intenção)', todosG.includes('select_item'));
-  t('preço: etapa 9 visível', etapa.visivel);
-  t('preço: ViuInvestimento no Meta', precoM.includes('ViuInvestimento'));
-  t('preço: GA4 view_price_step', todosG.includes('view_price_step'));
+  t('investimento: etapa 10 visível', etapa.visivel);
+  /* 🔴 O check que sustenta o pedido inteiro do Eduardo: ela não pode ver um
+     preço que não é o dela. Na etapa da faixa, preço nosso NENHUM. */
+  t('investimento: NENHUM preço nosso na tela', !/297|497|1\.497|1\.997/.test(etapa.texto||''),
+    (String(etapa.texto||'').match(/R\$[^\n]{0,12}/g)||[]).join(' | '));
+  t('investimento: ViuInvestimento no Meta', precoM.includes('ViuInvestimento'));
+  t('investimento: GA4 view_price_step', todosG.includes('view_price_step'));
   t('envio: Lead', envioM.includes('Lead'));
   t('envio: GA4 generate_lead', todosG.includes('generate_lead'));
-  t('tela de agradecimento apareceu', fim);
+  t('envio: ViuRecomendacao', envioM.includes('ViuRecomendacao'));
+  t('tela de recomendação apareceu', fim.visivel);
+  t('recomendou o Método LED online', /Método LED — online/.test(fim.produto||''), fim.produto);
+  t('com o preço DESSE produto', fim.preco==='R$ 297', fim.preco);
+  t('e o checkout DESSE produto', /FfyBeg0/.test(fim.href||''), fim.href);
+  t('as UTMs foram até o checkout', /utm_content=ad-mapa-01/.test(fim.href||''), fim.href);
   t('ZERO Purchase', !todosM.includes('Purchase') && !todosG.includes('purchase'));
-  t('ZERO InitiateCheckout', !todosM.includes('InitiateCheckout') && !todosG.includes('begin_checkout'));
+  /* ⚠️ ESTE TESTE MUDOU DE LADO EM 01/09/2026. Ele exigia ZERO
+     InitiateCheckout, e estava certo: antes da árvore, ninguém entrava em
+     checkout por esta página. Hoje o caminho online termina num checkout
+     Kiwify, então a ausência do evento passaria a ser o defeito. */
+  t('checkout: InitiateCheckout no Meta', checkoutM.includes('InitiateCheckout'));
+  t('checkout: GA4 begin_checkout', todosG.includes('begin_checkout'));
   t('intenção contada UMA vez só (Meta)', todosM.filter(e=>e==='IniciouInscricao').length===1,
     'contou '+todosM.filter(e=>e==='IniciouInscricao').length);
   t('intenção contada UMA vez só (GA4)', todosG.filter(e=>e==='select_item').length===1,
     'contou '+todosG.filter(e=>e==='select_item').length);
   t('investimento contado UMA vez só', todosM.filter(e=>e==='ViuInvestimento').length===1,
     'contou '+todosM.filter(e=>e==='ViuInvestimento').length);
+  /* Dois cliques no mesmo botão, UM evento. Sem a trava, uma página com CTA
+     repetido conta um IC por clique — foi o que deixou o A/B do Método LED
+     ilegível, e o vício não pode voltar por uma porta nova. */
+  t('checkout contado UMA vez só (Meta)', todosM.filter(e=>e==='InitiateCheckout').length===1,
+    'contou '+todosM.filter(e=>e==='InitiateCheckout').length);
+  t('checkout contado UMA vez só (GA4)', todosG.filter(e=>e==='begin_checkout').length===1,
+    'contou '+todosG.filter(e=>e==='begin_checkout').length);
+
+  /* 🔴 O VALOR. A rota contém "presencial": sem o override de produto, este
+     evento sairia com R$ 1.997 para quem clicou num checkout de R$ 297 — e o
+     Meta otimizaria a campanha inteira por um número que não existe. */
+  const icUrl=meta.find(u=>evM(u)==='InitiateCheckout');
+  if(icUrl){const sp=new URL(icUrl).searchParams;
+    t('InitiateCheckout com o VALOR do produto certo', sp.get('cd[value]')==='297',
+      'veio ' + sp.get('cd[value]'));
+    t('InitiateCheckout com o content_id certo', /lash2-online/.test(sp.get('cd[content_ids]')||''),
+      sp.get('cd[content_ids]'));
+  } else { t('InitiateCheckout foi capturado', false); }
   const leadUrl=meta.find(u=>evM(u)==='Lead');
   if(leadUrl){const sp=new URL(leadUrl).searchParams;
     t('Lead SEM valor de compra', !sp.get('cd[value]'));
     t('Lead com eventID (dedupe)', !!sp.get('eid'));
-    t('Lead carrega o criativo', sp.get('cd[criativo]')==='ad-mapa-01', sp.get('cd[criativo]'));}
+    t('Lead carrega o criativo', sp.get('cd[criativo]')==='ad-mapa-01', sp.get('cd[criativo]'));
+    /* Sem isto o Meta otimiza pela média de quatro ofertas de R$ 297 a
+       R$ 1.997 — e a média de preços tão distantes não descreve nenhuma. */
+    t('Lead DIZ QUAL PRODUTO', /lash2-online/.test(sp.get('cd[content_ids]')||''),
+      sp.get('cd[content_ids]'));
+    t('Lead diz o formato', sp.get('cd[formato]')==='online', sp.get('cd[formato]'));}
+  t('evento com nome próprio por produto', todosM.includes('Lead_lash2-online'),
+    todosM.filter(e=>e.indexOf('Lead')===0).join(', '));
   t('nenhum erro de JS', errosJS.length===0, errosJS.join(' | '));
 
   await b.close();

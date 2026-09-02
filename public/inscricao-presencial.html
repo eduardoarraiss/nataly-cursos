@@ -165,6 +165,36 @@ img{max-width:100%; display:block; height:auto}
 .op .sub{display:block; font-size:var(--t2); opacity:.8; margin-top:2px}
 .sub-rot{font-size:var(--t2); color:var(--tinta-2); margin:var(--e5) 0 var(--e3)}
 
+/* ---------- a tela de recomendação ----------
+   O card do produto reaproveita a caixa escura do investimento: é a mesma
+   hierarquia visual (preço grande, parcelamento, o que inclui) e a pessoa
+   já a viu uma vez. Reaproveitar economiza CSS e economiza aprendizado. */
+.rec{text-align:left; max-width:520px; margin:0 auto}
+.rec__rot{
+  font-size:var(--t1); text-transform:uppercase; letter-spacing:.14em;
+  font-weight:800; color:var(--tinta-2); margin:0 0 var(--e2);
+}
+.rec__nome{
+  font-family:var(--f-serif); font-style:italic; font-weight:700;
+  font-size:var(--t6); line-height:1.1; margin:0 0 var(--e4); color:var(--tinta);
+}
+@media(min-width:700px){.rec__nome{font-size:44px}}
+.rec__porque{
+  margin:0 0 var(--e5); font-size:var(--t3); line-height:1.55; color:var(--tinta-2);
+  border-left:2px solid var(--argila); padding-left:var(--e3);
+}
+.rec__cta{display:inline-flex; align-items:center; justify-content:center;
+  text-decoration:none; text-align:center; margin:var(--e5) 0 0; width:100%}
+.rec__nota{margin:var(--e4) 0 0; font-size:var(--t2); line-height:1.5; color:var(--tinta-2)}
+/* A caixa que diz "o presencial existe" para quem podia vir e só o
+   investimento travou. Filete, nunca sombra — e nunca escondida. */
+.rec__extra{
+  margin:var(--e5) 0 0; padding:var(--e4); border:1px solid var(--filete);
+  border-radius:var(--r1); background:var(--papel);
+}
+.rec__extra p{margin:0; font-size:var(--t2); line-height:1.55; color:var(--tinta-2)}
+.rec__extra b{color:var(--tinta)}
+
 /* ---------- a etapa do investimento ---------- */
 .valor{
   background:var(--pretinho); color:var(--creme);
@@ -268,8 +298,9 @@ img{max-width:100%; display:block; height:auto}
            alt="Nataly Ribeiro, que lê e responde pessoalmente cada inscrição">
       <p class="rot">Sou eu que vou te responder</p>
       <h1>Me conta de você antes de <em>garantir a sua vaga</em></h1>
-      <p>São nove perguntas rápidas, menos de dois minutos. Eu leio uma por uma e te
-      chamo no WhatsApp para combinar a data da sua prática em Cambuí.</p>
+      <p>São dez perguntas rápidas, menos de dois minutos. No fim eu te digo qual
+      dos meus cursos é o certo para você — e eu leio cada resposta antes de te
+      chamar no WhatsApp.</p>
       <div class="acoes" style="justify-content:center">
         <button type="button" class="btn" id="comecar">Começar &rarr;</button>
       </div>
@@ -285,7 +316,7 @@ img{max-width:100%; display:block; height:auto}
 
       <!-- ============ 1. NOME ============ -->
       <fieldset class="etapa" data-etapa="1" hidden>
-        <legend class="q"><span class="n">Pergunta 1 de 9</span>Qual é o seu nome?</legend>
+        <legend class="q"><span class="n"></span>Qual é o seu nome?</legend>
         <p class="ajuda">Nome e sobrenome, do jeito que você quer que eu te chame.</p>
         <p class="erro" id="e-nome" role="alert" hidden></p>
         <div class="campo">
@@ -298,7 +329,7 @@ img{max-width:100%; display:block; height:auto}
 
       <!-- ============ 2. CIDADE ============ -->
       <fieldset class="etapa" data-etapa="2" hidden>
-        <legend class="q"><span class="n">Pergunta 2 de 9</span>De onde você é?</legend>
+        <legend class="q"><span class="n"></span>De onde você é?</legend>
         <p class="ajuda">A prática é em Cambuí, no sul de Minas. Quero saber de quão
         longe você viria.</p>
         <p class="erro" id="e-cidade" role="alert" hidden></p>
@@ -320,7 +351,7 @@ img{max-width:100%; display:block; height:auto}
 
       <!-- ============ 3. WHATSAPP ============ -->
       <fieldset class="etapa" data-etapa="3" hidden>
-        <legend class="q"><span class="n">Pergunta 3 de 9</span>Qual é o seu WhatsApp?</legend>
+        <legend class="q"><span class="n"></span>Qual é o seu WhatsApp?</legend>
         <p class="ajuda">É por aí que eu te respondo. Confere o DDD.</p>
         <p class="erro" id="e-telefone" role="alert" hidden></p>
         <div class="campo">
@@ -340,7 +371,7 @@ img{max-width:100%; display:block; height:auto}
 
       <!-- ============ 4. INSTAGRAM ============ -->
       <fieldset class="etapa" data-etapa="4" hidden>
-        <legend class="q"><span class="n">Pergunta 4 de 9</span>E o seu Instagram?</legend>
+        <legend class="q"><span class="n"></span>E o seu Instagram?</legend>
         <p class="ajuda">Eu gosto de ver quem está do outro lado antes de conversar.</p>
         <p class="erro" id="e-instagram" role="alert" hidden></p>
         <div class="campo">
@@ -353,7 +384,7 @@ img{max-width:100%; display:block; height:auto}
 
       <!-- ============ 5. SITUAÇÃO ============ -->
       <fieldset class="etapa" data-etapa="5" hidden>
-        <legend class="q"><span class="n">Pergunta 5 de 9</span>Hoje, você está mais para qual delas?</legend>
+        <legend class="q"><span class="n"></span>Hoje, você está mais para qual delas?</legend>
         <p class="ajuda">Não existe resposta errada. Eu já formei mulheres vindas dos
         três caminhos.</p>
         <p class="erro" id="e-situacao" role="alert" hidden></p>
@@ -372,9 +403,27 @@ img{max-width:100%; display:block; height:auto}
         </div>
       </fieldset>
 
+      <!-- ============ 5b. O QUE ELA BUSCA (SÓ PARA QUEM JÁ É LASH) ============
+           A pergunta que o Eduardo pediu. Só faz sentido para quem já
+           trabalha com cílios: para quem vem de fora, "aperfeiçoar a extensão"
+           não quer dizer nada, e perguntar assim mesmo faria o formulário
+           parecer que não leu a resposta anterior.
+           Quem não é lash NUNCA vê esta tela: o JS a tira da fila. -->
+      <fieldset class="etapa etapa--se-lash" data-etapa="5.5" hidden>
+        <legend class="q"><span class="n"></span>E o que você está buscando agora?</legend>
+        <p class="ajuda">Você já atende. Me diz o que falta, que eu te mostro
+        o caminho certo — não o mais caro.</p>
+        <p class="erro" id="e-busca" role="alert" hidden></p>
+        <div class="ops" role="radiogroup" aria-label="O que você está buscando">
+          <label class="op"><input type="radio" name="busca" value="aperfeicoar-cilios"><span class="marca" aria-hidden="true"></span><span class="txt">Me aperfeiçoar na extensão de cílios<span class="sub">Quero base, técnica e durabilidade melhores</span></span></label>
+          <label class="op"><input type="radio" name="busca" value="tecnica-led"><span class="marca" aria-hidden="true"></span><span class="txt">Aprender a técnica com LED<span class="sub">Quero o Método LED, a cura por fotopolimerização</span></span></label>
+          <label class="op"><input type="radio" name="busca" value="nao-sei"><span class="marca" aria-hidden="true"></span><span class="txt">Ainda não sei — quero a sua ajuda para decidir<span class="sub">Me mostra o que faz mais sentido para o meu momento</span></span></label>
+        </div>
+      </fieldset>
+
       <!-- ============ 6. META ============ -->
       <fieldset class="etapa" data-etapa="6" hidden>
-        <legend class="q"><span class="n">Pergunta 6 de 9</span>Quanto você quer ganhar por mês com cílios?</legend>
+        <legend class="q"><span class="n"></span>Quanto você quer ganhar por mês com cílios?</legend>
         <p class="ajuda">Isso me ajuda a te mostrar quantas clientes por semana fecham
         essa conta.</p>
         <p class="erro" id="e-meta_renda" role="alert" hidden></p>
@@ -397,7 +446,7 @@ img{max-width:100%; display:block; height:auto}
 
       <!-- ============ 7. OBJETIVO ============ -->
       <fieldset class="etapa" data-etapa="7" hidden>
-        <legend class="q"><span class="n">Pergunta 7 de 9</span>O que faria esse curso valer a pena para você?</legend>
+        <legend class="q"><span class="n"></span>O que faria esse curso valer a pena para você?</legend>
         <p class="ajuda">Escreve do seu jeito. É o que eu leio primeiro quando o seu
         nome chega aqui.</p>
         <div class="campo">
@@ -409,7 +458,7 @@ img{max-width:100%; display:block; height:auto}
 
       <!-- ============ 8. CAMBUÍ ============ -->
       <fieldset class="etapa" data-etapa="8" hidden>
-        <legend class="q"><span class="n">Pergunta 8 de 9</span>A prática é presencial, em Cambuí, MG. Você consegue vir?</legend>
+        <legend class="q"><span class="n"></span>A prática é presencial, em Cambuí, MG. Você consegue vir?</legend>
         <p class="ajuda">É um dia só, e a data a gente marca junto, conforme a sua agenda.
         Mas você precisa vir até aqui.</p>
         <p class="erro" id="e-disponibilidade" role="alert" hidden></p>
@@ -420,34 +469,47 @@ img{max-width:100%; display:block; height:auto}
         </div>
       </fieldset>
 
-      <!-- ============ 9. O INVESTIMENTO ============
-           A ÚNICA página do site onde o valor aparece. Fica aqui, no fim,
-           porque quem já respondeu oito perguntas responde esta; quem vê o
-           número na primeira tela some. -->
+      <!-- ============ 9. COMO ELA PREFERE APRENDER ============
+           Vem DEPOIS da pergunta de Cambuí e ANTES da de dinheiro, e essa
+           ordem é o ponto todo da árvore: distância → preferência → bolso.
+           Se o dinheiro pesasse primeiro, quem mora perto e faria o presencial
+           seria empurrada para a oferta barata e a cara se canibalizaria. -->
       <fieldset class="etapa" data-etapa="9" hidden>
-        <legend class="q"><span class="n">Pergunta 9 de 9 · a última</span>Agora sim: o investimento</legend>
-        <div class="valor">
-          <p class="valor__n">R$ 1.497</p>
-          <p class="valor__p">ou 12x de R$ 154,82</p>
-          <p class="valor__a">à vista no Pix ou no cartão</p>
-          <ul class="valor__l">
-            <li>Um dia de prática ao vivo comigo, em Cambuí, MG</li>
-            <li>Todo o material da prática incluso, você não leva nada</li>
-            <li>Apostila impressa na sua mão</li>
-            <li>O curso online completo, com as 39 aulas teóricas</li>
-            <li>A aula prática completa e as 10 técnicas</li>
-            <li>Bônus de precificação, marketing e fidelização</li>
-            <li>Grupo de suporte no WhatsApp</li>
-            <li>Certificado</li>
-          </ul>
+        <legend class="q"><span class="n"></span>E como você prefere aprender?</legend>
+        <p class="ajuda">Não tem certo nem errado. Eu ensino dos dois jeitos, e o
+        que decide é a sua rotina.</p>
+        <p class="erro" id="e-prefere_formato" role="alert" hidden></p>
+        <div class="ops" role="radiogroup" aria-label="Como você prefere aprender">
+          <label class="op"><input type="radio" name="prefere_formato" value="presencial"><span class="marca" aria-hidden="true"></span><span class="txt">Ao vivo, com você corrigindo a minha mão<span class="sub">Aprendo fazendo, com alguém do lado</span></span></label>
+          <label class="op"><input type="radio" name="prefere_formato" value="online"><span class="marca" aria-hidden="true"></span><span class="txt">Online, no meu ritmo<span class="sub">Prefiro assistir e treinar quando der</span></span></label>
+          <label class="op"><input type="radio" name="prefere_formato" value="nao-sei"><span class="marca" aria-hidden="true"></span><span class="txt">Não sei ainda — me diz você<span class="sub">Confio na sua indicação</span></span></label>
         </div>
-        <p class="ajuda">Prefiro te falar o valor agora do que fazer você perder tempo.
-        Pode ser sincera comigo:</p>
-        <p class="erro" id="e-aceita_valor" role="alert" hidden></p>
-        <div class="ops" role="radiogroup" aria-label="Sobre o valor do investimento">
-          <label class="op"><input type="radio" name="aceita_valor" value="sim"><span class="marca" aria-hidden="true"></span><span class="txt">Sim, está dentro do que eu posso investir<span class="sub">Quero garantir a minha vaga</span></span></label>
-          <label class="op"><input type="radio" name="aceita_valor" value="preciso-parcelar"><span class="marca" aria-hidden="true"></span><span class="txt">Sim, mas eu preciso parcelar<span class="sub">Quero entender as condições</span></span></label>
-          <label class="op"><input type="radio" name="aceita_valor" value="nao"><span class="marca" aria-hidden="true"></span><span class="txt">Agora não cabe no meu bolso<span class="sub">Prefiro ser avisada de outras opções</span></span></label>
+      </fieldset>
+
+      <!-- ============ 10. A FAIXA DE INVESTIMENTO ============
+           🔴 AQUI NÃO APARECE PREÇO DE PRODUTO NENHUM, DE PROPÓSITO.
+           A versão anterior mostrava "R$ 1.497" cravado, o que era verdade
+           quando existia um produto só. Com quatro preços (R$ 297, R$ 497,
+           R$ 1.497, R$ 1.997) um número fixo mentiria para a maioria.
+
+           A saída: perguntar a FAIXA DELA antes de revelar qualquer valor
+           nosso. As faixas foram desenhadas para CONTER os preços — 497 e 297
+           cabem em "até R$ 500", 1.497 cabe em "R$ 500 a R$ 1.500", 1.997 cabe
+           em "R$ 1.500 a R$ 2.000" — então a árvore nunca recomenda acima do
+           que ela marcou, e o único preço que ela vê na vida é o do produto
+           dela, na tela final. O teste `teste-arvore.js` prova isso nas 405
+           combinações possíveis. -->
+      <fieldset class="etapa" data-etapa="10" hidden>
+        <legend class="q"><span class="n"></span>Quanto você consegue investir na sua formação agora?</legend>
+        <p class="ajuda">Pode ser sincera. Eu tenho caminhos de preços bem
+        diferentes, e é isso que me faz te indicar o certo em vez do mais caro.</p>
+        <p class="erro" id="e-faixa_investimento" role="alert" hidden></p>
+        <div class="ops" role="radiogroup" aria-label="Sua faixa de investimento">
+          <label class="op"><input type="radio" name="faixa_investimento" value="ate-500"><span class="marca" aria-hidden="true"></span><span class="txt">Até R$ 500<span class="sub">É o que dá para agora</span></span></label>
+          <label class="op"><input type="radio" name="faixa_investimento" value="500-1500"><span class="marca" aria-hidden="true"></span><span class="txt">De R$ 500 a R$ 1.500</span></label>
+          <label class="op"><input type="radio" name="faixa_investimento" value="1500-2000"><span class="marca" aria-hidden="true"></span><span class="txt">De R$ 1.500 a R$ 2.000</span></label>
+          <label class="op"><input type="radio" name="faixa_investimento" value="acima-2000"><span class="marca" aria-hidden="true"></span><span class="txt">Mais de R$ 2.000<span class="sub">Quero a formação mais completa</span></span></label>
+          <label class="op"><input type="radio" name="faixa_investimento" value="depende-parcelamento"><span class="marca" aria-hidden="true"></span><span class="txt">Depende: consigo mais se puder parcelar<span class="sub">Quero entender as condições com você</span></span></label>
         </div>
       </fieldset>
 
@@ -463,19 +525,44 @@ img{max-width:100%; display:block; height:auto}
       </div>
     </form>
 
-    <!-- ============ TELA FINAL ============ -->
+    <!-- ============ TELA FINAL — A RECOMENDAÇÃO ============
+         Tudo aqui é preenchido pelo JS com o que o SERVIDOR devolveu. O HTML
+         não traz nome de produto, preço nem link de checkout: se trouxesse,
+         um bug de JS deixaria na tela o produto errado, e "R$ 1.997" cravado
+         num HTML servido para quem se qualificou no de R$ 297 é exatamente o
+         que este trabalho veio corrigir. Vazio é seguro; errado, não. -->
     <section class="fim" id="obrigado" hidden tabindex="-1">
       <div class="fim__selo" aria-hidden="true">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"
              stroke-linecap="round" stroke-linejoin="round"><path d="m5 13 4.5 4.5L19 7"></path></svg>
       </div>
       <h2>Pronto, <span id="nome-fim">recebi a sua inscrição</span>!</h2>
-      <p>A sua inscrição chegou aqui e eu já fui avisada.</p>
-      <ul class="passos">
+      <p id="fim-sub">A sua inscrição chegou aqui e eu já fui avisada.</p>
+
+      <div class="rec" id="rec" hidden>
+        <p class="rec__rot">Eu acho que a opção ideal para você é</p>
+        <p class="rec__nome" id="rec-nome"></p>
+        <p class="rec__porque" id="rec-porque"></p>
+        <div class="valor">
+          <p class="valor__n" id="rec-preco"></p>
+          <p class="valor__p" id="rec-parcela"></p>
+          <p class="valor__a">à vista no Pix ou no cartão</p>
+          <ul class="valor__l" id="rec-inclui"></ul>
+        </div>
+        <!-- Só no caminho ONLINE. No presencial a Nataly combina a data antes
+             de cobrar: mandar checkout aqui venderia uma vaga sem data. -->
+        <a class="btn rec__cta" id="rec-cta" hidden rel="noopener">Quero garantir a minha vaga</a>
+        <p class="rec__nota" id="rec-nota"></p>
+        <!-- Ela PODE vir e só o investimento travou. O presencial não some em
+             silêncio: aparece com preço, e ela decide se quer conversar. -->
+        <div class="rec__extra" id="rec-extra" hidden><p id="rec-extra-txt"></p></div>
+      </div>
+
+      <ul class="passos" id="rec-passos">
         <li><b>1</b><span>Eu leio as suas respostas pessoalmente. Não é robô, sou eu mesma.</span></li>
         <li><b>2</b><span>Te chamo no WhatsApp <strong>em até 24 horas</strong>, de segunda a sábado.
         Salva o meu número: <strong>(35) 99716-4668</strong>.</span></li>
-        <li><b>3</b><span>A gente combina a data da sua prática em Cambuí conforme a sua
+        <li id="passo-3"><b>3</b><span>A gente combina a data da sua prática em Cambuí conforme a sua
         disponibilidade, e eu te mando o link para garantir a vaga.</span></li>
       </ul>
       <p style="margin-top:var(--e6);font-size:var(--t2)">Se eu demorar, me chama: estou no
@@ -497,25 +584,45 @@ privacidade</a>.</span></p>
 
 <script>
 /* ============================================================
-   INSCRIÇÃO — uma pergunta por tela
+   INSCRIÇÃO — uma pergunta por tela, com árvore de decisão
    ============================================================
-   Etapa 0 é a abertura; 1 a 9 são as perguntas; a 9 é o investimento
-   — a ÚNICA tela do site onde o valor aparece.
+   Etapa 0 é a abertura. A etapa 5.5 SÓ EXISTE para quem já trabalha
+   com cílios, então o total é 10 ou 11 perguntas conforme a pessoa —
+   e a numeração é reescrita a cada passo em `numera()`.
+
+   🔴 NENHUM PREÇO DE PRODUTO VIVE NESTE HTML. A etapa 10 pergunta a
+   FAIXA que cabe no bolso dela, sem revelar valor nosso; o único
+   preço que ela vê na vida é o do produto recomendado, na tela final,
+   escrito pelo JS com o que o SERVIDOR devolveu. A árvore roda em
+   funil-presencial/produtos.js e em lugar nenhum mais.
 
    Eventos disparados aqui (o mapa completo está no LEIA-ME):
-     · ViuInvestimento  — quando a etapa 9 aparece, uma vez por sessão.
-       É o funil mais valioso: diz quantas desistem ao ver o número.
-     · Lead             — no envio, com eventID e SEM valor de compra.
-   Nunca Purchase (quem dispara é a Kiwify) e nunca InitiateCheckout
-   (ninguém entra em checkout por aqui).
+     · ViuInvestimento  — quando a etapa da faixa aparece, 1×/sessão.
+       Diz quantas desistem quando o assunto vira dinheiro.
+     · ViuRecomendacao  — a tela final, com o produto recomendado.
+     · Lead             — no envio, com eventID, content_ids do produto
+       e SEM valor de compra (valor é da Kiwify, no Purchase).
+     · InitiateCheckout — SÓ no caminho online, no clique do checkout,
+       com o valor do produto CERTO e travado em 1 por sessão. Ele
+       existe aqui desde 01/09/2026: antes da árvore ninguém entrava em
+       checkout por esta página, e hoje metade dos caminhos entra.
+   Nunca Purchase — quem dispara é a Kiwify (pixel + CAPI).
    ============================================================ */
 (function () {
   var form = document.getElementById('insc-form');
   if (!form) return;
 
-  var CHAVE = 'nr_insc_presencial';
-  var TOTAL = 9;                 /* perguntas; a abertura é a etapa 0 */
-  var ETAPA_VALOR = 9;
+  var CHAVE = 'nr_insc_presencial_v2';   /* v2: a árvore mudou os campos; um
+     rascunho da versão antiga restauraria respostas que não existem mais e a
+     pessoa cairia numa etapa vazia sem entender por quê. Chave nova = começo
+     limpo, uma vez só, para quem tinha rascunho pendente. */
+
+  /* A FILA DE ETAPAS. Não é mais uma contagem de 1 a 9: a pergunta 5.5 só
+     existe para quem já trabalha com cílios, então o total muda de pessoa
+     para pessoa (10 ou 11 telas contando a abertura). Tudo o que navega, mede
+     progresso e numera lê DESTA lista — nunca de um número cravado. */
+  var CONDICIONAL = '5.5';
+  var ETAPA_VALOR = '10';        /* a faixa de investimento */
 
   var etapas   = [].slice.call(document.querySelectorAll('.etapa'));
   var barra    = document.getElementById('barra');
@@ -525,21 +632,36 @@ privacidade</a>.</span></p>
   var erroGeral= document.getElementById('e-geral');
   var obrigado = document.getElementById('obrigado');
   var rodape   = document.getElementById('rodape');
-  var atual    = 0;
+  var atual    = '0';
   var enviando = false;
 
-  var REGRAS = [
-    { campos: [] },                                  /* 0 — abertura */
-    { campos: ['nome'] },
-    { campos: ['cidade'] },
-    { campos: ['telefone', 'email'] },
-    { campos: ['instagram'] },
-    { campos: ['situacao', 'faixa_idade'] },
-    { campos: ['meta_renda', 'quando_comecar'] },
-    { campos: [] },                                  /* 7 — objetivo é opcional */
-    { campos: ['disponibilidade'] },
-    { campos: ['aceita_valor'] }
-  ];
+  /* Regras por ID de etapa, não por posição num array: com uma etapa que
+     entra e sai da fila, índice numérico apontaria para a pergunta errada. */
+  var REGRAS = {
+    '0':   [],                              /* abertura */
+    '1':   ['nome'],
+    '2':   ['cidade'],
+    '3':   ['telefone', 'email'],
+    '4':   ['instagram'],
+    '5':   ['situacao', 'faixa_idade'],
+    '5.5': ['busca'],                       /* só para quem já é lash */
+    '6':   ['meta_renda', 'quando_comecar'],
+    '7':   [],                              /* objetivo é opcional */
+    '8':   ['disponibilidade'],
+    '9':   ['prefere_formato'],
+    '10':  ['faixa_investimento']
+  };
+
+  /* A ordem completa. `fila()` devolve só as que valem para ESTA pessoa. */
+  var ORDEM = ['0', '1', '2', '3', '4', '5', '5.5', '6', '7', '8', '9', '10'];
+
+  function ehLash() { return valorDe('situacao') === 'ja-lash'; }
+
+  function fila() {
+    var lash = ehLash();
+    return ORDEM.filter(function (id) { return id !== CONDICIONAL || lash; });
+  }
+  function idx(id) { var f = fila(), i = f.indexOf(id); return i < 0 ? 0 : i; }
 
   var MENSAGENS = {
     nome:            'Me diz o seu nome para eu saber como te chamar.',
@@ -552,7 +674,9 @@ privacidade</a>.</span></p>
     meta_renda:      'Escolhe quanto você quer ganhar por mês.',
     quando_comecar:  'Escolhe quando você quer começar.',
     disponibilidade: 'Preciso saber se você consegue vir até Cambuí.',
-    aceita_valor:    'Me diz o que você acha do valor — pode ser sincera.'
+    busca:           'Me diz o que você está buscando agora.',
+    prefere_formato: 'Escolhe como você prefere aprender.',
+    faixa_investimento: 'Escolhe a faixa que cabe no seu momento — pode ser sincera.'
   };
 
   /* ---------- utilidades ---------- */
@@ -596,9 +720,9 @@ privacidade</a>.</span></p>
     }
   }
 
-  function validaEtapa(i) {
+  function validaEtapa(id) {
     var ok = true, primeiro = null;
-    REGRAS[i].campos.forEach(function (n) {
+    (REGRAS[id] || []).forEach(function (n) {
       if (valida(n)) { limpaErro(n); return; }
       mostraErro(n, MENSAGENS[n]); ok = false;
       if (!primeiro) primeiro = n;
@@ -626,7 +750,8 @@ privacidade</a>.</span></p>
 
   /* ---------- rascunho ---------- */
   var TEXTOS = ['nome','cidade','estado','telefone','email','instagram','objetivo'];
-  var ESCOLHAS = ['situacao','faixa_idade','meta_renda','quando_comecar','disponibilidade','aceita_valor'];
+  var ESCOLHAS = ['situacao','busca','faixa_idade','meta_renda','quando_comecar',
+                  'disponibilidade','prefere_formato','faixa_investimento'];
 
   function salvaRascunho() {
     try {
@@ -647,9 +772,9 @@ privacidade</a>.</span></p>
         var el = campo(n);
         if (el && el.type !== 'radio') el.value = d[n];
       });
-      if (typeof d._etapa === 'number' && d._etapa > 0 && d._etapa <= TOTAL) return d._etapa;
+      if (d._etapa && ORDEM.indexOf(String(d._etapa)) > 0) return String(d._etapa);
     } catch (e) {}
-    return 0;
+    return '0';
   }
   form.addEventListener('input', salvaRascunho);
   form.addEventListener('change', salvaRascunho);
@@ -662,20 +787,27 @@ privacidade</a>.</span></p>
   form.addEventListener('input', aoCorrigir);
   form.addEventListener('change', aoCorrigir);
 
-  /* ---------- navegação ---------- */
-  function vaiPara(i, focar) {
-    atual = Math.max(0, Math.min(TOTAL, i));
-    etapas.forEach(function (f) {
-      f.hidden = (parseInt(f.getAttribute('data-etapa'), 10) !== atual);
+  /* ---------- navegação ----------
+     `atual` é o ID da etapa (string), não a posição. A posição é derivada da
+     fila na hora, porque a fila muda quando ela responde a pergunta 5. */
+  function vaiPara(id, focar) {
+    var f = fila();
+    if (f.indexOf(String(id)) < 0) id = f[0];
+    atual = String(id);
+    var pos = idx(atual), ultimo = f.length - 1;
+
+    etapas.forEach(function (el) {
+      el.hidden = (el.getAttribute('data-etapa') !== atual);
     });
-    form.hidden = (atual === 0);
-    barra.style.width = Math.round((atual / TOTAL) * 100) + '%';
-    btSubir.hidden = (atual <= 1);   /* da pergunta 1 não há para onde voltar */
-    btAvanca.textContent = (atual === TOTAL) ? 'Enviar a minha inscrição' : 'Avançar';
+    form.hidden = (atual === '0');
+    barra.style.width = Math.round((pos / ultimo) * 100) + '%';
+    btSubir.hidden = (pos <= 1);   /* da pergunta 1 não há para onde voltar */
+    btAvanca.textContent = (pos === ultimo) ? 'Ver o que eu indico para você' : 'Avançar';
     erroGeral.hidden = true;
+    numera();
     if (atual === ETAPA_VALOR) viuInvestimento();
     if (focar) {
-      var alvo = etapas.filter(function (f) { return !f.hidden; })[0];
+      var alvo = etapas.filter(function (el) { return !el.hidden; })[0];
       var pri = alvo && alvo.querySelector('input:not([type=radio]):not([tabindex="-1"]), textarea, input[type=radio]');
       if (pri) { try { pri.focus({ preventScroll: true }); } catch (e) { pri.focus(); } }
       window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -683,13 +815,32 @@ privacidade</a>.</span></p>
     salvaRascunho();
   }
 
-  function avanca() {
-    if (atual === TOTAL) { enviar(); return; }
-    if (validaEtapa(atual)) vaiPara(atual + 1, true);
+  /* "Pergunta 6 de 11" reescrito a cada passo. Cravar o número no HTML
+     mentiria para metade das pessoas: quem já é lash responde uma a mais. */
+  function numera() {
+    var f = fila(), total = f.length - 1;   /* a abertura não conta */
+    etapas.forEach(function (el) {
+      var id = el.getAttribute('data-etapa');
+      var alvo = el.querySelector('.n');
+      if (!alvo || id === '0') return;
+      var pos = f.indexOf(id);
+      if (pos < 1) { alvo.textContent = ''; return; }
+      alvo.textContent = 'Pergunta ' + pos + ' de ' + total +
+        (pos === total ? ' · a última' : '');
+    });
   }
 
-  btComeca.addEventListener('click', function () { vaiPara(1, true); });
-  btSubir.addEventListener('click', function () { if (atual > 1) vaiPara(atual - 1, true); });
+  function avanca() {
+    var f = fila();
+    if (idx(atual) === f.length - 1) { enviar(); return; }
+    if (validaEtapa(atual)) vaiPara(fila()[idx(atual) + 1], true);
+  }
+
+  btComeca.addEventListener('click', function () { vaiPara('1', true); });
+  btSubir.addEventListener('click', function () {
+    var pos = idx(atual);
+    if (pos > 1) vaiPara(fila()[pos - 1], true);
+  });
 
   /* Enter avança — menos no textarea, onde Enter é quebra de linha */
   document.addEventListener('keydown', function (ev) {
@@ -757,8 +908,10 @@ privacidade</a>.</span></p>
     } catch (e) {}
   })();
 
-  /* ---------- evento da etapa do preço ----------
-     Uma vez por sessão. É o número que diz quantas desistem ao ver o valor —
+  /* ---------- evento da etapa da faixa de investimento ----------
+     Uma vez por sessão. É o número que diz quantas desistem quando o assunto
+     vira dinheiro — agora sem que nenhum preço nosso tenha aparecido, o que
+     torna a medida mais limpa: mede a objeção, não o susto com um número —
      contar mais de uma vez (ela volta e avança de novo) inflaria a métrica,
      que é o mesmo erro que deixou o A/B do Método LED ilegível. */
   var valorJaContado = false;
@@ -780,8 +933,9 @@ privacidade</a>.</span></p>
   /* ---------- envio ---------- */
   function enviar() {
     if (enviando) return;
-    for (var i = 1; i <= TOTAL; i++) {
-      if (!validaEtapa(i)) { vaiPara(i, true); return; }
+    var f = fila();
+    for (var i = 1; i < f.length; i++) {
+      if (!validaEtapa(f[i])) { vaiPara(f[i], true); return; }
     }
     enviando = true;
     btAvanca.disabled = true;
@@ -792,9 +946,14 @@ privacidade</a>.</span></p>
       nome: valorDe('nome'), telefone: valorDe('telefone'), email: valorDe('email'),
       instagram: valorDe('instagram'), cidade: valorDe('cidade'), estado: valorDe('estado'),
       faixa_idade: valorDe('faixa_idade'), situacao: valorDe('situacao'),
+      /* só vai quem realmente respondeu: quem não é lash nunca viu a pergunta,
+         e mandar string vazia faria o servidor recusar um envio completo */
+      busca: ehLash() ? valorDe('busca') : null,
       meta_renda: valorDe('meta_renda'), objetivo: valorDe('objetivo'),
       quando_comecar: valorDe('quando_comecar'),
-      disponibilidade: valorDe('disponibilidade'), aceita_valor: valorDe('aceita_valor'),
+      disponibilidade: valorDe('disponibilidade'),
+      prefere_formato: valorDe('prefere_formato'),
+      faixa_investimento: valorDe('faixa_investimento'),
       sobrenome_confirmacao: valorDe('sobrenome_confirmacao'),
       lead_uid: uid(), atribuicao: ATRIB
     };
@@ -806,12 +965,13 @@ privacidade</a>.</span></p>
     })
       .then(function (r) { return r.json().then(function (j) { return { http: r.status, j: j }; }); })
       .then(function (res) {
-        if (res.j && res.j.ok) { sucesso(dados); return; }
+        if (res.j && res.j.ok) { sucesso(dados, res.j.recomendacao); return; }
         if (res.j && res.j.erros) {
           var pri = Object.keys(res.j.erros)[0];
           Object.keys(res.j.erros).forEach(function (n) { mostraErro(n, res.j.erros[n]); });
-          for (var i = 1; i <= TOTAL; i++) {
-            if (REGRAS[i].campos.indexOf(pri) !== -1) { vaiPara(i, true); break; }
+          var f2 = fila();
+          for (var i = 1; i < f2.length; i++) {
+            if ((REGRAS[f2[i]] || []).indexOf(pri) !== -1) { vaiPara(f2[i], true); break; }
           }
         } else {
           erroGeral.textContent = (res.j && res.j.mensagem) ||
@@ -831,14 +991,110 @@ privacidade</a>.</span></p>
   function reabilita() {
     enviando = false;
     btAvanca.disabled = false;
-    btAvanca.textContent = (atual === TOTAL) ? 'Enviar a minha inscrição' : 'Avançar';
+    var f = fila();
+    btAvanca.textContent = (idx(atual) === f.length - 1)
+      ? 'Ver o que eu indico para você' : 'Avançar';
   }
 
   /* ---------- sucesso ----------
      Mesmo mecanismo da /entrar: função idempotente chamada tanto pelo
      event_callback do GA quanto por um setTimeout de segurança. Sem isso,
      em celular com rede ruim o evento não sai. */
-  function sucesso(dados) {
+  /* ---------- a tela de recomendação ----------
+     Tudo vem do SERVIDOR. Esta função não decide produto, não escolhe preço e
+     não monta URL de checkout: ela só desenha o que veio. É a garantia de que
+     a tela, a linha do banco e o aviso do WhatsApp dizem a mesma coisa. */
+  function desenhaRecomendacao(r) {
+    if (!r || !r.nome) return;   /* sem recomendação, a tela genérica já serve */
+
+    document.getElementById('rec-nome').textContent = r.nome;
+    document.getElementById('rec-porque').textContent = r.porque || '';
+    document.getElementById('rec-preco').textContent = r.preco || '';
+    document.getElementById('rec-parcela').textContent = r.parcela ? 'ou ' + r.parcela : '';
+
+    var lista = document.getElementById('rec-inclui');
+    lista.innerHTML = '';
+    (r.inclui || []).forEach(function (item) {
+      var li = document.createElement('li');
+      li.textContent = item;
+      lista.appendChild(li);
+    });
+
+    var cta = document.getElementById('rec-cta');
+    var nota = document.getElementById('rec-nota');
+    var passo3 = document.getElementById('passo-3');
+
+    if (r.formato === 'online' && r.checkout) {
+      /* O href sai cru daqui e é decorado pelo UTM forwarding do
+         analytics.js — uma implementação só, em vez de remontar a query aqui
+         e ver as duas divergirem com o tempo.
+         Mas ele precisa ser chamado AGORA, na injeção: o `apply()` de
+         carregamento já rodou (este botão nem existia), e a garantia do
+         clique não cobre "copiar endereço do link" nem o clique do meio. Sem
+         esta chamada a pessoa chega no checkout sem utm_*, sem src e sem
+         fbclid, e a venda entra na Kiwify sem origem nenhuma. */
+      cta.setAttribute('href', r.checkout);
+      cta.hidden = false;
+      try { if (window.NR_DECORA_UTM) window.NR_DECORA_UTM(); } catch (e) {}
+      nota.textContent = 'O acesso é liberado assim que o pagamento é confirmado. ' +
+        'Mesmo assim eu te chamo no WhatsApp para acompanhar o seu começo.';
+      if (passo3) passo3.hidden = true;   /* não há data de prática a combinar */
+    } else {
+      /* Presencial: SEM checkout. A data vem antes do pagamento. */
+      cta.hidden = true;
+      nota.textContent = 'Aqui eu não te mando link de pagamento agora: primeiro a ' +
+        'gente combina a data da sua prática em Cambuí, e aí sim eu te envio o link.';
+      if (passo3) passo3.hidden = false;
+    }
+
+    /* Ela podia vir e só o investimento travou. Dizer que o presencial existe. */
+    var extra = document.getElementById('rec-extra');
+    if (r.presencial_possivel) {
+      document.getElementById('rec-extra-txt').innerHTML =
+        'E fica sabendo: o <b>' + escapa(r.presencial_possivel.nome) + '</b> existe, por ' +
+        escapa(r.presencial_possivel.preco) + ' (' + escapa(r.presencial_possivel.parcela) +
+        '). Se você quiser fazer a prática ao vivo comigo, me fala no WhatsApp que a ' +
+        'gente vê as condições juntas.';
+      extra.hidden = false;
+    } else {
+      extra.hidden = true;
+    }
+
+    document.getElementById('fim-sub').textContent = r.sugestao
+      ? 'A sua inscrição chegou e eu já fui avisada. Olha o que eu sugiro para você:'
+      : 'A sua inscrição chegou e eu já fui avisada.';
+
+    document.getElementById('rec').hidden = false;
+
+    /* O produto passa a valer para os eventos desta página. O pixel.js e o
+       analytics.js leem esta variável ANTES de cair na detecção por rota —
+       sem isso a rota /inscricao-presencial contém "presencial" e o
+       InitiateCheckout sairia com R$ 1.997 mesmo para quem clicou no de
+       R$ 297. Ver o comentário em pixel.js. */
+    window.NR_PRODUTO = { id: r.id, name: r.nome_meta || r.nome, value: r.valor };
+
+    try {
+      if (window.fbq) fbq('trackCustom', 'ViuRecomendacao', Object.assign({}, COMUNS, {
+        content_ids: [r.id], content_name: r.nome_meta || r.nome,
+        produto: r.id, formato: r.formato
+      }));
+    } catch (e) {}
+    try {
+      if (window.gtag) gtag('event', 'view_recommendation', Object.assign({}, COMUNS, {
+        transport_type: 'beacon', produto: r.id, formato: r.formato,
+        items: [{ item_id: r.id, item_name: r.nome_meta || r.nome, price: r.valor, quantity: 1 }]
+      }));
+    } catch (e) {}
+  }
+
+  /* Só para o innerHTML da caixa do presencial. O texto vem do servidor, mas
+     escapar custa três linhas e tira a pergunta "e se um dia vier de fora?". */
+  function escapa(v) {
+    return String(v == null ? '' : v)
+      .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+  }
+
+  function sucesso(dados, recomendacao) {
     var jaMostrou = false;
     function mostra() {
       if (jaMostrou) return;
@@ -849,18 +1105,40 @@ privacidade</a>.</span></p>
       barra.style.width = '100%';
       var pn = String(dados.nome || '').trim().split(/\s+/)[0];
       if (pn) document.getElementById('nome-fim').textContent = pn;
+      try { desenhaRecomendacao(recomendacao); } catch (e) {}
       obrigado.hidden = false;
       obrigado.focus();
       window.scrollTo({ top: 0, behavior: 'smooth' });
       try { localStorage.removeItem(CHAVE); } catch (e) {}
     }
 
+    /* O Lead agora DIZ QUAL PRODUTO. Sem isso o Meta otimizaria pela média de
+       quatro ofertas de R$ 297 a R$ 1.997 — e a média de preços tão distantes
+       não descreve nenhuma delas. `content_ids` reaproveita os mesmos ids que
+       as páginas de venda já mandam, então o relatório fecha com o histórico.
+       Sem `value`: quem tem valor de compra é a Kiwify, no Purchase. */
+    var prod = recomendacao || {};
+    var dadosLead = Object.assign({}, COMUNS, prod.id ? {
+      content_ids: [prod.id], content_type: 'product',
+      content_name: prod.nome_meta || prod.nome,
+      produto: prod.id, formato: prod.formato
+    } : {});
+
     try {
-      if (window.fbq) fbq('track', 'Lead', COMUNS, { eventID: dados.lead_uid });
+      if (window.fbq) {
+        fbq('track', 'Lead', dadosLead, { eventID: dados.lead_uid });
+        /* Nome próprio por produto: vira Conversão Personalizada no Meta sem
+           depender de filtro por parâmetro, que nem todo relatório aceita. */
+        if (prod.id) fbq('trackCustom', 'Lead_' + prod.id, dadosLead);
+      }
     } catch (e) {}
     try {
       if (window.gtag) gtag('event', 'generate_lead', Object.assign({}, COMUNS, {
         transport_type: 'beacon',
+        produto: prod.id || null,
+        formato: prod.formato || null,
+        items: prod.id ? [{ item_id: prod.id, item_name: prod.nome_meta || prod.nome,
+                            price: prod.valor, quantity: 1 }] : undefined,
         event_callback: mostra
       }));
     } catch (e) {}
@@ -868,6 +1146,11 @@ privacidade</a>.</span></p>
   }
 
   /* ---------- início ---------- */
+  /* IC_UNICO: a tela final tem UM botão de checkout, mas ela pode voltar,
+     clicar de novo, ou o navegador pode restaurar a página. Um
+     InitiateCheckout por clique infla a métrica — foi o que deixou o A/B do
+     Método LED ilegível. Um por sessão e por produto. */
+  window.IC_UNICO = true;
   vaiPara(leRascunho(), false);
 })();
 </script>

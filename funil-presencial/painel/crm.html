@@ -276,6 +276,10 @@ code{background:var(--pedra); border-radius:var(--e1); padding:0 4px; font-size:
       <select id="fQualif" name="qualificacao"></select>
     </div>
     <div class="campo">
+      <label for="fProduto">Produto indicado</label>
+      <select id="fProduto" name="produto_id"></select>
+    </div>
+    <div class="campo">
       <label for="fCidade">Cidade</label>
       <input type="text" id="fCidade" name="cidade" placeholder="Ex.: Cambuí">
     </div>
@@ -319,6 +323,30 @@ code{background:var(--pedra); border-radius:var(--e1); padding:0 4px; font-size:
       'proposta-enviada': 'Proposta enviada', 'ganho': 'Ganho', 'perdido': 'Perdido'
     },
     qualificacao: { 'quente': 'Quente', 'morno': 'Morno', 'frio': 'Frio' },
+    /* Os mesmos ids que o pixel e o GA4 usam — assim o que a Nataly vê no
+       painel e o que o Eduardo lê no Meta são o mesmo produto, com o mesmo
+       nome, sem tradução no meio. */
+    produto_id: {
+      'profissao-lash': 'Profissão Lash online',
+      'profissao-lash-presencial': 'Profissão Lash online + presencial',
+      'lash2-online': 'Método LED online',
+      'lash2-presencial': 'Método LED presencial'
+    },
+    produto_formato: { 'online': 'Online', 'presencial': 'Presencial' },
+    busca: {
+      'aperfeicoar-cilios': 'Quer se aperfeiçoar na extensão',
+      'tecnica-led': 'Quer aprender a técnica com LED',
+      'nao-sei': 'Ainda não sabe — pediu ajuda para decidir'
+    },
+    prefere_formato: {
+      'presencial': 'Prefere ao vivo', 'online': 'Prefere online no próprio ritmo',
+      'nao-sei': 'Sem preferência'
+    },
+    faixa_investimento: {
+      'ate-500': 'Até R$ 500', '500-1500': 'De R$ 500 a R$ 1.500',
+      '1500-2000': 'De R$ 1.500 a R$ 2.000', 'acima-2000': 'Mais de R$ 2.000',
+      'depende-parcelamento': 'Consegue mais se parcelar'
+    },
     situacao: {
       'ja-lash': 'Já trabalha com cílios',
       'area-beleza': 'Já é da área da beleza',
@@ -469,7 +497,7 @@ code{background:var(--pedra); border-radius:var(--e1); padding:0 4px; font-size:
   var estado = {
     resumo: null,
     leads: [],
-    filtros: { busca: '', status: '', qualificacao: '', cidade: '', utm_content: '' },
+    filtros: { busca: '', status: '', qualificacao: '', produto_id: '', cidade: '', utm_content: '' },
     aba: 'lista',
     carregando: false,
     erro: null,
@@ -559,7 +587,35 @@ code{background:var(--pedra); border-radius:var(--e1); padding:0 4px; font-size:
       q.appendChild(opcao(v, rot('qualificacao', v)));
     });
     q.value = estado.filtros.qualificacao;
+
+    preencheProdutos();
   }
+
+  /* O select de produto é montado com a CONTAGEM do resumo ao lado — assim ele
+     responde "quantos leads de cada produto" sem precisar filtrar um por um.
+     Os quatro aparecem sempre, mesmo zerados: um produto que some da lista por
+     não ter lead é indistinguível de um produto esquecido.
+
+     ⚠️ Fica em função PRÓPRIA porque o resumo chega DEPOIS do primeiro
+     desenho. Se ele só fosse montado no `preencheSelects()` da partida, as
+     contagens ficariam congeladas em (0) para sempre — que é pior do que não
+     mostrar contagem nenhuma, porque parece dado. */
+  function preencheProdutos() {
+    var pr = document.getElementById('fProduto');
+    if (!pr) return;
+    limpa(pr);
+    pr.appendChild(opcao('', 'Todos os produtos'));
+    var contagem = {};
+    ((estado.resumo && estado.resumo.porProduto) || []).forEach(function (l) {
+      contagem[l.produto_id] = l.n;
+    });
+    ['profissao-lash', 'profissao-lash-presencial', 'lash2-online', 'lash2-presencial']
+      .forEach(function (v) {
+        pr.appendChild(opcao(v, rot('produto_id', v) + ' (' + (contagem[v] || 0) + ')'));
+      });
+    pr.value = estado.filtros.produto_id;
+  }
+
 
   function opcao(valor, rotulo) {
     var o = document.createElement('option');
@@ -594,6 +650,7 @@ code{background:var(--pedra); border-radius:var(--e1); padding:0 4px; font-size:
       estado.resumo = r;
       desenhaResumo();
       preencheAnuncios();
+      preencheProdutos();
     }).catch(function (e) {
       if (e.message === 'sessao') return;
       console.error('resumo:', e);
@@ -663,6 +720,7 @@ code{background:var(--pedra); border-radius:var(--e1); padding:0 4px; font-size:
     { rot: 'WhatsApp', campo: 'telefone' },
     { rot: 'Cidade', campo: 'cidade' },
     { rot: 'Qualificação', campo: 'qualificacao' },
+    { rot: 'Produto indicado', campo: 'produto_id' },
     { rot: 'Origem', campo: 'utm_content' },
     { rot: 'Status', campo: 'status' },
     { rot: 'Quando', campo: 'criado_em' }
@@ -735,6 +793,16 @@ code{background:var(--pedra); border-radius:var(--e1); padding:0 4px; font-size:
       tr.appendChild(celula('Cidade', el('span', null,
         texto(lead.cidade) + (lead.estado ? ' · ' + lead.estado : ''))));
       tr.appendChild(celula('Qualificação', pilulaQualif(lead.qualificacao, lead.pontuacao)));
+
+      var envProd = document.createElement('span');
+      poe(envProd, el('span', null, rot('produto_id', lead.produto_id)));
+      if (lead.produto_valor) {
+        envProd.appendChild(el('span', 'td-sub', 'R$ ' +
+          String(lead.produto_valor).replace(/\B(?=(\d{3})+(?!\d))/g, '.') +
+          (lead.produto_formato === 'presencial' ? ' · sem checkout' : ' · checkout enviado')));
+      }
+      tr.appendChild(celula('Produto indicado', envProd));
+
       tr.appendChild(celula('Origem', el('span', null, texto(lead.utm_content))));
       tr.appendChild(celula('Status', pilulaStatus(lead.status)));
 
@@ -1043,14 +1111,34 @@ code{background:var(--pedra); border-radius:var(--e1); padding:0 4px; font-size:
       ['Nível', rot('qualificacao', lead.qualificacao)],
       ['Faixa de idade', idade(lead.faixa_idade)],
       ['Situação', rot('situacao', lead.situacao)],
+      ['O que busca', rot('busca', lead.busca)],
       ['Meta de renda', rot('meta_renda', lead.meta_renda)],
       ['Disponibilidade', rot('disponibilidade', lead.disponibilidade)],
-      ['Valor', rot('aceita_valor', lead.aceita_valor)],
+      ['Prefere', rot('prefere_formato', lead.prefere_formato)],
+      ['Faixa de investimento', rot('faixa_investimento', lead.faixa_investimento)],
       ['Quando começar', rot('quando_comecar', lead.quando_comecar)],
       ['Objetivo', texto(lead.objetivo)],
       ['Anotação', texto(lead.anotacao)]
     ]));
     painel.appendChild(bQualif);
+
+    /* O QUE A ÁRVORE DECIDIU, e por quê. Sem os motivos aqui, revisar um
+       roteamento estranho exigiria reconstruir a regra de cabeça a partir das
+       respostas — que é justamente o trabalho que o registro existe para
+       poupar. E se a Nataly discordar da indicação, ela precisa ver o
+       raciocínio para saber o que contra-argumentar na conversa. */
+    var bProd = bloco('Produto indicado');
+    bProd.appendChild(listaDados([
+      ['Produto', rot('produto_id', lead.produto_id)],
+      ['Formato', rot('produto_formato', lead.produto_formato)],
+      ['Valor mostrado a ela', lead.produto_valor
+        ? 'R$ ' + String(lead.produto_valor).replace(/\B(?=(\d{3})+(?!\d))/g, '.') : '—'],
+      ['Checkout', lead.produto_formato === 'presencial'
+        ? 'NÃO enviado — combine a data antes'
+        : (lead.produto_id ? 'Link mostrado na tela final' : '—')],
+      ['Por que foi indicado', texto(lead.recomendacao_motivos)]
+    ]));
+    painel.appendChild(bProd);
 
     /* origem */
     var bOrigem = bloco('Origem do lead');
@@ -1292,6 +1380,7 @@ code{background:var(--pedra); border-radius:var(--e1); padding:0 4px; font-size:
     estado.filtros.busca = document.getElementById('fBusca').value.trim();
     estado.filtros.status = document.getElementById('fStatus').value;
     estado.filtros.qualificacao = document.getElementById('fQualif').value;
+    estado.filtros.produto_id = document.getElementById('fProduto').value;
     estado.filtros.cidade = document.getElementById('fCidade').value.trim();
     estado.filtros.utm_content = document.getElementById('fAnuncio').value;
     atualizaLinkCsv();
