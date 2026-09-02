@@ -842,7 +842,22 @@ app.use(express.static(PUBLIC, {
     if (ext === '.mp4' || ext === '.webm') segundos = 30 * 24 * 3600;
     else if (['.jpg', '.jpeg', '.png', '.webp', '.avif', '.gif', '.svg', '.ico',
               '.woff2', '.woff', '.ttf'].indexOf(ext) !== -1) segundos = 7 * 24 * 3600;
-    else if (ext === '.js' || ext === '.css') segundos = 3600;
+    /* 🔴 js e css NAO sao cacheados por tempo, de proposito.
+       Em 02/09/2026 o pixel.js chegou a ser servido pela Cloudflare com
+       `cf-cache-status: HIT`, `age: 3333` e `max-age=14400` — quatro horas.
+       Como o HTML e servido com `max-age=0` e atualiza na hora, abria-se uma
+       janela de ate 4h em que o visitante rodava HTML NOVO com SCRIPT VELHO.
+       Essa combinacao quebra a pagina de um jeito que nao reproduz em teste
+       nenhum: o HTML chama o que o script antigo nao tem, da erro e o
+       formulario trava. Com campanha no ar, e dinheiro entrando em pagina morta.
+
+       `no-cache` NAO desliga o cache: manda revalidar sempre. Com o ETag que o
+       express ja envia, a resposta comum vira um 304 sem corpo — barato — e
+       fica impossivel rodar codigo velho. */
+    else if (ext === '.js' || ext === '.css') {
+      res.setHeader('Cache-Control', 'no-cache, must-revalidate');
+      return;
+    }
     if (segundos) res.setHeader('Cache-Control', 'public, max-age=' + segundos);
   },
 }));
