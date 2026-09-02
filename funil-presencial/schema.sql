@@ -80,7 +80,6 @@ CREATE INDEX IF NOT EXISTS idx_leads_utm_content ON leads (utm_content);
 CREATE INDEX IF NOT EXISTS idx_leads_utm_camp    ON leads (utm_campaign);
 CREATE INDEX IF NOT EXISTS idx_leads_cidade      ON leads (cidade);
 CREATE INDEX IF NOT EXISTS idx_leads_telefone    ON leads (telefone);
-CREATE INDEX IF NOT EXISTS idx_leads_produto     ON leads (produto_id);
 
 -- ---------- 1b. MIGRAÇÃO — a árvore de decisão (01/09/2026) ----
 -- O CREATE TABLE acima só vale para banco novo. O de produção já existe,
@@ -94,6 +93,15 @@ ALTER TABLE leads ADD COLUMN IF NOT EXISTS produto_nome         TEXT;
 ALTER TABLE leads ADD COLUMN IF NOT EXISTS produto_formato      TEXT;
 ALTER TABLE leads ADD COLUMN IF NOT EXISTS produto_valor        INTEGER;
 ALTER TABLE leads ADD COLUMN IF NOT EXISTS recomendacao_motivos TEXT;
+
+-- 🔴 Este indice VIVE AQUI, depois dos ALTER, e nao junto dos outros indices.
+--    Em banco NOVO o CREATE TABLE ja traz produto_id e a ordem nao importa.
+--    Em banco que JA EXISTE a coluna so nasce no ALTER acima — o indice antes
+--    dele falha com 'column "produto_id" does not exist' e, como a migracao roda
+--    o arquivo inteiro de uma vez, ABORTA TUDO: nenhuma das oito colunas novas
+--    e criada e toda insercao de lead passa a quebrar.
+--    Foi exatamente o que aconteceu em 01/09/2026.
+CREATE INDEX IF NOT EXISTS idx_leads_produto ON leads (produto_id);
 
 -- Os leads gravados ANTES da árvore existiam num mundo de um produto só:
 -- o Profissão Lash online + presencial (R$ 1.497). Marcá-los assim é
