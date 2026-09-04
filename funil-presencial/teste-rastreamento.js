@@ -155,7 +155,16 @@ const evM=u=>{try{return new URL(u).searchParams.get('ev')}catch(e){return '?'}}
         certo, os leads continuariam chegando, e só o custo por venda subiria
         sem explicação.
      ⚠️ Contado nos BALDES ANTERIORES ao envio (venda + clique + preço). No
-        balde do envio o `Lead` é obrigatório — é lá que ele nasce. */
+        balde do envio o `Lead` é obrigatório — é lá que ele nasce.
+
+     ⚠️ 04/09/2026: o `Lead` MUDOU DE MOMENTO por decisão do Eduardo. Ele saía
+        no clique do botão da recomendação; agora sai na CHEGADA da tela da
+        recomendação, com o formulário completo. Muita gente chegava e não
+        clicava — a Nataly recebia essas pessoas do mesmo jeito, mas o Meta não
+        contava, e a campanha aprendia a evitar exatamente quem terminava.
+        O que este bloco protege NÃO mudou: durante o preenchimento, `Lead`
+        nenhum. O que mudou é a fronteira — ela agora é a chegada, não o
+        clique. */
   const antesDoEnvio = vendaM.concat(cliqueM, precoM);
   t('🔴 o parcial NÃO dispara Lead antes do envio',
     antesDoEnvio.filter(e => e === 'Lead').length === 0,
@@ -178,9 +187,17 @@ const evM=u=>{try{return new URL(u).searchParams.get('ev')}catch(e){return '?'}}
     (String(etapa.texto||'').match(/R\$[^\n]{0,12}/g)||[]).join(' | '));
   t('investimento: ViuInvestimento no Meta', precoM.includes('ViuInvestimento'));
   t('investimento: GA4 view_price_step', todosG.includes('view_price_step'));
-  t('envio: Lead', envioM.includes('Lead'));
+  /* 🔴 O CHECK QUE GUARDA A DECISÃO DE 04/09/2026. O balde "envio" é o clique
+     em "Ver o que eu indico", que traz a tela da recomendação — e nenhum botão
+     de confirmação foi apertado ainda. Exigir o `Lead` AQUI é exigir que ele
+     não dependa mais do clique final. Se alguém devolver o disparo para o
+     botão, este teste reprova antes de a campanha perder volume em silêncio. */
+  t('🔴 Lead na CHEGADA da recomendação, sem clicar no botão final',
+    envioM.includes('Lead'), 'eventos do balde: ' + envioM.join(', '));
   t('envio: GA4 generate_lead', todosG.includes('generate_lead'));
   t('envio: ViuRecomendacao', envioM.includes('ViuRecomendacao'));
+  t('Lead contado UMA vez só', todosM.filter(e=>e==='Lead').length===1,
+    'contou ' + todosM.filter(e=>e==='Lead').length);
   t('tela de recomendação apareceu', fim.visivel);
   t('recomendou o Método LED online', /Método LED — online/.test(fim.produto||''), fim.produto);
   t('com o preço DESSE produto', fim.preco==='R$ 297', fim.preco);
@@ -193,6 +210,14 @@ const evM=u=>{try{return new URL(u).searchParams.get('ev')}catch(e){return '?'}}
      Kiwify, então a ausência do evento passaria a ser o defeito. */
   t('checkout: InitiateCheckout no Meta', checkoutM.includes('InitiateCheckout'));
   t('checkout: GA4 begin_checkout', todosG.includes('begin_checkout'));
+  /* A submissão de verdade não podia simplesmente sumir quando o `Lead` subiu
+     de lugar: é a diferença entre "viu e foi embora" e "apertou o botão", e é
+     ela que dirá se a mudança do `Lead` valeu a pena. */
+  t('a submissão real virou CompleteRegistration', checkoutM.includes('CompleteRegistration'),
+    'eventos do balde do clique: ' + checkoutM.join(', '));
+  t('CompleteRegistration contada UMA vez só',
+    todosM.filter(e=>e==='CompleteRegistration').length===1,
+    'contou ' + todosM.filter(e=>e==='CompleteRegistration').length);
   t('intenção contada UMA vez só (Meta)', todosM.filter(e=>e==='IniciouInscricao').length===1,
     'contou '+todosM.filter(e=>e==='IniciouInscricao').length);
   t('intenção contada UMA vez só (GA4)', todosG.filter(e=>e==='select_item').length===1,

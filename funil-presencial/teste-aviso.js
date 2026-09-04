@@ -25,7 +25,7 @@ function ok(nome, cond, extra) {
     prefere_formato:'presencial', faixa_investimento:'depende-parcelamento',
     aceita_valor:'preciso-parcelar',
     produto_id:'profissao-lash-presencial', produto_nome:'Profissão Lash — online + presencial',
-    produto_formato:'presencial', produto_valor:1497,
+    produto_formato:'presencial', produto_valor:1197,
     recomendacao_motivos:'Vem de outra área e quer começar do zero: começa pela formação completa.',
     objetivo:'Quero sair do meu emprego e viver de cílios',
     pontuacao:85, qualificacao:'quente',
@@ -43,13 +43,27 @@ function ok(nome, cond, extra) {
   ok('diz a meta',           m.includes('R$ 5 a 10 mil'));
 
   ok('diz de qual anúncio veio', m.includes('video-bastidor-01'));
-  ok('diz a qualificação',   m.includes('QUENTE'));
-  /* Pedido literal do Eduardo: o TÍTULO tem de dizer o produto para o qual
-     ela se qualificou. Sem isso a Nataly abre o aviso sem saber que conversa
-     vai ter — e com quatro produtos de R$ 297 a R$ 1.997, a conversa muda. */
-  ok('o cabeçalho diz o PRODUTO', m.split('\n')[0].includes('Profissão Lash online + presencial'),
+  /* 🔴 ESTE TESTE GUARDA UMA REGRA DE NEGÓCIO, e ela é o contrário do que já
+     foi cobrado aqui. Havia um teste exigindo que a mensagem dissesse 'QUENTE',
+     e o cabeçalho estampava 🔵 FRIO / 🟡 MORNO / 🔥 QUENTE com a pontuação.
+     Em 04/09/2026 o Eduardo mandou tirar: leads marcados como FRIOS estavam
+     comprando, e o rótulo fazia a Nataly abrir a conversa já descrente.
+     A pontuação continua no banco e no painel — só saiu da mensagem. */
+  ok('🔴 a mensagem NÃO carrega termômetro nem pontuação',
+     !/QUENTE|MORNO|FRIO|🔵|\/100/.test(m), m.split('\n').slice(0, 3).join(' | '));
+  /* A frase que o Eduardo pediu, literal, na primeira linha. */
+  ok('abre com a frase positiva e o foguinho',
+     m.split('\n')[0].startsWith('🔥 *Chegou mais uma potencial compradora!*'),
      m.split('\n')[0]);
-  ok('diz o produto indicado e o preço', m.includes('🎯 *Indicado:*') && m.includes('R$ 1.497'));
+  /* Pedido anterior do Eduardo, que continua valendo: o cabeçalho tem de dizer
+     o produto para o qual ela se qualificou. Sem isso a Nataly abre o aviso sem
+     saber que conversa vai ter — e com quatro produtos de R$ 297 a R$ 1.997, a
+     conversa muda. Saiu da primeira linha e foi para a segunda. */
+  ok('o cabeçalho diz o PRODUTO', m.split('\n')[1] === 'Profissão Lash online + presencial',
+     m.split('\n')[1]);
+  ok('diz o produto indicado e o preço', m.includes('🎯 *Indicado:*') && m.includes('R$ 1.197'));
+  /* Sem esta linha a Nataly pode oferecer 12x num produto que só tem PIX. */
+  ok('e diz que o combo é à vista no PIX', m.includes('R$ 1.197 à vista no PIX'));
   ok('avisa que o presencial não leva checkout', m.includes('combine a data antes'));
   ok('diz POR QUE foi indicado', m.includes('começa pela formação completa'));
   ok('mostra a faixa de investimento dela', m.includes('consegue mais se parcelar'));
@@ -86,9 +100,39 @@ function ok(nome, cond, extra) {
    ['profissao-lash-presencial','Profissão Lash online + presencial'],
    ['lash2-online','Método LED online'],
    ['lash2-presencial','Método LED presencial']].forEach(([id, titulo]) => {
-    const cab = N.montaMensagem(Object.assign({}, lead, { produto_id:id })).split('\n')[0];
-    ok('cabeçalho de ' + id, cab === '🔔 *LEAD NOVO* · ' + titulo, cab);
+    const cab = N.montaMensagem(Object.assign({}, lead, { produto_id:id })).split('\n')[1];
+    ok('cabeçalho de ' + id, cab === titulo, cab);
   });
+
+  /* ---------- a marcação da Nataly ----------
+     Marcar só faz sentido em GRUPO. Num destino que é o número dela, uma menção
+     a ela mesma vira lixo visual — e o WhatsApp ignora de qualquer jeito.
+     E o '@<numero>' precisa estar ESCRITO no corpo: o campo `mentioned` do
+     payload não pinta nada sozinho, ele só autoriza o WhatsApp a transformar em
+     menção o texto que já está lá. Um teste que olhasse só o payload passaria
+     com a mensagem saindo sem marcação nenhuma. */
+  console.log('\n-- a marcação da Nataly no grupo --');
+  const destinoAntes = process.env.NATALY_WA_DESTINO;
+  process.env.NATALY_WA_DESTINO = '5535997164668';
+  ok('destino que é NÚMERO não leva marcação',
+     !N.montaMensagem(lead).split('\n')[0].includes('@'), N.montaMensagem(lead).split('\n')[0]);
+  ok('e não manda ninguém em `mentioned`', N.mencoesDe('5535997164668').length === 0);
+
+  process.env.NATALY_WA_DESTINO = '120363000000000000@g.us';
+  const mg = N.montaMensagem(lead);
+  ok('destino que é GRUPO leva a marcação no texto',
+     mg.split('\n')[0].includes('@5535997164668'), mg.split('\n')[0]);
+  ok('e o JID vai no `mentioned` do payload',
+     N.mencoesDe('120363000000000000@g.us')[0] === '5535997164668@s.whatsapp.net',
+     JSON.stringify(N.mencoesDe('120363000000000000@g.us')));
+
+  process.env.NATALY_WA_MENCAO = '5511988887777';
+  ok('a variável NATALY_WA_MENCAO manda em quem é marcado',
+     N.mencoesDe('120363000000000000@g.us')[0] === '5511988887777@s.whatsapp.net',
+     JSON.stringify(N.mencoesDe('120363000000000000@g.us')));
+  delete process.env.NATALY_WA_MENCAO;
+  if (destinoAntes === undefined) delete process.env.NATALY_WA_DESTINO;
+  else process.env.NATALY_WA_DESTINO = destinoAntes;
 
   console.log('\n-- o caminho online avisa que o checkout já foi --');
   const online = Object.assign({}, lead, { produto_id:'lash2-online',
@@ -96,7 +140,8 @@ function ok(nome, cond, extra) {
   const mo = N.montaMensagem(online);
   ok('diz que ela já recebeu o link', mo.includes('já recebeu o link do checkout'));
   ok('e mostra o preço DESSE produto', mo.includes('R$ 297'), mo.split('\n').filter(l=>l.includes('Indicado'))[0]);
-  ok('sem o preço do outro produto', !mo.includes('R$ 1.497'));
+  ok('sem o preço do outro produto', !mo.includes('R$ 1.197'));
+  ok('e sem a condição de PIX, que é só do combo', !mo.includes('à vista no PIX'));
 
   console.log('\n-- fila: caminho feliz --');
   process.env.NATALY_WA_DRIVER = 'log';

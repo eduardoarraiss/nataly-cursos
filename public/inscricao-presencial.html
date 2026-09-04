@@ -621,11 +621,11 @@ button.rec__cta{font:inherit; font-weight:800; font-size:var(--t3); cursor:point
            🔴 AQUI NÃO APARECE PREÇO DE PRODUTO NENHUM, DE PROPÓSITO.
            A versão anterior mostrava "R$ 1.497" cravado, o que era verdade
            quando existia um produto só. Com quatro preços (R$ 297, R$ 497,
-           R$ 1.497, R$ 1.997) um número fixo mentiria para a maioria.
+           R$ 1.197, R$ 1.997) um número fixo mentiria para a maioria.
 
            A saída: perguntar a FAIXA DELA antes de revelar qualquer valor
            nosso. As faixas foram desenhadas para CONTER os preços — 497 e 297
-           cabem em "até R$ 500", 1.497 cabe em "R$ 500 a R$ 1.500", 1.997 cabe
+           cabem em "até R$ 500", 1.197 cabe em "R$ 500 a R$ 1.500", 1.997 cabe
            em "R$ 1.500 a R$ 2.000" — então a árvore nunca recomenda acima do
            que ela marcou, e o único preço que ela vê na vida é o do produto
            dela, na tela final. O teste `teste-arvore.js` prova isso nas 405
@@ -810,19 +810,41 @@ privacidade</a>.</span></p>
            Nada foi confirmado ainda.
         3. o RECEBIDO — só depois do clique em "Quero garantir a minha vaga".
 
-      O `Lead` é o evento pelo qual a campanha de R$ 120/dia otimiza. Ele
-      nasce no CLIQUE, na tela 3. Dispará-lo na tela 2 ensinaria o algoritmo a
-      procurar quem só olha o preço — e a gente pagaria por isso todo dia.
+      🔴 O `Lead` MUDOU DE LUGAR EM 04/09/2026 — DECISÃO DO EDUARDO.
+      Ele nascia no CLIQUE do botão, na tela 3. Passou a nascer na CHEGADA da
+      tela 2: terminar as perguntas já conta como lead, sem depender do clique.
+
+      O motivo é de campanha, e vem do que estava acontecendo: muita gente
+      chegava na recomendação e não clicava. Esses eram leads reais — a Nataly
+      recebe o formulário completo do mesmo jeito, com nome, WhatsApp e produto
+      indicado, e liga para essas pessoas. Só que o Meta não ficava sabendo:
+      pela régua antiga elas não existiam, e a campanha aprendia a evitar
+      exatamente quem chegava ao fim do formulário.
+
+      O que a régua antiga defendia continua verdade e não foi esquecido: a
+      tela 2 é onde ela vê o preço, e contar Lead ali inclui quem só olhou. A
+      escolha é entre dois erros, e o Eduardo escolheu o menor — o volume
+      antigo era baixo demais para o algoritmo aprender qualquer coisa.
+
+      ⚠️ O QUE ISSO QUEBRA (registrar a data da virada: 04/09/2026): o volume
+      de `Lead` SOBE, o CPL histórico deixa de ser comparável e a otimização do
+      Meta reaprende do zero. Comparar setembro com agosto neste evento é
+      comparar duas definições diferentes de lead.
 
    Eventos disparados aqui (o mapa completo está no LEIA-ME):
      · ViuInvestimento  — quando a etapa da faixa aparece, 1×/sessão.
        Diz quantas desistem quando o assunto vira dinheiro.
-     · ViuRecomendacao  — a TELA 2, com o produto recomendado. É o par do
-       `Lead`: a distância entre os dois é exatamente quanta gente viu o preço
-       e não quis. Sem valor de compra e sem nome otimizável por engano.
-     · Lead             — no CLIQUE do botão da tela 2, com eventID,
-       content_ids do produto e SEM valor de compra (valor é da Kiwify, no
-       Purchase). NUNCA antes do clique.
+     · ViuRecomendacao  — a TELA 2, com o produto recomendado. Continua
+       existindo, e agora é o GÊMEO do `Lead`: os dois saem no mesmo instante.
+       Não foi removido porque é ele que carrega o histórico desde agosto — o
+       `Lead` é que mudou de significado, e apagar o par tiraria a única série
+       comparável que sobrou. Sem valor de compra.
+     · Lead             — na CHEGADA da tela 2 (formulário completo), com
+       eventID, content_ids do produto e SEM valor de compra (valor é da
+       Kiwify, no Purchase). 1×/sessão.
+     · CompleteRegistration — no CLIQUE do botão da tela 2, que é a inscrição
+       de fato: é o que o `Lead` media até 04/09/2026. Guardado com nome
+       próprio para a submissão real não sumir do relatório.
      · InitiateCheckout — SÓ no caminho online, no clique do checkout,
        com o valor do produto CERTO e travado em 1 por sessão. Ele
        existe aqui desde 01/09/2026: antes da árvore ninguém entrava em
@@ -1752,10 +1774,14 @@ privacidade</a>.</span></p>
     /* Ela podia vir e só o investimento travou. Dizer que o presencial existe. */
     var extra = document.getElementById('rec-extra');
     if (r.presencial_possivel) {
+      /* A parcela pode não existir: o combo online + presencial é à vista no
+         PIX desde 03/09/2026. Sem esta guarda a frase saía com um "(null)"
+         pendurado no preço. */
+      var pp = r.presencial_possivel;
       document.getElementById('rec-extra-txt').innerHTML =
-        'E fica sabendo: o <b>' + escapa(r.presencial_possivel.nome) + '</b> existe, por ' +
-        escapa(r.presencial_possivel.preco) + ' (' + escapa(r.presencial_possivel.parcela) +
-        '). Se você quiser fazer a prática ao vivo comigo, me fala no WhatsApp que a ' +
+        'E fica sabendo: o <b>' + escapa(pp.nome) + '</b> existe, por ' +
+        escapa(pp.preco) + (pp.parcela ? ' (' + escapa(pp.parcela) + ')' : '') +
+        '. Se você quiser fazer a prática ao vivo comigo, me fala no WhatsApp que a ' +
         'gente vê as condições juntas.';
       extra.hidden = false;
     } else {
@@ -1804,8 +1830,13 @@ privacidade</a>.</span></p>
      linha no banco está gravada como INCOMPLETA, com o produto que ela está
      vendo, e a Nataly não foi avisada.
 
-     🔴 NENHUM `Lead` SAI DAQUI. O único evento é o `ViuRecomendacao`, que
-        `desenhaRecomendacao()` dispara. */
+     🔴 O `Lead` SAI DAQUI desde 04/09/2026 (decisão do Eduardo). Antes só
+        saía o `ViuRecomendacao`; agora os dois saem juntos, na chegada.
+        Repare no que continua valendo: a linha do banco segue INCOMPLETA e a
+        Nataly segue SEM ser avisada. O que mudou é só o que o Meta conta —
+        chegar aqui virou lead para a campanha, mas não virou inscrição para o
+        atendimento. Confundir as duas coisas encheria o WhatsApp da Nataly de
+        gente que não pediu contato. */
   /* 🔴 Rolar para o topo UMA VEZ nao basta.
      A troca de tela esconde o formulario, desenha a recomendacao e mostra o
      bloco — tudo no mesmo instante. O `scrollTo` roda antes de o navegador
@@ -1840,6 +1871,15 @@ privacidade</a>.</span></p>
 
     try { desenhaRecomendacao(rec); } catch (e) {}
 
+    /* 🔴 DEPOIS de `desenhaRecomendacao` e FORA do try dele, de propósito.
+       Depois porque o `Lead` precisa do produto já resolvido em `recAtual`
+       (que é atribuído acima) e porque a ordem no Meta fica coerente com o
+       `ViuRecomendacao`. Fora do try porque uma exceção no desenho não pode
+       levar o evento junto: a tela até poderia sair torta, mas o lead existiu.
+       `disparaLead` tem trava própria de sessão — chamar aqui e de novo no
+       clique não duplica nada. */
+    disparaLead(garanteUid());
+
     recomendacao.hidden = false;
     /* 🔴 A TELA TEM DE COMEÇAR NO TOPO DELA, e de forma determinística.
        `focus()` sozinho rola a página até o elemento, e um `behavior:'smooth'`
@@ -1860,8 +1900,9 @@ privacidade</a>.</span></p>
   /* ============================================================
      O CLIQUE — é aqui que a inscrição passa a existir
      ============================================================
-     Os dois caminhos passam por esta função, e os dois disparam o `Lead`. A
-     diferença é o que acontece depois:
+     Os dois caminhos passam por esta função, e os dois disparam a
+     `CompleteRegistration` (o `Lead` já saiu na tela anterior). A diferença é
+     o que acontece depois:
 
        · presencial → espera a resposta e mostra a TELA 3 ("recebi").
        · online     → NÃO espera nada: o clique é num <a> de verdade e o
@@ -1900,10 +1941,19 @@ privacidade</a>.</span></p>
      páginas de venda já mandam, então o relatório fecha com o histórico.
      Sem `value`: quem tem valor de compra é a Kiwify, no Purchase.
 
-     🔴 UM DISPARO POR SESSÃO. Ela pode clicar duas vezes, a rede pode repetir,
-     e o navegador pode restaurar a página do cache de volta/avançar. Um `Lead`
-     por clique inflaria a métrica pela qual a campanha otimiza — que é
-     exatamente o erro que deixou o A/B do Método LED ilegível. */
+     🔴 QUEM CHAMA ISTO É `mostraRecomendacao`, e não o clique (04/09/2026).
+     Por isso a função exige o produto já resolvido: chamada antes de `recAtual`
+     existir, ela sairia com um `Lead` sem `content_ids` — o defeito não daria
+     erro nenhum e só apareceria semanas depois, como uma campanha otimizando
+     pela média de quatro ofertas.
+
+     🔴 UM DISPARO POR SESSÃO. A rede pode repetir, o navegador pode restaurar
+     a página do cache de volta/avançar, e ela pode recarregar em cima da tela
+     da recomendação — que é comum na hora de decidir. Um `Lead` por passagem
+     inflaria a métrica pela qual a campanha otimiza, que é exatamente o erro
+     que deixou o A/B do Método LED ilegível.
+     A trava de sessão é a que importa aqui: `leadDisparado` morre no reload,
+     o `sessionStorage` não. */
   var leadDisparado = false;
   function disparaLead(uid) {
     if (leadDisparado) return;
@@ -1939,6 +1989,48 @@ privacidade</a>.</span></p>
     } catch (e) {}
   }
 
+  /* ---------- A SUBMISSÃO DE VERDADE, que o `Lead` media até 04/09/2026 ----
+     O `Lead` subiu para a chegada da tela 2. Se o clique não ganhasse um evento
+     próprio, o número que separa "viu e foi embora" de "apertou o botão"
+     desapareceria do Meta — e é justamente ele que diz se a mudança do `Lead`
+     valeu a pena. Sem esta contagem, daqui a três semanas ninguém consegue
+     responder se o volume novo virou conversa ou virou ruído.
+
+     `CompleteRegistration` é evento PADRÃO do Meta: entra em relatório e em
+     otimização sem depender de Conversão Personalizada criada na mão.
+     O `eventID` leva o sufixo '-conf' de propósito: com o mesmo id do `Lead`, o
+     Meta trataria os dois como o mesmo evento repetido e descartaria um. */
+  var confirmacaoDisparada = false;
+  function disparaConfirmacao(uid) {
+    if (confirmacaoDisparada) return;
+    confirmacaoDisparada = true;
+    try {
+      if (sessionStorage.getItem('nr_conf_presencial')) return;
+      sessionStorage.setItem('nr_conf_presencial', '1');
+    } catch (e) {}
+
+    var prod = recAtual || {};
+    var dados = Object.assign({}, COMUNS, prod.id ? {
+      content_ids: [prod.id], content_type: 'product',
+      content_name: prod.nome_meta || prod.nome,
+      produto: prod.id, formato: prod.formato
+    } : {});
+
+    try {
+      if (window.fbq) {
+        fbq('track', 'CompleteRegistration', dados, { eventID: uid + '-conf' });
+        if (prod.id) fbq('trackCustom', 'Confirmou_' + prod.id, dados);
+      }
+    } catch (e) {}
+    try {
+      if (window.gtag) gtag('event', 'sign_up', Object.assign({}, COMUNS, {
+        transport_type: 'beacon',
+        produto: prod.id || null,
+        formato: prod.formato || null
+      }));
+    } catch (e) {}
+  }
+
   var erroConfirmar = document.getElementById('e-confirmar');
   var btConfirmar = document.getElementById('rec-confirmar');
 
@@ -1948,7 +2040,14 @@ privacidade</a>.</span></p>
     if (erroConfirmar) erroConfirmar.hidden = true;
 
     var dados = corpoFinal();
+    /* 🔴 NÃO é aqui que o `Lead` nasce desde 04/09/2026 — ele já saiu na
+       chegada da tela 2. `disparaLead` continua sendo chamado por garantia:
+       ele é travado por sessão, então se por qualquer motivo a tela 2 não
+       tiver conseguido disparar (uma exceção no desenho da recomendação, por
+       exemplo), quem apertou o botão não fica sem lead nenhum. Na passagem
+       normal esta chamada não faz nada. */
     disparaLead(dados.lead_uid);
+    disparaConfirmacao(dados.lead_uid);
 
     var envio = fetch('/api/lead-presencial', {
       method: 'POST',

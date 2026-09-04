@@ -22,6 +22,11 @@ const CFG = () => ({
   key:       process.env.NATALY_WA_KEY      || '',
   instancia: process.env.NATALY_WA_INSTANCIA || '',
   destino:   process.env.NATALY_WA_DESTINO  || '',
+  /* Numero da Nataly para MARCAR no grupo (@mencao). So tem efeito quando o
+     destino e um grupo: marcar alguem numa conversa privada com ela mesma nao
+     faz sentido nenhum, e o WhatsApp ignora. Fica em variavel para o dia em que
+     o destinatario do aviso mudar — trocar aqui basta, sem tocar codigo. */
+  mencao:    (process.env.NATALY_WA_MENCAO || '5535997164668').replace(/\D/g, ''),
   teste:     process.env.NATALY_WA_TESTE === '1',
   /* Minutos de inatividade antes de avisar sobre quem parou no meio.
      Vive numa env para o Eduardo poder afrouxar ou apertar sem deploy —
@@ -59,7 +64,16 @@ const ROTULO = {
                     '90-dias':'em até 90 dias', 'so-olhando':'só olhando' },
   meta_renda: { 'ate-2k':'até R$ 2 mil', '2k-5k':'R$ 2 a 5 mil', '5k-10k':'R$ 5 a 10 mil',
                 'mais-10k':'mais de R$ 10 mil', 'nao-sei':'ainda não sabe' },
-  qualificacao: { quente:'🔥 QUENTE', morno:'🟡 MORNO', frio:'🔵 FRIO' },
+  /* 🔴 O TERMÔMETRO SAIU DA MENSAGEM (pedido do Eduardo, 04/09/2026).
+     Havia aqui um rótulo `qualificacao` que estampava 🔵 FRIO / 🟡 MORNO /
+     🔥 QUENTE no cabeçalho, junto da pontuação. O problema é de negócio, não de
+     código: gente que a árvore classificou como FRIA estava comprando. Um rótulo
+     que diz "fria" no topo do aviso faz a Nataly abrir a conversa já descrente —
+     e a descrença aparece no atendimento. Toda pessoa que termina o formulário é
+     compradora em potencial, e o aviso passa a dizer isso.
+     A pontuação e a qualificação CONTINUAM sendo calculadas e gravadas no banco
+     (leads.js) e continuam visíveis no painel /crm, onde servem para ordenar e
+     filtrar com calma. O que mudou é só o que chega no celular dela. */
 };
 
 /* Nome curto do produto, para o CABEÇALHO. Pedido literal do Eduardo: o
@@ -94,12 +108,36 @@ function descreveOrigem(l) {
   return partes.join(' · ');
 }
 
+/* ---------- a marcacao da Nataly no grupo ----------
+   Grupo tem id terminado em '@g.us'; numero solto nao. Marcar so vale no grupo:
+   numa conversa direta com ela, uma mencao a ela mesma vira lixo visual. */
+function ehGrupo(destino) { return /@g\.us$/i.test(String(destino || '')); }
+
+/* O texto que o WhatsApp transforma em mencao. Vazio quando nao ha grupo ou
+   numero configurado — assim a mensagem nunca sai com um '@' orfao no titulo. */
+function marcaNataly() {
+  const cfg = CFG();
+  if (!ehGrupo(cfg.destino) || !cfg.mencao) return '';
+  return ' @' + cfg.mencao;
+}
+
+/* Os JIDs que vao no campo `mentioned` do payload da Evolution. */
+function mencoesDe(destino) {
+  const cfg = CFG();
+  if (!ehGrupo(destino) || !cfg.mencao) return [];
+  return [cfg.mencao + '@s.whatsapp.net'];
+}
+
 function montaMensagem(l) {
   const linha = [];
 
-  // Cabecalho: em UM olhar a Nataly sabe o que e, quao quente esta e quem e.
-  linha.push('🔔 *LEAD NOVO* · ' + tituloProduto(l));
-  linha.push(ROTULO.qualificacao[l.qualificacao] + '  ·  ' + l.pontuacao + '/100');
+  /* Cabecalho: uma frase positiva, a marcacao da Nataly e o produto.
+     A marcacao so entra quando o destino e GRUPO — e no grupo que marcar alguem
+     faz o celular tocar de verdade. O texto '@<numero>' precisa estar no corpo
+     da mensagem: o campo `mentioned` do payload sozinho nao pinta nada, ele so
+     autoriza o WhatsApp a transformar em mencao o que ja esta escrito. */
+  linha.push('🔥 *Chegou mais uma potencial compradora!*' + marcaNataly());
+  linha.push(tituloProduto(l));
   linha.push('━━━━━━━━━━━━━━━');
   linha.push('');
 
@@ -132,7 +170,12 @@ function montaMensagem(l) {
     linha.push('━━━━━━━━━━━━━━━');
     const p = PRODUTO_CURTO[l.produto_id] || l.produto_nome;
     const preco = l.produto_valor ? ' · R$ ' + precoBR(l.produto_valor) : '';
-    linha.push('🎯 *Indicado:* ' + p + preco);
+    /* O combo online + presencial é à vista no PIX e cobrado fora da Kiwify
+       (03/09/2026). O aviso diz a condição junto do número: sem ela a Nataly
+       abre a conversa sem saber se pode oferecer 12x, e oferecer parcelamento
+       num produto que não tem é uma promessa que ela não consegue cumprir. */
+    const condicao = l.produto_id === 'profissao-lash-presencial' ? ' à vista no PIX' : '';
+    linha.push('🎯 *Indicado:* ' + p + preco + condicao);
     if (l.produto_formato === 'online') {
       linha.push('_Ela já recebeu o link do checkout na tela._');
     } else {
@@ -264,7 +307,7 @@ function montaMensagemParcial(l) {
   return CFG().teste ? PREFIXO_TESTE + '\n\n' + corpo : corpo;
 }
 
-/* 1497 -> "1.497". A mensagem vai para o celular da Nataly, e "R$ 1497"
+/* 1197 -> "1.197". A mensagem vai para o celular da Nataly, e "R$ 1197"
    lido de relance vira R$ 149,70 na cabeça de quem já leu os dois. */
 function precoBR(v) { return String(v).replace(/\B(?=(\d{3})+(?!\d))/g, '.'); }
 
@@ -341,13 +384,19 @@ async function enviaEvolution(cfg, destino, mensagem) {
   }
   if (!destino) throw new Error('sem destino (defina NATALY_WA_DESTINO)');
 
+  const men = mencoesDe(destino);
   const ctrl = new AbortController();
   const t = setTimeout(() => ctrl.abort(), 20000);
   try {
     const res = await fetch(cfg.url + '/message/sendText/' + encodeURIComponent(cfg.instancia), {
       method: 'POST',
       headers: { 'Content-Type': 'application/json', apikey: cfg.key },
-      body: JSON.stringify({ number: destino, text: mensagem }),
+      body: JSON.stringify(Object.assign(
+        { number: destino, text: mensagem },
+        /* `mentioned` so aparece quando ha alguem para marcar. Mandar um array
+           vazio em toda mensagem seria pedir a versoes antigas da Evolution que
+           interpretem um caso que elas nao precisam ver. */
+        men.length ? { mentioned: men } : {})),
       signal: ctrl.signal,
     });
     const corpo = await res.text();
@@ -427,6 +476,7 @@ function paraWorker() { if (_timer) { clearInterval(_timer); _timer = null; } }
 
 module.exports = {
   CFG, PREFIXO_TESTE, montaMensagem, montaMensagemParcial, tituloProduto, ROTULO,
+  ehGrupo, marcaNataly, mencoesDe,
   enfileira, enfileiraParcial, varreParciais, processaFila,
   reenfileira, iniciaWorker, paraWorker, MAX_TENTATIVAS,
 };

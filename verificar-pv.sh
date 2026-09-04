@@ -128,6 +128,27 @@ if baixa_pagina /profissao-lash-curso 30000; then
   proibido "sem barra fixa (removida a pedido)" 'class="barra"'
   proibido "sem lote das 10 primeiras"          "10 primeiras"
   proibido "sem prints de conversa"             "/img/depoimentos/"
+
+  # -- PROVA SOCIAL (03/09/2026) -----------------------------------------
+  #    Antes esta página tinha três vídeos e mais nada. A enxurrada de fotos
+  #    entrou a pedido do Eduardo, no mesmo sistema da /profissao-lash-presencial.
+  #    O gate cobra as quatro superfícies porque cada uma some por um motivo
+  #    diferente: o mosaico e os prints somem se alguém esvaziar a lista do
+  #    script (sem erro nenhum no console), e as tiras somem numa edição de copy.
+  precisa "mosaico de alunas"                  'id="prova-fotos"'
+  precisa "vídeos do dia do curso"             'id="prova-videos"'
+  precisa "prints das conversas"               'id="prova-prints"'
+  precisa "lupa para ler o print"              'id="lupa-img"'
+  precisa "as tiras de foto no meio da página" 'class="tira"'
+  #    Contagem, e não só presença: uma lista com UMA foto ainda casa com o
+  #    marcador acima e não é enxurrada nenhuma.
+  N_MOSAICO=$(grep -c 'img/prova-social/aluna-\|img/prova-social/turma-' "$TMP")
+  if [ "$N_MOSAICO" -ge 25 ]; then ok "prova social densa ($N_MOSAICO fotos de alunas e turmas)"
+  else falha "a prova social encolheu: só $N_MOSAICO fotos de alunas e turmas (esperado 25+)"; fi
+  #    Rosto repetido mata o efeito de volume: quem está nos depoimentos falados
+  #    não entra no mosaico.
+  proibido "Ana Careline não se repete no mosaico"  "aluna-02-ana-careline-certificado.jpg"
+  proibido "Ana Carolina não se repete no mosaico"  "aluna-12-ana-carolina-lemos-sofa.jpg"
   confere_checkout y1Pz2US
 fi
 
@@ -568,34 +589,52 @@ if baixa_pagina /inscricao-presencial 20000; then
   precisa "intenção do GA4 na chegada"       "'select_item'"
   precisa "evento da recomendação"           "'ViuRecomendacao'"
   precisa "GA4 na recomendação"              "'view_recommendation'"
-  precisa "Lead no envio"                    "'Lead'"
+  precisa "Lead existe"                      "'Lead'"
+  # 04/09/2026: o Lead passou a nascer na CHEGADA da recomendação, e não no
+  # clique. Este check trava a mudança no lugar — sem ele, um refactor futuro
+  # devolve o Lead para o clique sem ninguém perceber, e o volume some.
+  precisa "o Lead nasce na CHEGADA da recomendação" "disparaLead(garanteUid())"
+  precisa "a submissão real virou CompleteRegistration" "'CompleteRegistration'"
+  precisa "e ela tem eventID PRÓPRIO (não colide com o Lead)" "uid + '-conf'"
+  precisa "a confirmação conta uma vez por sessão" "nr_conf_presencial"
   precisa "o Lead DIZ QUAL PRODUTO"          "content_ids: [prod.id]"
   precisa "evento com nome próprio por produto" "'Lead_' + prod.id"
-  precisa "GA4 generate_lead no envio"       "'generate_lead'"
+  precisa "GA4 generate_lead"                "'generate_lead'"
   precisa "o GA4 também diz o produto"       "produto: prod.id"
   precisa "beacon no evento antes de sair"   "transport_type: 'beacon'"
 
   # ============================================================
-  # 🔴 O `Lead` SÓ NASCE DO CLIQUE (02/09/2026)
+  # 🔴 O `Lead` NASCE NA CHEGADA DA RECOMENDAÇÃO (04/09/2026; até 02/09 era o clique)
   # ============================================================
-  # É o evento pelo qual a campanha de R$ 120/dia otimiza. Disparado no fim
-  # das perguntas — como era até 02/09 — ele ensinaria o algoritmo a procurar
-  # quem só olha o preço, e a gente pagaria por isso todo dia.
+  # É o evento pelo qual a campanha de R$ 120/dia otimiza.
+  #
+  # ⚠️ ESTE BLOCO INVERTEU EM 04/09/2026, por decisão do Eduardo. Ele exigia o
+  # contrário — que o Lead saísse SÓ do clique, nunca da chegada da tela — e a
+  # razão era boa: contar quem só olha o preço encarece a campanha. O que virou
+  # o jogo foi o volume. Muita gente chegava na recomendação e não clicava;
+  # essas pessoas viravam ligação da Nataly do mesmo jeito, mas o Meta não
+  # ficava sabendo que existiam, e a campanha aprendia a evitar exatamente quem
+  # terminava o formulário. Trocamos um erro pelo outro, de olhos abertos.
   precisa "o Lead mora numa função própria"  "function disparaLead"
-  precisa "e ela é chamada no clique"        "disparaLead(dados.lead_uid)"
+  precisa "e ela é chamada na chegada da recomendação" "disparaLead(garanteUid())"
   precisa "o Lead é travado em 1 por sessão" "nr_lead_presencial"
-  # A prova de ORDEM: `disparaLead` tem de ser chamado DEPOIS de
-  # `mostraRecomendacao` no arquivo, e nunca de dentro dela.
+  # A prova de ORDEM, agora ao contrário: a chamada tem de estar DENTRO de
+  # `mostraRecomendacao` — isto é, entre o começo dela e o começo de
+  # `confirma`, que vem logo depois no arquivo.
   P_MOSTRA=$(grep -boF 'function mostraRecomendacao' "$TMP" | head -1 | cut -d: -f1)
   P_CONFIRMA=$(grep -boF 'function confirma' "$TMP" | head -1 | cut -d: -f1)
-  P_CHAMA=$(grep -boF 'disparaLead(dados.lead_uid)' "$TMP" | head -1 | cut -d: -f1)
+  P_CHAMA=$(grep -boF 'disparaLead(garanteUid())' "$TMP" | head -1 | cut -d: -f1)
   if [ -z "$P_MOSTRA" ] || [ -z "$P_CONFIRMA" ] || [ -z "$P_CHAMA" ]; then
     falha "não achei as funções do fluxo para medir onde o Lead é disparado"
-  elif [ "$P_CHAMA" -gt "$P_CONFIRMA" ] && [ "$P_CONFIRMA" -gt "$P_MOSTRA" ]; then
-    ok "o Lead é disparado dentro de confirma(), depois da tela da recomendação"
+  elif [ "$P_CHAMA" -gt "$P_MOSTRA" ] && [ "$P_CHAMA" -lt "$P_CONFIRMA" ]; then
+    ok "o Lead é disparado DENTRO de mostraRecomendacao (na chegada, sem clique)"
   else
     falha "o Lead saiu do lugar (mostra $P_MOSTRA, confirma $P_CONFIRMA, chamada $P_CHAMA)"
   fi
+  # A rede de segurança: se a tela 2 falhar em disparar, quem apertar o botão
+  # ainda gera lead. A trava de sessão garante que isso nunca duplica.
+  precisa "e a rede de segurança no clique continua" "disparaLead(dados.lead_uid)"
+  precisa "a submissão real é disparada no clique" "disparaConfirmacao(dados.lead_uid)"
   # E a tela da recomendação dispara o ViuRecomendacao, que é o PAR do Lead:
   # a distância entre os dois é quanta gente viu o preço e não quis.
   # ⚠️ Não dá para provar isto com `grep -F` de duas linhas: um padrão com \n
@@ -634,10 +673,12 @@ if baixa_pagina /inscricao-presencial 20000; then
   precisa "e no GA4 também"                      "'lead_partial'"
   precisa "o LeadParcial conta uma vez por sessão" "nr_lead_parcial"
   # O `Lead` de verdade continua existindo, e existe UMA VEZ SÓ: dentro de
-  # `sucesso()`. Duas ocorrências significam que alguém o copiou para o
-  # caminho do parcial.
+  # `disparaLead()`. Duas ocorrências significam que alguém o copiou para o
+  # caminho do parcial. (Desde 04/09/2026 `disparaLead` é chamado na chegada da
+  # recomendação; o que este check mede é quantos `fbq('track','Lead'` existem
+  # ESCRITOS no arquivo, e esse número continua tendo de ser 1.)
   N_LEAD=$(grep -c "fbq('track', 'Lead'" "$TMP")
-  if [ "$N_LEAD" = "1" ]; then ok "o evento Lead é disparado em UM lugar só (o envio final)"
+  if [ "$N_LEAD" = "1" ]; then ok "o evento Lead é escrito em UM lugar só (disparaLead)"
   else falha "achei $N_LEAD disparos de Lead no formulário — o parcial NÃO pode disparar Lead"; fi
   proibido "o parcial não dispara Lead (nem por engano)" "'Lead', COMUNS"
 

@@ -298,6 +298,33 @@ Enviar de verdade exige configuração deliberada.
 `NATALY_WA_TESTE=1` faz toda mensagem começar com
 `Isso é um teste de uma automação, ignore`.
 
+### O termômetro saiu da mensagem (04/09/2026)
+
+O aviso de lead novo abria com `🔵 FRIO / 🟡 MORNO / 🔥 QUENTE` e a pontuação
+(`85/100`). **Saiu.** O motivo é comercial: leads que a árvore classificou como
+frios estavam comprando, e um rótulo dizendo "fria" no topo do aviso faz a
+Nataly começar a conversa já descrente — e a descrença chega na aluna.
+
+A pontuação e a qualificação **continuam** sendo calculadas (`leads.js`),
+gravadas no banco e mostradas no painel `/crm`, onde servem para ordenar e
+filtrar com calma. O que mudou é só o que chega no celular. O cabeçalho agora é:
+
+```
+🔥 *Chegou mais uma potencial compradora!* @5535997164668
+Profissão Lash online + presencial
+```
+
+A marcação (`@5535997164668`) **só aparece quando `NATALY_WA_DESTINO` é um
+grupo** (`...@g.us`) — marcar alguém numa conversa direta com ela mesma não faz
+sentido e o WhatsApp ignora. Quem é marcado sai de `NATALY_WA_MENCAO` (padrão:
+`5535997164668`, o WhatsApp da Nataly).
+
+Duas coisas precisam acontecer juntas para a menção funcionar, e é fácil fazer
+só uma: o texto `@<numero>` tem de estar **escrito no corpo** da mensagem, e o
+JID (`<numero>@s.whatsapp.net`) tem de ir no campo `mentioned` do payload do
+`sendText`. O `mentioned` sozinho não pinta nada — ele só autoriza o WhatsApp a
+transformar em menção o texto que já está lá.
+
 ---
 
 ## Rastreamento — o mapa completo
@@ -309,8 +336,8 @@ Enviar de verdade exige configuração deliberada.
 | **Clica no CTA** | `IniciouInscricao` (1×/sessão) | — |
 | **Chega no formulário** | `PageView`, `ViewContent` | `page_view`, `view_item`, `select_item` (1×/sessão) |
 | **Vê a etapa da faixa** | `ViuInvestimento` (1×/sessão) | `view_price_step` |
-| **Envia** | `Lead` + `Lead_<produto>` (com `eventID`, `content_ids`, sem valor) | `generate_lead` |
-| **Vê a recomendação** | `ViuRecomendacao` (com o produto) | `view_recommendation` |
+| **Chega na recomendação** (terminou as perguntas) | `ViuRecomendacao` + **`Lead`** + `Lead_<produto>` (com `eventID`, `content_ids`, sem valor) | `view_recommendation`, `generate_lead` |
+| **Clica em "Quero garantir a minha vaga"** | `CompleteRegistration` + `Confirmou_<produto>` (`eventID` com sufixo `-conf`) | `sign_up` |
 | **Clica no checkout** (só online) | `InitiateCheckout` (1×/sessão, **com o valor do produto certo**) | `begin_checkout` |
 
 Nunca `Purchase` — quem dispara é a Kiwify (pixel + CAPI).
@@ -318,6 +345,40 @@ Nunca `Purchase` — quem dispara é a Kiwify (pixel + CAPI).
 > ⚠️ **`InitiateCheckout` mudou de lado em 01/09/2026.** Antes da árvore ele era
 > proibido aqui, e com razão: nenhum caminho desta página levava a checkout.
 > Hoje metade leva, e a ausência do evento é que seria o defeito.
+
+### 🔴 O `Lead` mudou de momento em 04/09/2026 — anote a data
+
+Até 03/09 o `Lead` nascia no **clique** do botão da tela de recomendação. Agora
+ele nasce na **chegada** dessa tela: quem responde as nove perguntas já conta,
+sem precisar apertar nada.
+
+**Por quê.** Muita gente chegava na recomendação e não clicava. Essas pessoas
+são leads de verdade — a Nataly recebe o formulário completo, com nome, WhatsApp
+e produto indicado, e liga para elas. O Meta é que não ficava sabendo: pela
+régua antiga elas não existiam, e a campanha aprendia a evitar exatamente quem
+terminava o formulário.
+
+**O que isso quebra, e é de propósito:**
+
+- o **volume de `Lead` sobe** — não é melhora de performance, é outra definição;
+- o **CPL cai artificialmente** e **deixa de ser comparável** com agosto e com o
+  começo de setembro. Comparar as duas séries é comparar duas coisas diferentes;
+- a **otimização do Meta reaprende**: o algoritmo passa a perseguir um evento
+  novo e leva alguns dias e algumas conversões para reestabilizar.
+
+**A submissão real não sumiu.** O clique no botão virou
+`CompleteRegistration` (evento padrão do Meta, com nome próprio por produto em
+`Confirmou_<produto>`). É esse número que diz se o volume novo virou conversa ou
+virou ruído: a razão `CompleteRegistration / Lead` é a taxa que antes estava
+escondida dentro do próprio `Lead`.
+
+**O que NÃO mudou:** chegar na recomendação continua deixando a linha do banco
+como **incompleta**, e a Nataly continua **sem ser avisada** até o clique. A
+mudança é só no que o Meta conta — nunca no que dispara o WhatsApp dela.
+
+**As outras páginas de captação não foram tocadas.** Em `/entrar` e em
+`/entrar-profissao-lash` o `Lead` já dispara na chegada da página, sem depender
+de clique nenhum: lá não existe botão final para deixar de ser apertado.
 
 ### Por que o produto não pode vir da rota
 
