@@ -22,10 +22,10 @@ const CFG = () => ({
   key:       process.env.NATALY_WA_KEY      || '',
   instancia: process.env.NATALY_WA_INSTANCIA || '',
   destino:   process.env.NATALY_WA_DESTINO  || '',
-  /* Numero da Nataly para MARCAR no grupo (@mencao). So tem efeito quando o
-     destino e um grupo: marcar alguem numa conversa privada com ela mesma nao
-     faz sentido nenhum, e o WhatsApp ignora. Fica em variavel para o dia em que
-     o destinatario do aviso mudar — trocar aqui basta, sem tocar codigo. */
+  /* Número da Nataly para MARCAR no grupo (@menção). Só tem efeito quando o
+     destino é um grupo: marcar alguém numa conversa privada com ela mesma não
+     faz sentido nenhum, e o WhatsApp ignora. Fica em variável para o dia em que
+     o destinatário do aviso mudar — trocar aqui basta, sem tocar código. */
   mencao:    (process.env.NATALY_WA_MENCAO || '5535997164668').replace(/\D/g, ''),
   teste:     process.env.NATALY_WA_TESTE === '1',
   /* Minutos de inatividade antes de avisar sobre quem parou no meio.
@@ -108,20 +108,20 @@ function descreveOrigem(l) {
   return partes.join(' · ');
 }
 
-/* ---------- a marcacao da Nataly no grupo ----------
-   Grupo tem id terminado em '@g.us'; numero solto nao. Marcar so vale no grupo:
-   numa conversa direta com ela, uma mencao a ela mesma vira lixo visual. */
+/* ---------- a marcação da Nataly no grupo ----------
+   Grupo tem id terminado em '@g.us'; número solto não. Marcar só vale no grupo:
+   numa conversa direta com ela, uma menção a ela mesma vira lixo visual. */
 function ehGrupo(destino) { return /@g\.us$/i.test(String(destino || '')); }
 
-/* O texto que o WhatsApp transforma em mencao. Vazio quando nao ha grupo ou
-   numero configurado — assim a mensagem nunca sai com um '@' orfao no titulo. */
+/* O texto que o WhatsApp transforma em menção. Vazio quando não há grupo ou
+   número configurado — assim a mensagem nunca sai com um '@' órfão no título. */
 function marcaNataly() {
   const cfg = CFG();
   if (!ehGrupo(cfg.destino) || !cfg.mencao) return '';
   return ' @' + cfg.mencao;
 }
 
-/* Os JIDs que vao no campo `mentioned` do payload da Evolution. */
+/* Os JIDs que vão no campo `mentioned` do payload da Evolution. */
 function mencoesDe(destino) {
   const cfg = CFG();
   if (!ehGrupo(destino) || !cfg.mencao) return [];
@@ -131,11 +131,11 @@ function mencoesDe(destino) {
 function montaMensagem(l) {
   const linha = [];
 
-  /* Cabecalho: uma frase positiva, a marcacao da Nataly e o produto.
-     A marcacao so entra quando o destino e GRUPO — e no grupo que marcar alguem
-     faz o celular tocar de verdade. O texto '@<numero>' precisa estar no corpo
-     da mensagem: o campo `mentioned` do payload sozinho nao pinta nada, ele so
-     autoriza o WhatsApp a transformar em mencao o que ja esta escrito. */
+  /* Cabeçalho: uma frase positiva, a marcação da Nataly e o produto.
+     A marcação só entra quando o destino é GRUPO — é no grupo que marcar alguém
+     faz o celular tocar de verdade. O texto '@<número>' precisa estar no corpo
+     da mensagem: o campo `mentioned` do payload sozinho não pinta nada, ele só
+     autoriza o WhatsApp a transformar em menção o que já está escrito. */
   linha.push('🔥 *Chegou mais uma potencial compradora!*' + marcaNataly());
   linha.push(tituloProduto(l));
   linha.push('━━━━━━━━━━━━━━━');
@@ -393,9 +393,9 @@ async function enviaEvolution(cfg, destino, mensagem) {
       headers: { 'Content-Type': 'application/json', apikey: cfg.key },
       body: JSON.stringify(Object.assign(
         { number: destino, text: mensagem },
-        /* `mentioned` so aparece quando ha alguem para marcar. Mandar um array
-           vazio em toda mensagem seria pedir a versoes antigas da Evolution que
-           interpretem um caso que elas nao precisam ver. */
+        /* `mentioned` só aparece quando há alguém para marcar. Mandar um array
+           vazio em toda mensagem seria pedir a versões antigas da Evolution que
+           interpretem um caso que elas não precisam ver. */
         men.length ? { mentioned: men } : {})),
       signal: ctrl.signal,
     });
