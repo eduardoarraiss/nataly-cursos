@@ -77,14 +77,16 @@ const eq = (nome, a, b) => ok(nome, a === b, 'esperava ' + JSON.stringify(b) + '
   console.log('\n-- validação --');
   const vazio = L.valida({});
   ok('formulário vazio é recusado', !vazio.ok);
-  /* Eram 6; a árvore trouxe mais 2 (`prefere_formato` e `faixa_investimento`)
-     porque sem eles não há como decidir o produto — e recomendar no chute é
-     pior do que não recomendar. `situacao` também virou obrigatório: era
-     opcional quando existia um produto só, e agora é a raiz da árvore.
+  /* 🔴 A LISTA MUDOU EM 05/09/2026: `faixa_investimento` SAIU e `interesse`
+     ENTROU. A captação parou de perguntar de dinheiro, então exigir a faixa
+     devolveria um erro apontando para um campo que não existe mais na tela —
+     e a pessoa veria "escolha a faixa" sem ter onde escolher. O `interesse`
+     tomou o lugar dela como última pergunta, e é obrigatório porque é ele que
+     escolhe a mensagem pré-preenchida do WhatsApp na tela final.
      A lista é conferida por NOME, não por contagem: "são 8" passaria mesmo se
      um campo certo tivesse sido trocado por outro. */
   const OBRIGATORIOS = ['nome','telefone','cidade','instagram','disponibilidade',
-                        'situacao','prefere_formato','faixa_investimento'];
+                        'situacao','prefere_formato','interesse'];
   const acusados = Object.keys(vazio.erros).sort().join(',');
   ok('acusa exatamente os 8 campos obrigatórios',
      acusados === OBRIGATORIOS.slice().sort().join(','), 'acusou ' + acusados);
@@ -95,12 +97,19 @@ const eq = (nome, a, b) => ok(nome, a === b, 'esperava ' + JSON.stringify(b) + '
 
   const bom = L.valida({
     nome:'Maria Silva', telefone:'(35) 99716-4668', cidade:'Cambuí', instagram:'@maria',
-    disponibilidade:'sim', prefere_formato:'presencial', faixa_investimento:'acima-2000',
+    disponibilidade:'sim', prefere_formato:'presencial', interesse:'iniciante',
     situacao:'outra-area', quando_comecar:'agora',
     email:'maria@exemplo.com', estado:'mg', faixa_idade:'25-34', objetivo:'Quero mudar de vida',
   });
   ok('formulário completo passa', bom.ok, JSON.stringify(bom.erros));
   eq('estado vira maiúsculo', bom.lead.estado, 'MG');
+  eq('o interesse declarado é gravado', bom.lead.interesse, 'iniciante');
+  /* Vocabulário fechado, como todo campo de escolha: interesse inventado não
+     vira linha suja no banco nem texto do cliente na cara da Nataly. */
+  eq('interesse fora da lista é descartado',
+     L.valida({ nome:'Maria Silva', telefone:'(35) 99716-4668', cidade:'Cambuí',
+                instagram:'@maria', disponibilidade:'sim', prefere_formato:'presencial',
+                situacao:'outra-area', interesse:'<script>' }).lead.interesse, null);
   eq('e-mail normalizado', bom.lead.email, 'maria@exemplo.com');
 
   const injecao = L.valida({

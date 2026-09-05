@@ -261,6 +261,12 @@ function montaMensagemParcial(l) {
   if (l.disponibilidade)    respostas.push(ROTULO.disponibilidade[l.disponibilidade]);
   if (l.prefere_formato)    respostas.push(ROTULO.prefere_formato[l.prefere_formato]);
   if (l.faixa_investimento) respostas.push('investe: ' + ROTULO.faixa_investimento[l.faixa_investimento]);
+  /* O interesse declarado (05/09/2026). Vem por último na lista porque é a
+     última pergunta — a Nataly lê a mensagem na ordem em que a pessoa
+     respondeu, e é a última linha que diz do que a conversa vai tratar. */
+  if (l.interesse) respostas.push('quer: ' + (l.interesse === 'led'
+    ? 'aprender a técnica com LED'
+    : 'se tornar lash designer (começar do zero)'));
 
   if (respostas.length) {
     linha.push('O que ela já tinha respondido:');
@@ -289,7 +295,18 @@ function montaMensagemParcial(l) {
                (pv ? ', por ' + pv : '') + ', e não clicou em garantir a vaga.');
     linha.push('Não é falta de informação: ela sabe o preço. É a conversa de');
     linha.push('condição, de data ou de dúvida — e é a que mais vira venda.');
+  } else if (et && et.naUltima) {
+    /* A parada mais valiosa da captação nova: ela respondeu TUDO e recuou no
+       último clique. Não há objeção de preço para tratar — ela não viu preço
+       nenhum —, então o que falta é só alguém chamar. */
+    linha.push('🎯 Ela respondeu TUDO e parou no último clique, sem enviar.');
+    linha.push('Não viu preço nenhum (a captação não mostra): o que falta aqui');
+    linha.push('é só a conversa começar. É a ligação mais fácil da lista.');
   } else if (et && et.noPreco) {
+    /* 🔴 RAMO HISTÓRICO. Nenhuma linha nova nasce na etapa '10' desde
+       05/09/2026 — a pergunta do investimento saiu do formulário. Isto fica
+       de pé para as linhas gravadas antes dessa data, que ainda apontam
+       para lá e continuam aparecendo no painel. */
     linha.push('💰 Ela parou justamente na pergunta do investimento — é onde');
     linha.push('mais gente desiste, e é a conversa que costuma virar venda.');
   } else {

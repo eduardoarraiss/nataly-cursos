@@ -8,7 +8,10 @@
 
    ⚠️ PREÇOS E CHECKOUTS CONFERIDOS NO CÓDIGO EM 01/09/2026:
      · profissao-lash            y1Pz2US  R$ 497   public/profissao-lash-curso.html:1002
-     · profissao-lash-presencial VluGxKq  R$ 1.497 server.js:628 (a PV não mostra preço)
+     · profissao-lash-presencial VluGxKq  R$ 1.197 à vista no PIX, cobrança FORA da
+                                          Kiwify (03/09/2026). A PV não mostra preço e o
+                                          funil não manda link: o slug fica só de registro,
+                                          e o valor DELE na Kiwify ainda é R$ 1.497.
      · lash2-online (Método LED) FfyBeg0  R$ 297   server.js:302 via FASE_PADRAO=2
      · lash2-presencial          eZ1ZPoU  R$ 1.997 public/lancamento-presencial.html:748
    O Método LED online NÃO tem checkout fixo na página: ele é injetado por
@@ -61,9 +64,19 @@ function PRODUTOS() {
       nome: 'Profissão Lash — online + presencial',
       nome_meta: 'Profissão Lash — Online + Presencial',
       curto: 'Profissão Lash online + presencial',
-      valor: 1497,
-      preco: 'R$ 1.497',
-      parcela: '12x de R$ 154,82',
+      valor: 1197,
+      preco: 'R$ 1.197 à vista no PIX',
+      /* Preço ÚNICO, sem parcelamento (decisão do Eduardo, 03/09/2026): o combo
+         passou a ser R$ 1.197 à vista no PIX, e a cobrança acontece FORA da
+         Kiwify. `parcela: null` não é esquecimento — é o que apaga a linha
+         "ou 12x de…" na tela final e no aviso da Nataly. Quem escrever uma
+         parcela aqui volta a prometer cartão num produto que não tem. */
+      parcela: null,
+      /* O slug segue registrado porque o produto continua existindo na Kiwify,
+         mas ELE NÃO É O CAMINHO DE PAGAMENTO deste combo: `paraTela()` já só
+         monta link de checkout no formato online, e o presencial a Nataly
+         combina a data antes de cobrar. O preço lá na Kiwify segue R$ 1.497
+         até o Eduardo mandar mexer. */
       checkout: 'VluGxKq',
       inclui: [
         'Um dia de prática ao vivo comigo, em Cambuí, MG',
@@ -125,14 +138,15 @@ const OPCOES_ARVORE = {
   prefere_formato: ['presencial', 'online', 'nao-sei'],
   /* 10 — a faixa de investimento. Cada faixa CONTÉM o preço do produto que
      ela habilita, então ninguém nunca recebe recomendação acima do que disse
-     que pode: 497 e 297 cabem em 'ate-500'; 1.497 cabe em '500-1500';
+     que pode: 497 e 297 cabem em 'ate-500'; 1.197 cabe em '500-1500';
      1.997 cabe em '1500-2000'. */
   faixa_investimento: ['ate-500', '500-1500', '1500-2000', 'acima-2000', 'depende-parcelamento'],
 };
 
 /* Teto de cada faixa, em reais. 'depende-parcelamento' não tem teto: quem
-   aceita parcelar em 12x consegue qualquer um dos quatro (o mais caro sai a
-   R$ 206,54 por mês). */
+   aceita parcelar em 12x consegue qualquer um dos três que têm cartão (o mais
+   caro sai a R$ 206,54 por mês). O combo online + presencial ficou de fora
+   dessa conta: ele é à vista no PIX e não tem parcela. */
 const TETO = {
   'ate-500': 500,
   '500-1500': 1500,
@@ -141,7 +155,23 @@ const TETO = {
   'depende-parcelamento': Infinity,
 };
 
+/* 🔴 SEM FAIXA = SEM TETO (05/09/2026).
+   A captação parou de perguntar quanto ela pode investir, então a esmagadora
+   maioria dos leads novos chega aqui com `faixa` nula. O comportamento antigo
+   — faixa desconhecida devolve `false` — significaria "não cabe", e a árvore
+   empurraria TODO MUNDO para o online com o motivo "o investimento do
+   presencial ficou acima da faixa que ela marcou". Uma frase falsa sobre uma
+   pergunta que ninguém fez, gravada no painel como se fosse informação.
+
+   Ausência de resposta não é resposta negativa. Quem não declarou faixa não
+   declarou limite, e o teto some do cálculo: a recomendação passa a sair de
+   onde ela mora, do que ela prefere e do que ela já faz — que são justamente
+   os critérios que a árvore sempre tratou como mais fortes que o dinheiro.
+
+   Continua valendo para quem TEM faixa: linha antiga, ou envio de uma aba que
+   ficou aberta desde ontem, ainda respeita o teto que aquela pessoa marcou. */
 function cabeNaFaixa(produto, faixa) {
+  if (faixa === null || faixa === undefined || faixa === '') return true;
   const teto = TETO[faixa];
   if (teto === undefined) return false;
   return produto.valor <= teto;

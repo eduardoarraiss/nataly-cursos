@@ -174,7 +174,18 @@ router.post('/api/lead-presencial', express.json({ limit: '32kb' }), async (req,
     Object.assign(lead, L.qualifica(lead, rec), L.atribuicao(body, req));
     lead.lead_uid = String(body.lead_uid || '').slice(0, 80) || null;
 
-    const recomendacao = L.paraTela(rec);
+    /* 🔴 A RECOMENDAÇÃO NÃO VAI MAIS PARA O NAVEGADOR (05/09/2026).
+       `L.roteia` continua rodando logo acima, e o produto continua gravado na
+       linha: é a inteligência comercial que a Nataly lê no painel antes de
+       ligar. O que mudou é o destino — ela fica no BANCO e não volta na
+       resposta.
+
+       Não é zelo estético. Enquanto o produto e o preço voltavam no JSON,
+       eles estavam a um `console.log` de distância de voltar para a tela, e
+       apareciam na aba de rede de qualquer pessoa que abrisse o inspetor. A
+       captação foi reescrita para não falar de dinheiro; deixar o dinheiro
+       trafegando mesmo assim é manter a porta destrancada e confiar que
+       ninguém empurra. */
 
     // ---- GRAVA PRIMEIRO. Só depois pensa em avisar. ----
     const salvo = await L.cria(lead);
@@ -184,7 +195,7 @@ router.post('/api/lead-presencial', express.json({ limit: '32kb' }), async (req,
        tivesse a rede reenviando) cairia numa tela final sem produto, sem
        preço e sem checkout: o pior lugar possível para ficar. */
     if (salvo.novo === false) {
-      return res.json({ ok: true, dedupe: true, qualificacao: salvo.qualificacao, recomendacao });
+      return res.json({ ok: true, dedupe: true, qualificacao: salvo.qualificacao });
     }
 
     // ---- Aviso: enfileira e tenta. Falhar aqui NÃO derruba o lead. ----
@@ -196,7 +207,7 @@ router.post('/api/lead-presencial', express.json({ limit: '32kb' }), async (req,
                     ' está salvo): ' + e.message);
     }
 
-    res.json({ ok: true, qualificacao: salvo.qualificacao, recomendacao });
+    res.json({ ok: true, qualificacao: salvo.qualificacao });
   } catch (e) {
     console.error('[funil] erro ao receber lead:', e);
     res.status(500).json({

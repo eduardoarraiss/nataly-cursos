@@ -232,74 +232,25 @@ img{max-width:100%; display:block; height:auto}
    O card do produto reaproveita a caixa escura do investimento: é a mesma
    hierarquia visual (preço grande, parcelamento, o que inclui) e a pessoa
    já a viu uma vez. Reaproveitar economiza CSS e economiza aprendizado. */
-.rec{text-align:left; max-width:520px; margin:0 auto}
-.rec__rot{
-  font-size:var(--t1); text-transform:uppercase; letter-spacing:.14em;
-  font-weight:800; color:var(--tinta-2); margin:0 0 var(--e2);
-}
-.rec__nome{
-  font-family:var(--f-serif); font-style:italic; font-weight:700;
-  font-size:var(--t6); line-height:1.1; margin:0 0 var(--e4); color:var(--tinta);
-}
-@media(min-width:700px){.rec__nome{font-size:44px}}
-.rec__porque{
-  margin:0 0 var(--e5); font-size:var(--t3); line-height:1.55; color:var(--tinta-2);
-  border-left:2px solid var(--argila); padding-left:var(--e3);
-}
-.rec__cta{display:inline-flex; align-items:center; justify-content:center;
-  text-decoration:none; text-align:center; margin:var(--e5) 0 0; width:100%}
-.rec__cta[hidden]{display:none}
-/* Alvo de toque: o botão desta tela é o único da página que fecha a conversa.
-   56px de altura já vem do `.btn`; aqui o que se garante é que ele não encolhe
-   quando o rótulo cabe numa linha só. */
-button.rec__cta{font:inherit; font-weight:800; font-size:var(--t3); cursor:pointer}
+/* 🔴 O CSS DA TELA DA RECOMENDAÇÃO SAIU EM 05/09/2026, junto com a tela.
+   Eram as regras `.rec*` e `.valor*`: o cartão do curso, a caixa escura do
+   preço e a lista do que estava incluso. Nada disso tem para onde apontar
+   agora — a captação não mostra produto nem valor. Deixar CSS órfão no
+   arquivo é convidar a tela a voltar por acidente.
 
-/* ---------- "aqui eu pego poucas pessoas" (só no presencial) ----------
-   Filete de 1px e fundo de papel, como manda a régua desta família de páginas:
-   nunca box-shadow. O título vai em --chocolate e o corpo em --tinta-2, os
-   dois medidos sobre o papel — --argila e --salvia NUNCA como cor de texto. */
-.rec__seleta{
-  margin:0 0 var(--e5); padding:var(--e4) var(--e5);
-  border:1px solid var(--argila); border-radius:var(--r1); background:var(--papel);
+   No lugar entra só o bloco do "falar agora": o convite e o botão de
+   WhatsApp da tela final. */
+.agora{
+  margin:var(--e6) auto 0; max-width:460px; padding:var(--e5) var(--e4);
+  border:1px solid var(--filete); border-radius:var(--r1); background:var(--papel);
 }
-.rec__seleta-t{
-  margin:0 0 var(--e2); font-size:var(--t1); font-weight:800;
-  letter-spacing:.12em; text-transform:uppercase; color:var(--chocolate);
-}
-.rec__seleta p{margin:0; font-size:var(--t2); line-height:1.55; color:var(--tinta-2)}
-.rec__seleta b{color:var(--tinta)}
-.rec__seleta[hidden]{display:none}
-.rec__nota{margin:var(--e4) 0 0; font-size:var(--t2); line-height:1.5; color:var(--tinta-2)}
-/* A caixa que diz "o presencial existe" para quem podia vir e só o
-   investimento travou. Filete, nunca sombra — e nunca escondida. */
-.rec__extra{
-  margin:var(--e5) 0 0; padding:var(--e4); border:1px solid var(--filete);
-  border-radius:var(--r1); background:var(--papel);
-}
-.rec__extra p{margin:0; font-size:var(--t2); line-height:1.55; color:var(--tinta-2)}
-.rec__extra b{color:var(--tinta)}
-
-/* ---------- a etapa do investimento ---------- */
-.valor{
-  background:var(--pretinho); color:var(--creme);
-  border-radius:var(--r2); padding:var(--e6) var(--e5); margin:0 0 var(--e5);
-}
-.valor__n{
-  font-family:var(--f-serif); font-style:italic; font-weight:700;
-  font-size:var(--t7); line-height:1; margin:0 0 var(--e2);
-}
-@media(min-width:700px){.valor__n{font-size:56px}}
-.valor__p{font-size:var(--t4); font-weight:800; margin:0 0 var(--e1)}
-.valor__a{font-size:var(--t2); color:rgba(242,238,229,.68); margin:0 0 var(--e5)}
-.valor__l{
-  list-style:none; margin:0; padding:var(--e5) 0 0;
-  border-top:1px solid rgba(242,238,229,.2); display:grid; gap:var(--e2);
-}
-.valor__l li{font-size:var(--t2); line-height:1.45; color:rgba(242,238,229,.9);
-  display:flex; gap:var(--e2)}
-.valor__l li::before{content:"✓"; color:var(--argila); font-weight:900; flex:0 0 auto}
-
-/* ---------- erro ---------- */
+.agora__t{margin:0 0 var(--e1); font-weight:800; font-size:var(--t3); color:var(--tinta)}
+.agora__s{margin:0 0 var(--e4); font-size:var(--t2); line-height:1.5; color:var(--tinta-2)}
+/* O botão é o do sistema: pílula, fundo chocolate, texto creme. Sem sombra —
+   filete e cor cheia, que é a régua da marca. */
+.agora__b{display:inline-flex; align-items:center; justify-content:center; gap:10px;
+  width:100%; text-decoration:none}
+.agora__b[hidden]{display:none}
 .erro{
   margin:0 0 var(--e4); padding:11px var(--e3);
   font-size:var(--t2); font-weight:700; color:#7E2C13;
@@ -617,38 +568,35 @@ button.rec__cta{font:inherit; font-weight:800; font-size:var(--t3); cursor:point
         </div>
       </fieldset>
 
-      <!-- ============ 10. A FAIXA DE INVESTIMENTO ============
-           🔴 AQUI NÃO APARECE PREÇO DE PRODUTO NENHUM, DE PROPÓSITO.
-           A versão anterior mostrava "R$ 1.497" cravado, o que era verdade
-           quando existia um produto só. Com quatro preços (R$ 297, R$ 497,
-           R$ 1.197, R$ 1.997) um número fixo mentiria para a maioria.
+      <!-- ============ A ÚLTIMA PERGUNTA: O INTERESSE ============
+           🔴 ESTA PERGUNTA SUBSTITUIU A DA FAIXA DE INVESTIMENTO EM 05/09/2026.
 
-           A saída: perguntar a FAIXA DELA antes de revelar qualquer valor
-           nosso. As faixas foram desenhadas para CONTER os preços — 497 e 297
-           cabem em "até R$ 500", 1.197 cabe em "R$ 500 a R$ 1.500", 1.997 cabe
-           em "R$ 1.500 a R$ 2.000" — então a árvore nunca recomenda acima do
-           que ela marcou, e o único preço que ela vê na vida é o do produto
-           dela, na tela final. O teste `teste-arvore.js` prova isso nas 405
-           combinações possíveis. -->
-      <fieldset class="etapa" data-etapa="10" hidden>
-        <legend class="q"><span class="n"></span>Quanto você consegue investir na sua formação agora?</legend>
-        <p class="ajuda">Pode ser sincera. Eu tenho caminhos de preços bem
-        diferentes, e é isso que me faz te indicar o certo em vez do mais caro.</p>
-        <!-- Sem esta linha a pergunta parece uma sondagem de quanto dá para
-             cobrar de cada uma. Quem desconfia disso mente para baixo ou
-             abandona — e esta é a ÚLTIMA pergunta, onde desistir custa mais
-             caro. O "pode ser sincera" acima pede confiança; esta frase dá o
-             motivo concreto para ela. -->
-        <p class="ajuda" id="ajuda-preco-fixo"><b>Os meus preços são os mesmos para todo
-        mundo</b>, e o que você marcar aqui não muda o valor de nada. Isso serve só para
-        eu te indicar o caminho certo para o seu momento.</p>
-        <p class="erro" id="e-faixa_investimento" role="alert" hidden></p>
-        <div class="ops" role="radiogroup" aria-label="Sua faixa de investimento">
-          <label class="op"><input type="radio" name="faixa_investimento" value="ate-500"><span class="marca" aria-hidden="true"></span><span class="txt">Até R$ 500<span class="sub">É o que dá para agora</span></span></label>
-          <label class="op"><input type="radio" name="faixa_investimento" value="500-1500"><span class="marca" aria-hidden="true"></span><span class="txt">De R$ 500 a R$ 1.500</span></label>
-          <label class="op"><input type="radio" name="faixa_investimento" value="1500-2000"><span class="marca" aria-hidden="true"></span><span class="txt">De R$ 1.500 a R$ 2.000</span></label>
-          <label class="op"><input type="radio" name="faixa_investimento" value="acima-2000"><span class="marca" aria-hidden="true"></span><span class="txt">Mais de R$ 2.000<span class="sub">Quero a formação mais completa</span></span></label>
-          <label class="op"><input type="radio" name="faixa_investimento" value="depende-parcelamento"><span class="marca" aria-hidden="true"></span><span class="txt">Depende: consigo mais se puder parcelar<span class="sub">Quero entender as condições com você</span></span></label>
+           O que saiu daqui, e por quê: a captação inteira parou de falar de
+           dinheiro. Não se pergunta mais quanto ela pode investir, não se
+           mostra produto, não se mostra preço e não existe mais checkout no
+           caminho. A medição é o motivo — dos seis leads reais que o
+           formulário produziu entre 02 e 04/09/2026, QUATRO pararam
+           exatamente na tela que revelava o curso e o valor, e um quinto
+           parou nesta pergunta, a do bolso. Um confirmou. A conta é essa: o
+           preço, dentro da captação, custava mais do que rendia.
+
+           O que entrou no lugar é a única coisa que o comercial precisa saber
+           antes de discar — qual conversa ela quer ter. São dois caminhos, e
+           os dois são de APRENDIZADO, não de catálogo: começar do zero como
+           lash designer, ou aprender a técnica com LED.
+
+           É esta resposta que escolhe a frase que vai pré-preenchida no
+           WhatsApp da tela final. Por isso ela é obrigatória, e por isso ela
+           vem por último: é a pergunta mais fácil do formulário, e terminar
+           numa pergunta fácil é o contrário de terminar no preço. -->
+      <fieldset class="etapa" data-etapa="interesse" hidden>
+        <legend class="q"><span class="n"></span>Por último: o que você quer aprender comigo?</legend>
+        <p class="ajuda">Isso é só para eu já chegar na conversa sabendo do que a
+        gente vai falar.</p>
+        <p class="erro" id="e-interesse" role="alert" hidden></p>
+        <div class="ops" role="radiogroup" aria-label="O que você quer aprender">
+          <label class="op"><input type="radio" name="interesse" value="iniciante"><span class="marca" aria-hidden="true"></span><span class="txt">Quero me tornar uma lash designer<span class="sub">Começar do zero e aprender a profissão</span></span></label>
+          <label class="op"><input type="radio" name="interesse" value="led"><span class="marca" aria-hidden="true"></span><span class="txt">Quero aprender a técnica com LED<span class="sub">Já trabalho com cílios e quero evoluir a técnica</span></span></label>
         </div>
       </fieldset>
 
@@ -664,104 +612,67 @@ button.rec__cta{font:inherit; font-weight:800; font-size:var(--t3); cursor:point
       </div>
     </form>
 
-    <!-- ============ TELA 2 — A RECOMENDAÇÃO (02/09/2026) ============
-         🔴 ESTA TELA NÃO DIZ "RECEBIDO", E ISSO É O PONTO DELA.
+    <!-- ============ A TELA FINAL — RECEBIDO ============
+         🔴 A "TELA 2" (A RECOMENDAÇÃO) FOI REMOVIDA EM 05/09/2026.
 
-         Até hoje o fim das perguntas abria com "Pronto, recebi a sua
-         inscrição!" e só ENTÃO mostrava o produto e o preço. Ou seja: a pessoa
-         era dada como inscrita antes de saber quanto custava e antes de dizer
-         que queria. O Eduardo mandou desfazer isso, com estas palavras:
-         "deveria ser apenas a de apresentar o melhor programa para a pessoa,
-         dizer que é exclusivo e selecionamos poucas pessoas no caso do
-         presencial, etc… E depois clicar em garantir vaga e dar a mensagem
-         de form recebido".
+         Ela mostrava o curso indicado, o que ele inclui, o preço, as
+         condições e um botão que levava ao checkout. Era a última coisa que a
+         pessoa via depois de responder onze perguntas — e era onde ela ia
+         embora: quatro dos seis leads reais de 02 a 04/09/2026 pararam
+         exatamente aqui, com nome e WhatsApp já gravados, sem nunca apertar o
+         botão. A captação virou vitrine, e vitrine no fim de um formulário
+         cobra o preço mais alto que existe: a pessoa já entregou os dados e
+         ainda assim sai.
 
-         Então aqui só existe a oferta: o curso indicado, por que ele, o que
-         inclui, o preço, as condições — e UM botão. O "recebido" mora na tela
-         seguinte, e só nasce do clique.
+         Agora o formulário termina onde formulário de captação termina: num
+         recebido. Nenhum produto, nenhum valor, nenhum plano, nenhum
+         checkout. Quem decide o que oferecer é a Nataly, na conversa — que é
+         o que ela já fazia de qualquer jeito.
 
-         Tudo é preenchido pelo JS com o que o SERVIDOR devolveu. O HTML não
-         traz nome de produto, preço nem link de checkout: se trouxesse, um bug
-         de JS deixaria na tela o produto errado, e "R$ 1.997" cravado num HTML
-         servido para quem se qualificou no de R$ 297 é exatamente o que este
-         trabalho veio corrigir. Vazio é seguro; errado, não. -->
-    <section class="fim" id="recomendacao" hidden tabindex="-1">
-      <div class="rec" id="rec">
-        <p class="rec__rot">Eu acho que a opção ideal para você é</p>
-        <p class="rec__nome" id="rec-nome"></p>
-        <p class="rec__porque" id="rec-porque"></p>
+         Duas saídas, e as duas são dela:
+           · ESPERAR — a equipe chama no WhatsApp dentro do prazo prometido.
+           · FALAR AGORA — o botão de WhatsApp, com a mensagem já escrita e
+             escolhida pelo interesse que ela declarou na última pergunta.
 
-        <!-- SÓ NO CAMINHO PRESENCIAL. É verdade, e por isso pode ser dito: a
-             prática é um dia inteiro de turma pequena, com a Nataly ao lado o
-             tempo todo, e é ela quem marca cada data uma a uma. Escassez
-             inventada estraga a conversa que vem depois — esta é a real. -->
-        <div class="rec__seleta" id="rec-exclusivo" hidden>
-          <p class="rec__seleta-t">Aqui eu pego poucas pessoas</p>
-          <p>A prática é de <b>turma pequena</b>, porque eu fico do lado de cada uma
-          corrigindo a mão o dia inteiro — e isso não escala. Eu marco cada data
-          individualmente, conforme a minha agenda e a sua. Por isso eu leio as
-          respostas de todo mundo e <b>seleciono quem entra em cada turma</b>.</p>
-        </div>
-
-        <div class="valor">
-          <p class="valor__n" id="rec-preco"></p>
-          <p class="valor__p" id="rec-parcela"></p>
-          <p class="valor__a">à vista no Pix ou no cartão</p>
-          <ul class="valor__l" id="rec-inclui"></ul>
-        </div>
-
-        <!-- ============ O BOTÃO, NOS DOIS CAMINHOS ============
-             🔴 O Eduardo testou no celular e o botão "não fez nada". A causa
-             estava aqui: existia UM botão só, revelado apenas quando
-             `formato === 'online' && checkout`. No caminho PRESENCIAL ele
-             ficava `hidden` de propósito, e a tela terminava sem nenhum jeito
-             de dizer "eu quero" — a pessoa lia o preço e não tinha o que
-             apertar.
-
-             São DOIS elementos, e não um, porque os dois caminhos fazem coisas
-             genuinamente diferentes e o HTML tem de dizer isso:
-               · online    → é NAVEGAÇÃO para o checkout: tem de ser <a href>,
-                 senão o InitiateCheckout do pixel.js (que escuta clique em
-                 a[href*=pay.kiwify]) não dispara e a decoração de UTM não
-                 acha o link — a venda entraria na Kiwify sem origem.
-               · presencial → é ENVIO: tem de ser <button>, porque não leva a
-                 lugar nenhum. Um <a> sem href não recebe foco de teclado e
-                 não responde a Enter; seria um botão quebrado para quem
-                 navega sem mouse.
-             O rótulo é o mesmo nos dois, e só UM aparece de cada vez. -->
-        <a class="btn rec__cta" id="rec-cta" hidden rel="noopener">Quero garantir a minha vaga</a>
-        <button type="button" class="btn rec__cta" id="rec-confirmar" hidden>Quero garantir a minha vaga</button>
-        <p class="erro" id="e-confirmar" role="alert" hidden style="margin:var(--e4) 0 0"></p>
-
-        <p class="rec__nota" id="rec-nota"></p>
-        <!-- Ela PODE vir e só o investimento travou. O presencial não some em
-             silêncio: aparece com preço, e ela decide se quer conversar. -->
-        <div class="rec__extra" id="rec-extra" hidden><p id="rec-extra-txt"></p></div>
-      </div>
-    </section>
-
-    <!-- ============ TELA 3 — RECEBIDO ============
-         Só nasce do clique em "Quero garantir a minha vaga". É aqui, e só
-         aqui, que a inscrição existe: é este momento que grava a linha como
-         completa, avisa a Nataly e dispara o `Lead` do Meta. -->
-    <section class="fim" id="obrigado" hidden tabindex="-1">
+         ⏳ O PRAZO ("até 24 horas") ESTÁ EM UM LUGAR SÓ, no `data-prazo`
+            abaixo, e o texto dos dois pontos onde ele aparece é montado a
+            partir dele pelo JS. Mudar o prazo é mudar um atributo — não é
+            caçar a frase em três lugares e esquecer o terceiro. -->
+    <section class="fim" id="obrigado" hidden tabindex="-1" data-prazo="24 horas">
       <div class="fim__selo" aria-hidden="true">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"
              stroke-linecap="round" stroke-linejoin="round"><path d="m5 13 4.5 4.5L19 7"></path></svg>
       </div>
-      <h2>Pronto, <span id="nome-fim">recebi a sua inscrição</span>!</h2>
-      <p id="fim-sub">Eu já fui avisada e a sua vaga está reservada para a gente conversar.</p>
+      <h2>Pronto, <span id="nome-fim">recebi as suas respostas</span>!</h2>
+      <p id="fim-sub">Chegou tudo certinho aqui. Agora é comigo.</p>
 
       <ul class="passos" id="rec-passos">
         <li><b>1</b><span>Eu leio as suas respostas pessoalmente. Não é robô, sou eu mesma.</span></li>
-        <li><b>2</b><span>Te chamo no WhatsApp <strong>em até 24 horas</strong>, de segunda a sábado.
-        Salva o meu número: <strong>(35) 99716-4668</strong>.</span></li>
-        <li id="passo-3"><b>3</b><span>A gente combina a data da sua prática em Cambuí conforme a sua
-        disponibilidade, e eu te mando o link para garantir a vaga.</span></li>
+        <li><b>2</b><span>A gente te chama no WhatsApp <strong id="prazo-passo">em até 24 horas</strong>,
+        de segunda a sábado. Salva o meu número: <strong>(35) 99716-4668</strong>.</span></li>
+        <li><b>3</b><span>Na conversa eu te explico como funciona e a gente vê junto qual
+        caminho faz sentido para o seu momento.</span></li>
       </ul>
-      <p style="margin-top:var(--e6);font-size:var(--t2)">Se eu demorar, me chama: estou no
-      <a href="https://wa.me/5535997164668" target="_blank" rel="noopener"
-         style="color:var(--chocolate)">(35) 99716-4668</a>.</p>
+
+      <!-- ============ FALAR AGORA ============
+           A pessoa que acabou de responder onze perguntas está no pico do
+           interesse dela, e mandar essa pessoa esperar até um dia inteiro é
+           jogar fora o único momento em que ela quer falar. O botão existe
+           para quem não quer esperar.
+
+           🔴 O TEXTO DA MENSAGEM É ESCOLHIDO PELO INTERESSE, e o `href` é
+              montado pelo JS a partir de `WA_TEXTO` — o HTML nasce com o link
+              ainda sem `href` de propósito. Um `wa.me` cravado aqui abriria
+              uma conversa em branco para quem clicasse antes de o JS rodar, e
+              conversa em branco é a Nataly perguntando "oi, quem é você?"
+              para alguém que acabou de dizer quem era em onze respostas. -->
+      <div class="agora">
+        <p class="agora__t">Não quer esperar?</p>
+        <p class="agora__s">Me chama agora no WhatsApp que eu já te respondo por lá.</p>
+        <a class="btn agora__b" id="wa-agora" target="_blank" rel="noopener" hidden>
+          Falar agora no WhatsApp
+        </a>
+      </div>
     </section>
 
     <!-- 🔴 ESTE TEXTO MUDOU EM 02/09/2026 e não pode voltar ao que era.
@@ -792,63 +703,64 @@ privacidade</a>.</span></p>
    com cílios, então o total é 10 ou 11 perguntas conforme a pessoa —
    e a numeração é reescrita a cada passo em `numera()`.
 
-   🔴 NENHUM PREÇO DE PRODUTO VIVE NESTE HTML. A etapa 10 pergunta a
-   FAIXA que cabe no bolso dela, sem revelar valor nosso; o único
-   preço que ela vê na vida é o do produto recomendado, na tela final,
-   escrito pelo JS com o que o SERVIDOR devolveu. A árvore roda em
-   funil-presencial/produtos.js e em lugar nenhum mais.
+   🔴 ESTA É UMA CAPTAÇÃO, E CAPTAÇÃO NÃO VENDE (05/09/2026).
+      Nenhum preço, nenhum produto, nenhum plano, nenhuma oferta e nenhum
+      checkout vivem nesta página. Não porque estejam escondidos: porque foram
+      REMOVIDOS. O que se coleta aqui são dados, o interesse declarado e as
+      expectativas dela — e mais nada.
 
-   🔴 A ORDEM DAS TELAS MUDOU EM 02/09/2026, e o `Lead` mudou de lugar junto.
-      Antes, o fim das perguntas fazia tudo de uma vez: gravava a inscrição,
-      avisava a Nataly e disparava o `Lead` — e só DEPOIS a tela mostrava qual
-      curso e por quanto. Quem via o preço e recuava já constava como inscrita.
+      A medição que motivou o corte, para não virar opinião com o tempo. Entre
+      02 e 04/09/2026 o formulário produziu SEIS leads reais (o resto das
+      linhas era teste nosso). Quatro pararam na tela que mostrava o curso e o
+      preço, com nome e WhatsApp já gravados. Um parou na pergunta da faixa de
+      investimento. UM confirmou. Um passo que perde dois terços de quem chega
+      nele não é um passo, é um vazamento — e era o último passo, o mais caro
+      de todos, porque a verba do anúncio já tinha sido gasta inteira.
 
-      Agora são três telas:
-        1. as perguntas
-        2. a RECOMENDAÇÃO — o curso indicado, o porquê, o que inclui, o preço
-           e (no presencial) o aviso de que a turma é pequena e selecionada.
-           Nada foi confirmado ainda.
-        3. o RECEBIDO — só depois do clique em "Quero garantir a minha vaga".
+      O histórico das telas, curto, porque isto já mudou três vezes:
+        · até 02/09 — as perguntas gravavam e "recebiam" de uma vez, e o preço
+          aparecia depois. A pessoa era dada como inscrita antes de saber
+          quanto custava.
+        · 02/09 a 04/09 — três telas: perguntas → RECOMENDAÇÃO (curso, preço,
+          checkout) → recebido.
+        · 05/09 em diante — DUAS telas: perguntas → recebido. A do meio não
+          existe mais, e o CSS dela saiu junto para ela não voltar por acidente.
 
-      🔴 O `Lead` MUDOU DE LUGAR EM 04/09/2026 — DECISÃO DO EDUARDO.
-      Ele nascia no CLIQUE do botão, na tela 3. Passou a nascer na CHEGADA da
-      tela 2: terminar as perguntas já conta como lead, sem depender do clique.
+      A tela de recebido oferece as duas saídas que uma captação pode oferecer,
+      e as duas são dela: ESPERAR o contato dentro do prazo prometido, ou
+      FALAR AGORA pelo botão de WhatsApp, com a mensagem já escrita e escolhida
+      pelo interesse que ela declarou na última pergunta.
 
-      O motivo é de campanha, e vem do que estava acontecendo: muita gente
-      chegava na recomendação e não clicava. Esses eram leads reais — a Nataly
-      recebe o formulário completo do mesmo jeito, com nome, WhatsApp e produto
-      indicado, e liga para essas pessoas. Só que o Meta não ficava sabendo:
-      pela régua antiga elas não existiam, e a campanha aprendia a evitar
-      exatamente quem chegava ao fim do formulário.
+      Quem escolhe o que oferecer, e por quanto, é a Nataly — na conversa.
 
-      O que a régua antiga defendia continua verdade e não foi esquecido: a
-      tela 2 é onde ela vê o preço, e contar Lead ali inclui quem só olhou. A
-      escolha é entre dois erros, e o Eduardo escolheu o menor — o volume
-      antigo era baixo demais para o algoritmo aprender qualquer coisa.
-
-      ⚠️ O QUE ISSO QUEBRA (registrar a data da virada: 04/09/2026): o volume
-      de `Lead` SOBE, o CPL histórico deixa de ser comparável e a otimização do
-      Meta reaprende do zero. Comparar setembro com agosto neste evento é
-      comparar duas definições diferentes de lead.
+   🔴 A ÁRVORE DE PRODUTO NÃO MORREU: ela saiu da TELA e continua rodando no
+      servidor (`funil-presencial/produtos.js`), gravada na linha do lead. É
+      inteligência comercial para a Nataly abrir o painel e já saber por onde
+      começar a conversa. O que mudou é que ela não é mais mostrada a ninguém,
+      e o navegador nunca recebe nome de produto nem valor.
 
    Eventos disparados aqui (o mapa completo está no LEIA-ME):
-     · ViuInvestimento  — quando a etapa da faixa aparece, 1×/sessão.
-       Diz quantas desistem quando o assunto vira dinheiro.
-     · ViuRecomendacao  — a TELA 2, com o produto recomendado. Continua
-       existindo, e agora é o GÊMEO do `Lead`: os dois saem no mesmo instante.
-       Não foi removido porque é ele que carrega o histórico desde agosto — o
-       `Lead` é que mudou de significado, e apagar o par tiraria a única série
-       comparável que sobrou. Sem valor de compra.
-     · Lead             — na CHEGADA da tela 2 (formulário completo), com
-       eventID, content_ids do produto e SEM valor de compra (valor é da
-       Kiwify, no Purchase). 1×/sessão.
-     · CompleteRegistration — no CLIQUE do botão da tela 2, que é a inscrição
-       de fato: é o que o `Lead` media até 04/09/2026. Guardado com nome
-       próprio para a submissão real não sumir do relatório.
-     · InitiateCheckout — SÓ no caminho online, no clique do checkout,
-       com o valor do produto CERTO e travado em 1 por sessão. Ele
-       existe aqui desde 01/09/2026: antes da árvore ninguém entrava em
-       checkout por esta página, e hoje metade dos caminhos entra.
+     · EtapaFormulario / form_step — a cada pergunta, para medir onde ela para.
+     · LeadParcial / lead_partial  — 1×/sessão, quando já há nome e WhatsApp.
+       NUNCA é `Lead`: ensinar a campanha a procurar quem abandona seria pagar
+       para trazer mais gente que abandona.
+     · Lead / generate_lead        — UM por pessoa, no ENVIO confirmado pelo
+       servidor. Sem valor de compra e sem produto: leva o INTERESSE declarado.
+       Um `Lead` no Meta = uma linha completa no banco. São conferíveis.
+     · Lead_iniciante / Lead_led   — o mesmo evento com nome próprio por
+       interesse, para virar Conversão Personalizada sem depender de filtro.
+     · ClicouWhatsApp / click_whatsapp — o clique no botão de falar agora,
+       1×/sessão, com o interesse. É o único evento que compete com uma
+       navegação, e por isso o GA4 vai de `beacon`.
+
+   🔴 O QUE FOI REMOVIDO EM 05/09/2026, e não pode voltar sem a tela voltar:
+     · ViuInvestimento / view_price_step — não existe mais etapa de dinheiro.
+     · ViuRecomendacao / view_recommendation — não existe mais tela 2.
+     · CompleteRegistration / sign_up — ele media "clicou depois de ver o
+       preço". Sem preço e sem clique intermediário, ele passou a ser o mesmo
+       ato que o `Lead`, e dois eventos para um ato só é contagem dobrada.
+     · InitiateCheckout / begin_checkout — não há checkout nesta página.
+
    Nunca Purchase — quem dispara é a Kiwify (pixel + CAPI).
    ============================================================ */
 (function () {
@@ -865,7 +777,7 @@ privacidade</a>.</span></p>
      Esquecer de trocar esta chave é o erro fácil aqui: o defeito NÃO aparece
      em teste, porque teste sempre roda em sessão limpa. Só aparece para quem
      já tinha usado o formulário antes — que é justamente quem testa. */
-  var CHAVE = 'nr_insc_presencial_v3';
+  var CHAVE = 'nr_insc_presencial_v4';   /* v4 = 05/09/2026, captação sem preço */
 
   /* Rascunho de versão anterior não é restaurado NEM fica ocupando espaço. */
   try {
@@ -882,7 +794,10 @@ privacidade</a>.</span></p>
      para pessoa (10 ou 11 telas contando a abertura). Tudo o que navega, mede
      progresso e numera lê DESTA lista — nunca de um número cravado. */
   var CONDICIONAL = '5.5';
-  var ETAPA_VALOR = '10';        /* a faixa de investimento */
+  /* 🔴 `ETAPA_VALOR` MORREU EM 05/09/2026 junto com a pergunta da faixa de
+     investimento. Não existe mais "a etapa do dinheiro" nesta captação, e por
+     isso não existe mais o evento que media quantas desistiam nela. */
+  var ETAPA_FIM = 'interesse';   /* a última pergunta: o que ela quer aprender */
 
   var etapas   = [].slice.call(document.querySelectorAll('.etapa'));
   var barra    = document.getElementById('barra');
@@ -892,7 +807,7 @@ privacidade</a>.</span></p>
   var erroGeral= document.getElementById('e-geral');
   var obrigado = document.getElementById('obrigado');
   var rodape   = document.getElementById('rodape');
-  var recomendacao = document.getElementById('recomendacao');
+
   var atual    = '0';
   var enviando = false;
   var enviado  = false;   /* virou inscrição completa: nenhum parcial depois disso */
@@ -901,9 +816,12 @@ privacidade</a>.</span></p>
      deste funil — e um beacon parcial atrasado, saindo depois, sobrescreveria
      esse 'rec' por '10' e a Nataly ligaria falando de faixa de investimento
      para quem na verdade já tinha visto o produto e o preço. */
-  var recomendado = false;
+  /* Antes de 05/09/2026 isto marcava "ela está vendo o preço". A tela que
+     mostrava o preço não existe mais, então o que sobra é o que sempre
+     importou: o envio já saiu, e nenhum beacon parcial atrasado pode
+     sobrescrever a linha depois disso. `enviando` e `enviado` bastam. */
   var confirmando = false;
-  var recAtual = null;    /* o que o servidor recomendou, para o clique usar */
+
 
   /* ---------- O UID QUE ATRAVESSA O PREENCHIMENTO ----------
      Antes de 02/09/2026 ele nascia no clique de enviar e morria ali. Agora ele
@@ -931,11 +849,11 @@ privacidade</a>.</span></p>
     '7':   [],                              /* objetivo é opcional */
     '8':   ['disponibilidade'],
     '9':   ['prefere_formato'],
-    '10':  ['faixa_investimento']
+    'interesse': ['interesse']
   };
 
   /* A ordem completa. `fila()` devolve só as que valem para ESTA pessoa. */
-  var ORDEM = ['0', '1', '2', '3', '4', '5', '5.5', '6', '7', '8', '9', '10'];
+  var ORDEM = ['0', '1', '2', '3', '4', '5', '5.5', '6', '7', '8', '9', 'interesse'];
 
   function ehLash() { return valorDe('situacao') === 'ja-lash'; }
 
@@ -958,7 +876,7 @@ privacidade</a>.</span></p>
     disponibilidade: 'Preciso saber se você consegue vir até Cambuí.',
     busca:           'Me diz o que você está buscando agora.',
     prefere_formato: 'Escolhe como você prefere aprender.',
-    faixa_investimento: 'Escolhe a faixa que cabe no seu momento — pode ser sincera.'
+    interesse:       'Me diz o que você quer aprender comigo.'
   };
 
   /* ---------- utilidades ---------- */
@@ -1259,7 +1177,7 @@ privacidade</a>.</span></p>
   /* ---------- rascunho ---------- */
   var TEXTOS = ['nome','cidade','estado','telefone','email','instagram','objetivo'];
   var ESCOLHAS = ['situacao','busca','faixa_idade','meta_renda','quando_comecar',
-                  'disponibilidade','prefere_formato','faixa_investimento'];
+                  'disponibilidade','prefere_formato','interesse'];
 
   function salvaRascunho() {
     try {
@@ -1392,7 +1310,7 @@ privacidade</a>.</span></p>
       quando_comecar: valorDe('quando_comecar'),
       disponibilidade: valorDe('disponibilidade'),
       prefere_formato: valorDe('prefere_formato'),
-      faixa_investimento: valorDe('faixa_investimento'),
+      interesse: valorDe('interesse'),
       ref_c7: valorDe('ref_c7'),
       /* A etapa que ela está VENDO agora — não a última que respondeu. Se ela
          sumir aqui, foi AQUI que ela parou, e é isso que a Nataly precisa
@@ -1408,9 +1326,6 @@ privacidade</a>.</span></p>
      pergunta, se assusta e fecha antes de apertar o botão. */
   function mandaParcial(etapaId, saindo) {
     if (enviado || enviando) return;      /* já é (ou está virando) inscrição completa */
-    /* Ela já viu a recomendação: a linha no banco diz 'rec', e nada pode
-       rebaixá-la para uma etapa de pergunta. */
-    if (recomendado) return;
     if (!etapaId || etapaId === '0') return;
     if (!temContato()) return;            /* ainda não há contato utilizável */
 
@@ -1478,16 +1393,19 @@ privacidade</a>.</span></p>
     form.hidden = (atual === '0');
     barra.style.width = Math.round((pos / ultimo) * 100) + '%';
     btSubir.hidden = (pos <= 1);   /* da pergunta 1 não há para onde voltar */
-    /* "Ver o que eu indico" e não "Enviar": o que este botão faz agora é
-       abrir a tela da recomendação. Quem envia é o botão de lá. */
-    btAvanca.textContent = (pos === ultimo) ? 'Ver o que eu indico para você' : 'Avançar';
+    /* 🔴 O RÓTULO DO ÚLTIMO BOTÃO VOLTOU A SER UM ENVIO (05/09/2026).
+       Ele dizia "Ver o que eu indico para você", que era honesto enquanto
+       existia uma tela de indicação com produto e preço depois dele. Agora não
+       existe: apertar aqui envia o formulário e acabou. Prometer uma indicação
+       e entregar um "recebi" seria trocar a expectativa dela no último clique,
+       que é o pior lugar do funil para uma surpresa. */
+    btAvanca.textContent = (pos === ultimo) ? 'Enviar as minhas respostas' : 'Avançar';
     erroGeral.hidden = true;
     numera();
     contaEtapa(atual);
     /* Grava o que ela já respondeu, agora. Não espera o fim: quem abandona
        some justamente aqui, entre uma pergunta e a próxima. */
     mandaParcial(atual, false);
-    if (atual === ETAPA_VALOR) viuInvestimento();
     if (focar) {
       var alvo = etapas.filter(function (el) { return !el.hidden; })[0];
       var pri = alvo && alvo.querySelector('input:not([type=radio]):not([tabindex="-1"]), textarea, input[type=radio]');
@@ -1515,11 +1433,11 @@ privacidade</a>.</span></p>
   }
 
   function avanca() {
-    /* Depois da tela 2 o formulário acabou. Sem esta trava, um Enter na tela
-       da recomendação pediria a recomendação de novo e a tela piscaria. */
-    if (recomendado || enviado) return;
+    /* Depois do envio o formulário acabou. Sem esta trava, um Enter na tela
+       de recebido reenviaria tudo e a tela piscaria. */
+    if (enviando || enviado) return;
     var f = fila();
-    if (idx(atual) === f.length - 1) { pedeRecomendacao(); return; }
+    if (idx(atual) === f.length - 1) { envia(); return; }
     if (validaEtapa(atual)) vaiPara(fila()[idx(atual) + 1], true);
   }
 
@@ -1595,92 +1513,62 @@ privacidade</a>.</span></p>
     } catch (e) {}
   })();
 
-  /* ---------- evento da etapa da faixa de investimento ----------
-     Uma vez por sessão. É o número que diz quantas desistem quando o assunto
-     vira dinheiro — agora sem que nenhum preço nosso tenha aparecido, o que
-     torna a medida mais limpa: mede a objeção, não o susto com um número —
-     contar mais de uma vez (ela volta e avança de novo) inflaria a métrica,
-     que é o mesmo erro que deixou o A/B do Método LED ilegível. */
-  var valorJaContado = false;
-  function viuInvestimento() {
-    if (valorJaContado) return;
-    valorJaContado = true;
-    try {
-      if (sessionStorage.getItem('nr_viu_investimento')) return;
-      sessionStorage.setItem('nr_viu_investimento', '1');
-    } catch (e) {}
-    try { if (window.fbq) fbq('trackCustom', 'ViuInvestimento', COMUNS); } catch (e) {}
-    try {
-      if (window.gtag) gtag('event', 'view_price_step', Object.assign({}, COMUNS, {
-        transport_type: 'beacon'
-      }));
-    } catch (e) {}
-  }
+  /* ============================================================
+     O ENVIO — é aqui que a inscrição passa a existir (05/09/2026)
+     ============================================================
+     🔴 ESTA FUNÇÃO SUBSTITUIU TRÊS: `pedeRecomendacao`, `desenhaRecomendacao`
+        e `mostraRecomendacao`. Elas existiam para montar a tela que mostrava o
+        curso indicado, o preço, o que estava incluso e o botão de checkout.
+        Essa tela foi removida, e com ela o passo intermediário inteiro.
 
-  /* ---------- TELA 2: pedir a recomendação ----------
-     🔴 ISTO NÃO É O ENVIO. A rota `/api/recomendacao-presencial` roda a
-     árvore, devolve o produto e grava a linha como INCOMPLETA, com o produto
-     que ela viu. Ninguém é avisado e nenhum `Lead` sai daqui.
+     O que era: responder tudo → POST /api/recomendacao-presencial (grava
+     INCOMPLETA) → tela do produto e do preço → clique → POST
+     /api/lead-presencial (grava COMPLETA e avisa a Nataly).
 
-     Quem envia de verdade é `confirma()`, no clique do botão da tela 2. */
-  function pedeRecomendacao() {
-    if (enviando || recomendado) return;
+     O que é: responder tudo → POST /api/lead-presencial → recebido.
+
+     Um passo, uma requisição, um evento. A medição que motivou o corte está
+     no comentário da última pergunta: dos seis leads reais de 02 a 04/09/2026,
+     quatro morreram naquele passo do meio. Um passo que perde dois terços de
+     quem chega nele não é um passo, é um vazamento.
+
+     A rota `/api/recomendacao-presencial` continua de pé no servidor, e de
+     propósito: uma aba aberta ontem, com a página antiga em cache, ainda pode
+     chamá-la. Derrubá-la agora transformaria essa pessoa num erro de rede em
+     vez de num lead. O formulário novo simplesmente não a usa mais. */
+  function envia() {
+    if (enviando || enviado) return;
+    /* Revalida a fila inteira antes de mandar: se ela pulou alguma pergunta
+       (voltou, corrigiu, avançou por Enter), o erro aparece NA PERGUNTA, e não
+       como uma mensagem genérica no fim. */
     var f = fila();
     for (var i = 1; i < f.length; i++) {
       if (!validaEtapa(f[i])) { vaiPara(f[i], true); return; }
     }
     enviando = true;
     btAvanca.disabled = true;
-    btAvanca.textContent = 'Vendo o que serve para você...';
+    btAvanca.textContent = 'Enviando...';
     erroGeral.hidden = true;
 
-    var dados = {
-      nome: valorDe('nome'), telefone: valorDe('telefone'), email: valorDe('email'),
-      instagram: valorDe('instagram'), cidade: valorDe('cidade'), estado: valorDe('estado'),
-      faixa_idade: valorDe('faixa_idade'), situacao: valorDe('situacao'),
-      /* só vai quem realmente respondeu: quem não é lash nunca viu a pergunta,
-         e mandar string vazia faria o servidor recusar um envio completo */
-      busca: ehLash() ? valorDe('busca') : null,
-      meta_renda: valorDe('meta_renda'), objetivo: valorDe('objetivo'),
-      quando_comecar: valorDe('quando_comecar'),
-      disponibilidade: valorDe('disponibilidade'),
-      prefere_formato: valorDe('prefere_formato'),
-      faixa_investimento: valorDe('faixa_investimento'),
-      ref_c7: valorDe('ref_c7'),
-      /* O MESMO uid das gravações parciais: é ele que promove aquela linha a
-         inscrição completa em vez de criar uma segunda. Sem isto a Nataly
-         veria a mesma pessoa duas vezes no painel — uma "incompleta" e uma
-         "completa" — e não saberia que são a mesma. */
-      lead_uid: garanteUid(), atribuicao: ATRIB
-    };
+    var dados = corpoFinal();
 
-    fetch('/api/recomendacao-presencial', {
+    fetch('/api/lead-presencial', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(dados)
     })
       .then(function (r) { return r.json().then(function (j) { return { http: r.status, j: j }; }); })
       .then(function (res) {
-        /* 🔴 `ok:true` SEM recomendacao nao pode virar tela.
-           Era assim que o cartao aparecia vazio: o servidor responde ok e a
-           tela abre sem nome, sem preco e sem botao. Se nao veio recomendacao,
-           e erro nosso — diz isso e deixa ela tentar de novo. */
-        if (res.j && res.j.ok && res.j.recomendacao && res.j.recomendacao.nome) {
-          mostraRecomendacao(dados, res.j.recomendacao); return;
-        }
-        if (res.j && res.j.ok) {
-          erroGeral.textContent = 'Deu um problema aqui do nosso lado ao montar a sua ' +
-            'indicação. Tenta de novo, por favor — as suas respostas continuam aqui.';
-          erroGeral.hidden = false;
-          reabilita();
-          return;
-        }
+        if (res.j && res.j.ok) { recebido(dados); return; }
+
+        /* Erro de validação do servidor: leva a pessoa até a pergunta que
+           falhou, em vez de deixá-la adivinhar qual campo o servidor recusou. */
         if (res.j && res.j.erros) {
           var pri = Object.keys(res.j.erros)[0];
           Object.keys(res.j.erros).forEach(function (n) { mostraErro(n, res.j.erros[n]); });
           var f2 = fila();
-          for (var i = 1; i < f2.length; i++) {
-            if ((REGRAS[f2[i]] || []).indexOf(pri) !== -1) { vaiPara(f2[i], true); break; }
+          for (var k = 1; k < f2.length; k++) {
+            if ((REGRAS[f2[k]] || []).indexOf(pri) !== -1) { vaiPara(f2[k], true); break; }
           }
         } else {
           erroGeral.textContent = (res.j && res.j.mensagem) ||
@@ -1690,160 +1578,22 @@ privacidade</a>.</span></p>
         reabilita();
       })
       .catch(function () {
+        /* 🔴 FALHAR AQUI NÃO PODE SER SILENCIOSO. Ela apertou o botão de
+           propósito e está esperando: sem aviso, acha que deu certo e nunca
+           mais volta. E o botão VOLTA a funcionar — o parcial dela já está no
+           banco, então o pior caso é a Nataly chamar por ali. */
         erroGeral.textContent = 'Parece que a sua internet caiu. Confere a conexão e ' +
           'tenta de novo — as suas respostas continuam aqui.';
         erroGeral.hidden = false;
         reabilita();
       });
   }
-
-  function reabilita() {
-    enviando = false;
-    btAvanca.disabled = false;
-    var f = fila();
-    btAvanca.textContent = (idx(atual) === f.length - 1)
-      ? 'Ver o que eu indico para você' : 'Avançar';
-  }
-
-  /* ---------- a tela de recomendação ----------
-     Tudo vem do SERVIDOR. Esta função não decide produto, não escolhe preço e
-     não monta URL de checkout: ela só desenha o que veio. É a garantia de que
-     a tela, a linha do banco e o aviso do WhatsApp dizem a mesma coisa. */
-  function desenhaRecomendacao(r) {
-    if (!r || !r.nome) return;   /* sem recomendação, a tela genérica já serve */
-
-    document.getElementById('rec-nome').textContent = r.nome;
-    document.getElementById('rec-porque').textContent = r.porque || '';
-    document.getElementById('rec-preco').textContent = r.preco || '';
-    document.getElementById('rec-parcela').textContent = r.parcela ? 'ou ' + r.parcela : '';
-
-    var lista = document.getElementById('rec-inclui');
-    lista.innerHTML = '';
-    (r.inclui || []).forEach(function (item) {
-      var li = document.createElement('li');
-      li.textContent = item;
-      lista.appendChild(li);
-    });
-
-    var cta = document.getElementById('rec-cta');          /* <a>, só no online */
-    var confirmar = document.getElementById('rec-confirmar'); /* <button>, só no presencial */
-    var exclusivo = document.getElementById('rec-exclusivo');
-    var nota = document.getElementById('rec-nota');
-    var passo3 = document.getElementById('passo-3');
-
-    /* 🔴 A CORREÇÃO DO BOTÃO QUE "NÃO FAZIA NADA" NO CELULAR.
-       Até 02/09/2026 esta condição era a única coisa que revelava um botão, e
-       o caminho PRESENCIAL caía no `else`, onde o botão era escondido. Quem se
-       qualificava para o presencial — que é a oferta cara, e o alvo da
-       campanha — lia o preço e chegava ao fim da tela sem nada para apertar.
-       Não era um bug de JS nem de toque: o elemento simplesmente não estava
-       visível.
-
-       Agora os dois caminhos têm botão, com o MESMO rótulo e papéis
-       diferentes: no online ele leva ao checkout, no presencial ele confirma
-       o interesse. O que muda é para onde vai, nunca se existe. */
-    if (r.formato === 'online' && r.checkout) {
-      /* O href sai cru daqui e é decorado pelo UTM forwarding do
-         analytics.js — uma implementação só, em vez de remontar a query aqui
-         e ver as duas divergirem com o tempo.
-         Mas ele precisa ser chamado AGORA, na injeção: o `apply()` de
-         carregamento já rodou (este botão nem existia), e a garantia do
-         clique não cobre "copiar endereço do link" nem o clique do meio. Sem
-         esta chamada a pessoa chega no checkout sem utm_*, sem src e sem
-         fbclid, e a venda entra na Kiwify sem origem nenhuma. */
-      cta.setAttribute('href', r.checkout);
-      cta.hidden = false;
-      confirmar.hidden = true;
-      exclusivo.hidden = true;   /* turma pequena é coisa do presencial */
-      try { if (window.NR_DECORA_UTM) window.NR_DECORA_UTM(); } catch (e) {}
-      nota.textContent = 'O acesso é liberado assim que o pagamento é confirmado. ' +
-        'Mesmo assim eu te chamo no WhatsApp para acompanhar o seu começo.';
-      if (passo3) passo3.hidden = true;   /* não há data de prática a combinar */
-    } else {
-      /* Presencial: SEM checkout, mas COM botão. A data vem antes do
-         pagamento — o que este botão confirma é o interesse, não a compra. */
-      cta.hidden = true;
-      confirmar.hidden = false;
-      exclusivo.hidden = false;
-      nota.textContent = 'Ao confirmar, eu recebo as suas respostas e te chamo no ' +
-        'WhatsApp. Aqui eu não te mando link de pagamento agora: primeiro a gente ' +
-        'combina a data da sua prática em Cambuí, e aí sim eu te envio o link.';
-      if (passo3) passo3.hidden = false;
-    }
-
-    /* Ela podia vir e só o investimento travou. Dizer que o presencial existe. */
-    var extra = document.getElementById('rec-extra');
-    if (r.presencial_possivel) {
-      /* A parcela pode não existir: o combo online + presencial é à vista no
-         PIX desde 03/09/2026. Sem esta guarda a frase saía com um "(null)"
-         pendurado no preço. */
-      var pp = r.presencial_possivel;
-      document.getElementById('rec-extra-txt').innerHTML =
-        'E fica sabendo: o <b>' + escapa(pp.nome) + '</b> existe, por ' +
-        escapa(pp.preco) + (pp.parcela ? ' (' + escapa(pp.parcela) + ')' : '') +
-        '. Se você quiser fazer a prática ao vivo comigo, me fala no WhatsApp que a ' +
-        'gente vê as condições juntas.';
-      extra.hidden = false;
-    } else {
-      extra.hidden = true;
-    }
-
-    /* Quando a árvore não teve certeza da família, o rótulo diz isso em vez de
-       afirmar. Antes essa nuance morava no subtítulo do "recebido" — que agora
-       é outra tela, e onde ela não fazia mais sentido nenhum. */
-    document.querySelector('.rec__rot').textContent = r.sugestao
-      ? 'Olhando as suas respostas, o que eu sugiro para você é'
-      : 'Eu acho que a opção ideal para você é';
-
-    /* O produto passa a valer para os eventos desta página. O pixel.js e o
-       analytics.js leem esta variável ANTES de cair na detecção por rota —
-       sem isso a rota /inscricao-presencial contém "presencial" e o
-       InitiateCheckout sairia com R$ 1.997 mesmo para quem clicou no de
-       R$ 297. Ver o comentário em pixel.js. */
-    window.NR_PRODUTO = { id: r.id, name: r.nome_meta || r.nome, value: r.valor };
-
-    try {
-      if (window.fbq) fbq('trackCustom', 'ViuRecomendacao', Object.assign({}, COMUNS, {
-        content_ids: [r.id], content_name: r.nome_meta || r.nome,
-        produto: r.id, formato: r.formato
-      }));
-    } catch (e) {}
-    try {
-      if (window.gtag) gtag('event', 'view_recommendation', Object.assign({}, COMUNS, {
-        transport_type: 'beacon', produto: r.id, formato: r.formato,
-        items: [{ item_id: r.id, item_name: r.nome_meta || r.nome, price: r.valor, quantity: 1 }]
-      }));
-    } catch (e) {}
-  }
-
-  /* Só para o innerHTML da caixa do presencial. O texto vem do servidor, mas
-     escapar custa três linhas e tira a pergunta "e se um dia vier de fora?". */
-  function escapa(v) {
-    return String(v == null ? '' : v)
-      .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
-  }
-
-  /* ============================================================
-     TELA 2 — MOSTRA A RECOMENDAÇÃO (e NÃO diz que recebeu)
-     ============================================================
-     Aqui o formulário sai da tela e entra a oferta. Nada foi confirmado: a
-     linha no banco está gravada como INCOMPLETA, com o produto que ela está
-     vendo, e a Nataly não foi avisada.
-
-     🔴 O `Lead` SAI DAQUI desde 04/09/2026 (decisão do Eduardo). Antes só
-        saía o `ViuRecomendacao`; agora os dois saem juntos, na chegada.
-        Repare no que continua valendo: a linha do banco segue INCOMPLETA e a
-        Nataly segue SEM ser avisada. O que mudou é só o que o Meta conta —
-        chegar aqui virou lead para a campanha, mas não virou inscrição para o
-        atendimento. Confundir as duas coisas encheria o WhatsApp da Nataly de
-        gente que não pediu contato. */
   /* 🔴 Rolar para o topo UMA VEZ nao basta.
-     A troca de tela esconde o formulario, desenha a recomendacao e mostra o
-     bloco — tudo no mesmo instante. O `scrollTo` roda antes de o navegador
-     terminar de recalcular o layout, e qualquer ajuste que chegue depois
-     (imagem que carrega, fonte que troca, bloco que muda de altura) desloca a
-     pagina. O resultado e a tela "nascer rolada" e a recomendacao ficar acima
-     da dobra, com a pessoa vendo so o fim.
+     A troca de tela esconde o formulario e mostra o bloco de recebido — tudo
+     no mesmo instante. O `scrollTo` roda antes de o navegador terminar de
+     recalcular o layout, e qualquer ajuste que chegue depois (fonte que troca,
+     bloco que muda de altura) desloca a pagina. O resultado e a tela "nascer
+     rolada", com a pessoa vendo so o fim.
      Medido em 02/09/2026: falhou em 1 de 8 rodadas do gate, e a que falhou foi
      a PRIMEIRA depois de reiniciar o servidor — ou seja, so aparece quando a
      resposta demora. Em rede de celular ruim, que e metade do publico de
@@ -1859,67 +1609,21 @@ privacidade</a>.</span></p>
     } catch (e) {}
   }
 
-  function mostraRecomendacao(dados, rec) {
-    recomendado = true;
+  /* ---------- reabilita o botão depois de um erro ---------- */
+  function reabilita() {
     enviando = false;
-    recAtual = rec || null;
-
-    form.hidden = true;
-    etapas.forEach(function (f) { f.hidden = true; });
-    rodape.hidden = true;
-    barra.style.width = '100%';
-
-    try { desenhaRecomendacao(rec); } catch (e) {}
-
-    /* 🔴 DEPOIS de `desenhaRecomendacao` e FORA do try dele, de propósito.
-       Depois porque o `Lead` precisa do produto já resolvido em `recAtual`
-       (que é atribuído acima) e porque a ordem no Meta fica coerente com o
-       `ViuRecomendacao`. Fora do try porque uma exceção no desenho não pode
-       levar o evento junto: a tela até poderia sair torta, mas o lead existiu.
-       `disparaLead` tem trava própria de sessão — chamar aqui e de novo no
-       clique não duplica nada. */
-    disparaLead(garanteUid());
-
-    recomendacao.hidden = false;
-    /* 🔴 A TELA TEM DE COMEÇAR NO TOPO DELA, e de forma determinística.
-       `focus()` sozinho rola a página até o elemento, e um `behavior:'smooth'`
-       depois disso é uma animação que pode ser interrompida — o resultado era
-       a tela nova aparecendo numa posição herdada da pergunta anterior, com a
-       recomendação acima da dobra sem ninguém ver.
-       `preventScroll` no foco + rolagem instantânea: o foco vai para quem
-       usa leitor de tela, e a página vai para o topo, sem os dois brigarem. */
-    try { recomendacao.focus({ preventScroll: true }); } catch (e) { recomendacao.focus(); }
-    vaiProTopo();
-    /* 🔴 O rascunho NÃO é apagado aqui. Se ela recarregar a página nesta tela
-       — e recarregar na hora de decidir é comum — o rascunho é o que traz de
-       volta as respostas E o mesmo `lead_uid`, para ela continuar na MESMA
-       linha do banco em vez de virar uma segunda pessoa. Ele só some quando a
-       inscrição existe de verdade, em `confirmado()`. */
+    btAvanca.disabled = false;
+    var f = fila();
+    btAvanca.textContent = (idx(atual) === f.length - 1)
+      ? 'Enviar as minhas respostas' : 'Avançar';
   }
 
-  /* ============================================================
-     O CLIQUE — é aqui que a inscrição passa a existir
-     ============================================================
-     Os dois caminhos passam por esta função, e os dois disparam a
-     `CompleteRegistration` (o `Lead` já saiu na tela anterior). A diferença é
-     o que acontece depois:
-
-       · presencial → espera a resposta e mostra a TELA 3 ("recebi").
-       · online     → NÃO espera nada: o clique é num <a> de verdade e o
-         navegador segue para o checkout. Por isso o POST vai com
-         `keepalive: true`, que é o único jeito de uma requisição sobreviver à
-         navegação que ela mesma dispara. Enfiar uma tela de "recebido" entre
-         a decisão e o checkout custaria venda, e o "recebido" do online é a
-         própria página de pagamento.
-
-     `ehNavegacao` diz qual dos dois é. */
-
+  /* ---------- o corpo que vai para o servidor ----------
+     Remonta a partir do formulário, e não de uma cópia guardada: se ela voltou
+     e corrigiu alguma coisa antes de enviar, é a correção que tem de ir. O
+     `lead_uid` é o MESMO desde a primeira gravação parcial — é ele que promove
+     aquela linha a inscrição em vez de criar uma segunda. */
   function corpoFinal() {
-    /* Remonta a partir do formulário, e não de uma cópia guardada: se ela
-       voltou e corrigiu alguma coisa antes de pedir a recomendação, é a
-       correção que tem de ir. O `lead_uid` é o MESMO desde a primeira
-       gravação parcial — é ele que promove aquela linha a inscrição em vez
-       de criar uma segunda. */
     return {
       nome: valorDe('nome'), telefone: valorDe('telefone'), email: valorDe('email'),
       instagram: valorDe('instagram'), cidade: valorDe('cidade'), estado: valorDe('estado'),
@@ -1929,33 +1633,50 @@ privacidade</a>.</span></p>
       quando_comecar: valorDe('quando_comecar'),
       disponibilidade: valorDe('disponibilidade'),
       prefere_formato: valorDe('prefere_formato'),
-      faixa_investimento: valorDe('faixa_investimento'),
+      interesse: valorDe('interesse'),
       ref_c7: valorDe('ref_c7'),
       lead_uid: garanteUid(), atribuicao: ATRIB
     };
   }
 
-  /* O `Lead` DIZ QUAL PRODUTO. Sem isso o Meta otimizaria pela média de quatro
-     ofertas de R$ 297 a R$ 1.997 — e a média de preços tão distantes não
-     descreve nenhuma delas. `content_ids` reaproveita os mesmos ids que as
-     páginas de venda já mandam, então o relatório fecha com o histórico.
-     Sem `value`: quem tem valor de compra é a Kiwify, no Purchase.
+  /* ============================================================
+     O `Lead` — UM POR PESSOA, NO ENVIO, E EM LUGAR NENHUM MAIS
+     ============================================================
+     🔴 ELE VOLTOU PARA O ENVIO EM 05/09/2026.
 
-     🔴 QUEM CHAMA ISTO É `mostraRecomendacao`, e não o clique (04/09/2026).
-     Por isso a função exige o produto já resolvido: chamada antes de `recAtual`
-     existir, ela sairia com um `Lead` sem `content_ids` — o defeito não daria
-     erro nenhum e só apareceria semanas depois, como uma campanha otimizando
-     pela média de quatro ofertas.
+     Histórico curto, porque ele já mudou de lugar duas vezes e a terceira
+     precisa ficar registrada:
+       · até 04/09 — nascia no CLIQUE do botão da tela do preço.
+       · em 04/09  — subiu para a CHEGADA daquela tela, para o Meta enxergar
+                     quem terminava o formulário e não clicava.
+       · em 05/09  — a tela do preço deixou de existir. Terminar o formulário
+                     e enviar viraram o MESMO ato, então o `Lead` volta para
+                     onde ele sempre deveria estar: o envio de fato.
 
-     🔴 UM DISPARO POR SESSÃO. A rede pode repetir, o navegador pode restaurar
-     a página do cache de volta/avançar, e ela pode recarregar em cima da tela
-     da recomendação — que é comum na hora de decidir. Um `Lead` por passagem
-     inflaria a métrica pela qual a campanha otimiza, que é exatamente o erro
-     que deixou o A/B do Método LED ilegível.
-     A trava de sessão é a que importa aqui: `leadDisparado` morre no reload,
-     o `sessionStorage` não. */
+     O efeito colateral bom: aquele desencontro acabou. Entre 04 e 05/09 o Meta
+     contava `Lead` para quem só tinha visto o preço, enquanto o banco não
+     ganhava inscrição nenhuma — duas contagens diferentes com o mesmo nome. A
+     partir de agora um `Lead` no Meta é uma linha completa no banco. São a
+     mesma coisa, e podem ser conferidos um contra o outro.
+
+     ⚠️ A SÉRIE HISTÓRICA QUEBRA DE NOVO, e é a segunda quebra em dois dias.
+        Comparar o CPL de setembro com o de agosto passa a comparar três
+        definições diferentes de lead. A régua nova vale de 05/09/2026 em
+        diante.
+
+     🔴 UM DISPARO POR SESSÃO, com duas travas: `leadDisparado` (morre no
+        reload) e `sessionStorage` (não morre). A rede pode repetir, o
+        navegador pode restaurar a página do cache de voltar/avançar, e ela
+        pode recarregar em cima da tela de recebido. Um `Lead` por passagem
+        inflaria a métrica pela qual a campanha otimiza — que é exatamente o
+        erro que deixou o A/B do Método LED ilegível.
+
+     🔴 SEM `value` E SEM `content_ids` DE PRODUTO. A captação não escolhe mais
+        produto nenhum para mostrar, então cravar um aqui seria inventar. O que
+        vai junto é o INTERESSE declarado, que é informação de verdade e serve
+        para segmentar no relatório. Valor de compra é da Kiwify, no Purchase. */
   var leadDisparado = false;
-  function disparaLead(uid) {
+  function disparaLead(uid, interesse) {
     if (leadDisparado) return;
     leadDisparado = true;
     try {
@@ -1963,173 +1684,123 @@ privacidade</a>.</span></p>
       sessionStorage.setItem('nr_lead_presencial', '1');
     } catch (e) {}
 
-    var prod = recAtual || {};
-    var dadosLead = Object.assign({}, COMUNS, prod.id ? {
-      content_ids: [prod.id], content_type: 'product',
-      content_name: prod.nome_meta || prod.nome,
-      produto: prod.id, formato: prod.formato
-    } : {});
+    var dados = Object.assign({}, COMUNS, { interesse: interesse || null });
 
     try {
       if (window.fbq) {
-        fbq('track', 'Lead', dadosLead, { eventID: uid });
-        /* Nome próprio por produto: vira Conversão Personalizada no Meta sem
-           depender de filtro por parâmetro, que nem todo relatório aceita. */
-        if (prod.id) fbq('trackCustom', 'Lead_' + prod.id, dadosLead);
+        fbq('track', 'Lead', dados, { eventID: uid });
+        /* Nome próprio por interesse: vira Conversão Personalizada no Meta sem
+           depender de filtro por parâmetro, que nem todo relatório aceita.
+           🔴 LEVA O MESMO `eventID` do `Lead`. O evento com nome próprio é
+              outro evento para o Meta (nome diferente), então não há risco de
+              um engolir o outro — mas ele PRECISA do id para o dia em que a
+              CAPI entrar: sem ele, o par servidor/navegador duplicaria. */
+        if (interesse) fbq('trackCustom', 'Lead_' + interesse, dados, { eventID: uid });
       }
     } catch (e) {}
     try {
       if (window.gtag) gtag('event', 'generate_lead', Object.assign({}, COMUNS, {
+        /* `beacon` = `navigator.sendBeacon`. Aqui não há navegação, mas ela
+           pode fechar a aba no mesmo segundo, e o hit normal do gtag morre no
+           unload. O `event_callback` NÃO resolve isso: ele dispara ao
+           ENFILEIRAR, em milissegundos, e mente dizendo que enviou. */
         transport_type: 'beacon',
-        produto: prod.id || null,
-        formato: prod.formato || null,
-        items: prod.id ? [{ item_id: prod.id, item_name: prod.nome_meta || prod.nome,
-                            price: prod.valor, quantity: 1 }] : undefined
+        interesse: interesse || null
       }));
     } catch (e) {}
-  }
-
-  /* ---------- A SUBMISSÃO DE VERDADE, que o `Lead` media até 04/09/2026 ----
-     O `Lead` subiu para a chegada da tela 2. Se o clique não ganhasse um evento
-     próprio, o número que separa "viu e foi embora" de "apertou o botão"
-     desapareceria do Meta — e é justamente ele que diz se a mudança do `Lead`
-     valeu a pena. Sem esta contagem, daqui a três semanas ninguém consegue
-     responder se o volume novo virou conversa ou virou ruído.
-
-     `CompleteRegistration` é evento PADRÃO do Meta: entra em relatório e em
-     otimização sem depender de Conversão Personalizada criada na mão.
-     O `eventID` leva o sufixo '-conf' de propósito: com o mesmo id do `Lead`, o
-     Meta trataria os dois como o mesmo evento repetido e descartaria um. */
-  var confirmacaoDisparada = false;
-  function disparaConfirmacao(uid) {
-    if (confirmacaoDisparada) return;
-    confirmacaoDisparada = true;
-    try {
-      if (sessionStorage.getItem('nr_conf_presencial')) return;
-      sessionStorage.setItem('nr_conf_presencial', '1');
-    } catch (e) {}
-
-    var prod = recAtual || {};
-    var dados = Object.assign({}, COMUNS, prod.id ? {
-      content_ids: [prod.id], content_type: 'product',
-      content_name: prod.nome_meta || prod.nome,
-      produto: prod.id, formato: prod.formato
-    } : {});
-
-    try {
-      if (window.fbq) {
-        fbq('track', 'CompleteRegistration', dados, { eventID: uid + '-conf' });
-        if (prod.id) fbq('trackCustom', 'Confirmou_' + prod.id, dados);
-      }
-    } catch (e) {}
-    try {
-      if (window.gtag) gtag('event', 'sign_up', Object.assign({}, COMUNS, {
-        transport_type: 'beacon',
-        produto: prod.id || null,
-        formato: prod.formato || null
-      }));
-    } catch (e) {}
-  }
-
-  var erroConfirmar = document.getElementById('e-confirmar');
-  var btConfirmar = document.getElementById('rec-confirmar');
-
-  function confirma(ehNavegacao) {
-    if (enviado || confirmando) return;
-    confirmando = true;
-    if (erroConfirmar) erroConfirmar.hidden = true;
-
-    var dados = corpoFinal();
-    /* 🔴 NÃO é aqui que o `Lead` nasce desde 04/09/2026 — ele já saiu na
-       chegada da tela 2. `disparaLead` continua sendo chamado por garantia:
-       ele é travado por sessão, então se por qualquer motivo a tela 2 não
-       tiver conseguido disparar (uma exceção no desenho da recomendação, por
-       exemplo), quem apertou o botão não fica sem lead nenhum. Na passagem
-       normal esta chamada não faz nada. */
-    disparaLead(dados.lead_uid);
-    disparaConfirmacao(dados.lead_uid);
-
-    var envio = fetch('/api/lead-presencial', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(dados),
-      /* Sobrevive à navegação para o checkout, no caminho online. */
-      keepalive: true
-    });
-
-    if (ehNavegacao) {
-      /* O navegador já está indo embora. Não há tela para atualizar e não há
-         erro para mostrar: a próxima coisa que ela vê é o checkout. */
-      enviado = true;
-      try { localStorage.removeItem(CHAVE); } catch (e) {}
-      return;
-    }
-
-    btConfirmar.disabled = true;
-    btConfirmar.textContent = 'Confirmando...';
-
-    envio
-      .then(function (r) { return r.json().then(function (j) { return j; }); })
-      .then(function (j) {
-        if (j && j.ok) { confirmado(dados); return; }
-        falhouConfirmar((j && j.mensagem) ||
-          'Não consegui confirmar agora. Tenta de novo em instantes.');
-      })
-      .catch(function () {
-        falhouConfirmar('Parece que a sua internet caiu. Confere a conexão e tenta ' +
-          'de novo — as suas respostas continuam aqui.');
-      });
-  }
-
-  /* 🔴 Falhar aqui NÃO pode ser silencioso, ao contrário do parcial. Ela
-     apertou o botão de propósito e está esperando: sem aviso, ela acha que
-     deu certo e nunca mais volta. E o botão VOLTA a funcionar — a linha dela
-     já está no banco como "viu o preço", então o pior caso é a Nataly chamar
-     por ali. */
-  function falhouConfirmar(msg) {
-    confirmando = false;
-    btConfirmar.disabled = false;
-    btConfirmar.textContent = 'Quero garantir a minha vaga';
-    if (erroConfirmar) { erroConfirmar.textContent = msg; erroConfirmar.hidden = false; }
   }
 
   /* ============================================================
-     TELA 3 — RECEBIDO
+     A TELA DE RECEBIDO
      ============================================================ */
-  function confirmado(dados) {
+
+  /* ---------- as duas frases do WhatsApp ----------
+     🔴 O TEXTO É ESCOLHIDO PELO INTERESSE DECLARADO, e é a única coisa que
+        aquela pergunta decide. Ele existe para a Nataly não abrir uma conversa
+        em branco: quem chega por aqui já respondeu onze perguntas, e obrigá-la
+        a se reapresentar seria fazê-la contar tudo duas vezes.
+
+     As duas frases dizem que o formulário JÁ FOI PREENCHIDO. Sem isso, a
+     Nataly não sabe se está falando com alguém que veio do funil ou com uma
+     mensagem solta, e vai procurar no painel um nome que ela ainda nem tem. */
+  var WA_NUMERO = '5535997164668';   /* o WhatsApp da Nataly, o mesmo do rodapé */
+  var WA_TEXTO = {
+    iniciante: 'Olá! Tenho interesse em me tornar uma lash designer. ' +
+               'Já preenchi o formulário.',
+    led:       'Olá! Tenho interesse em aprender a técnica com LED. ' +
+               'Já preenchi o formulário.'
+  };
+
+  /* ---------- o clique no WhatsApp ----------
+     🔴 O LINK ABRE EM OUTRA ABA (`target="_blank"`), então esta página NÃO
+        descarrega e os dois hits têm tempo de sair. Mesmo assim o GA4 vai de
+        `beacon` e o Meta vai primeiro: se um dia alguém tirar o `_blank`, o
+        evento continua sobrevivendo à navegação em vez de sumir em silêncio.
+
+     Uma vez por sessão. Ela pode clicar, voltar para a aba e clicar de novo —
+     e duas contagens diriam que duas pessoas quiseram falar. */
+  var waDisparado = false;
+  function disparaWhatsApp(interesse) {
+    if (waDisparado) return;
+    waDisparado = true;
+    try {
+      if (sessionStorage.getItem('nr_wa_presencial')) return;
+      sessionStorage.setItem('nr_wa_presencial', '1');
+    } catch (e) {}
+
+    var dados = Object.assign({}, COMUNS, { interesse: interesse || null });
+    try { if (window.fbq) fbq('trackCustom', 'ClicouWhatsApp', dados); } catch (e) {}
+    try {
+      if (window.gtag) gtag('event', 'click_whatsapp', Object.assign({}, COMUNS, {
+        transport_type: 'beacon',
+        interesse: interesse || null
+      }));
+    } catch (e) {}
+  }
+
+  function recebido(dados) {
     enviado = true;      /* trava qualquer parcial atrasado (o beacon de saída) */
-    confirmando = false;
+    enviando = false;
 
     var pn = String(dados.nome || '').trim().split(/\s+/)[0];
     if (pn) document.getElementById('nome-fim').textContent = pn;
 
-    recomendacao.hidden = true;
+    /* O prazo vive em UM lugar (o `data-prazo` da seção) e é escrito daqui nos
+       dois pontos onde ele aparece. Trocar "24 horas" por outra coisa é mexer
+       num atributo do HTML, e não caçar a frase em três lugares. */
+    var prazo = obrigado.getAttribute('data-prazo') || '24 horas';
+    var pp = document.getElementById('prazo-passo');
+    if (pp) pp.textContent = 'em até ' + prazo;
+
+    /* ---------- o botão de falar agora ----------
+       Só aparece com uma frase de verdade na mão. Sem interesse declarado não
+       há mensagem para pré-preencher, e um `wa.me` sem texto abre a conversa
+       em branco que este bloco existe para evitar — nesse caso é melhor não
+       mostrar botão nenhum do que mostrar um que atrapalha a Nataly. */
+    var wa = document.getElementById('wa-agora');
+    var interesse = dados.interesse || null;
+    var txt = interesse ? WA_TEXTO[interesse] : null;
+    if (wa && txt) {
+      wa.href = 'https://wa.me/' + WA_NUMERO + '?text=' + encodeURIComponent(txt);
+      wa.hidden = false;
+      wa.addEventListener('click', function () { disparaWhatsApp(interesse); });
+    }
+
+    /* O `Lead` sai DEPOIS de o servidor ter confirmado a gravação — é o que
+       faz um `Lead` no Meta e uma linha no banco serem a mesma coisa. */
+    disparaLead(dados.lead_uid, interesse);
+
+    form.hidden = true;
+    etapas.forEach(function (f) { f.hidden = true; });
+    if (rodape) rodape.hidden = true;
+    barra.style.width = '100%';
     obrigado.hidden = false;
     try { obrigado.focus({ preventScroll: true }); } catch (e) { obrigado.focus(); }
     vaiProTopo();
     try { localStorage.removeItem(CHAVE); } catch (e) {}
   }
 
-  /* ---------- os dois botões ---------- */
-  if (btConfirmar) {
-    btConfirmar.addEventListener('click', function () { confirma(false); });
-  }
-  var aCta = document.getElementById('rec-cta');
-  if (aCta) {
-    /* SEM `preventDefault`: o <a> tem de navegar sozinho. É o que faz o
-       InitiateCheckout do pixel.js disparar (ele escuta clique em
-       a[href*=pay.kiwify] no document) e é o que mantém a decoração de UTM
-       válida — remontar a navegação aqui criaria uma segunda implementação
-       para divergir da primeira com o tempo. */
-    aCta.addEventListener('click', function () { confirma(true); });
-  }
-
   /* ---------- início ---------- */
-  /* IC_UNICO: a tela final tem UM botão de checkout, mas ela pode voltar,
-     clicar de novo, ou o navegador pode restaurar a página. Um
-     InitiateCheckout por clique infla a métrica — foi o que deixou o A/B do
-     Método LED ilegível. Um por sessão e por produto. */
-  window.IC_UNICO = true;
   var _inicio = leRascunho();
   /* O rascunho guarda a sigla no input escondido. Sem esta chamada, quem volta
      amanhã veria o campo de estado VAZIO com "MG" invisível por baixo — e ao

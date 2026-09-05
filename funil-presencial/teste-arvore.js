@@ -169,7 +169,11 @@ eIgual('checkout do Método LED online',
 console.log('\n== 7. Os quatro preços, conferidos contra as páginas de venda');
 var P = PRD.PRODUTOS();
 eIgual('Profissão Lash online',              P['profissao-lash'].preco, 'R$ 497');
-eIgual('Profissão Lash online + presencial', P['profissao-lash-presencial'].preco, 'R$ 1.497');
+/* R$ 1.197 à vista no PIX desde 03/09/2026, cobrado FORA da Kiwify. O texto do
+   preço carrega a condição de propósito: é o que a aluna lê na tela final, e
+   "R$ 1.197" solto deixaria ela esperando a opção de parcelar. */
+eIgual('Profissão Lash online + presencial', P['profissao-lash-presencial'].preco, 'R$ 1.197 à vista no PIX');
+eIgual('...e o combo NÃO tem parcelamento',  P['profissao-lash-presencial'].parcela, null);
 eIgual('Método LED online (FASE_PADRAO=2)',  P['lash2-online'].preco, 'R$ 297');
 eIgual('Método LED presencial',              P['lash2-presencial'].preco, 'R$ 1.997');
 eIgual('checkout do combo',                  P['profissao-lash-presencial'].checkout, 'VluGxKq');
@@ -197,24 +201,44 @@ if (q3.pontuacao > 100) falha('a pontuação estourou 100', '<= 100', String(q3.
 console.log('\n== 9. A VALIDAÇÃO exige o que a árvore precisa');
 var v1 = L.valida({ nome: 'Ana Silva', telefone: '(35) 99716-4668', cidade: 'Cambuí',
   instagram: '@ana', disponibilidade: 'sim', situacao: 'ja-lash',
-  prefere_formato: 'online', faixa_investimento: 'ate-500' });
+  prefere_formato: 'online', interesse: 'led' });
 eIgual('quem é lash e não diz o que busca é barrada', !!v1.erros.busca, true);
 
 var v2 = L.valida({ nome: 'Ana Silva', telefone: '(35) 99716-4668', cidade: 'Cambuí',
   instagram: '@ana', disponibilidade: 'sim', situacao: 'outra-area',
-  prefere_formato: 'online', faixa_investimento: 'ate-500' });
+  prefere_formato: 'online', interesse: 'iniciante' });
 eIgual('quem NÃO é lash passa sem responder a condicional', v2.ok, true);
 eIgual('...e o campo condicional fica nulo, não inventado', v2.lead.busca, null);
 
 var v3 = L.valida({ nome: 'Ana Silva', telefone: '(35) 99716-4668', cidade: 'Cambuí',
   instagram: '@ana', disponibilidade: 'sim', situacao: 'outra-area',
-  prefere_formato: 'online', faixa_investimento: 'ate-500', busca: 'tecnica-led' });
+  prefere_formato: 'online', interesse: 'iniciante', busca: 'tecnica-led' });
 eIgual('quem não é lash tem a resposta condicional descartada', v3.lead.busca, null);
 
 var v4 = L.valida({ nome: 'Ana Silva', telefone: '(35) 99716-4668', cidade: 'Cambuí',
   instagram: '@ana', disponibilidade: 'sim', situacao: 'outra-area' });
-eIgual('sem faixa de investimento não passa', !!v4.erros.faixa_investimento, true);
+/* 🔴 A REGRA INVERTEU EM 05/09/2026, e este teste guarda a inversão.
+   A faixa de investimento ERA obrigatória; hoje a captação nem pergunta. Se
+   ela voltasse a travar o envio, a pessoa receberia "escolha a faixa" sem ter
+   onde escolher — um erro apontando para um campo que não existe na tela, e o
+   lead morreria ali, já pago. O teste falha se alguém reintroduzir a exigência. */
+eIgual('sem faixa de investimento PASSA (a pergunta não existe mais)',
+  !!v4.erros.faixa_investimento, false);
 eIgual('sem preferência de formato não passa', !!v4.erros.prefere_formato, true);
+eIgual('sem INTERESSE não passa (é a nova última pergunta)', !!v4.erros.interesse, true);
+
+/* Sem faixa nenhuma, a árvore não pode fingir que o dinheiro travou:
+   ausência de resposta não é resposta negativa. Quem pode vir e pede o ao vivo
+   recebe o presencial, e não o online com um motivo inventado sobre orçamento. */
+var v5 = L.valida({ nome: 'Ana Silva', telefone: '(35) 99716-4668', cidade: 'Cambuí',
+  instagram: '@ana', disponibilidade: 'sim', situacao: 'outra-area',
+  prefere_formato: 'presencial', interesse: 'iniciante' });
+eIgual('sem faixa, o envio completo é válido', v5.ok, true);
+var r5 = L.roteia(v5.lead);
+eIgual('...e a árvore manda para o PRESENCIAL, não para o online', r5.colunas.produto_formato, 'presencial');
+eIgual('...sem inventar motivo de orçamento',
+  /acima da faixa/.test(r5.colunas.recomendacao_motivos), false);
+eIgual('...e o interesse é gravado', v5.lead.interesse, 'iniciante');
 
 console.log('\n== 10. O que vai para o BANCO fica auditável');
 var lead = respostas({ situacao: 'ja-lash', busca: 'tecnica-led', disponibilidade: 'sim' });

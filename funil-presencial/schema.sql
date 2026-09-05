@@ -39,6 +39,7 @@ CREATE TABLE IF NOT EXISTS leads (
   disponibilidade   TEXT,                    -- 'sim' | 'talvez' | 'nao'
   prefere_formato   TEXT,        -- 'presencial' | 'online' | 'nao-sei'
   faixa_investimento TEXT,       -- 'ate-500'|'500-1500'|'1500-2000'|'acima-2000'|'depende-parcelamento'
+  interesse TEXT,                -- 'iniciante'|'led' — o que ela quer aprender
   aceita_valor      TEXT,                    -- derivado da faixa: 'sim'|'preciso-parcelar'|'nao'
   quando_comecar    TEXT,        -- 'agora' | '30-dias' | '90-dias' | 'so-olhando'
 
@@ -103,6 +104,10 @@ CREATE INDEX IF NOT EXISTS idx_leads_telefone    ON leads (telefone);
 ALTER TABLE leads ADD COLUMN IF NOT EXISTS busca                TEXT;
 ALTER TABLE leads ADD COLUMN IF NOT EXISTS prefere_formato      TEXT;
 ALTER TABLE leads ADD COLUMN IF NOT EXISTS faixa_investimento   TEXT;
+-- 05/09/2026 — o interesse declarado ('iniciante' | 'led'). Substituiu a
+-- faixa de investimento como última pergunta da captação: é ele que escolhe
+-- a frase pré-preenchida do WhatsApp e o assunto da ligação da Nataly.
+ALTER TABLE leads ADD COLUMN IF NOT EXISTS interesse            TEXT;
 ALTER TABLE leads ADD COLUMN IF NOT EXISTS produto_id           TEXT;
 ALTER TABLE leads ADD COLUMN IF NOT EXISTS produto_nome         TEXT;
 ALTER TABLE leads ADD COLUMN IF NOT EXISTS produto_formato      TEXT;

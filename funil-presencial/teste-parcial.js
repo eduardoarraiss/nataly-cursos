@@ -184,13 +184,13 @@ async function migracaoEmBancoAntigo() {
 
   const p2 = await L.criaParcial({ nome: 'Joana Upsert', telefone: '5535997164668',
                                    instagram: 'joanaupsert', situacao: 'ja-lash',
-                                   ultima_etapa: '10', lead_uid: u1 });
+                                   ultima_etapa: 'interesse', lead_uid: u1 });
   eq('a segunda cai na MESMA linha', p2.id, p1.id);
-  eq('e avança a etapa', p2.ultima_etapa, '10');
+  eq('e avança a etapa', p2.ultima_etapa, 'interesse');
 
   /* A trava do COALESCE: chamada sem cidade não pode apagar a cidade. */
   const p3 = await L.criaParcial({ nome: 'Joana Upsert', telefone: '5535997164668',
-                                   ultima_etapa: '10', lead_uid: u1 });
+                                   ultima_etapa: 'interesse', lead_uid: u1 });
   eq('🔴 uma chamada sem cidade NÃO apaga a cidade já gravada', p3.cidade, 'Pouso Alegre');
   eq('nem o instagram', p3.instagram, 'joanaupsert');
 
@@ -227,7 +227,7 @@ async function migracaoEmBancoAntigo() {
 
   console.log('\n-- 3c. o parcial atrasado não estraga o lead pronto --');
   const atrasado = await L.criaParcial({ nome: 'Joana Upsert', telefone: '5535997164668',
-                                         ultima_etapa: '10', lead_uid: u1 });
+                                         ultima_etapa: 'interesse', lead_uid: u1 });
   ok('🔴 o beacon que chega depois do envio final é RECUSADO', atrasado === null,
      'ele sobrescreveria o lead pronto com uma foto pela metade');
   const intacto = await L.porId(p1.id);
@@ -241,7 +241,7 @@ async function migracaoEmBancoAntigo() {
     nome: 'Marina Que Parou', telefone: '5535997164668', cidade: 'Cambuí',
     instagram: 'marina', situacao: 'ja-lash', busca: 'tecnica-led',
     disponibilidade: 'sim', prefere_formato: 'presencial',
-    ultima_etapa: '10', lead_uid: u2,
+    ultima_etapa: 'interesse', lead_uid: u2,
   });
 
   const agora = await L.parciaisParaAvisar(20);
@@ -275,8 +275,13 @@ async function migracaoEmBancoAntigo() {
   const msg = N.montaMensagemParcial(await L.porId(parado.id));
   ok('diz, no cabeçalho, que está INCOMPLETO', /INCOMPLETO/.test(msg));
   ok('diz em qual pergunta ela parou', /Parou na pergunta \d+ de \d+/.test(msg));
-  ok('nomeia a pergunta do investimento', /faixa de investimento/.test(msg));
-  ok('avisa que é a pergunta que mais derruba gente', /onde\s*\n?mais gente desiste/.test(msg));
+  ok('nomeia a última pergunta, a do interesse', /o que ela quer aprender/.test(msg));
+  /* 🔴 A CAPTAÇÃO NÃO MOSTRA PREÇO DESDE 05/09/2026, e a mensagem não pode
+     sugerir que mostrou: mandar a Nataly tratar objeção de preço com quem
+     nunca viu um preço é fazê-la abrir a conversa errada. */
+  ok('diz que ela respondeu tudo e parou no último clique',
+     /parou no último clique/.test(msg));
+  ok('🔴 avisa que ela NÃO viu preço nenhum', /Não viu preço nenhum/.test(msg));
   ok('🔴 não se apresenta como LEAD NOVO', msg.indexOf('LEAD NOVO') === -1);
   ok('leva o link do WhatsApp', msg.indexOf('wa.me/5535997164668') !== -1);
   ok('🔴 a conversa abre VAZIA (nada de mensagem pronta na voz da Nataly)',
@@ -293,13 +298,23 @@ async function migracaoEmBancoAntigo() {
      /só chegou a deixar o nome e o WhatsApp/.test(msgCedo));
 
   console.log('\n-- 6. onde ela parou, contado direito --');
-  const eLash = L.descreveEtapa({ ultima_etapa: '10', situacao: 'ja-lash' });
+  const eLash = L.descreveEtapa({ ultima_etapa: 'interesse', situacao: 'ja-lash' });
   eq('quem já é lash tem 11 perguntas', eLash.total, 11);
-  eq('e a do preço é a 11ª para ela', eLash.posicao, 11);
-  ok('a do preço é reconhecida como a do preço', eLash.noPreco === true);
-  const naoLash = L.descreveEtapa({ ultima_etapa: '10', situacao: 'outra-area' });
+  eq('e a última é a 11ª para ela', eLash.posicao, 11);
+  ok('a última é reconhecida como a última', eLash.naUltima === true);
+  const naoLash = L.descreveEtapa({ ultima_etapa: 'interesse', situacao: 'outra-area' });
   eq('quem não é lash tem 10 perguntas', naoLash.total, 10);
-  eq('e a do preço é a 10ª para ela', naoLash.posicao, 10);
+  eq('e a última é a 10ª para ela', naoLash.posicao, 10);
+
+  /* 🔴 AS LINHAS ANTIGAS NÃO PODEM VIRAR TEXTO QUEBRADO. A etapa '10' saiu da
+     fila em 05/09/2026, mas as linhas gravadas antes disso continuam no banco
+     e continuam abrindo no painel. Ela perde a POSIÇÃO (não está mais na
+     fila), e é isso que se quer: "pergunta 10 de 11" seria uma contagem que
+     não existe mais. O RÓTULO tem de sobreviver. */
+  const antiga = L.descreveEtapa({ ultima_etapa: '10', situacao: 'ja-lash' });
+  eq('linha antiga ainda tem rótulo legível', antiga.rotulo, 'a faixa de investimento');
+  eq('...mas não tem mais posição na fila', antiga.posicao, null);
+  ok('...e segue reconhecida como a do preço', antiga.noPreco === true);
   eq('etapa desconhecida não vira texto inventado', L.descreveEtapa({ ultima_etapa: '99' }), null);
 
   console.log('\n-- 7. a listagem separa os dois mundos --');
@@ -311,13 +326,20 @@ async function migracaoEmBancoAntigo() {
      parciais.length > 0 && parciais.every((l) => l.completo === false));
   const tudo = await L.lista({ completo: 'tudo' });
   ok('completo=tudo devolve os dois', tudo.length >= completas.length + parciais.length);
+  const naUltima = await L.lista({ completo: 'nao', parou: 'ultima' });
+  ok('dá para filtrar quem respondeu tudo e não enviou',
+     naUltima.length > 0 && naUltima.every((l) => l.ultima_etapa === 'interesse'));
+  /* O atalho antigo continua de pé para as linhas de antes de 05/09/2026.
+     Aqui não há nenhuma semeada, então o certo é voltar VAZIO — e não errar. */
   const noPreco = await L.lista({ completo: 'nao', parou: 'preco' });
-  ok('dá para filtrar quem travou no preço',
-     noPreco.length > 0 && noPreco.every((l) => l.ultima_etapa === '10'));
+  ok('o atalho histórico do preço ainda funciona e não traz linha errada',
+     noPreco.every((l) => l.ultima_etapa === '10'));
 
   const r = await L.resumo();
   ok('o resumo conta os parciais à parte', r.parciais && r.parciais.total >= 1);
-  ok('e diz quantas pararam no preço', r.parciais.noPreco >= 1);
+  ok('e diz quantas responderam tudo sem enviar', r.parciais.naUltima >= 1);
+  ok('e o contador histórico do preço continua existindo',
+     typeof r.parciais.noPreco === 'number');
   ok('🔴 o funil (produto/qualificação) NÃO conta parcial',
      r.porProduto.every((p) => p.produto_id !== '(sem produto)'),
      'um parcial não tem produto: contá-lo criaria uma fatia "(sem produto)" ' +

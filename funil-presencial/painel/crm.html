@@ -962,14 +962,27 @@ code{background:var(--carta-2); border:1px solid var(--linha); border-radius:var
       '5': 'a situação dela hoje', '5.5': 'o que ela está buscando',
       '6': 'a meta de renda e quando quer começar', '7': 'o objetivo (pergunta aberta)',
       '8': 'se consegue vir a Cambuí', '9': 'como prefere aprender',
-      '10': 'a faixa de investimento'
+      /* Histórico: a pergunta do investimento saiu da captação em 05/09/2026.
+         O rótulo FICA, porque as linhas gravadas antes dela continuam abrindo
+         aqui — sem ele o painel diria "(não sei onde parou)" para lead que a
+         gente sabe muito bem onde parou. */
+      '10': 'a faixa de investimento',
+      /* A última pergunta desde 05/09/2026. */
+      'interesse': 'o que ela quer aprender (iniciante ou LED)',
+      'rec': 'a tela da recomendação (funil antigo)'
     }
   };
 
   /* A pergunta do dinheiro. Vive numa constante porque é a única etapa que
      muda o TOM do que o painel diz: parar aqui é objeção de preço, e é a
-     conversa que o comercial fecha. */
+     conversa que o comercial fecha.
+     🔴 HISTÓRICO desde 05/09/2026: a captação não pergunta mais de dinheiro,
+        então nenhuma linha nova nasce aqui. A constante fica de pé para as
+        linhas antigas continuarem sendo lidas direito. */
   var ETAPA_PRECO = '10';
+  /* A última pergunta de hoje. Parar nela é o contrário de objeção de preço:
+     ela respondeu tudo, não viu preço nenhum e só não apertou o botão. */
+  var ETAPA_ULTIMA = 'interesse';
   var COMPLETOS = [
     { v: 'sim',  r: 'Terminaram o formulário' },
     { v: 'nao',  r: 'Pararam no meio' },
@@ -1042,7 +1055,11 @@ code{background:var(--carta-2); border:1px solid var(--linha); border-radius:var
     var id = lead.ultima_etapa ? String(lead.ultima_etapa) : '';
     if (!ROT.etapa[id]) return null;
     var lash = lead.situacao === 'ja-lash';
-    var fila = ['1','2','3','4','5','5.5','6','7','8','9','10']
+    /* 🔴 A FILA É A DE HOJE: a '10' saiu e a 'interesse' entrou. Linha antiga
+       parada na '10' cai fora da fila e perde a POSIÇÃO — de propósito, porque
+       "pergunta 10 de 11" seria uma contagem que não existe mais. O rótulo
+       dela continua vindo do mapa acima, que é o que a Nataly precisa ler. */
+    var fila = ['1','2','3','4','5','5.5','6','7','8','9','interesse']
       .filter(function (e) { return e !== '5.5' || lash; });
     var pos = fila.indexOf(id);
     return {
@@ -1050,7 +1067,8 @@ code{background:var(--carta-2); border:1px solid var(--linha); border-radius:var
       rotulo: ROT.etapa[id],
       posicao: pos < 0 ? null : pos + 1,
       total: fila.length,
-      noPreco: id === ETAPA_PRECO
+      noPreco: id === ETAPA_PRECO,
+      naUltima: id === ETAPA_ULTIMA
     };
   }
   function textoOndeParou(lead) {
@@ -1531,19 +1549,35 @@ code{background:var(--carta-2); border:1px solid var(--linha); border-radius:var
     var par = (estado.resumo && estado.resumo.parciais) || null;
     if (par) {
       var p5 = el('span', 'kpi__p');
-      if (par.noPreco > 0) {
-        var b5 = el('b', null, num(par.noPreco));
+      /* 🔴 O DESTAQUE MUDOU EM 05/09/2026, junto com a captação.
+         Ele apontava "quantas pararam na pergunta do preço", que era a
+         informação comercial mais forte enquanto o funil perguntava de
+         dinheiro. Não pergunta mais — esse número congelou no passado e ficaria
+         em zero para sempre, ocupando o azulejo com uma frase morta.
+
+         O número de hoje é `naUltima`: quantas responderam TUDO e não
+         apertaram enviar. É a fila de ligação mais fácil que existe, porque
+         não há objeção de preço para contornar — elas não viram preço nenhum. */
+      if (par.naUltima > 0) {
+        var b5 = el('b', null, num(par.naUltima));
         p5.appendChild(b5);
+        p5.appendChild(document.createTextNode(par.naUltima === 1
+          ? ' respondeu tudo e não enviou'
+          : ' responderam tudo e não enviaram'));
+      } else if (par.noPreco > 0) {
+        /* Histórico: só aparece se ainda houver linha de antes de 05/09/2026. */
+        var b5v = el('b', null, num(par.noPreco));
+        p5.appendChild(b5v);
         p5.appendChild(document.createTextNode(
           par.noPreco === 1 ? ' parou na pergunta do preço' : ' pararam na pergunta do preço'));
       } else {
         p5.appendChild(document.createTextNode(par.total
-          ? 'Nenhuma parou no preço. '
+          ? 'Nenhuma chegou até o fim. '
           : 'Ninguém abandonou o formulário. '));
       }
       var t5 = tile('Pararam no meio', par.total, p5, null,
         par.total + ' pessoas deixaram o formulário sem terminar' +
-        (par.noPreco ? ', ' + par.noPreco + ' delas na pergunta do investimento' : '') + '.');
+        (par.naUltima ? ', ' + par.naUltima + ' delas depois de responder tudo' : '') + '.');
       /* O azulejo LEVA à lista delas. `tile` só sabe filtrar por campo de
          `estado.filtros`, e `completo` mora fora dele (ver o comentário no
          estado), então a ligação é feita aqui à mão. */
@@ -1932,12 +1966,12 @@ code{background:var(--carta-2); border:1px solid var(--linha); border-radius:var
      lash) e por isso entra como 5.5 — e fica FORA do funil desenhado,
      senão quem nunca viu essa pergunta apareceria como desistente dela. */
   var ORDEM_ETAPA = { '1':1, '2':2, '3':3, '4':4, '5':5, '5.5':5.5,
-                      '6':6, '7':7, '8':8, '9':9, '10':10 };
+                      '6':6, '7':7, '8':8, '9':9, '10':10, 'interesse':10 };
   /* Começa no WhatsApp de propósito: o lead só é GRAVADO quando há nome
      e WhatsApp válidos. Quem fecha a aba antes disso nunca existiu no
      banco — desenhar as etapas 1 e 2 mostraria 100% de aproveitamento
      em duas perguntas que ninguém mediu. */
-  var ETAPAS_FUNIL = ['3', '4', '5', '6', '7', '8', '9', '10'];
+  var ETAPAS_FUNIL = ['3', '4', '5', '6', '7', '8', '9', 'interesse'];
 
   function funilFormulario() {
     var r = estado.resumo;

@@ -22,6 +22,15 @@ const OPCOES = {
      Continua no vocabulário porque a coluna existe, o CSV exporta e o painel lê. */
   aceita_valor:    ['sim', 'preciso-parcelar', 'nao'],
   quando_comecar:  ['agora', '30-dias', '90-dias', 'so-olhando'],
+  /* 🔴 O INTERESSE DECLARADO (05/09/2026) — o campo que substituiu a pergunta
+     de dinheiro como última do formulário.
+     Ele é a única coisa que a captação precisa saber sobre o que ela quer:
+     começar do zero como lash designer, ou aprender a técnica com LED. É ele
+     que escolhe a frase que vai pré-preenchida no WhatsApp da tela final, e é
+     ele que a Nataly lê antes de discar.
+     NÃO é produto e NÃO tem preço: 'iniciante' e 'led' são caminhos de
+     conversa, não itens de catálogo. */
+  interesse:       ['iniciante', 'led'],
   faixa_idade:     ['18-24', '25-34', '35-44', '45+'],
   meta_renda:      ['ate-2k', '2k-5k', '5k-10k', 'mais-10k', 'nao-sei'],
 };
@@ -42,8 +51,16 @@ const STATUS = ['novo', 'contatado', 'em-conversa', 'proposta-enviada', 'ganho',
    pessoa para pessoa (10 ou 11). É a mesma fila do formulário; se uma pergunta
    nascer ou morrer lá, ela tem de nascer ou morrer aqui — senão o aviso diz
    "pergunta 7 de 10" para um formulário de 11. */
-const ORDEM_ETAPAS = ['1', '2', '3', '4', '5', '5.5', '6', '7', '8', '9', '10'];
-const ETAPA_PRECO  = '10';
+/* 🔴 A ETAPA '10' (a faixa de investimento) SAIU DA FILA EM 05/09/2026.
+   A captação não pergunta mais de dinheiro, então ninguém novo pode parar
+   nela. Ela continua no mapa `ETAPAS` logo abaixo porque as linhas gravadas
+   antes dessa data ainda apontam para lá, e o painel precisa saber traduzir
+   `ultima_etapa = '10'` em português. Fora da fila ela não ganha número de
+   posição — e é melhor assim: dizer "pergunta 10 de 11" para um formulário
+   que hoje tem 11 telas diferentes seria inventar uma contagem que não
+   existe mais. */
+const ORDEM_ETAPAS = ['1', '2', '3', '4', '5', '5.5', '6', '7', '8', '9', 'interesse'];
+const ETAPA_PRECO  = '10';   /* histórico: nenhuma linha nova nasce aqui */
 
 /* ---------- A PARADA MAIS CARA DE TODAS (02/09/2026) ----------
    `rec` NAO e uma pergunta, e por isso NAO entra em ORDEM_ETAPAS: ela e o
@@ -69,6 +86,10 @@ const ETAPAS = {
   '8':   'se consegue vir a Cambuí',
   '9':   'como prefere aprender',
   '10':  'a faixa de investimento',
+  /* A ÚLTIMA PERGUNTA desde 05/09/2026. Quem para aqui respondeu tudo o que
+     interessa e recuou no fim — é a parada mais valiosa que a captação nova
+     consegue produzir, porque a Nataly já tem nome, WhatsApp e o caminho. */
+  'interesse': 'o que ela quer aprender (iniciante ou LED)',
   'rec': 'a tela da recomendacao — ela viu o curso indicado e o preco',
 };
 
@@ -90,6 +111,11 @@ function descreveEtapa(l) {
     total: fila.length,
     noPreco: id === ETAPA_PRECO,
     naRecomendacao: id === ETAPA_REC,
+    /* A ÚLTIMA pergunta da captação nova (05/09/2026). Quem para aqui
+       respondeu tudo o que interessa e recuou no último clique — é a parada
+       mais valiosa que este formulário consegue produzir hoje, porque a
+       Nataly já tem nome, WhatsApp, cidade e o caminho todo. */
+    naUltima: id === 'interesse',
   };
 }
 
@@ -249,8 +275,54 @@ function valida(body) {
   l.prefere_formato = opcao('prefere_formato', body.prefere_formato);
   if (!l.prefere_formato) erros.prefere_formato = 'Me diz como você prefere aprender.';
 
+  /* 🔴 A FAIXA DE INVESTIMENTO DEIXOU DE SER OBRIGATÓRIA EM 05/09/2026, porque
+     a pergunta saiu do formulário. Ela continua aceita — se um envio antigo,
+     de aba aberta ontem, ainda mandar o campo, o valor é gravado em vez de
+     descartado. O que não pode mais acontecer é TRAVAR um envio por falta
+     dela: a captação inteira foi reescrita para não falar de dinheiro, e
+     exigir aqui o que a tela não pergunta devolveria um erro de validação
+     apontando para um campo que não existe — a pessoa veria "escolha a faixa"
+     sem ter onde escolher, e o lead morreria na tela, pago. */
   l.faixa_investimento = opcao('faixa_investimento', body.faixa_investimento);
-  if (!l.faixa_investimento) erros.faixa_investimento = 'Escolha a faixa que cabe no seu momento.';
+
+  /* O interesse é a última pergunta e é obrigatório: é ele que roteia a
+     conversa no WhatsApp. Sem ele a tela final não sabe qual frase oferecer. */
+  l.interesse = opcao('interesse', body.interesse);
+
+  /* 🔴 A ABA QUE FICOU ABERTA DESDE ONTEM (05/09/2026).
+     No dia da virada existe gente com a página ANTIGA carregada no celular —
+     aquela que perguntava a faixa de investimento e não conhecia o campo
+     `interesse`. Ela vai terminar de preencher e apertar enviar, e o
+     formulário dela vai mandar `faixa_investimento` e nenhum `interesse`.
+
+     Se a exigência valesse para ela também, receberia "me diz o que você quer
+     aprender" — uma cobrança por uma pergunta que a tela dela NÃO TEM. Sem
+     campo para corrigir, o botão nunca mais funcionaria: ela apertaria, veria
+     o mesmo erro, e iria embora. Lead pago, perdido em silêncio, no dia do
+     deploy — a mesma família de defeito do honeypot, pela mesma razão (erro
+     apontando para um campo que ela não consegue ver).
+
+     Então, para o envio do formulário ANTIGO, o interesse é DEDUZIDO do que
+     ela já respondeu — e a dedução é a mesma raiz que a árvore sempre usou:
+     quem já trabalha com cílios e foi buscar a técnica com LED quer LED;
+     todo o resto quer começar. É uma inferência, não uma resposta dela, e por
+     isso só vale quando não há resposta nenhuma.
+
+     A janela é estreita de propósito: só entra aqui quem mandou
+     `faixa_investimento`, que é a assinatura inconfundível do formulário
+     velho. O formulário novo nunca manda esse campo, então um envio novo sem
+     interesse continua sendo recusado, como tem de ser. Quando não houver
+     mais aba antiga viva, este ramo pode sair. */
+  if (!l.interesse && l.faixa_investimento) {
+    /* 🔴 LÊ DO `body`, NÃO DE `l.busca`: neste ponto da função o `l.busca`
+       ainda não foi preenchido (ele nasce no bloco condicional, logo abaixo),
+       e usá-lo aqui leria `undefined` sempre — a dedução daria 'iniciante'
+       para TODA lash que veio pelo LED, calada, sem erro nenhum. */
+    const buscaDela = opcao('busca', body.busca);
+    l.interesse = (l.situacao === 'ja-lash' && buscaDela === 'tecnica-led') ? 'led' : 'iniciante';
+  }
+
+  if (!l.interesse) erros.interesse = 'Me diz o que você quer aprender.';
 
   /* A pergunta condicional: obrigatória SÓ para quem já trabalha com cílios.
      Quem não é lash nunca a vê, então exigi-la de todas travaria o envio de
@@ -307,7 +379,7 @@ function validaParcial(body) {
   l.objetivo  = texto(body.objetivo, 1000);
 
   ['situacao', 'busca', 'faixa_idade', 'meta_renda', 'quando_comecar',
-   'disponibilidade', 'prefere_formato', 'faixa_investimento']
+   'disponibilidade', 'prefere_formato', 'faixa_investimento', 'interesse']
     .forEach((c) => { l[c] = opcao(c, body[c]); });
 
   /* A etapa tem de vir do vocabulário fechado, como qualquer outro campo de
@@ -413,7 +485,7 @@ function ipDe(req) {
 const CAMPOS = [
   'nome', 'telefone', 'telefone_exibicao', 'email', 'instagram', 'cidade', 'estado',
   'faixa_idade', 'situacao', 'busca', 'meta_renda', 'objetivo', 'disponibilidade',
-  'prefere_formato', 'faixa_investimento', 'aceita_valor', 'quando_comecar',
+  'prefere_formato', 'faixa_investimento', 'interesse', 'aceita_valor', 'quando_comecar',
   'produto_id', 'produto_nome', 'produto_formato', 'produto_valor', 'recomendacao_motivos',
   'pontuacao', 'qualificacao', 'utm_source', 'utm_medium', 'utm_campaign',
   'utm_content', 'utm_term', 'fbclid', 'gclid', 'referrer', 'pagina', 'user_agent', 'ip',
@@ -425,7 +497,7 @@ const CAMPOS = [
 const CAMPOS_PARCIAL = [
   'nome', 'telefone', 'telefone_exibicao', 'email', 'instagram', 'cidade', 'estado',
   'faixa_idade', 'situacao', 'busca', 'meta_renda', 'objetivo', 'disponibilidade',
-  'prefere_formato', 'faixa_investimento', 'quando_comecar', 'ultima_etapa',
+  'prefere_formato', 'faixa_investimento', 'interesse', 'quando_comecar', 'ultima_etapa',
   'utm_source', 'utm_medium', 'utm_campaign', 'utm_content', 'utm_term',
   'fbclid', 'gclid', 'referrer', 'pagina', 'user_agent', 'ip', 'lead_uid',
 ];
@@ -658,7 +730,11 @@ async function lista(f = {}) {
      é a pergunta que o comercial mais quer, e obrigar a decorar o número dela
      seria esconder a informação atrás de trivia. */
   if (f.parou) {
-    const et = f.parou === 'preco' ? ETAPA_PRECO : String(f.parou);
+    /* Dois atalhos, para o comercial não ter de decorar o id da etapa:
+       `ultima` = respondeu tudo e não enviou (a fila de ligação de hoje);
+       `preco`  = a pergunta do investimento, que só existe em linha antiga. */
+    const ATALHO = { preco: ETAPA_PRECO, ultima: 'interesse' };
+    const et = ATALHO[f.parou] || String(f.parou);
     if (ETAPAS[et]) add('ultima_etapa = ?', et);
   }
 
@@ -708,9 +784,14 @@ async function resumo() {
   ]);
 
   const etapas = parciaisEtapa.rows;
-  const noPreco = etapas
-    .filter((e) => String(e.ultima_etapa) === ETAPA_PRECO)
+  const conta = (id) => etapas
+    .filter((e) => String(e.ultima_etapa) === id)
     .reduce((a, e) => a + e.n, 0);
+  /* Histórico: nenhuma linha nova para na etapa do preço desde 05/09/2026.
+     Continua contado porque as linhas antigas seguem no painel. */
+  const noPreco  = conta(ETAPA_PRECO);
+  /* O número que interessa agora: quantas responderam TUDO e não enviaram. */
+  const naUltima = conta('interesse');
 
   return {
     total: total.rows[0].n,
@@ -720,10 +801,13 @@ async function resumo() {
     porAnuncio: porAnuncio.rows,
     avisosFalhos: avisosFalhos.rows[0].n,
     /* O número que o Eduardo quer VISÍVEL: quantas pararam, e quantas
-       pararam exatamente na pergunta do dinheiro. */
+       pararam no último clique — que é a fila de ligação mais fácil que
+       existe. `noPreco` fica ao lado dele, para as linhas de antes de
+       05/09/2026 não sumirem do painel de um dia para o outro. */
     parciais: {
       total: parciais.rows[0].n,
       noPreco,
+      naUltima,
       porEtapa: etapas.map((e) => ({
         etapa: e.ultima_etapa,
         rotulo: ETAPAS[String(e.ultima_etapa)] || '(não sei onde parou)',

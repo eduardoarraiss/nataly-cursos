@@ -46,7 +46,7 @@ function respostas(u) {
     estado: 'MG', instagram: '@marina_teste', faixa_idade: '25-34',
     situacao: 'ja-lash', busca: 'tecnica-led', meta_renda: '5k-10k',
     quando_comecar: 'agora', disponibilidade: 'sim', prefere_formato: 'presencial',
-    faixa_investimento: 'acima-2000', lead_uid: u,
+    faixa_investimento: 'acima-2000', interesse: 'iniciante', lead_uid: u,
   };
 }
 
