@@ -46,6 +46,13 @@ const PREFIXO_TESTE = 'Isso é um teste de uma automação, ignore';
 const ESPERAS_MIN = [1, 5, 15, 60, 360, 1440];
 const MAX_TENTATIVAS = ESPERAS_MIN.length;
 
+/* Espera entre tentativas quando o problema é o CANAL, e não a mensagem.
+   Fixa e curta de propósito: enquanto o WhatsApp está fora, insistir não
+   custa nada (a chamada morre no porteiro, antes de sair da máquina), e o que
+   se ganha é o aviso subir minutos depois de a conexão voltar, sem ninguém
+   precisar clicar em nada. */
+const TETO_CANAL_MIN = 15;
+
 /* ---------- a mensagem ---------- */
 const ROTULO = {
   situacao: { 'ja-lash':'já trabalha com cílios', 'area-beleza':'já é da área da beleza',
@@ -395,11 +402,52 @@ async function varreParciais() {
 
 /* Evolution API própria da Nataly. NÃO é a instância da Haus (haus-r1) —
    essa serve o Roberta OS e não pode ser tocada. */
+/* 🔴 ERRO DE CANAL FORA DO AR ≠ ERRO PERMANENTE, e a diferença decide se o
+   aviso se recupera sozinho ou morre na fila.
+   Em 04/09/2026 o aparelho pareado caiu e ficou fora CINCO DIAS. Com a régua
+   antiga, seis tentativas em ~24h esgotavam o backoff e o aviso virava
+   'falhou' — parado para sempre, esperando alguém abrir o painel e clicar em
+   reenviar. Ninguém abriu. Marcado como `canalFora`, ele continua 'pendente'
+   com espera curta e sobe sozinho no minuto em que o WhatsApp voltar. */
+function erroDeCanal(msg) {
+  const e = new Error(msg);
+  e.canalFora = true;
+  return e;
+}
+
+/* Pergunta à Evolution se a instância está de pé ANTES de tentar mandar.
+   Sem isto, a primeira notícia de que o canal caiu seria um erro de envio —
+   e, dependendo do que a API devolvesse, nem isso. */
+async function estadoDaInstancia(cfg) {
+  const ctrl = new AbortController();
+  const t = setTimeout(() => ctrl.abort(), 10000);
+  try {
+    const res = await fetch(cfg.url + '/instance/connectionState/' + encodeURIComponent(cfg.instancia),
+      { headers: { apikey: cfg.key }, signal: ctrl.signal });
+    const corpo = await res.text();
+    if (!res.ok) return { estado: null, erro: 'HTTP ' + res.status + ' — ' + corpo.slice(0, 200) };
+    let j = null;
+    try { j = JSON.parse(corpo); } catch (e) { return { estado: null, erro: 'resposta ilegível' }; }
+    return { estado: (j && j.instance && j.instance.state) || null, erro: null };
+  } catch (e) {
+    return { estado: null, erro: e.name === 'AbortError' ? 'tempo esgotado' : e.message };
+  } finally { clearTimeout(t); }
+}
+
 async function enviaEvolution(cfg, destino, mensagem) {
   if (!cfg.url || !cfg.key || !cfg.instancia) {
     throw new Error('Evolution não configurada (falta NATALY_WA_URL, NATALY_WA_KEY ou NATALY_WA_INSTANCIA)');
   }
   if (!destino) throw new Error('sem destino (defina NATALY_WA_DESTINO)');
+
+  /* 🔴 O PORTEIRO. Se a instância não está `open`, não adianta mandar: a
+     Evolution aceita a requisição e a mensagem não sai. É exatamente o que
+     aconteceu por cinco dias. */
+  const est = await estadoDaInstancia(cfg);
+  if (est.estado !== 'open') {
+    throw erroDeCanal('WhatsApp desconectado (estado: ' +
+      (est.estado || 'desconhecido') + (est.erro ? '; ' + est.erro : '') + ')');
+  }
 
   const men = mencoesDe(destino);
   const ctrl = new AbortController();
@@ -417,8 +465,30 @@ async function enviaEvolution(cfg, destino, mensagem) {
       signal: ctrl.signal,
     });
     const corpo = await res.text();
-    if (!res.ok) throw new Error('HTTP ' + res.status + ' — ' + corpo.slice(0, 300));
-    return corpo.slice(0, 500);
+    if (!res.ok) {
+      /* 5xx e 401/403 são o canal, não a mensagem: têm de voltar a ser
+         tentados em vez de virar 'falhou' e parar. */
+      const e = (res.status >= 500 || res.status === 401 || res.status === 403)
+        ? erroDeCanal('HTTP ' + res.status + ' — ' + corpo.slice(0, 300))
+        : new Error('HTTP ' + res.status + ' — ' + corpo.slice(0, 300));
+      throw e;
+    }
+
+    /* 🔴 CONFERE POR CONTEÚDO, NUNCA PELO CÓDIGO DE STATUS.
+       Um 200 com `{"error":true}` — ou com qualquer corpo que não seja a
+       mensagem criada — era dado por enviado pela régua antiga. O único
+       carimbo de que a mensagem EXISTE no WhatsApp é o id que a API devolve
+       em `key.id`. Sem ele, isto não foi enviado, tenha o status que tiver. */
+    let j = null;
+    try { j = JSON.parse(corpo); } catch (e) {
+      throw erroDeCanal('a Evolution respondeu 200 com um corpo ilegível: ' + corpo.slice(0, 200));
+    }
+    const id = j && j.key && j.key.id;
+    if (!id) {
+      throw erroDeCanal('a Evolution respondeu 200 mas NÃO confirmou a mensagem ' +
+        '(sem key.id): ' + corpo.slice(0, 200));
+    }
+    return 'id=' + id + (j.status ? ' status=' + j.status : '');
   } finally { clearTimeout(t); }
 }
 
@@ -443,29 +513,68 @@ async function processaFila(limite = 10) {
     "SELECT * FROM avisos WHERE status = 'pendente' AND proxima_em <= now() " +
     'ORDER BY criado_em ASC LIMIT ' + parseInt(limite, 10));
 
-  let enviados = 0, erros = 0;
+  let enviados = 0, erros = 0, canalFora = 0;
   for (const a of pend.rows) {
     const destino = a.destino || cfg.destino;
     try {
-      await despacha(cfg, destino, a.mensagem);
+      const conf = await despacha(cfg, destino, a.mensagem);
       await db.consulta(
         "UPDATE avisos SET status='enviado', enviado_em=now(), atualizado_em=now(), " +
         'tentativas = tentativas + 1, ultimo_erro = NULL, destino = $2 WHERE id = $1',
         [a.id, destino || null]);
+      /* 🔴 A LINHA DO LEAD SABE. Escrita AQUI, no mesmo passo que carimba o
+         aviso, para as duas fontes nunca divergirem: um escritor só. */
+      await marcaLead(a.lead_id, 'enviado', null);
       enviados++;
+      console.log('[funil/aviso] aviso ' + a.id + ' entregue (' + conf + ')');
     } catch (e) {
       const n = a.tentativas + 1;
-      const desistiu = n >= MAX_TENTATIVAS;
-      const espera = ESPERAS_MIN[Math.min(n, ESPERAS_MIN.length - 1)];
+      /* 🔴 CANAL FORA DO AR NÃO ESGOTA TENTATIVA.
+         Se o WhatsApp está desconectado, insistir seis vezes só queima o
+         orçamento de tentativas de um problema que não é da mensagem — e no
+         fim marca 'falhou' um aviso perfeitamente bom, que ficaria parado
+         para sempre esperando alguém clicar em reenviar. Foi assim que cinco
+         dias de leads teriam morrido na fila.
+         Com o canal fora, o aviso continua 'pendente', volta a ser tentado a
+         cada TETO_CANAL_MIN minutos, e sobe sozinho no minuto em que a
+         conexão voltar. A recuperação é automática e, por construção, não
+         duplica: quem já está 'enviado' nunca mais é lido por esta consulta. */
+      const desistiu = !e.canalFora && n >= MAX_TENTATIVAS;
+      const espera = e.canalFora
+        ? TETO_CANAL_MIN
+        : ESPERAS_MIN[Math.min(n, ESPERAS_MIN.length - 1)];
       await db.consulta(
         'UPDATE avisos SET status = $2, tentativas = $3, ultimo_erro = $4, ' +
         "atualizado_em = now(), proxima_em = now() + ($5 || ' minutes')::interval WHERE id = $1",
-        [a.id, desistiu ? 'falhou' : 'pendente', n, String(e.message).slice(0, 500), String(espera)]);
-      erros++;
-      console.error('[funil/aviso] tentativa ' + n + ' falhou (aviso ' + a.id + '): ' + e.message);
+        [a.id, desistiu ? 'falhou' : 'pendente',
+         /* Tentativa por canal fora não conta: o problema não é a mensagem. */
+         e.canalFora ? a.tentativas : n,
+         String(e.message).slice(0, 500), String(espera)]);
+      await marcaLead(a.lead_id, desistiu ? 'falhou' : 'pendente', e.message);
+      if (e.canalFora) canalFora++; else erros++;
+      console.error('[funil/aviso] ' + (e.canalFora ? 'CANAL FORA' : 'tentativa ' + n + ' falhou') +
+                    ' (aviso ' + a.id + '): ' + e.message);
     }
   }
-  return { enviados, erros, vistos: pend.rows.length };
+  return { enviados, erros, canalFora, vistos: pend.rows.length };
+}
+
+/* ---------- o lead carrega o próprio estado de aviso ----------
+   Falhar aqui NÃO pode derrubar o processamento da fila: o aviso já foi
+   carimbado, e perder o espelho é menos grave do que travar o resto da fila.
+   Mas é logado, porque um espelho que para de ser escrito vira exatamente o
+   tipo de mentira silenciosa que este trabalho veio consertar. */
+async function marcaLead(leadId, estado, erro) {
+  if (!leadId) return;
+  try {
+    await db.consulta(
+      'UPDATE leads SET aviso_estado = $2, aviso_erro = $3, ' +
+      "avisado_em = CASE WHEN $2 = 'enviado' THEN now() ELSE avisado_em END " +
+      'WHERE id = $1',
+      [leadId, estado, erro ? String(erro).slice(0, 500) : null]);
+  } catch (e) {
+    console.error('[funil/aviso] não consegui marcar o lead ' + leadId + ': ' + e.message);
+  }
 }
 
 /* ---------- reenvio manual, a partir do painel ---------- */
@@ -496,4 +605,7 @@ module.exports = {
   ehGrupo, marcaNataly, mencoesDe,
   enfileira, enfileiraParcial, varreParciais, processaFila,
   reenfileira, iniciaWorker, paraWorker, MAX_TENTATIVAS,
+  /* Exportados para o health check do WhatsApp (scripts/health-whatsapp.js),
+     que precisa perguntar o estado sem subir o servidor inteiro. */
+  estadoDaInstancia, marcaLead,
 };

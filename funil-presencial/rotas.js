@@ -131,12 +131,23 @@ router.post('/api/lead-presencial', express.json({ limit: '32kb' }), async (req,
 
     // Armadilha para robô: campo escondido que humano nunca preenche.
     // Responde 200 de propósito — o robô acha que funcionou e não insiste.
+    const ip = L.ipDe(req);
+
     if (body.ref_c7 || body.sobrenome_confirmacao) {
+      /* 🔴 ATÉ O ROBÔ FICA REGISTRADO, e por um motivo caro: esta armadilha
+         já pegou GENTE DE VERDADE duas vezes (o autopreenchimento do navegador
+         escrevia nela). Com o descarte gravado, se ela voltar a pegar humano,
+         o nome e o telefone da pessoa estão em `recebidos` e dá para recuperar
+         — em vez de descobrir semanas depois que sumiu gente e não ter o quê
+         olhar. Uma linha de texto por robô é barato demais para não pagar. */
+      const r = await L.registraRecebido({
+        rota: 'lead-presencial', corpo: body, ip,
+        userAgent: req.headers['user-agent'], leadUid: body.lead_uid,
+      });
+      await L.fechaRecebido(r, { aceito: false, motivo: 'honeypot' });
       console.log('[funil] envio de robô descartado (honeypot)');
       return res.json({ ok: true, dedupe: true });
     }
-
-    const ip = L.ipDe(req);
     /* O freio de spam não pode barrar o GATE. `verificar-pv.sh local` exercita
        os sete caminhos da árvore de uma vez, e com o teto de 5 envios por IP
        ele bateria em 429 no meio — reportando falha na árvore quando o que
@@ -161,8 +172,24 @@ router.post('/api/lead-presencial', express.json({ limit: '32kb' }), async (req,
       });
     }
 
+    /* 🔴 O CORPO CRU É GRAVADO ANTES DE QUALQUER VALIDAÇÃO (05/09/2026).
+       Esta linha vem antes do `L.valida` de propósito: se a validação recusar
+       o envio, o que ela recusou continua existindo em `recebidos`, com nome
+       e telefone dentro, e dá para ligar à mão. Antes disto, um 400 era o fim
+       da linha — a requisição ia embora e aquele lead nunca existiu para
+       ninguém, nem para conferir depois.
+       Falhar aqui não derruba nada: `registraRecebido` engole o próprio erro
+       e devolve null. Perder a rede é ruim; perder o lead é pior. */
+    const receb = await L.registraRecebido({
+      rota: 'lead-presencial', corpo: body, ip,
+      userAgent: req.headers['user-agent'], leadUid: body.lead_uid,
+    });
+
     const { ok, erros, lead } = L.valida(body);
-    if (!ok) return res.status(400).json({ ok: false, erros });
+    if (!ok) {
+      await L.fechaRecebido(receb, { aceito: false, motivo: Object.keys(erros).join(',') });
+      return res.status(400).json({ ok: false, erros });
+    }
 
     /* A ÁRVORE RODA AQUI, no servidor, e em lugar nenhum mais.
        O formulário manda respostas e recebe o produto de volta — ele não
@@ -195,8 +222,14 @@ router.post('/api/lead-presencial', express.json({ limit: '32kb' }), async (req,
        tivesse a rede reenviando) cairia numa tela final sem produto, sem
        preço e sem checkout: o pior lugar possível para ficar. */
     if (salvo.novo === false) {
+      await L.fechaRecebido(receb, { aceito: true, motivo: 'reenvio', leadId: salvo.id });
       return res.json({ ok: true, dedupe: true, qualificacao: salvo.qualificacao });
     }
+
+    /* Fecha o recebido apontando para a linha que nasceu. É este par — o
+       recebido e o lead — que permite provar, depois, que nenhum envio se
+       perdeu: recebido sem `lead_id` é gente que entrou e não virou lead. */
+    await L.fechaRecebido(receb, { aceito: true, leadId: salvo.id });
 
     // ---- Aviso: enfileira e tenta. Falhar aqui NÃO derruba o lead. ----
     try {
@@ -515,6 +548,38 @@ router.delete('/crm/api/lead/:id', auth.exige({ api: true }), async (req, res) =
   if (!apagado) return res.status(404).json({ erro: 'nao-encontrado' });
   res.json({ ok: true, id });
 });
+
+/* Os envios que ENTRARAM e não viraram lead. É a lista que responde, com
+   número, à pergunta "estamos perdendo gente agora?" — e é a única forma de
+   recuperar à mão quem bateu num erro de validação. */
+router.get('/crm/api/recebidos-perdidos', auth.exige({ api: true }), async (req, res) => {
+  semRastro(res);
+  const min = Math.min(parseInt(req.query.minutos, 10) || 43200, 525600);
+  res.json({ recebidos: await L.recebidosPerdidos(min) });
+});
+
+/* Importação de lead nascido FORA do site (hoje: formulário instantâneo do
+   Meta). Passa pela MESMA função que qualquer outra porta usaria — se amanhã
+   nascer uma terceira, ela não tem onde escrever diferente.
+   `simular: true` não grava: conta e devolve a amostra. */
+router.post('/crm/api/importar', auth.exige({ api: true }),
+  express.json({ limit: '2mb' }), async (req, res) => {
+    semRastro(res);
+    const { origem, registros, simular } = req.body || {};
+    if (!origem || !Array.isArray(registros)) {
+      return res.status(400).json({ ok: false, erro: 'precisa de origem e registros[]' });
+    }
+    if (registros.length > 1000) {
+      return res.status(400).json({ ok: false, erro: 'no máximo 1000 por vez' });
+    }
+    try {
+      const r = await L.importa(String(origem), registros, { simular: !!simular });
+      res.json(Object.assign({ ok: true, simulacao: !!simular }, r));
+    } catch (e) {
+      console.error('[funil] importação falhou:', e);
+      res.status(500).json({ ok: false, erro: e.message });
+    }
+  });
 
 router.get('/crm/api/avisos', auth.exige({ api: true }), async (req, res) => {
   semRastro(res);

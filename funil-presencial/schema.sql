@@ -133,6 +133,41 @@ ALTER TABLE leads ADD COLUMN IF NOT EXISTS avisado_parcial_em TIMESTAMPTZ;
 --    E a mesma classe do incidente de 01/09/2026, um nivel mais fundo.
 ALTER TABLE leads ADD COLUMN IF NOT EXISTS lead_uid TEXT;
 
+-- ============================================================
+-- 05/09/2026 — O LEAD SABE SE FOI AVISADO
+-- ============================================================
+-- 🔴 POR QUE ISTO EXISTE. Em 04/09/2026, às 12h23, o aparelho pareado do
+--    WhatsApp caiu (`device_removed`) e ficou fora por CINCO DIAS. Durante
+--    todo esse tempo o site respondeu 200 para tudo, o lead foi gravado, e
+--    ninguém foi avisado — em silêncio. A informação existia (na tabela
+--    `avisos`), mas morava num lugar que ninguém abre.
+--
+--    Agora ela mora na LINHA DO LEAD, que é o que a Nataly e o painel olham
+--    todo dia. Quem escreve estas duas colunas é UM lugar só (a fila do
+--    notificador, no mesmo passo em que ela atualiza o aviso), para as duas
+--    fontes não divergirem com o tempo.
+--
+--    'pendente' = ainda na fila · 'enviado' = confirmado pelo id da mensagem
+--    que a API devolveu · 'falhou' = erro permanente, precisa de gente.
+ALTER TABLE leads ADD COLUMN IF NOT EXISTS aviso_estado TEXT NOT NULL DEFAULT 'pendente';
+ALTER TABLE leads ADD COLUMN IF NOT EXISTS avisado_em   TIMESTAMPTZ;
+ALTER TABLE leads ADD COLUMN IF NOT EXISTS aviso_erro   TEXT;
+
+-- ============================================================
+-- 05/09/2026 — DE ONDE O LEAD VEIO
+-- ============================================================
+-- 🔴 A Nataly vai LIGAR para estas pessoas. Ela precisa saber se está falando
+--    com alguém que preencheu o formulário do site ontem ou com alguém que
+--    deixou o contato num anúncio do Instagram em agosto e nunca teve retorno.
+--    São duas conversas diferentes, e abrir a errada queima o lead.
+--    'funil-presencial' = o formulário do site (o padrão, e o que já existia).
+--    'meta-lead-ads'    = formulário instantâneo do Meta, importado.
+ALTER TABLE leads ADD COLUMN IF NOT EXISTS origem TEXT NOT NULL DEFAULT 'funil-presencial';
+-- Id do registro na ORIGEM. É a chave que impede a mesma importação de rodar
+-- duas vezes e criar gêmeos — e é o que prova a procedência de cada linha.
+ALTER TABLE leads ADD COLUMN IF NOT EXISTS origem_id TEXT;
+
+
 -- As colunas que eram NOT NULL e não podem mais ser: o parcial nasce com
 -- nome e telefone e mais nada. DROP NOT NULL é idempotente — rodar de novo
 -- em coluna que já é anulável não faz nada e não dá erro.
@@ -178,6 +213,11 @@ CREATE UNIQUE INDEX IF NOT EXISTS idx_leads_uid ON leads (lead_uid);
 -- Mesma regra, mesma posição: depois dos ALTER. O painel abre filtrando por
 -- completo, e a varredura do aviso de incompleto procura parcial parado —
 -- os dois passam por aqui em toda visita.
+-- 🔴 ESTE INDICE FICA DEPOIS DO ALTER QUE CRIA A COLUNA. Indice antes do
+-- ALTER aborta a migracao INTEIRA: passa em banco novo (onde a coluna nasce
+-- no CREATE TABLE) e quebra no que ja existe, e o erro ainda aponta para
+-- outra coluna. Ja aconteceu aqui: 0 de 8 colunas criadas.
+CREATE INDEX IF NOT EXISTS idx_leads_aviso ON leads (aviso_estado, criado_em DESC);
 CREATE INDEX IF NOT EXISTS idx_leads_completo  ON leads (completo, criado_em DESC);
 CREATE INDEX IF NOT EXISTS idx_leads_parcial   ON leads (completo, avisado_parcial_em, atualizado_em);
 
@@ -262,3 +302,72 @@ CREATE TABLE IF NOT EXISTS login_tentativas (
 );
 
 CREATE INDEX IF NOT EXISTS idx_login_ip ON login_tentativas (ip, criada_em DESC);
+
+-- ============================================================
+-- 05/09/2026 — RECEBIDOS: O DEAD-LETTER DA CAPTAÇÃO
+-- ============================================================
+-- 🔴 NADA É DESCARTADO, NEM O INVÁLIDO.
+--    Até hoje, um envio que não passava na validação sumia para sempre: o
+--    servidor devolvia 400 e o corpo ia embora com a requisição. Se a pessoa
+--    fechasse a aba, aquele lead nunca existiu para ninguém — e foi assim que
+--    um formulário com um campo a mais (a aba aberta desde ontem) podia torrar
+--    verba de anúncio em silêncio, sem deixar rastro para conferir depois.
+--
+--    Agora TODA requisição de entrada é gravada aqui, CRUA, ANTES da
+--    validação. O que falha na validação vira uma linha recuperável e visível,
+--    não um zero. É barato: uma linha de texto por envio.
+--
+--    Isto NÃO é o CRM. É a rede embaixo dele: `lead_id` liga o recebido à
+--    linha de lead quando ela nasce, e fica nulo quando não nasceu — e é
+--    justamente a lista dos nulos que diz quanta gente a gente perdeu.
+CREATE TABLE IF NOT EXISTS recebidos (
+  id         BIGSERIAL PRIMARY KEY,
+  criado_em  TIMESTAMPTZ NOT NULL DEFAULT now(),
+  rota       TEXT NOT NULL,              -- qual porta recebeu
+  ip         TEXT,
+  user_agent TEXT,
+  lead_uid   TEXT,
+  corpo      TEXT NOT NULL,              -- o JSON cru, como chegou
+  aceito     BOOLEAN NOT NULL DEFAULT false,
+  motivo     TEXT,                       -- por que foi recusado, quando foi
+  lead_id    BIGINT REFERENCES leads(id) ON DELETE SET NULL
+);
+-- Índices DEPOIS da tabela, sempre — nunca antes da coluna que eles usam.
+CREATE INDEX IF NOT EXISTS idx_receb_criado ON recebidos (criado_em DESC);
+CREATE INDEX IF NOT EXISTS idx_receb_perdidos ON recebidos (aceito, criado_em DESC);
+
+-- Índices das colunas novas de `leads`. Ficam aqui, no fim, DEPOIS de todos os
+-- ALTER: índice antes do ALTER aborta a migração inteira (passa em banco novo,
+-- quebra no que já existe, e o erro ainda aponta para outra coluna).
+CREATE INDEX IF NOT EXISTS idx_leads_origem ON leads (origem, criado_em DESC);
+-- 🔴 A TRAVA DE IMPORTAÇÃO. Sem ela, rodar o importador duas vezes criaria
+--    vinte e quatro linhas gêmeas e a Nataly ligaria duas vezes para a mesma
+--    pessoa. Parcial porque `origem_id` só existe em linha importada.
+CREATE UNIQUE INDEX IF NOT EXISTS idx_leads_origem_id
+  ON leads (origem, origem_id) WHERE origem_id IS NOT NULL;
+
+-- ============================================================
+-- BACKFILL DO ESTADO DE AVISO — TEM DE FICAR AQUI, NO FIM
+-- ============================================================
+-- 🔴 ELE LÊ A TABELA `avisos`, E POR ISSO NÃO PODE MORAR NO BLOCO DE ALTER DE
+--    `leads`: lá em cima `avisos` ainda não existe, e um comando que referencia
+--    tabela inexistente ABORTA A MIGRAÇÃO INTEIRA — as colunas seguintes nem
+--    chegam a ser criadas, e o erro ainda aponta para outro lugar. É a mesma
+--    armadilha do índice antes do ALTER, e ela custou uma migração inteira
+--    aqui antes. Medido em 05/09/2026: `relation "avisos" does not exist`.
+--
+--    Por que o backfill é obrigatório: a coluna nasce 'pendente'. Sem ele,
+--    TODO lead gravado antes de hoje apareceria no painel como "não avisado",
+--    inclusive os que a Nataly já recebeu e já respondeu. Um painel que grita
+--    dezoito falsos alarmes no primeiro dia é um painel que ela aprende a
+--    ignorar — e aí a rede de segurança inteira deixa de valer.
+--
+--    Idempotente: só toca em quem ainda está no valor padrão.
+UPDATE leads l SET
+  aviso_estado = COALESCE((
+    SELECT CASE WHEN bool_or(a.status = 'enviado') THEN 'enviado'
+                WHEN bool_or(a.status = 'pendente') THEN 'pendente'
+                ELSE 'falhou' END
+    FROM avisos a WHERE a.lead_id = l.id), 'enviado'),
+  avisado_em = (SELECT max(a.enviado_em) FROM avisos a WHERE a.lead_id = l.id)
+WHERE l.aviso_estado = 'pendente' AND l.avisado_em IS NULL;

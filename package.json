@@ -5,8 +5,9 @@
   "main": "server.js",
   "scripts": {
     "start": "node server.js",
-    "teste": "npm run teste:arvore && npm run teste:unidade && npm run teste:aviso && npm run teste:parcial && npm run teste:recomendacao && npm run teste:captacao",
+    "teste": "npm run teste:arvore && npm run teste:unidade && npm run teste:aviso && npm run teste:parcial && npm run teste:recomendacao && npm run teste:captacao && npm run teste:crm",
     "teste:captacao": "node funil-presencial/teste-captacao.js",
+    "teste:crm": "node funil-presencial/teste-crm-integridade.js",
     "teste:arvore": "node funil-presencial/teste-arvore.js",
     "teste:unidade": "FUNIL_DEV_DIR=.dados-teste node funil-presencial/teste-unidade.js",
     "teste:aviso": "FUNIL_DEV_DIR=.dados-teste node funil-presencial/teste-aviso.js",

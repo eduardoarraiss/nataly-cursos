@@ -445,6 +445,11 @@ a{color:var(--azul-txt)}
 }
 
 /* ---------- pílulas ---------- */
+/* Lead que veio de fora do site, e lead que ficou sem aviso. Os dois têm de
+   saltar da tabela: são as duas situações em que a Nataly precisa agir
+   diferente, e uma tabela onde tudo parece igual esconde exatamente isso. */
+.pil-import{background:#EFE6DA; color:#6B4F3A; border-color:#DED3C2}
+.pil-naoavisado{background:#F6E2DE; color:#8A3324; border-color:#E8C9C2}
 .pil{
   display:inline-flex; align-items:center; gap:5px; padding:3px var(--e2);
   border-radius:999px; font-size:12px; font-weight:640; white-space:nowrap;
@@ -957,6 +962,11 @@ code{background:var(--carta-2); border:1px solid var(--linha); border-radius:var
     /* Onde ela parou. Tem de ser a MESMA lista de `ETAPAS` em leads.js — se
        uma pergunta nascer lá e não aqui, o painel diz "parou na etapa 11" e
        manda a Nataly adivinhar qual era. */
+    /* Nome legível de cada porta de entrada. */
+    origem: {
+      'funil-presencial': 'formulário do site',
+      'meta-lead-ads': 'anúncio do Instagram',
+    },
     etapa: {
       '1': 'o nome', '2': 'a cidade', '3': 'o WhatsApp', '4': 'o Instagram',
       '5': 'a situação dela hoje', '5.5': 'o que ela está buscando',
@@ -2437,7 +2447,8 @@ code{background:var(--carta-2); border:1px solid var(--linha); border-radius:var
      ============================================================ */
   var COLUNAS = [
     { rot: 'Nome' }, { rot: 'WhatsApp' }, { rot: 'Cidade' }, { rot: 'Qualificação' },
-    { rot: 'Produto indicado' }, { rot: 'Origem' }, { rot: 'Status' }, { rot: 'Quando' }, { rot: 'Ação' }
+    { rot: 'Produto indicado' }, { rot: 'Origem' }, { rot: 'Avisada' },
+    { rot: 'Status' }, { rot: 'Quando' }, { rot: 'Ação' }
   ];
 
   function telefoneBonito(lead) {
@@ -2531,7 +2542,37 @@ code{background:var(--carta-2); border:1px solid var(--linha); border-radius:var
       }
       tr.appendChild(celula('Produto indicado', envProd));
 
-      tr.appendChild(celula('Origem', el('span', null, texto(lead.utm_content))));
+      /* 🔴 DE ONDE ESTA PESSOA VEIO, e por que isto virou coluna em
+         05/09/2026: a Nataly vai LIGAR para ela. Abrir a conversa com quem
+         preencheu o site ontem não é a mesma coisa que abrir com quem deixou o
+         contato num anúncio em agosto e nunca teve retorno — e a segunda
+         precisa de um pedido de desculpas na primeira frase.
+         O anúncio (`utm_content`) continua ali do lado, quando existe. */
+      var origem = el('span');
+      if (lead.origem && lead.origem !== 'funil-presencial') {
+        var eti = el('b', 'pil pil-import', ROT.origem[lead.origem] || lead.origem);
+        eti.setAttribute('title', 'Lead recuperado de fora do site — pode estar esperando contato há dias');
+        origem.appendChild(eti);
+      }
+      if (lead.utm_content) {
+        if (origem.firstChild) origem.appendChild(document.createTextNode(' '));
+        origem.appendChild(el('span', null, texto(lead.utm_content)));
+      }
+      if (!origem.firstChild) origem.appendChild(el('span', 'td-sub', '—'));
+      tr.appendChild(celula('Origem', origem));
+
+      /* 🔴 A REDE DE SEGURANÇA FINAL. Se o WhatsApp cair de novo, a Nataly
+         abre o painel e VÊ quem ficou sem aviso — em vez de descobrir cinco
+         dias depois que ninguém foi avisado, como aconteceu em 04/09/2026. */
+      var av = el('span');
+      if (lead.aviso_estado && lead.aviso_estado !== 'enviado') {
+        var pa = el('b', 'pil pil-naoavisado', 'não avisada');
+        pa.setAttribute('title', lead.aviso_erro || 'o aviso ainda não saiu no WhatsApp');
+        av.appendChild(pa);
+      } else {
+        av.appendChild(el('span', 'td-sub', '✓'));
+      }
+      tr.appendChild(celula('Avisada', av, 'nw'));
       tr.appendChild(celula('Status', pilulaStatus(lead.status)));
 
       var quando = el('span', null, dataRelativa(lead.criado_em));

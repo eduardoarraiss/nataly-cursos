@@ -347,6 +347,225 @@ function valida(body) {
   return { erros, lead: l, ok: Object.keys(erros).length === 0 };
 }
 
+/* ============================================================
+   RECEBIDOS — o dead-letter da captação (05/09/2026)
+   ============================================================
+   🔴 GRAVA O CORPO CRU ANTES DE VALIDAR QUALQUER COISA, e é essa ordem que é
+      o ponto todo. Até hoje um envio que não passava na validação sumia com a
+      requisição: o servidor devolvia 400 e pronto. Se a pessoa fechasse a
+      aba, aquele lead nunca existiu para ninguém — nem para conferir depois.
+      Verba de anúncio virando zero, em silêncio, sem deixar rastro.
+
+   O que se ganha: um envio malformado deixa de ser um zero e vira uma linha
+   recuperável, com nome e telefone dentro, que dá para ler e ligar à mão.
+
+   🔴 ELE NUNCA PODE DERRUBAR O ENVIO. Se gravar o recebido falhar, o lead
+      segue o caminho normal — perder a rede é ruim, perder o lead é pior.
+      Por isso o try/catch engole tudo e devolve null. */
+async function registraRecebido({ rota, corpo, ip, userAgent, leadUid }) {
+  try {
+    const r = await db.consulta(
+      'INSERT INTO recebidos (rota, ip, user_agent, lead_uid, corpo) ' +
+      'VALUES ($1,$2,$3,$4,$5) RETURNING id',
+      [String(rota).slice(0, 80), ip || null, String(userAgent || '').slice(0, 400) || null,
+       leadUid ? String(leadUid).slice(0, 80) : null,
+       JSON.stringify(corpo || {}).slice(0, 20000)]);
+    return r.rows[0].id;
+  } catch (e) {
+    console.error('[funil] não consegui gravar o recebido (o envio segue): ' + e.message);
+    return null;
+  }
+}
+
+/* Fecha o recebido: aceito (com o lead que nasceu) ou recusado (com o motivo).
+   Também não pode derrubar nada. */
+async function fechaRecebido(id, { aceito, motivo, leadId }) {
+  if (!id) return;
+  try {
+    await db.consulta(
+      'UPDATE recebidos SET aceito = $2, motivo = $3, lead_id = $4 WHERE id = $1',
+      [id, !!aceito, motivo ? String(motivo).slice(0, 500) : null, leadId || null]);
+  } catch (e) {
+    console.error('[funil] não consegui fechar o recebido ' + id + ': ' + e.message);
+  }
+}
+
+/* Quantos envios entraram e NÃO viraram lead. É o número que diz se estamos
+   perdendo gente agora — e é o que a reconciliação compara com o Meta. */
+async function recebidosPerdidos(desdeMin = 1440) {
+  const r = await db.consulta(
+    'SELECT * FROM recebidos WHERE aceito = false AND lead_id IS NULL ' +
+    "AND criado_em > now() - ($1 || ' minutes')::interval ORDER BY criado_em DESC LIMIT 200",
+    [String(parseInt(desdeMin, 10))]);
+  return r.rows;
+}
+
+/* ============================================================
+   IMPORTAÇÃO — a porta única para lead que nasceu FORA do site
+   ============================================================
+   🔴 POR QUE ISTO EXISTE. Em 05/09/2026 descobriu-se que 24 pessoas tinham
+      deixado nome, telefone e e-mail num FORMULÁRIO INSTANTÂNEO do Meta, entre
+      20 e 23/08, e que nenhuma delas jamais tocou o site — logo, nenhuma
+      existia no CRM. Elas não se perderam por bug: se perderam por DESENHO.
+      Formulário instantâneo nasce e morre dentro do Meta, e sem alguém buscar
+      lá, ninguém nunca saberia que existiram.
+
+   🔴 TRÊS REGRAS DURAS, e as três são sobre a Nataly LIGAR para essas pessoas:
+
+     1. NUNCA INVENTAR. O que a origem não trouxe fica NULO. Sem cidade, sem
+        interesse, sem produto, sem qualificação. Deduzir "ela deve querer o
+        iniciante" e a Nataly abrir a ligação com isso é fazê-la passar
+        vergonha com uma pessoa real.
+     2. A DATA É A DA ORIGEM. Quem se inscreveu em 21/08 não é lead de hoje.
+        Ligar dizendo "vi que você acabou de se inscrever" duas semanas depois
+        queima o contato.
+     3. NÃO DUPLICAR, por dois caminhos: `origem_id` (rodar o importador duas
+        vezes é inofensivo) e TELEFONE NORMALIZADO (a mesma pessoa que também
+        preencheu o site não vira duas linhas, e a Nataly não liga duas vezes).
+
+   🔴 E NADA DE PIXEL. Importado é RECUPERAÇÃO, não conversão nova: disparar
+      `Lead` por eles inflaria a métrica pela qual a campanha otimiza, com
+      eventos de agosto chegando em setembro. Esta função não toca em evento
+      nenhum, e não enfileira aviso — quem avisa a Nataly é o painel. */
+
+/* As formas em que o MESMO número brasileiro aparece na vida real: com e sem
+   DDI, com e sem o nono dígito. Duas listas que se cruzam = mesma pessoa. */
+function chavesDeTelefone(e164) {
+  if (!e164) return [];
+  let d = String(e164).replace(/\D/g, '');
+  if (d.length > 11 && d.startsWith('55')) d = d.slice(2);
+  const fora = new Set();
+  if (d.length === 11) {
+    fora.add(d);
+    /* Sem o nono dígito: o mesmo assinante nos cadastros antigos. */
+    if (d[2] === '9') fora.add(d.slice(0, 2) + d.slice(3));
+  } else if (d.length === 10) {
+    fora.add(d);
+    fora.add(d.slice(0, 2) + '9' + d.slice(2));
+  } else if (d) {
+    fora.add(d);
+  }
+  const todas = [];
+  fora.forEach((x) => { todas.push(x); todas.push('55' + x); });
+  return todas;
+}
+
+/* 🔴 O TELEFONE DE UMA ORIGEM EXTERNA NÃO SEGUE A REGRA DO FORMULÁRIO, e
+   confundir as duas custou 3 dos 24 leads do Meta na primeira medição (12,5%
+   de lead PAGO, no lixo).
+
+   `normalizaTelefone` recusa dez dígitos cujo assinante começa em 8 ou 9,
+   porque no FORMULÁRIO isso é quase sempre a mulher digitando o celular sem o
+   DDD — e gravar um número que não existe é pior do que recusar na cara dela,
+   que ainda pode corrigir.
+
+   Numa importação nada disso vale. O número veio do campo de telefone do
+   próprio Meta, já com código de país, e não há ninguém do outro lado para
+   corrigir: recusar aqui não devolve um erro, apaga uma pessoa. Medido:
+   +554399508234, +554798805080 e 8892609066 são contatos reais, com e-mail,
+   que a régua do formulário jogaria fora em silêncio.
+
+   Então aqui a régua é a mínima honesta: DDD brasileiro que existe e um
+   assinante de 8 ou 9 dígitos. O que for duvidoso entra e fica visível para a
+   Nataly julgar — ela tem o e-mail e o nome para conferir. */
+function normalizaTelefoneOrigem(v) {
+  if (!v) return null;
+  let d = String(v).replace(/\D/g, '');
+  if (d.length > 11 && d.startsWith('55')) d = d.slice(2);
+  if (d.length !== 10 && d.length !== 11) return null;
+  const ddd = parseInt(d.slice(0, 2), 10);
+  if (!(ddd >= 11 && ddd <= 99)) return null;
+  return '55' + d;
+}
+
+/* Um registro de origem → as colunas do lead. Só o que veio. */
+function normalizaImportado(reg, origem) {
+  const nome = texto(reg.nome, 120);
+  const telefone = normalizaTelefoneOrigem(reg.telefone);
+  if (!nome || !telefone) return { ok: false, motivo: 'sem nome ou sem telefone utilizável' };
+  const criado = reg.criado_em ? new Date(reg.criado_em) : null;
+  if (reg.criado_em && (!criado || isNaN(criado.getTime()))) {
+    return { ok: false, motivo: 'data de origem ilegível' };
+  }
+  return {
+    ok: true,
+    lead: {
+      nome,
+      telefone,
+      telefone_exibicao: formataTelefone(telefone),
+      email: normalizaEmail(reg.email),
+      origem: String(origem).slice(0, 40),
+      origem_id: reg.origem_id ? String(reg.origem_id).slice(0, 120) : null,
+      criado_em: criado,
+      /* 🔴 TUDO O MAIS FICA NULO, DE PROPÓSITO. Ver a regra 1 acima. */
+    },
+  };
+}
+
+/* Importa uma leva. `simular: true` não escreve nada — só conta e devolve a
+   amostra, que é como esta função tem de ser rodada na primeira vez. */
+async function importa(origem, registros, { simular = false } = {}) {
+  const res = { origem, vistos: registros.length, importados: 0, pulados: 0,
+                invalidos: 0, detalhes: [], amostra: [] };
+
+  for (const reg of registros) {
+    const n = normalizaImportado(reg, origem);
+    if (!n.ok) {
+      res.invalidos++;
+      res.detalhes.push({ origem_id: reg.origem_id, resultado: 'invalido', motivo: n.motivo });
+      continue;
+    }
+    const l = n.lead;
+
+    /* Já importado antes? (mesma origem, mesmo id) */
+    if (l.origem_id) {
+      const j = await db.consulta(
+        'SELECT id FROM leads WHERE origem = $1 AND origem_id = $2 LIMIT 1',
+        [l.origem, l.origem_id]);
+      if (j.rows.length) {
+        res.pulados++;
+        res.detalhes.push({ origem_id: l.origem_id, resultado: 'ja-importado', lead_id: j.rows[0].id });
+        continue;
+      }
+    }
+
+    /* Já existe como pessoa? (telefone, em qualquer das formas) */
+    const chaves = chavesDeTelefone(l.telefone);
+    if (chaves.length) {
+      const j = await db.consulta(
+        'SELECT id, nome FROM leads WHERE regexp_replace(telefone, $2, $3, $4) = ANY($1) ' +
+        'OR telefone = ANY($1) LIMIT 1',
+        [chaves, '[^0-9]', '', 'g']);
+      if (j.rows.length) {
+        res.pulados++;
+        res.detalhes.push({ origem_id: l.origem_id, resultado: 'ja-existe-por-telefone',
+                            lead_id: j.rows[0].id, nome: j.rows[0].nome });
+        continue;
+      }
+    }
+
+    if (res.amostra.length < 5) res.amostra.push(Object.assign({}, l));
+    if (simular) { res.importados++; continue; }
+
+    const campos = ['nome', 'telefone', 'telefone_exibicao', 'email', 'origem', 'origem_id'];
+    const vals = campos.map((c) => l[c]);
+    let sql = 'INSERT INTO leads (' + campos.join(', ');
+    let ph = campos.map((_, i) => '$' + (i + 1));
+    if (l.criado_em) { sql += ', criado_em'; ph.push('$' + (vals.push(l.criado_em))); }
+    /* 🔴 `aviso_estado` entra como 'enviado' — e isto é deliberado.
+       O importado NÃO deve gerar aviso retroativo: são leads de agosto, e
+       despejar vinte e quatro mensagens no grupo da Nataly de uma vez é ruído,
+       não informação. Ela os vê no painel, filtrando por origem. Marcá-los
+       'pendente' faria a fila tentar avisar todos assim que o WhatsApp
+       voltasse — exatamente o que não se quer. */
+    sql += ', aviso_estado) VALUES (' + ph.join(', ') + ", 'enviado') RETURNING id";
+    const r = await db.consulta(sql, vals);
+    res.importados++;
+    res.detalhes.push({ origem_id: l.origem_id, resultado: 'importado', lead_id: r.rows[0].id });
+  }
+  return res;
+}
+
 /* ---------- validação do PARCIAL ----------
    Regra oposta à do envio final, e de propósito: aqui NADA trava.
 
@@ -825,7 +1044,9 @@ async function avisosProblema() {
   return r.rows;
 }
 
-module.exports = { apaga,
+module.exports = {
+  importa, chavesDeTelefone, normalizaImportado,
+  registraRecebido, fechaRecebido, recebidosPerdidos, apaga,
   OPCOES, STATUS, PRODUTO_IDS, ETAPAS, ORDEM_ETAPAS, ETAPA_PRECO, ETAPA_REC,
   valida, validaParcial, atribuicao, qualifica, ipDe, roteia, paraTela,
   deriveAceitaValor, descreveEtapa,
