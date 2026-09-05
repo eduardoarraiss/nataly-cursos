@@ -14,6 +14,7 @@
    para o WhatsApp. Conectar exige ação deliberada do Eduardo.
    ============================================================ */
 const db = require('./db');
+const email = require('./email');
 const L = require('./leads');
 
 const CFG = () => ({
@@ -506,6 +507,45 @@ async function despacha(cfg, destino, mensagem) {
   return enviaLog(cfg, destino, mensagem);
 }
 
+/* ============================================================
+   OS DOIS CANAIS — e por que o aviso só falha se os DOIS falharem
+   ============================================================
+   🔴 A LIÇÃO DE 04/09/2026: o WhatsApp caiu e o aviso não tinha para onde ir.
+      Um canal que depende de um celular continuar pareado não pode ser o
+      único. O e-mail não pareia nada.
+
+   A regra: o aviso é considerado ENTREGUE se QUALQUER um dos dois entregou.
+   Enquanto o WhatsApp estiver fora, o e-mail sozinho já tira o lead do
+   estado "não avisada" — que é o que importa para a Nataly.
+
+   E se os dois falharem, ninguém finge que deu certo: o erro sobe, o aviso
+   fica pendente e o painel pinta em vermelho. */
+async function despachaTudo(cfg, destino, mensagem, lead) {
+  const entregas = [];
+  const erros = [];
+
+  try {
+    entregas.push(await despacha(cfg, destino, mensagem));
+  } catch (e) { erros.push(e); }
+
+  /* O e-mail só é tentado quando há lead — a fila também carrega avisos
+     antigos, gravados antes desta coluna existir. */
+  if (lead) {
+    try {
+      entregas.push(await email.envia(lead));
+    } catch (e) { erros.push(e); }
+  }
+
+  if (entregas.length) return entregas.join(' | ');
+
+  /* Nenhum entregou. O erro que sobe é o do WhatsApp (o primeiro), mas o
+     `canalFora` só vale se TODOS forem de canal: se um deles for erro
+     permanente, insistir para sempre seria fila entupida. */
+  const e = new Error(erros.map((x) => x.message).join(' | ') || 'sem canal de aviso');
+  e.canalFora = erros.length > 0 && erros.every((x) => x.canalFora);
+  throw e;
+}
+
 /* ---------- processa a fila ---------- */
 async function processaFila(limite = 10) {
   const cfg = CFG();
@@ -517,7 +557,12 @@ async function processaFila(limite = 10) {
   for (const a of pend.rows) {
     const destino = a.destino || cfg.destino;
     try {
-      const conf = await despacha(cfg, destino, a.mensagem);
+      /* Busca o lead para o e-mail poder montar a mensagem rica (telefone
+         clicável, respostas, link do painel). Falhar aqui não impede o
+         WhatsApp: o e-mail é que fica de fora. */
+      let lead = null;
+      try { lead = await L.porId(a.lead_id); } catch (e) {}
+      const conf = await despachaTudo(cfg, destino, a.mensagem, lead);
       await db.consulta(
         "UPDATE avisos SET status='enviado', enviado_em=now(), atualizado_em=now(), " +
         'tentativas = tentativas + 1, ultimo_erro = NULL, destino = $2 WHERE id = $1',
