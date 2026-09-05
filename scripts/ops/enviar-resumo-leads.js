@@ -151,6 +151,21 @@ async function principal() {
   L.push('');
   L.push('📌 A página promete contato *em até 24 horas*, de segunda a sábado. ' +
          'Quem preencher agora já espera esse retorno.');
+  L.push('');
+  L.push('━━━━━━━━━━━━━━━');
+  L.push('➕ *Mais 24 contatos entraram no painel*');
+  L.push('');
+  L.push('São pessoas que deixaram nome, telefone e e-mail num anúncio do ' +
+         'Instagram entre 20 e 23 de agosto, num formulário que ficava dentro ' +
+         'do próprio Instagram e nunca chegava até nós. Elas estão no painel ' +
+         'agora, marcadas como *anúncio do Instagram*.');
+  L.push('');
+  L.push('⚠️ Delas a gente só tem nome, telefone e e-mail — nada de cidade nem ' +
+         'do que querem aprender, porque o anúncio não perguntava. E estão ' +
+         'esperando desde agosto, sem nenhum retorno.');
+  L.push('');
+  L.push('👉 A lista completa, com tudo isso, está no painel: ' +
+         'natalyribeiro.com.br/crm');
 
   const msg = L.join('\n');
   fs.writeFileSync('/tmp/mensagem-nataly.txt', msg);
