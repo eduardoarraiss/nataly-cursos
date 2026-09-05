@@ -53,6 +53,24 @@
     .spin{width:34px;height:34px;border:2px solid rgba(242,238,229,.25);border-top-color:var(--argila);
       border-radius:50%;margin:0 auto 22px;animation:r 0.8s linear infinite}
     @keyframes r{to{transform:rotate(360deg)}}
+    /* --- campos da captura (05/09/2026) --- */
+    .rot{display:block; font-size:13px; font-weight:600; letter-spacing:.04em;
+      text-transform:uppercase; opacity:.7; margin:14px 0 6px}
+    .inp{width:100%; box-sizing:border-box; font:inherit; font-size:17px;
+      padding:12px 14px; border-radius:12px; border:1px solid rgba(242,238,229,.25);
+      background:rgba(242,238,229,.06); color:inherit; outline:none}
+    .inp:focus{border-color:var(--argila)}
+    .inp::placeholder{opacity:.4}
+    .erro{color:#F0A28F; font-size:14px; margin:10px 0 0}
+    .erro[hidden]{display:none}
+    button.fb{font:inherit; font-weight:700; font-size:16px; cursor:pointer;
+      border:0; border-radius:100px; padding:14px 20px;
+      background:var(--argila); color:#241C15}
+    button.fb[disabled]{opacity:.6; cursor:default}
+    /* Armadilha de robô: fora da tela, e com nome que NÃO casa com heurística
+       de autopreenchimento — o campo chamado "sobrenome" já tratou gente de
+       verdade como robô neste projeto, duas vezes. */
+    .mel{position:absolute; left:-9999px; width:1px; height:1px; overflow:hidden}
     a.fb{display:inline-block;margin-top:22px;color:var(--argila);font-weight:600;font-size:15px}
     #bloqueio{display:none}
     #bloqueio .tit{color:#E8B4A0}
@@ -60,8 +78,50 @@
 </head>
 <body>
 
+  <!-- ============ CAPTURA MÍNIMA (05/09/2026) ============
+       🔴 POR QUE ESTA TELA EXISTE, e por que ela é MÍNIMA.
+       Até hoje o clique no anúncio vinha para cá e ia direto para o grupo.
+       Medido: R$ 279,65 gastos em sete dias, 47 leads contados pelo Meta e
+       ZERO linhas no CRM. Quarenta e sete mulheres viraram membro de grupo
+       sem a Nataly ter o telefone de uma só delas.
+
+       E o que NÃO se pode quebrar: o CPL desta campanha é R$ 5,95, contra
+       R$ 73,28 do presencial, e essa diferença vem do ATRITO BAIXO. Por isso
+       aqui são DOIS campos, não onze. O interesse não é perguntado porque a
+       campanha inteira é do iniciante — perguntar seria fingir uma escolha
+       que não existe.
+
+       🔴 E ELA CHEGA AO GRUPO DE QUALQUER JEITO: se o nosso lado falhar, o
+          botão leva para o grupo assim mesmo. O pior caso é a gente perder o
+          registro, nunca ela perder a vaga. -->
+  <div class="box" id="cadastro" hidden>
+    <p class="tit">Falta só o seu <span style="color:var(--argila)">nome</span></p>
+    <p class="sub">É para eu saber quem entrou e te avisar da aula ao vivo.</p>
+    <form id="fCap" novalidate autocomplete="on" style="margin-top:18px;text-align:left">
+      <div class="mel" aria-hidden="true">
+        <label for="ref_c7">Deixe este campo em branco</label>
+        <input type="text" id="ref_c7" name="ref_c7" tabindex="-1" autocomplete="off"
+               data-lpignore="true" data-1p-ignore="true" data-form-type="other">
+      </div>
+      <label class="rot" for="cNome">Seu nome</label>
+      <input class="inp" id="cNome" name="nome" type="text" autocomplete="name"
+             enterkeyhint="next" placeholder="Como você quer que eu te chame">
+      <label class="rot" for="cTel">Seu WhatsApp</label>
+      <input class="inp" id="cTel" name="telefone" type="tel" inputmode="numeric"
+             autocomplete="tel-national" enterkeyhint="go" maxlength="16"
+             placeholder="(35) 99999-9999">
+      <p class="erro" id="cErro" role="alert" hidden></p>
+      <button class="fb" id="cBt" type="submit" style="width:100%;margin-top:16px">
+        Entrar no grupo →
+      </button>
+    </form>
+    <p class="sub" style="margin-top:14px;opacity:.6;font-size:13px">
+      Os seus dados não são vendidos nem repassados a terceiros.
+    </p>
+  </div>
+
   <!-- estado normal -->
-  <div class="box" id="indo">
+  <div class="box" id="indo" hidden>
     <div class="spin"></div>
     <p class="tit">Te levando pro <span style="color:var(--argila)">grupo</span>…</p>
     <p class="sub">Se não abrir em instantes, toque no botão abaixo.</p>
@@ -122,8 +182,20 @@
 
       // redirect idempotente — só vai uma vez
       var jaFoi = false;
-      function irPraGrupo() { if (jaFoi) return; jaFoi = true; window.location.replace(GRUPO_WHATSAPP); }
+      function irPraGrupo() {
+        if (jaFoi) return; jaFoi = true;
+        document.getElementById('cadastro').hidden = true;
+        document.getElementById('indo').hidden = false;
+        window.location.replace(GRUPO_WHATSAPP);
+      }
 
+    /* 🔴 ISTO VIROU FUNÇÃO EM 05/09/2026, e a mudança é o ponto todo.
+       Antes rodava na CHEGADA: bastava abrir a página para o Meta contar um
+       lead e a pessoa ir para o grupo. Medido: 47 leads contados, ZERO linhas
+       no CRM — a Nataly não tinha o telefone de nenhuma delas.
+       Agora roda DEPOIS do cadastro, e o `Lead` do Meta volta a significar a
+       mesma coisa que uma linha no banco: são conferíveis. */
+    function contaLead() {
       // ---- trava de recontagem: 1 Lead por pessoa, por navegador ----
       // Auditoria de 18/08/2026: a campanha marcava 359 leads com ~200 pessoas
       // no grupo. Uma das causas era esta página não ter trava nenhuma —
@@ -180,12 +252,82 @@
 
       // 3) Fallback: se GA estiver bloqueado (adblock) ou o callback não vier, vai em 3s.
       //    No caminho normal o event_callback acima já redireciona bem antes disso.
-      //    Mesmo mecanismo da /entrar do Método LED, que roda em produção há meses.
       // Quem já contou não espera o callback do GA (que não vai disparar): vai direto.
       if (jaContou) irPraGrupo();
 
       setTimeout(irPraGrupo, 3000);
+    }   /* fim de contaLead */
+
+    /* ============================================================
+       A CAPTURA — dois campos, e o grupo continua garantido
+       ============================================================
+       🔴 O `contaLead()` acima deixou de rodar sozinho na chegada. Ele agora
+          roda DEPOIS do cadastro, e é isso que faz o `Lead` do Meta e a linha
+          do CRM voltarem a significar a mesma coisa: até hoje o Meta contava
+          47 leads que não existiam em lugar nenhum. */
+    var fCap = document.getElementById('fCap');
+    var cErro = document.getElementById('cErro');
+    var cBt = document.getElementById('cBt');
+    var enviando = false;
+
+    /* Máscara leve, só para a pessoa ver que o campo é de telefone. Quem
+       valida de verdade é o servidor — máscara é conforto, não regra. */
+    var cTel = document.getElementById('cTel');
+    if (cTel) cTel.addEventListener('input', function () {
+      var d = this.value.replace(/\D/g, '').slice(0, 11);
+      this.value = d.length > 10 ? '(' + d.slice(0, 2) + ') ' + d.slice(2, 7) + '-' + d.slice(7)
+                 : d.length > 6 ? '(' + d.slice(0, 2) + ') ' + d.slice(2, 6) + '-' + d.slice(6)
+                 : d.length > 2 ? '(' + d.slice(0, 2) + ') ' + d.slice(2) : d;
+    });
+
+    function erro(msg) {
+      enviando = false;
+      cBt.disabled = false; cBt.textContent = 'Entrar no grupo →';
+      cErro.textContent = msg; cErro.hidden = false;
     }
+
+    if (fCap) fCap.addEventListener('submit', function (ev) {
+      ev.preventDefault();
+      if (enviando) return;
+      cErro.hidden = true;
+
+      var nome = document.getElementById('cNome').value.trim();
+      var tel = cTel.value.replace(/\D/g, '');
+      if (nome.length < 2) return erro('Me diz o seu nome para eu saber como te chamar.');
+      if (tel.length < 10) return erro('Confere o WhatsApp: precisa ter o DDD e o número.');
+
+      enviando = true;
+      cBt.disabled = true; cBt.textContent = 'Entrando...';
+
+      /* 🔴 O REDIRECT É GARANTIDO, DÊ NO QUE DER. Se a nossa API cair, ficar
+         lenta ou for bloqueada, ela vai para o grupo do mesmo jeito — perder
+         o registro é ruim, mas travar a mulher na porta do grupo é pior, e é
+         o que ela pagou para receber. Dois segundos é mais do que o suficiente
+         para uma gravação que leva milissegundos. */
+      var solto = setTimeout(function () { contaLead(); }, 2000);
+
+      fetch('/api/lead-captacao', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          nome: nome, telefone: cTel.value,
+          ref_c7: document.getElementById('ref_c7').value,
+          atribuicao: atribuicao
+        }),
+        keepalive: true
+      }).then(function () {
+        clearTimeout(solto); contaLead();
+      }).catch(function () {
+        clearTimeout(solto); contaLead();
+      });
+    });
+
+    /* Mostra o cadastro. Só aparece quando o convite do grupo está válido —
+       pedir o telefone dela para depois não ter para onde mandá-la seria pior
+       do que a tela de configuração pendente. */
+    if (CONFIGURADO) document.getElementById('cadastro').hidden = false;
+    }   /* fim do else de CONFIGURADO */
+
   </script>
 </body>
 </html>

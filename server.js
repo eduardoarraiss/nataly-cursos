@@ -582,7 +582,7 @@ function estadoRelampago(req) {
   return { aberta: dia >= ultimoDia - 1, ultimoDoMes: dia === ultimoDia };
 }
 
-// CSS dos badges + popup. Só tokens do design system da página (atelier.css):
+// CSS dos badges + popup. Só tokens do design system da página (nr.css):
 // --chocolate (acento/CTA), --branco-quente, --papel, --tinta, --tinta-suave,
 // --filete, --pedra. Filete 1px e sem box-shadow, como manda a IDV.
 const RELAMPAGO_CSS = `

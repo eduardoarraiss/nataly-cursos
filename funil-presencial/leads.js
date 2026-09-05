@@ -507,6 +507,10 @@ function normalizaImportado(reg, origem) {
       criado_em: criado,
       /* O que a pessoa COMPROU, quando a origem é uma venda. Fica nulo para
          lead — e é justamente a diferença entre os dois no painel. */
+      /* O interesse declarado atravessa a importação — é ele que a captação
+         do iniciante manda, e é o que a Nataly lê antes de ligar. Vocabulário
+         fechado: valor fora da lista vira nulo, nunca texto do cliente. */
+      interesse: opcao('interesse', reg.interesse),
       comprou: texto(reg.comprou, 160),
       comprou_em: reg.comprou_em ? new Date(reg.comprou_em) : null,
       /* 🔴 TUDO O MAIS FICA NULO, DE PROPÓSITO. Ver a regra 1 acima. */
@@ -516,7 +520,10 @@ function normalizaImportado(reg, origem) {
 
 /* Importa uma leva. `simular: true` não escreve nada — só conta e devolve a
    amostra, que é como esta função tem de ser rodada na primeira vez. */
-async function importa(origem, registros, { simular = false } = {}) {
+/* `avisar: true` = esta pessoa acabou de se cadastrar AGORA, ao vivo, e a
+   Nataly tem de ser avisada — ao contrário de uma importação histórica, que é
+   recuperação e não pode despejar aviso retroativo em massa. */
+async function importa(origem, registros, { simular = false, avisar = false } = {}) {
   const res = { origem, vistos: registros.length, importados: 0, pulados: 0,
                 invalidos: 0, detalhes: [], amostra: [] };
 
@@ -581,7 +588,7 @@ async function importa(origem, registros, { simular = false } = {}) {
     if (simular) { res.importados++; continue; }
 
     const campos = ['nome', 'telefone', 'telefone_exibicao', 'email', 'origem', 'origem_id',
-                    'comprou', 'comprou_em'];
+                    'interesse', 'comprou', 'comprou_em'];
     const vals = campos.map((c) => l[c]);
     let sql = 'INSERT INTO leads (' + campos.join(', ');
     let ph = campos.map((_, i) => '$' + (i + 1));
@@ -595,11 +602,15 @@ async function importa(origem, registros, { simular = false } = {}) {
     /* 🔴 QUEM COMPROU NASCE COMO 'ganho'. O painel já pinta o status, então a
        venda aparece na tabela sem precisar de tela nova — e o funil de status
        para de contar comprador como oportunidade aberta. */
+    /* Importação histórica nasce 'enviado' (não gera aviso retroativo);
+       captação ao vivo nasce 'pendente', para a fila avisar a Nataly. */
     sql += ', aviso_estado, status) VALUES (' + ph.join(', ') +
-           ", 'enviado', " + (l.comprou ? "'ganho'" : "'novo'") + ') RETURNING id';
+           ", '" + (avisar ? 'pendente' : 'enviado') + "', " +
+           (l.comprou ? "'ganho'" : "'novo'") + ') RETURNING id';
     const r = await db.consulta(sql, vals);
     res.importados++;
     res.detalhes.push({ origem_id: l.origem_id, resultado: 'importado', lead_id: r.rows[0].id });
+    res.ids = (res.ids || []).concat(r.rows[0].id);
   }
   return res;
 }

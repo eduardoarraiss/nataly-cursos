@@ -86,6 +86,12 @@ const _janelaRec = new Map();
    quem volta e refaz, sem abrir a porta para script. */
 const LIMITE_REC = 60;
 
+/* A isenção do freio em desenvolvimento, num lugar só: as três portas usavam
+   a mesma dupla de condições copiada, e cópia é o que diverge com o tempo. */
+function ehDev(ip) {
+  return !process.env.DATABASE_URL && (ip === '127.0.0.1' || ip === '::1');
+}
+
 function passouDoLimite(ip) {
   const agora = Date.now();
   const lista = (_janela.get(ip) || []).filter((t) => agora - t < JANELA_MS);
@@ -443,6 +449,105 @@ router.all('/api/lead-parcial', (req, res) => {
 /* Qualquer outra coisa em /api do funil devolve 404 em JSON.
    Sem isto, o catch-all do server.js devolveria a home com 302. */
 router.all('/api/lead-presencial', (req, res) => {
+  semRastro(res);
+  res.status(405).json({ erro: 'metodo-nao-permitido' });
+});
+
+/* ============================================================
+   1bis. CAPTAÇÃO DO INICIANTE — a porta que não gravava nada
+   ============================================================
+   🔴 O BURACO QUE ISTO FECHA, medido em 05/09/2026: a campanha do iniciante
+      gastou R$ 279,65 em sete dias, o Meta contou 47 leads, e o CRM ganhou
+      ZERO. A página mandava a pessoa direto para o grupo do WhatsApp e
+      disparava o pixel — 47 pessoas viraram membro de grupo sem nunca virar
+      lead nosso. A Nataly não tinha o telefone de nenhuma delas.
+
+   🔴 E O QUE NÃO PODE SER QUEBRADO: o CPL dessa campanha é R$ 5,95, contra
+      R$ 73,28 do presencial. Esse número vem do ATRITO BAIXO. Transplantar
+      as onze perguntas do formulário do presencial para cá destruiria
+      exatamente o que faz ela funcionar. Então aqui se pede o MÍNIMO — nome e
+      WhatsApp — e o interesse é constante ('iniciante'), porque a campanha
+      inteira é de iniciante: perguntar seria fingir uma escolha que não existe.
+
+   🔴 E A PESSOA CHEGA AO GRUPO DE QUALQUER JEITO. Se esta rota falhar, o
+      navegador leva ela para o grupo assim mesmo. O pior caso é a gente
+      perder o registro; nunca é ela perder a vaga. */
+router.post('/api/lead-captacao', express.json({ limit: '16kb' }), async (req, res) => {
+  semRastro(res);
+  try {
+    const body = req.body || {};
+    const ip = L.ipDe(req);
+
+    // Mesma armadilha de robô das outras portas, mesma resposta mansa.
+    if (body.ref_c7 || body.sobrenome_confirmacao) {
+      const r = await L.registraRecebido({
+        rota: 'captacao-iniciante', corpo: body, ip,
+        userAgent: req.headers['user-agent'], leadUid: null });
+      await L.fechaRecebido(r, { aceito: false, motivo: 'honeypot' });
+      return res.json({ ok: true, ignorado: 'robo' });
+    }
+
+    if (!(ehDev(ip) || !passouDoLimite(ip))) {
+      return res.status(429).json({ ok: false, erro: 'limite' });
+    }
+
+    /* Corpo cru ANTES de validar — como em toda porta. */
+    const receb = await L.registraRecebido({
+      rota: 'captacao-iniciante', corpo: body, ip,
+      userAgent: req.headers['user-agent'], leadUid: null });
+
+    const atrib = L.atribuicao(body, req);
+    /* Um id de origem estável a partir do telefone: se ela voltar e mandar de
+       novo (ou o botão for clicado duas vezes), cai na mesma linha em vez de
+       criar uma segunda. */
+    const digitos = String(body.telefone || '').replace(/\D/g, '');
+    const r = await L.importa('captacao-iniciante', [{
+      origem_id: digitos ? 'tel-' + digitos : null,
+      nome: body.nome,
+      telefone: body.telefone,
+      /* A campanha inteira é do iniciante — o interesse é constante, e é o que
+         escolhe a conversa que a Nataly vai abrir. */
+      interesse: 'iniciante',
+      criado_em: new Date().toISOString(),
+    }], { avisar: true });
+
+    const det = (r.detalhes && r.detalhes[0]) || {};
+    await L.fechaRecebido(receb, {
+      aceito: r.importados > 0 || r.pulados > 0,
+      motivo: det.resultado || null, leadId: det.lead_id || null });
+
+    /* Grava a atribuição (de qual anúncio ela veio) na linha recém-criada.
+       Falhar aqui não pode custar nada: o lead já existe. */
+    const id = (r.ids && r.ids[0]) || det.lead_id;
+    if (id) {
+      try {
+        await db.consulta(
+          'UPDATE leads SET utm_source=COALESCE(utm_source,$2), utm_medium=COALESCE(utm_medium,$3), ' +
+          'utm_campaign=COALESCE(utm_campaign,$4), utm_content=COALESCE(utm_content,$5), ' +
+          'fbclid=COALESCE(fbclid,$6), pagina=COALESCE(pagina,$7) WHERE id=$1',
+          [id, atrib.utm_source, atrib.utm_medium, atrib.utm_campaign,
+           atrib.utm_content, atrib.fbclid, atrib.pagina]);
+      } catch (e) { console.error('[funil] atribuição da captação:', e.message); }
+      /* Avisa a Nataly — o mesmo caminho de fila de todo o resto. */
+      try {
+        const lead = await L.porId(id);
+        if (lead && r.importados > 0) {
+          await N.enfileira(lead);
+          N.processaFila(3).catch(() => {});
+        }
+      } catch (e) { console.error('[funil] aviso da captação:', e.message); }
+    }
+
+    res.json({ ok: true, novo: r.importados > 0 });
+  } catch (e) {
+    console.error('[funil] captação do iniciante falhou:', e);
+    /* 200 de propósito: o navegador vai mandar ela para o grupo de qualquer
+       jeito, e um erro na tela só a assustaria sem resolver nada. */
+    res.status(200).json({ ok: false, erro: 'servidor' });
+  }
+});
+
+router.all('/api/lead-captacao', (req, res) => {
   semRastro(res);
   res.status(405).json({ erro: 'metodo-nao-permitido' });
 });

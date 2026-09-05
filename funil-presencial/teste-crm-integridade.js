@@ -392,6 +392,55 @@ async function principal() {
   });
 
   /* ============================================================
+     4d. A CAPTAÇÃO DO INICIANTE — a porta que não gravava nada
+     ============================================================
+     🔴 R$ 279,65 em sete dias, 47 leads contados pelo Meta, ZERO no CRM.
+        A pessoa ia direto para o grupo do WhatsApp e a Nataly não ficava com
+        o telefone de nenhuma. */
+  await rodada('4d. a captação do iniciante vira linha no CRM', async () => {
+    const login = await entra();
+    const antes = ((await pede('GET', '/crm/api/leads?completo=tudo&limite=300',
+      undefined, login.cookie)).j.leads || []).length;
+
+    const r = await pede('POST', '/api/lead-captacao', {
+      nome: 'Iniciante Do Gate', telefone: '(35) 99716-4701',
+      atribuicao: { utm_content: 'PL-video-gate' } });
+    ok('a captação aceita', r.j && r.j.ok === true, r.texto.slice(0, 150));
+
+    const leads = ((await pede('GET', '/crm/api/leads?completo=tudo&limite=300',
+      undefined, login.cookie)).j.leads || []);
+    eq('virou UMA linha nova', leads.length, antes + 1);
+    const nova = leads.find((l) => l.telefone === '5535997164701');
+    ok('🔴 e está no CRM', !!nova);
+    if (nova) {
+      eq('com origem própria', nova.origem, 'captacao-iniciante');
+      /* O interesse é constante: a campanha inteira é de iniciante. */
+      eq('e o interesse certo', nova.interesse, 'iniciante');
+      ok('guardou de qual anúncio veio', nova.utm_content === 'PL-video-gate',
+         String(nova.utm_content));
+      /* 🔴 NADA DEDUZIDO. Só se pede nome e telefone — o resto fica vazio. */
+      eq('e nada foi inventado: cidade', nova.cidade, null);
+      eq('...nem produto', nova.produto_id, null);
+    }
+
+    /* 🔴 MANDAR DE NOVO NÃO PODE CRIAR GÊMEA. Duplo clique, rede lenta, ela
+       volta e reenvia — tudo cai na mesma linha, pelo telefone. */
+    await pede('POST', '/api/lead-captacao', {
+      nome: 'Iniciante Do Gate', telefone: '35997164701' });
+    const dep = ((await pede('GET', '/crm/api/leads?completo=tudo&limite=300',
+      undefined, login.cookie)).j.leads || []);
+    eq('🔴 reenvio não cria linha dupla', dep.length, antes + 1);
+
+    /* A armadilha de robô não pode gravar, mas tem de ficar registrada. */
+    const robo = await pede('POST', '/api/lead-captacao', {
+      nome: 'Robo', telefone: '(35) 99716-4702', ref_c7: 'sou-robo' });
+    ok('robô é descartado', robo.j && robo.j.ignorado === 'robo', robo.texto.slice(0, 120));
+    const dep2 = ((await pede('GET', '/crm/api/leads?completo=tudo&limite=300',
+      undefined, login.cookie)).j.leads || []);
+    eq('e não virou linha', dep2.length, antes + 1);
+  });
+
+  /* ============================================================
      5. O WEBHOOK DO META — assinatura, reentrega e telefone sem DDD
      ============================================================
      🔴 O ENDPOINT É PÚBLICO. Sem conferência de assinatura, qualquer um
@@ -460,7 +509,7 @@ async function principal() {
   console.log('\n' + '─'.repeat(60));
   if (falhas) { console.log(falhas + ' FALHA(S) de ' + checagens.length + '.'); process.exit(1); }
   try { graph.close(); } catch (e) {}
-  console.log('GATE DO CRM: TUDO CERTO — ' + checagens.length + ' checagens, 7 rodadas frias.');
+  console.log('GATE DO CRM: TUDO CERTO — ' + checagens.length + ' checagens, 8 rodadas frias.');
   console.log('=== FIM DO GATE DO CRM ===');
   process.exit(0);
 }
