@@ -8,6 +8,7 @@
 const express = require('express');
 const fs = require('fs');
 const path = require('path');
+const crypto = require('crypto');
 const db = require('./db');
 const L = require('./leads');
 const N = require('./notificador');
@@ -444,6 +445,100 @@ router.all('/api/lead-parcial', (req, res) => {
 router.all('/api/lead-presencial', (req, res) => {
   semRastro(res);
   res.status(405).json({ erro: 'metodo-nao-permitido' });
+});
+
+/* ============================================================
+   1c. WEBHOOK DO META — o formulário instantâneo entra sozinho
+   ============================================================
+   🔴 O CORPO CRU É NECESSÁRIO PARA CONFERIR A ASSINATURA. `express.json()`
+      normal descarta os bytes originais e deixa só o objeto — e o HMAC do Meta
+      é calculado sobre os BYTES, não sobre o objeto reserializado. Um espaço a
+      mais na reserialização já invalida a assinatura. Por isso este `verify`,
+      que guarda o buffer antes de o JSON ser montado. */
+const jsonComCru = express.json({
+  limit: '256kb',
+  verify: (req, res, buf) => { req.cru = buf; },
+});
+
+/* Verificação do endpoint (a Meta chama uma vez, no cadastro do webhook). */
+router.get('/webhooks/meta-leadgen', (req, res) => {
+  semRastro(res);
+  const esperado = process.env.META_WEBHOOK_VERIFY_TOKEN || '';
+  const modo = req.query['hub.mode'];
+  const token = req.query['hub.verify_token'];
+  if (!esperado) return res.status(503).type('text/plain').send('verify token não configurado');
+  if (modo === 'subscribe' && token === esperado) {
+    /* Devolve o desafio CRU, em texto puro. Em JSON a Meta recusa. */
+    return res.type('text/plain').send(String(req.query['hub.challenge'] || ''));
+  }
+  res.status(403).type('text/plain').send('token de verificação não confere');
+});
+
+router.post('/webhooks/meta-leadgen', jsonComCru, async (req, res) => {
+  semRastro(res);
+
+  /* 🔴 RESPONDER 200 DEPRESSA É PARTE DO CONTRATO. Se a Meta não recebe o 200
+     em poucos segundos ela REENTREGA — e reentrega em cima, várias vezes. O
+     trabalho de verdade (buscar cada lead no Graph e gravar) roda DEPOIS da
+     resposta. Se ele falhar, a reentrega da Meta é a nova tentativa, e a
+     idempotência do `origem_id` garante que repetir não duplica. */
+
+  const segredo = process.env.META_APP_SECRET || '';
+  const assinatura = req.headers['x-hub-signature-256'] || '';
+  if (!segredo) {
+    console.error('[funil/leadgen] META_APP_SECRET não configurado — recusando');
+    return res.status(503).json({ erro: 'nao-configurado' });
+  }
+  /* 🔴 SEM ASSINATURA VÁLIDA NÃO ENTRA NADA. Este endpoint é público: sem a
+     conferência, qualquer um poderia despejar leads falsos no CRM da Nataly,
+     e ela ligaria para eles. `timingSafeEqual` porque comparar hash com `===`
+     vaza, pelo tempo, o quanto do prefixo estava certo. */
+  const esperada = 'sha256=' + crypto.createHmac('sha256', segredo)
+    .update(req.cru || Buffer.alloc(0)).digest('hex');
+  const a = Buffer.from(String(assinatura));
+  const b = Buffer.from(esperada);
+  if (a.length !== b.length || !crypto.timingSafeEqual(a, b)) {
+    console.error('[funil/leadgen] assinatura inválida — descartado');
+    return res.status(401).json({ erro: 'assinatura' });
+  }
+
+  const corpo = req.body || {};
+  res.json({ ok: true });          // 200 primeiro; o trabalho vem depois
+
+  /* Todo evento fica no dead-letter, com o corpo cru, ANTES de qualquer
+     tentativa de processar — mesma regra do formulário do site. Se o Graph
+     estiver fora e a busca falhar, o evento continua existindo aqui e dá para
+     reprocessar à mão. */
+  const token = process.env.META_PAGE_TOKEN || process.env.META_ACCESS_TOKEN || '';
+  const ids = [];
+  for (const e of (corpo.entry || [])) {
+    for (const m of (e.changes || [])) {
+      if (m.field !== 'leadgen') continue;
+      const id = m.value && m.value.leadgen_id;
+      if (id) ids.push(String(id));
+    }
+  }
+
+  for (const id of ids) {
+    const receb = await L.registraRecebido({
+      rota: 'meta-leadgen', corpo: { leadgen_id: id }, ip: L.ipDe(req),
+      userAgent: req.headers['user-agent'], leadUid: null,
+    });
+    try {
+      if (!token) throw new Error('sem META_PAGE_TOKEN/META_ACCESS_TOKEN para buscar o lead');
+      const r = await L.processaLeadgen(id, token);
+      const det = (r.detalhes && r.detalhes[0]) || {};
+      await L.fechaRecebido(receb, {
+        aceito: r.importados > 0 || r.pulados > 0,
+        motivo: det.resultado || null,
+        leadId: det.lead_id || null,
+      });
+      console.log('[funil/leadgen] ' + id + ' → ' + (det.resultado || 'sem resultado'));
+    } catch (e) {
+      await L.fechaRecebido(receb, { aceito: false, motivo: String(e.message).slice(0, 400) });
+      console.error('[funil/leadgen] falhou em ' + id + ': ' + e.message);
+    }
+  }
 });
 
 /* ============================================================

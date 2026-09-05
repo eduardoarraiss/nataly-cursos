@@ -497,6 +497,10 @@ function normalizaImportado(reg, origem) {
       origem: String(origem).slice(0, 40),
       origem_id: reg.origem_id ? String(reg.origem_id).slice(0, 120) : null,
       criado_em: criado,
+      /* O que a pessoa COMPROU, quando a origem é uma venda. Fica nulo para
+         lead — e é justamente a diferença entre os dois no painel. */
+      comprou: texto(reg.comprou, 160),
+      comprou_em: reg.comprou_em ? new Date(reg.comprou_em) : null,
       /* 🔴 TUDO O MAIS FICA NULO, DE PROPÓSITO. Ver a regra 1 acima. */
     },
   };
@@ -547,7 +551,8 @@ async function importa(origem, registros, { simular = false } = {}) {
     if (res.amostra.length < 5) res.amostra.push(Object.assign({}, l));
     if (simular) { res.importados++; continue; }
 
-    const campos = ['nome', 'telefone', 'telefone_exibicao', 'email', 'origem', 'origem_id'];
+    const campos = ['nome', 'telefone', 'telefone_exibicao', 'email', 'origem', 'origem_id',
+                    'comprou', 'comprou_em'];
     const vals = campos.map((c) => l[c]);
     let sql = 'INSERT INTO leads (' + campos.join(', ');
     let ph = campos.map((_, i) => '$' + (i + 1));
@@ -558,12 +563,89 @@ async function importa(origem, registros, { simular = false } = {}) {
        não informação. Ela os vê no painel, filtrando por origem. Marcá-los
        'pendente' faria a fila tentar avisar todos assim que o WhatsApp
        voltasse — exatamente o que não se quer. */
-    sql += ', aviso_estado) VALUES (' + ph.join(', ') + ", 'enviado') RETURNING id";
+    /* 🔴 QUEM COMPROU NASCE COMO 'ganho'. O painel já pinta o status, então a
+       venda aparece na tabela sem precisar de tela nova — e o funil de status
+       para de contar comprador como oportunidade aberta. */
+    sql += ', aviso_estado, status) VALUES (' + ph.join(', ') +
+           ", 'enviado', " + (l.comprou ? "'ganho'" : "'novo'") + ') RETURNING id';
     const r = await db.consulta(sql, vals);
     res.importados++;
     res.detalhes.push({ origem_id: l.origem_id, resultado: 'importado', lead_id: r.rows[0].id });
   }
   return res;
+}
+
+/* ============================================================
+   META LEADGEN — o formulário instantâneo cai no CRM sozinho
+   ============================================================
+   🔴 O PROBLEMA QUE ISTO RESOLVE, e ele não era um bug: um formulário
+      instantâneo do Meta nasce e MORRE dentro do Meta. A pessoa preenche
+      dentro do Instagram, o anúncio contabiliza o lead, e nada nunca sai de
+      lá. Em 05/09/2026 achamos 24 mulheres esperando desde 20 de agosto —
+      nome, telefone e e-mail — que nunca existiram para a operação.
+      Importar as 24 limpou a poça. Isto aqui fecha o cano.
+
+   Como funciona: a Meta chama `POST /webhooks/meta-leadgen` no instante em que
+   alguém envia o formulário, mandando só o `leadgen_id`. O conteúdo do lead
+   NÃO vem no webhook — a gente busca no Graph com o id. Por isso o token
+   precisa de `leads_retrieval`.
+
+   🔴 A META REENVIA. Ela reentrega o mesmo evento quando não recebe 200 rápido,
+      e reentrega em duplicata sem motivo nenhum às vezes. A idempotência é o
+      `origem_id` (o próprio `leadgen_id`), com índice único no banco — quem já
+      entrou é PULADO, não regravado. Sem isso a Nataly ligaria duas vezes para
+      a mesma pessoa. */
+
+/* Busca o conteúdo de um lead no Graph a partir do id que o webhook mandou. */
+async function buscaLeadNoMeta(leadgenId, token) {
+  const ctrl = new AbortController();
+  const t = setTimeout(() => ctrl.abort(), 15000);
+  try {
+    /* A base do Graph é configurável para o GATE poder apontar para um
+       servidor falso: sem isso, testar o webhook exigiria internet, um lead
+       real e uma chamada de verdade na conta da Nataly a cada rodada — e um
+       teste que gasta recurso real acaba não sendo rodado. Em produção a
+       variável não existe e vale o endereço da Meta. */
+    const base = process.env.META_GRAPH_BASE || 'https://graph.facebook.com/v21.0';
+    const r = await fetch(base + '/' + encodeURIComponent(leadgenId) +
+      '?fields=created_time,field_data&access_token=' + encodeURIComponent(token),
+      { signal: ctrl.signal });
+    const corpo = await r.text();
+    let j = null;
+    try { j = JSON.parse(corpo); } catch (e) { throw new Error('resposta ilegível do Graph'); }
+    if (j.error) throw new Error('Graph: ' + (j.error.message || 'erro'));
+    return j;
+  } finally { clearTimeout(t); }
+}
+
+/* O formato do Meta (`field_data`) → o formato da importação.
+   🔴 SÓ O QUE VEIO. Este formulário pergunta nome, telefone e e-mail, e mais
+      nada — então cidade, interesse e situação ficam NULOS. A Nataly vai LIGAR
+      para essa pessoa: deduzir o que ela quer e abrir a conversa com isso é
+      fazê-la passar vergonha com alguém real. */
+function leadDoMeta(j) {
+  const campos = {};
+  for (const c of (j.field_data || [])) {
+    campos[c.name] = (c.values && c.values[0]) || null;
+  }
+  return {
+    origem_id: String(j.id),
+    nome: campos.full_name || campos.name || null,
+    /* O Meta manda o telefone com código de país e, às vezes, sem o nono
+       dígito. Quem trata isso é `normalizaTelefoneOrigem`, lá em cima — a
+       régua do formulário do site descartaria contatos reais. */
+    telefone: campos.phone_number || null,
+    email: campos.email || null,
+    criado_em: j.created_time || null,
+  };
+}
+
+/* Processa um `leadgen_id`: busca, converte e entrega à PORTA ÚNICA.
+   Devolve o resultado da importação, que já sabe dizer se pulou por duplicata. */
+async function processaLeadgen(leadgenId, token, origem = 'meta-lead-ads') {
+  const bruto = await buscaLeadNoMeta(leadgenId, token);
+  const reg = leadDoMeta(bruto);
+  return importa(origem, [reg]);
 }
 
 /* ---------- validação do PARCIAL ----------
@@ -1045,7 +1127,7 @@ async function avisosProblema() {
 }
 
 module.exports = {
-  importa, chavesDeTelefone, normalizaImportado,
+  importa, buscaLeadNoMeta, leadDoMeta, processaLeadgen, chavesDeTelefone, normalizaImportado,
   registraRecebido, fechaRecebido, recebidosPerdidos, apaga,
   OPCOES, STATUS, PRODUTO_IDS, ETAPAS, ORDEM_ETAPAS, ETAPA_PRECO, ETAPA_REC,
   valida, validaParcial, atribuicao, qualifica, ipDe, roteia, paraTela,

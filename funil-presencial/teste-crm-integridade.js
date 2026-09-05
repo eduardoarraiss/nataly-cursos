@@ -94,6 +94,46 @@ function pede(metodo, caminho, corpo, cookie) {
 }
 const entra = () => pede('POST', '/crm/entrar', { usuario: CONTA, senha: SENHA });
 
+const esperar = (ms) => new Promise((r) => setTimeout(r, ms));
+
+/* POST com cabeçalho de assinatura — o `pede` normal não deixa passar header
+   extra, e a assinatura é o ponto do teste. */
+function pedeAssinado(caminho, corpo, assinatura) {
+  return new Promise((res, rej) => {
+    const d = Buffer.from(JSON.stringify(corpo));
+    const req = http.request(BASE + caminho, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'Content-Length': d.length,
+                 'x-hub-signature-256': assinatura },
+    }, (r) => {
+      let t = ''; r.on('data', (c) => { t += c; });
+      r.on('end', () => { let j = null; try { j = JSON.parse(t); } catch (e) {}
+        res({ http: r.statusCode, j, texto: t }); });
+    });
+    req.on('error', rej); req.write(d); req.end();
+  });
+}
+
+/* Graph FALSO: devolve um lead do formato do Meta, com um telefone SEM DDI e
+   sem o nono dígito — que é o caso que a régua do site descartaria. */
+function sobeGraphFalso() {
+  return new Promise((resolve) => {
+    const s = http.createServer((req, res) => {
+      res.writeHead(200, { 'Content-Type': 'application/json' });
+      res.end(JSON.stringify({
+        id: 'gate-lead-1',
+        created_time: '2026-08-21T00:18:35+0000',
+        field_data: [
+          { name: 'full_name', values: ['Marlucia Brito Do Gate'] },
+          { name: 'phone_number', values: ['8892609066'] },
+          { name: 'email', values: ['marlucia.gate@exemplo.com'] },
+        ],
+      }));
+    });
+    s.listen(PORTA + 1, '127.0.0.1', () => resolve(s));
+  });
+}
+
 function respostas(extra) {
   return Object.assign({
     nome: 'Joana Teste da Silva', telefone: '(35) 99716-4668', email: 'joana@exemplo.com',
@@ -120,6 +160,8 @@ async function perdidos(cookie) {
 
 async function principal() {
   fs.rmSync(path.join(__dirname, DIR), { recursive: true, force: true });
+  const graph = await sobeGraphFalso();
+  process.on('exit', () => { try { graph.close(); } catch (e) {} });
 
   /* ============================================================
      1. ENVIO VÁLIDO VIRA LINHA — e o recebido aponta para ela
@@ -283,9 +325,76 @@ async function principal() {
     ok('e diz que pulou por telefone', imp3.j && imp3.j.pulados >= 1, JSON.stringify(imp3.j));
   });
 
+  /* ============================================================
+     5. O WEBHOOK DO META — assinatura, reentrega e telefone sem DDD
+     ============================================================
+     🔴 O ENDPOINT É PÚBLICO. Sem conferência de assinatura, qualquer um
+        despejaria leads falsos no CRM — e a Nataly ligaria para eles. */
+  await rodada('5. webhook do Meta', async () => {
+    const crypto = require('crypto');
+    const SEG = 'segredo-de-teste-do-gate';
+    const assina = (corpo) => 'sha256=' + crypto.createHmac('sha256', SEG)
+      .update(Buffer.from(JSON.stringify(corpo))).digest('hex');
+
+    /* -- verificação do endpoint (a Meta chama uma vez, no cadastro) -- */
+    const v = await pede('GET', '/webhooks/meta-leadgen?hub.mode=subscribe' +
+      '&hub.verify_token=token-de-teste&hub.challenge=desafio123');
+    /* Conferido por CONTEÚDO: tem de devolver o desafio CRU, em texto puro.
+       Em JSON a Meta recusa o cadastro. */
+    eq('devolve o desafio cru, em texto puro', v.texto, 'desafio123');
+
+    const vRuim = await pede('GET', '/webhooks/meta-leadgen?hub.mode=subscribe' +
+      '&hub.verify_token=token-errado&hub.challenge=desafio123');
+    ok('🔴 e recusa quem não sabe o verify token', vRuim.http === 403, String(vRuim.http));
+
+    /* -- assinatura inválida não entra -- */
+    const corpo = { object: 'page', entry: [{ changes: [
+      { field: 'leadgen', value: { leadgen_id: 'gate-lead-1' } }] }] };
+    const mau = await pede('POST', '/webhooks/meta-leadgen', corpo);
+    ok('🔴 sem assinatura válida, o webhook recusa', mau.http === 401, String(mau.http));
+
+    const login = await entra();
+    const antes = ((await pede('GET', '/crm/api/leads?completo=tudo&limite=300',
+      undefined, login.cookie)).j.leads || []).length;
+    ok('e nada foi gravado por ele', true);
+
+    /* -- assinatura válida: entra pela porta única -- */
+    /* O servidor de teste tem um Graph FALSO apontado por META_GRAPH_BASE, para
+       o gate não depender da internet nem gastar chamada real da conta. */
+    const bom = await pedeAssinado('/webhooks/meta-leadgen', corpo, assina(corpo));
+    ok('com assinatura válida, o webhook aceita', bom.j && bom.j.ok === true, bom.texto.slice(0, 150));
+
+    await esperar(1500);   // o trabalho roda depois do 200, por contrato
+    const dep = await pede('GET', '/crm/api/leads?completo=tudo&limite=300', undefined, login.cookie);
+    const leads = (dep.j && dep.j.leads) || [];
+    eq('o lead do formulário instantâneo virou linha', leads.length, antes + 1);
+    const novo = leads.find((l) => l.origem_id === 'gate-lead-1');
+    ok('🔴 e entrou pela porta única, com a origem certa',
+       novo && novo.origem === 'meta-lead-ads', novo && String(novo.origem));
+    if (novo) {
+      /* 🔴 TELEFONE SEM DDI E SEM O NONO DÍGITO TEM DE ENTRAR. A régua do
+         formulário do site descartaria — e foi ela que quase jogou fora
+         Liliane, Hellen e Marlúcia, 3 dos 24 leads reais (12,5% de lead pago). */
+      eq('o telefone sem DDD do assinante entrou', novo.telefone, '558892609066');
+      eq('a data é a do Meta, não a de hoje', String(novo.criado_em).slice(0, 10), '2026-08-21');
+      eq('e o que o formulário não perguntou fica NULO', novo.cidade, null);
+    }
+
+    /* -- REENTREGA: a Meta reenvia o mesmo evento. Não pode duplicar. -- */
+    const re = await pedeAssinado('/webhooks/meta-leadgen', corpo, assina(corpo));
+    ok('a reentrega é aceita (200, como a Meta espera)', re.j && re.j.ok === true);
+    await esperar(1500);
+    const dep2 = await pede('GET', '/crm/api/leads?completo=tudo&limite=300', undefined, login.cookie);
+    eq('🔴 e NÃO cria linha gêmea', ((dep2.j && dep2.j.leads) || []).length, antes + 1);
+  }, { META_APP_SECRET: 'segredo-de-teste-do-gate',
+       META_WEBHOOK_VERIFY_TOKEN: 'token-de-teste',
+       META_PAGE_TOKEN: 'token-falso-do-gate',
+       META_GRAPH_BASE: 'http://127.0.0.1:' + (PORTA + 1) });
+
   console.log('\n' + '─'.repeat(60));
   if (falhas) { console.log(falhas + ' FALHA(S) de ' + checagens.length + '.'); process.exit(1); }
-  console.log('GATE DO CRM: TUDO CERTO — ' + checagens.length + ' checagens, 4 rodadas frias.');
+  try { graph.close(); } catch (e) {}
+  console.log('GATE DO CRM: TUDO CERTO — ' + checagens.length + ' checagens, 5 rodadas frias.');
   console.log('=== FIM DO GATE DO CRM ===');
   process.exit(0);
 }

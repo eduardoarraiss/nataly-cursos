@@ -448,6 +448,10 @@ a{color:var(--azul-txt)}
 /* Lead que veio de fora do site, e lead que ficou sem aviso. Os dois têm de
    saltar da tabela: são as duas situações em que a Nataly precisa agir
    diferente, e uma tabela onde tudo parece igual esconde exatamente isso. */
+/* Verde é a única cor fora da paleta quente que este painel usa, e o motivo é
+   funcional: "já comprou" precisa ser lido pelo canto do olho, numa lista que
+   ela vai percorrer depressa. Igual ao resto, passaria batido. */
+.pil-comprou{background:#E3EDE0; color:#33502C; border-color:#A5B59A; font-weight:800}
 .pil-import{background:#EFE6DA; color:#6B4F3A; border-color:#DED3C2}
 .pil-naoavisado{background:#F6E2DE; color:#8A3324; border-color:#E8C9C2}
 .pil{
@@ -966,6 +970,7 @@ code{background:var(--carta-2); border:1px solid var(--linha); border-radius:var
     origem: {
       'funil-presencial': 'formulário do site',
       'meta-lead-ads': 'anúncio do Instagram',
+      'kiwify': 'compra na Kiwify',
     },
     etapa: {
       '1': 'o nome', '2': 'a cidade', '3': 'o WhatsApp', '4': 'o Instagram',
@@ -2549,7 +2554,20 @@ code{background:var(--carta-2); border:1px solid var(--linha); border-radius:var
          precisa de um pedido de desculpas na primeira frase.
          O anúncio (`utm_content`) continua ali do lado, quando existe. */
       var origem = el('span');
-      if (lead.origem && lead.origem !== 'funil-presencial') {
+      /* 🔴 A PÍLULA MAIS IMPORTANTE DESTA TABELA. Com o WhatsApp fora, a
+         Nataly abre o painel e liga de cima para baixo. Oferecer o curso para
+         quem já pagou por ele é o erro mais caro que este painel consegue
+         causar — e não tem desfazer. Por isso ela vem PRIMEIRO, antes da
+         origem, e diz O QUE a pessoa comprou. */
+      if (lead.comprou) {
+        var pc = el('b', 'pil pil-comprou', '✓ JÁ COMPROU');
+        pc.setAttribute('title', lead.comprou +
+          (lead.comprou_em ? ' — em ' + dataAbsoluta(lead.comprou_em) : ''));
+        origem.appendChild(pc);
+        origem.appendChild(document.createTextNode(' '));
+        origem.appendChild(el('span', 'td-sub', lead.comprou));
+      }
+      if (lead.origem && lead.origem !== 'funil-presencial' && !lead.comprou) {
         var eti = el('b', 'pil pil-import', ROT.origem[lead.origem] || lead.origem);
         eti.setAttribute('title', 'Lead recuperado de fora do site — pode estar esperando contato há dias');
         origem.appendChild(eti);

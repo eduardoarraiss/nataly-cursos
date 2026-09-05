@@ -167,6 +167,18 @@ ALTER TABLE leads ADD COLUMN IF NOT EXISTS origem TEXT NOT NULL DEFAULT 'funil-p
 -- duas vezes e criar gêmeos — e é o que prova a procedência de cada linha.
 ALTER TABLE leads ADD COLUMN IF NOT EXISTS origem_id TEXT;
 
+-- 🔴 QUEM JÁ COMPROU NÃO PODE RECEBER LIGAÇÃO DE VENDA (05/09/2026).
+--    Com o WhatsApp fora do ar, o painel virou o ÚNICO canal pelo qual a
+--    Nataly vê gente — ela vai abrir a lista e ligar de cima para baixo.
+--    Oferecer o curso para quem já pagou por ele é o erro mais caro que este
+--    painel consegue causar, e é irreversível: queima a aluna e a confiança.
+--    Por isso a compra é COLUNA, não anotação: coluna aparece na tabela, vira
+--    filtro e pinta pílula. Anotação some dentro da gaveta.
+--    `comprou` guarda o NOME do produto pago, como veio da Kiwify — é o que
+--    ela precisa ler antes de discar.
+ALTER TABLE leads ADD COLUMN IF NOT EXISTS comprou    TEXT;
+ALTER TABLE leads ADD COLUMN IF NOT EXISTS comprou_em TIMESTAMPTZ;
+
 
 -- As colunas que eram NOT NULL e não podem mais ser: o parcial nasce com
 -- nome e telefone e mais nada. DROP NOT NULL é idempotente — rodar de novo
@@ -371,3 +383,6 @@ UPDATE leads l SET
     FROM avisos a WHERE a.lead_id = l.id), 'enviado'),
   avisado_em = (SELECT max(a.enviado_em) FROM avisos a WHERE a.lead_id = l.id)
 WHERE l.aviso_estado = 'pendente' AND l.avisado_em IS NULL;
+
+-- Índice DEPOIS do ALTER, sempre.
+CREATE INDEX IF NOT EXISTS idx_leads_comprou ON leads (comprou) WHERE comprou IS NOT NULL;
