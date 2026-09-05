@@ -326,6 +326,72 @@ async function principal() {
   });
 
   /* ============================================================
+     4b. O COMPRADOR — e o erro que ele existe para impedir
+     ============================================================ */
+  await rodada('4b. quem já comprou não recebe ligação de venda', async () => {
+    const login = await entra();
+
+    /* Uma pessoa que entrou pelo FORMULÁRIO DO SITE... */
+    const d = respostas({ telefone: '(35) 99962-3860', lead_uid: 'crm-comp-' + Date.now() });
+    await pede('POST', '/api/lead-presencial', d);
+    const l1 = await pede('GET', '/crm/api/leads?completo=tudo&limite=300', undefined, login.cookie);
+    const antes = ((l1.j && l1.j.leads) || []).length;
+    const dela = ((l1.j && l1.j.leads) || []).find((x) => x.lead_uid === d.lead_uid);
+    ok('a pessoa entrou como lead do site', !!dela);
+    ok('e ainda NÃO consta como compradora', dela && !dela.comprou);
+
+    /* ...e que DEPOIS comprou. É o caso real da Karina De Souza (lead 211). */
+    const imp = await pede('POST', '/crm/api/importar', {
+      origem: 'kiwify',
+      registros: [{ origem_id: 'venda-gate-1', nome: 'Joana Teste da Silva',
+                    telefone: '+5535999623860', comprou: 'Lash 2.0 - Método LED',
+                    comprou_em: '2026-08-30T12:00:00Z', criado_em: '2026-08-30T12:00:00Z' }],
+    }, login.cookie);
+    ok('a importação da compra responde', imp.j && imp.j.ok === true);
+
+    const l2 = await pede('GET', '/crm/api/leads?completo=tudo&limite=300', undefined, login.cookie);
+    const leads = (l2.j && l2.j.leads) || [];
+    eq('🔴 NÃO nasce uma segunda linha para a mesma pessoa', leads.length, antes);
+    const dep = leads.find((x) => x.lead_uid === d.lead_uid);
+    /* 🔴 O CORAÇÃO DESTE BLOCO. Pular em silêncio deixaria a pessoa no painel
+       como lead comum, e a Nataly ligaria oferecendo o curso que ela já pagou.
+       Não tem desfazer. A linha que já existe TEM de ser marcada. */
+    ok('🔴 mas a linha que já existia foi MARCADA como compradora',
+       dep && dep.comprou === 'Lash 2.0 - Método LED', dep && String(dep.comprou));
+    ok('e o status virou ganho', dep && dep.status === 'ganho', dep && String(dep.status));
+    ok('a resposta diz o que aconteceu, não só "pulei"',
+       /marcado-como-comprador/.test(JSON.stringify(imp.j)), JSON.stringify(imp.j).slice(0, 200));
+  });
+
+  /* ============================================================
+     4c. O ZERO DE DISCAGEM
+     ============================================================
+     🔴 Derrubava 2 dos 88 compradores da Kiwify — gente que escreveu o número
+        como disca no fixo ("0 54 8409-1102"). O zero é prefixo de operadora,
+        não faz parte do número, e deixá-lo entrar empurra o DDD uma casa. */
+  await rodada('4c. número com zero de discagem entra', async () => {
+    const login = await entra();
+    const imp = await pede('POST', '/crm/api/importar', {
+      origem: 'kiwify',
+      registros: [
+        { origem_id: 'zero-1', nome: 'Luisa Do Gate', telefone: '05484091102',
+          comprou: 'Apostila Método LED', criado_em: '2026-07-11T00:00:00Z' },
+        { origem_id: 'zero-2', nome: 'Emily Do Gate', telefone: '019983618790',
+          comprou: 'Lash 2.0 - Método LED', criado_em: '2026-07-08T00:00:00Z' },
+      ],
+    }, login.cookie);
+    eq('🔴 os dois entram, nenhum é descartado', imp.j && imp.j.importados, 2);
+    eq('e nenhum é dado como inválido', imp.j && imp.j.invalidos, 0);
+
+    const l = await pede('GET', '/crm/api/leads?completo=tudo&limite=300', undefined, login.cookie);
+    const leads = (l.j && l.j.leads) || [];
+    const a = leads.find((x) => x.origem_id === 'zero-1');
+    const b = leads.find((x) => x.origem_id === 'zero-2');
+    ok('e o DDD sai certo, sem o zero', a && a.telefone === '555484091102', a && String(a.telefone));
+    ok('idem para o de nove dígitos', b && b.telefone === '5519983618790', b && String(b.telefone));
+  });
+
+  /* ============================================================
      5. O WEBHOOK DO META — assinatura, reentrega e telefone sem DDD
      ============================================================
      🔴 O ENDPOINT É PÚBLICO. Sem conferência de assinatura, qualquer um
@@ -394,7 +460,7 @@ async function principal() {
   console.log('\n' + '─'.repeat(60));
   if (falhas) { console.log(falhas + ' FALHA(S) de ' + checagens.length + '.'); process.exit(1); }
   try { graph.close(); } catch (e) {}
-  console.log('GATE DO CRM: TUDO CERTO — ' + checagens.length + ' checagens, 5 rodadas frias.');
+  console.log('GATE DO CRM: TUDO CERTO — ' + checagens.length + ' checagens, 7 rodadas frias.');
   console.log('=== FIM DO GATE DO CRM ===');
   process.exit(0);
 }

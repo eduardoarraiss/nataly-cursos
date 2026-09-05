@@ -472,6 +472,14 @@ function normalizaTelefoneOrigem(v) {
   if (!v) return null;
   let d = String(v).replace(/\D/g, '');
   if (d.length > 11 && d.startsWith('55')) d = d.slice(2);
+  /* 🔴 O ZERO DE DISCAGEM. Muita gente escreve o número como disca no fixo:
+     "0 54 8409-1102". O zero não faz parte do número, é o prefixo de operadora
+     — e deixá-lo entrar empurra o DDD uma casa para a direita, o que ou
+     inventa um DDD que não existe ("05") ou passa do tamanho e recusa.
+     Medido em 05/09/2026: derrubava 2 dos 88 compradores da Kiwify, ambos
+     brasileiros com número perfeitamente válido. */
+  if (d.length > 10 && d.startsWith('0')) d = d.slice(1);
+  if (d.length > 11 && d.startsWith('55')) d = d.slice(2);
   if (d.length !== 10 && d.length !== 11) return null;
   const ddd = parseInt(d.slice(0, 2), 10);
   if (!(ddd >= 11 && ddd <= 99)) return null;
@@ -541,9 +549,30 @@ async function importa(origem, registros, { simular = false } = {}) {
         'OR telefone = ANY($1) LIMIT 1',
         [chaves, '[^0-9]', '', 'g']);
       if (j.rows.length) {
+        const existente = j.rows[0];
+        /* 🔴 COMPRADOR QUE JÁ ERA LEAD NÃO PODE SER SÓ "PULADO".
+           Karina De Souza era o lead 211, do formulário do site — e comprou.
+           Pular em silêncio a deixaria no painel como lead comum, e a Nataly
+           ligaria oferecendo exatamente o curso que ela já pagou. É o erro
+           mais caro que este painel consegue causar, e não tem desfazer.
+           Então a linha que já existe é ATUALIZADA com a compra: ela continua
+           sendo a mesma pessoa (uma linha só, sem gêmeo), mas agora carrega a
+           pílula "já comprou" e o status 'ganho'.
+           `COALESCE` porque a compra só entra se ainda não houver uma: uma
+           reimportação não pode reescrever a primeira compra dela. */
+        if (l.comprou && !simular) {
+          await db.consulta(
+            'UPDATE leads SET comprou = COALESCE(comprou, $2), ' +
+            'comprou_em = COALESCE(comprou_em, $3), ' +
+            "status = CASE WHEN status IN ('novo','contatado','em-conversa','proposta-enviada') " +
+            "THEN 'ganho' ELSE status END WHERE id = $1",
+            [existente.id, l.comprou, l.comprou_em || null]);
+        }
         res.pulados++;
-        res.detalhes.push({ origem_id: l.origem_id, resultado: 'ja-existe-por-telefone',
-                            lead_id: j.rows[0].id, nome: j.rows[0].nome });
+        res.detalhes.push({ origem_id: l.origem_id,
+                            resultado: l.comprou ? 'ja-existe-e-foi-marcado-como-comprador'
+                                                 : 'ja-existe-por-telefone',
+                            lead_id: existente.id, nome: existente.nome });
         continue;
       }
     }
