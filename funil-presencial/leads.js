@@ -1098,13 +1098,29 @@ async function resumo() {
      nem pontuação: jogá-lo nesses gráficos criaria uma fatia "(sem produto)"
      enorme e um monte de "frio" que ninguém respondeu.
      Os parciais têm bloco PRÓPRIO, logo abaixo. */
-  const [total, porStatus, porQualif, porProduto, porAnuncio, avisosFalhos,
+  /* 🔴 O QUE MUDOU EM 05/09/2026, e por quê.
+     TODOS estes contadores eram `WHERE completo = true`. Fazia sentido quando
+     o CRM só tinha o funil do site: um parcial não tem produto nem pontuação,
+     e jogá-lo nos gráficos criaria uma fatia "(sem produto)" enorme.
+     Deixou de fazer no dia em que entraram outras portas — os 87 compradores
+     e os 24 do anúncio NUNCA preencheram o formulário do site, então nunca
+     serão `completo`. Os contadores diziam 2 quando havia 119.
+
+     Agora: os contadores OPERACIONAIS (quantas pessoas existem, em que status)
+     contam TODO MUNDO, porque é isso que a pergunta significa. Os de FUNIL
+     (qualificação, produto) contam quem TEM aquele dado — que é honesto e não
+     depende de a pessoa ter vindo por uma porta específica.
+     `completas` fica à parte, para o gráfico de funil do formulário, que é a
+     única coisa aqui que realmente fala do formulário do site. */
+  const [total, completas, porStatus, porQualif, porProduto, porAnuncio, avisosFalhos,
          parciais, parciaisEtapa] = await Promise.all([
+    db.consulta('SELECT COUNT(*)::int AS n FROM leads'),
     db.consulta('SELECT COUNT(*)::int AS n FROM leads WHERE completo = true'),
-    db.consulta('SELECT status, COUNT(*)::int AS n FROM leads WHERE completo = true GROUP BY status'),
-    db.consulta('SELECT qualificacao, COUNT(*)::int AS n FROM leads WHERE completo = true GROUP BY qualificacao'),
-    db.consulta("SELECT COALESCE(produto_id, '(sem produto)') AS produto_id, " +
-                'COUNT(*)::int AS n FROM leads WHERE completo = true GROUP BY 1 ORDER BY n DESC'),
+    db.consulta('SELECT status, COUNT(*)::int AS n FROM leads GROUP BY status'),
+    db.consulta('SELECT qualificacao, COUNT(*)::int AS n FROM leads ' +
+                'WHERE qualificacao IS NOT NULL GROUP BY qualificacao'),
+    db.consulta('SELECT produto_id, COUNT(*)::int AS n FROM leads ' +
+                'WHERE produto_id IS NOT NULL GROUP BY 1 ORDER BY n DESC'),
     db.consulta('SELECT COALESCE(utm_content, referrer, \'(sem origem)\') AS origem, ' +
                 'COUNT(*)::int AS n FROM leads WHERE completo = true GROUP BY 1 ORDER BY n DESC LIMIT 20'),
     db.consulta("SELECT COUNT(*)::int AS n FROM avisos WHERE status <> 'enviado'"),
@@ -1125,6 +1141,9 @@ async function resumo() {
 
   return {
     total: total.rows[0].n,
+    /* Quem terminou o formulário DO SITE. Só o gráfico de funil usa — ele é o
+       único agregado aqui que fala especificamente daquele formulário. */
+    completas: completas.rows[0].n,
     porStatus: porStatus.rows,
     porQualif: porQualif.rows,
     porProduto: porProduto.rows,

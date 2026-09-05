@@ -998,10 +998,12 @@ code{background:var(--carta-2); border:1px solid var(--linha); border-radius:var
   /* A última pergunta de hoje. Parar nela é o contrário de objeção de preço:
      ela respondeu tudo, não viu preço nenhum e só não apertou o botão. */
   var ETAPA_ULTIMA = 'interesse';
+  /* 'tudo' vem PRIMEIRO porque é o padrão, e o primeiro item de um seletor é
+     lido como "o normal". Deixá-lo por último sugeria que o normal era filtrar. */
   var COMPLETOS = [
-    { v: 'sim',  r: 'Terminaram o formulário' },
-    { v: 'nao',  r: 'Pararam no meio' },
-    { v: 'tudo', r: 'Todas as duas' }
+    { v: 'tudo', r: 'Todo mundo' },
+    { v: 'sim',  r: 'Só quem terminou o formulário' },
+    { v: 'nao',  r: 'Só quem parou no meio' }
   ];
 
   function rot(campo, valor) {
@@ -1228,12 +1230,27 @@ code{background:var(--carta-2); border:1px solid var(--linha); border-radius:var
     leads: [],
     filtros: { busca: '', status: '', qualificacao: '', produto_id: '', cidade: '', utm_content: '' },
     periodo: '',            /* client-side: a API de listagem não filtra por data */
-    /* Fica FORA de `estado.filtros` de propósito. Ele tem valor padrão ('sim'),
-       e um filtro com valor padrão dentro de `filtrosAtivos()` faria
-       `temFiltro()` ser sempre verdadeiro — a lista diria "(filtrado)" o tempo
-       todo e o aviso do CSV nunca calaria. Ele vai à query pelo `queryString`,
-       como o parâmetro que é. */
-    completo: 'sim',
+    /* 🔴 O PADRÃO É 'tudo', E ISSO NÃO PODE VOLTAR ATRÁS (05/09/2026).
+       Ele era 'sim' — só quem TERMINOU o formulário do site. Fazia sentido
+       quando o painel só via o funil do site. Deixou de fazer no dia em que o
+       CRM passou a receber lead de outras portas: das 119 linhas, apenas DUAS
+       são `completo = true`. O painel escondia 117 de 119 e o pipeline abria
+       VAZIO — sem erro, sem aviso, sem nada quebrado. Só mostrando menos do
+       que existe.
+
+       E escondia justamente os mais valiosos: os 87 compradores da Kiwify e
+       os 24 do anúncio nunca preencheram o formulário do site, então nunca
+       serão `completo`; e os 6 do site que faltavam eram exatamente quem
+       abandonou na tela de preço — a fila de ligação mais quente que existe.
+
+       A regra que fica: NENHUMA VISTA ESCONDE LEAD POR PADRÃO. Filtro é coisa
+       que ela LIGA, nunca que já vem ligado. `teste-painel-nao-esconde.js`
+       falha se alguém reintroduzir um padrão que corta linha.
+
+       Continua fora de `estado.filtros` porque tem valor padrão, e um filtro
+       com padrão dentro de `filtrosAtivos()` faria `temFiltro()` ser sempre
+       verdadeiro. Vai à query pelo `queryString`, como o parâmetro que é. */
+    completo: 'tudo',
     aba: 'painel',   /* a vista de entrada; `trocaAba` no início respeita a última usada */
     carregando: false,
     erro: null,
@@ -1261,7 +1278,7 @@ code{background:var(--carta-2); border:1px solid var(--linha); border-radius:var
     /* SEMPRE explícito, inclusive no padrão. O servidor também tem 'sim' como
        padrão, mas depender disso faria o CSV e a tela discordarem no dia em
        que um dos dois mudasse de ideia. */
-    q.completo = estado.completo || 'sim';
+    q.completo = estado.completo || 'tudo';
     if (extra) for (var k in extra) if (Object.prototype.hasOwnProperty.call(extra, k)) q[k] = extra[k];
     var partes = Object.keys(q).map(function (k) {
       return encodeURIComponent(k) + '=' + encodeURIComponent(q[k]);
@@ -1270,7 +1287,7 @@ code{background:var(--carta-2); border:1px solid var(--linha); border-radius:var
   }
   function temFiltro() {
     return Object.keys(filtrosAtivos()).length > 0 || estado.periodo !== ''
-        || (estado.completo && estado.completo !== 'sim');
+        || (estado.completo && estado.completo !== 'tudo');
   }
 
   /* A lista que a tela inteira enxerga: o que o servidor devolveu, cortado
@@ -1598,10 +1615,12 @@ code{background:var(--carta-2); border:1px solid var(--linha); border-radius:var
          estado), então a ligação é feita aqui à mão. */
       t5.setAttribute('aria-pressed', estado.completo === 'nao' ? 'true' : 'false');
       t5.setAttribute('title', estado.completo === 'nao'
-        ? 'Clique para voltar às inscrições completas'
-        : 'Clique para ver quem parou no meio');
+        ? 'Clique para voltar a ver todo mundo'
+        : 'Clique para ver só quem parou no meio');
       t5.addEventListener('click', function () {
-        estado.completo = (estado.completo === 'nao') ? 'sim' : 'nao';
+        /* Alterna entre "só quem parou no meio" e TUDO — nunca para 'sim',
+           que esconderia os importados sem ela pedir. */
+        estado.completo = (estado.completo === 'nao') ? 'tudo' : 'nao';
         escreveFiltros();
         carregaLeads();
       });
@@ -1991,7 +2010,12 @@ code{background:var(--carta-2); border:1px solid var(--linha); border-radius:var
   function funilFormulario() {
     var r = estado.resumo;
     if (!r || !r.parciais) return null;
-    var completos = Number(r.total || 0);
+    /* 🔴 `completas`, não `total`. Desde 05/09/2026 `total` conta TODO MUNDO
+       no CRM (inclusive importados, que nunca preencheram formulário nenhum);
+       o funil do FORMULÁRIO só pode terminar em quem terminou o formulário.
+       Trocar um pelo outro faria o gráfico dizer que 119 pessoas concluíram
+       um formulário que 2 concluíram. */
+    var completos = Number(r.completas || 0);
     var parciais = r.parciais.porEtapa || [];
     /* quantas pararam em cada ponto da régua */
     function paradasEm(min, max) {
@@ -2225,7 +2249,7 @@ code{background:var(--carta-2); border:1px solid var(--linha); border-radius:var
     var cp = document.getElementById('fCompleto');
     limpa(cp);
     COMPLETOS.forEach(function (x) { cp.appendChild(opcao(x.v, x.r)); });
-    cp.value = estado.completo || 'sim';
+    cp.value = estado.completo || 'tudo';
 
     preencheProdutos();
     montaSegPeriodo();
@@ -2325,7 +2349,7 @@ code{background:var(--carta-2); border:1px solid var(--linha); border-radius:var
     document.getElementById('fProduto').value = estado.filtros.produto_id;
     document.getElementById('fAnuncio').value = estado.filtros.utm_content;
     document.getElementById('fPeriodo').value = estado.periodo;
-    document.getElementById('fCompleto').value = estado.completo || 'sim';
+    document.getElementById('fCompleto').value = estado.completo || 'tudo';
     marcaSegPeriodo();
     atualizaLinkCsv();
   }
@@ -3469,7 +3493,7 @@ code{background:var(--carta-2); border:1px solid var(--linha); border-radius:var
     estado.filtros.cidade = document.getElementById('fCidade').value.trim();
     estado.filtros.utm_content = document.getElementById('fAnuncio').value;
     estado.periodo = document.getElementById('fPeriodo').value;
-    estado.completo = document.getElementById('fCompleto').value || 'sim';
+    estado.completo = document.getElementById('fCompleto').value || 'tudo';
     atualizaLinkCsv();
   }
 
@@ -3508,11 +3532,12 @@ code{background:var(--carta-2); border:1px solid var(--linha); border-radius:var
        tela mentir sobre estar sem filtro */
     estado.filtros = { busca: '', status: '', qualificacao: '', produto_id: '', cidade: '', utm_content: '' };
     estado.periodo = '';
-    /* Volta ao PADRÃO ('sim'), não ao vazio: "sem filtro" aqui significa a
-       lista de inscrições completas, que é o que o painel sempre mostrou.
-       Zerar para '' mandaria uma query sem o parâmetro e a tela passaria a
-       depender do padrão do servidor — dois lugares decidindo a mesma coisa. */
-    estado.completo = 'sim';
+    /* Volta ao PADRÃO ('tudo'), não ao vazio. "Sem filtro" tem de significar
+       TODO MUNDO — foi por significar "só as completas" que o painel abria
+       vazio. Zerar para '' mandaria uma query sem o parâmetro e a tela
+       passaria a depender do padrão do servidor: dois lugares decidindo a
+       mesma coisa, que um dia divergem. */
+    estado.completo = 'tudo';
     escreveFiltros();
     carregaLeads();
     anuncia('Filtros limpos.');
