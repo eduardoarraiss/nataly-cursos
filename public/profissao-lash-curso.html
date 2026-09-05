@@ -369,6 +369,90 @@ b,strong{font-weight:700}
 .depo.on .depo__play{opacity:0}
 
 /* ============================================================
+   PROVA SOCIAL — mesmo sistema da /profissao-lash-presencial
+   ============================================================
+   Três pesos diferentes, de propósito:
+     • mosaico = prova de VOLUME. Nada para ler ali, é o tamanho da fila.
+     • prints  = conversas. Vão maiores e abrem na lupa, porque só valem lidos.
+     • vídeos  = cartão com play MANUAL. Autoplay em massa derruba o
+                 carregamento no celular, e esta página recebe tráfego pago.
+   auto-fit: com poucas fotos elas esticam e fecham a linha; com a enxurrada
+   inteira o mesmo CSS quebra em várias linhas densas, sem ajuste. */
+.mosaico{display:grid; gap:var(--e1);
+  grid-template-columns:repeat(auto-fit,minmax(92px,1fr))}
+@media(min-width:640px){.mosaico{grid-template-columns:repeat(auto-fit,minmax(128px,1fr))}}
+.mosaico img{
+  width:100%; aspect-ratio:3/4; object-fit:cover; object-position:center 22%;
+  border-radius:var(--r1); background:var(--pedra);
+}
+
+/* A TIRA é a prova social fora da seção de prova: três fotos respirando no meio
+   do argumento, onde ele acontece. As fotos da tira NÃO estão no mosaico — se
+   estivessem, a pessoa reconheceria a mesma imagem duas vezes e o volume
+   deixaria de parecer volume. */
+.tira{display:grid; gap:var(--e1); grid-template-columns:repeat(3,minmax(0,1fr));
+  margin-top:var(--e5)}
+.tira img{
+  width:100%; aspect-ratio:3/4; object-fit:cover; object-position:center 22%;
+  border-radius:var(--r1); background:var(--pedra);
+}
+.tira-nota{margin-top:var(--e2); font-size:var(--t1); font-weight:700;
+  letter-spacing:.08em; text-transform:uppercase; color:var(--tinta-2)}
+.bloco .tira-nota{color:rgba(242,238,229,.64)}
+
+.prints{display:grid; gap:var(--e3); grid-template-columns:repeat(2,minmax(0,1fr))}
+@media(min-width:700px){.prints{grid-template-columns:repeat(3,minmax(0,1fr))}}
+.print{
+  display:block; width:100%; padding:0; cursor:zoom-in; text-align:left;
+  background:var(--papel); border:1px solid var(--filete);
+  border-radius:var(--r2); overflow:hidden; font-family:var(--f);
+}
+.print img{width:100%; height:auto; display:block; background:var(--pedra)}
+.print span{
+  display:block; padding:var(--e3) var(--e4); font-size:var(--t1);
+  font-weight:700; letter-spacing:.08em; text-transform:uppercase;
+  color:var(--chocolate);
+}
+
+/* lupa: o print pequeno existe para caber; o grande existe para ler */
+.lupa{
+  position:fixed; inset:0; z-index:100; display:none;
+  align-items:center; justify-content:center; flex-direction:column;
+  gap:var(--e4); padding:var(--e5);
+  /* fundo OPACO de propósito: com véu translúcido o creme da legenda ficava
+     sobre um fundo indefinido e o contraste deixava de ser garantido. */
+  background:var(--pretinho);
+}
+.lupa.ver{display:flex}
+.lupa img{
+  max-width:min(100%,720px); max-height:74vh; width:auto; height:auto;
+  border-radius:var(--r2); background:var(--pedra);
+}
+.lupa p{
+  color:var(--creme); font-size:var(--t3); line-height:1.5; margin:0;
+  max-width:56ch; text-align:center;
+}
+.lupa__x{
+  position:absolute; top:var(--e5); right:var(--e5);
+  width:44px; height:44px; border-radius:50%; cursor:pointer;
+  background:var(--creme); color:var(--tinta); border:0;
+  font-family:var(--f); font-size:var(--t4); font-weight:800; line-height:1;
+}
+
+/* 5 cartões de bastidor: 2 colunas no celular, 5 no desktop */
+.depos--5{grid-template-columns:repeat(2,minmax(0,1fr))}
+@media(min-width:640px){.depos--5{grid-template-columns:repeat(5,minmax(0,1fr))}}
+@media(max-width:639px){.depos--5>*:nth-child(3){grid-column:auto; max-width:none; margin:0}}
+
+/* enquanto as listas do script estiverem vazias, é isso que aparece — nunca
+   uma grade quebrada nem uma caixa vazia fingindo conteúdo */
+.vazio{
+  border:1px dashed var(--filete); border-radius:var(--r2);
+  padding:var(--e5); color:var(--tinta-2); font-size:var(--t2); line-height:1.55;
+}
+.bloco .vazio{border-color:rgba(242,238,229,.24); color:rgba(242,238,229,.64)}
+
+/* ============================================================
    GRADE
    ============================================================ */
 .mod{border-bottom:1px solid rgba(242,238,229,.14)}
@@ -664,6 +748,13 @@ b,strong{font-weight:700}
       <p>O cílio natural cresce e cai o tempo todo, então a cada 15 a 25 dias ela volta para a
       manutenção. É por isso que isso vira profissão e não bico: <b>dez clientes fiéis já são
       dez atendimentos garantidos</b>, sem você procurar mais ninguém.</p>
+
+      <div class="tira">
+        <img src="/img/prova-social/turma-09-9-alunas-por-do-sol-lilas.jpg" alt="Turma de 9 alunas no fim do curso, com os certificados" width="700" height="892" loading="lazy" decoding="async">
+        <img src="/img/prova-social/turma-08-7-alunas-por-do-sol.jpg" alt="Turma de 7 alunas no fim do curso, com os certificados" width="700" height="934" loading="lazy" decoding="async">
+        <img src="/img/prova-social/turma-03-resnichka-9-alunas.jpg" alt="Turma de 9 alunas no fim do curso, com os certificados" width="700" height="876" loading="lazy" decoding="async">
+      </div>
+      <p class="tira-nota">Turmas que já passaram por aqui</p>
     </div>
   </div>
 </section>
@@ -795,6 +886,13 @@ b,strong{font-weight:700}
       </ul>
       <p class="apoio" style="margin-top:var(--e5)">Não adianta aplicar lindo e ficar com a
       agenda vazia. Por isso o negócio entra junto com a técnica.</p>
+
+      <div class="tira">
+        <img src="/img/prova-social/sala-de-aula-tres-macas-led.jpg" alt="A sala de aula, com as três macas prontas para a prática" width="700" height="916" loading="lazy" decoding="async">
+        <img src="/img/prova-social/turma-01-workshop-loucas-por-esmalte.jpg" alt="Turma no fim do curso, com os certificados" width="700" height="934" loading="lazy" decoding="async">
+        <img src="/img/prova-social/turma-02-especializacao-com-selo.jpg" alt="Turma no fim do curso, com os certificados" width="700" height="874" loading="lazy" decoding="async">
+      </div>
+      <p class="tira-nota">Seis anos formando profissionais</p>
     </div>
   </div>
 </section>
@@ -941,26 +1039,56 @@ b,strong{font-weight:700}
 </section>
 
 <!-- 9. PROVA ------------------------------------------------ -->
+<!-- Antes esta seção eram três vídeos e mais nada. A enxurrada de fotos que
+     existe na /profissao-lash-presencial faltava aqui, e é ela que responde a
+     pergunta que trava a compra do curso online: "isso funciona mesmo, ou eu
+     vou ficar sozinha com um vídeo?". Ordem dos pesos: VOLUME (mosaico) →
+     VOZ (os depoimentos que já existiam) → BASTIDOR (vídeos do dia do curso)
+     → PALAVRA ESCRITA (prints, que abrem na lupa para serem lidos). -->
 <section class="faixa faixa--curta">
   <div class="wrap">
     <div class="estreito centro abertura" style="margin-bottom:var(--e5)">
       <p class="rot rot--c">Não sou só eu falando</p>
-      <h2 class="h1">Elas contam com as <em>palavras</em> delas</h2>
+      <h2 class="h1">Elas já passaram por aqui <em>antes de você</em></h2>
+      <p class="lead p2">Mulheres que começaram do zero comigo e hoje atendem. São turmas
+      de anos diferentes, e cada rosto aqui é uma que terminou.</p>
+    </div>
+
+    <!-- mosaico: prova de VOLUME, nada para ler -->
+    <div class="mosaico" id="prova-fotos" aria-label="Alunas formadas"></div>
+
+    <div class="estreito centro" style="margin:var(--e8) 0 var(--e5)">
+      <p class="rot rot--c">Com as palavras delas</p>
+      <h2 class="h2">Toca para <em>ouvir</em></h2>
     </div>
     <div class="depos">
-      <button class="depo" type="button">
+      <button class="depo" type="button" aria-label="Ana Caroline conta como foi o curso">
         <video src="/depoimentos/ana-caroline.mp4" poster="/depoimentos/ana-caroline.jpg" preload="none" playsinline></video>
         <span class="depo__play"></span>
       </button>
-      <button class="depo" type="button">
+      <button class="depo" type="button" aria-label="Júlia conta como foi o curso">
         <video src="/depoimentos/julia.mp4" poster="/depoimentos/julia.jpg" preload="none" playsinline></video>
         <span class="depo__play"></span>
       </button>
-      <button class="depo" type="button">
+      <button class="depo" type="button" aria-label="Ana Careline conta como foi o curso">
         <video src="/depoimentos/ana-careline.mp4" poster="/depoimentos/ana-careline.jpg" preload="none" playsinline></video>
         <span class="depo__play"></span>
       </button>
     </div>
+
+    <div class="estreito centro" style="margin:var(--e8) 0 var(--e5)">
+      <p class="rot rot--c">Como é por dentro</p>
+      <h2 class="h2">O dia do curso, sem <em>corte bonito</em></h2>
+    </div>
+    <!-- vídeos: play manual, nunca autoplay -->
+    <div class="depos depos--5" id="prova-videos"></div>
+
+    <!-- prints: MAIORES, toque para ampliar e ler -->
+    <div class="estreito centro" style="margin:var(--e8) 0 var(--e5)">
+      <p class="rot rot--c">As mensagens que elas me mandam</p>
+      <h2 class="h2">Toca para <em>ler</em> por inteiro</h2>
+    </div>
+    <div class="prints" id="prova-prints"></div>
   </div>
 </section>
 
@@ -980,6 +1108,13 @@ b,strong{font-weight:700}
       </div>
       <p class="apoio centro" style="margin-top:var(--e5)">Isso não vem no primeiro mês, e eu
       não vou te prometer prazo nenhum. Vem de cliente que volta, uma de cada vez.</p>
+
+      <div class="tira">
+        <img src="/img/prova-social/turma-13-trio-certificados-por-do-sol.jpg" alt="Turma no fim do curso, com os certificados" width="700" height="900" loading="lazy" decoding="async">
+        <img src="/img/prova-social/turma-11-6-alunas-por-do-sol.jpg" alt="Turma de 6 alunas no fim do curso, com os certificados" width="700" height="916" loading="lazy" decoding="async">
+        <img src="/img/prova-social/turma-14-trio-certificados-noite.jpg" alt="Turma no fim do curso, com os certificados" width="700" height="860" loading="lazy" decoding="async">
+      </div>
+      <p class="tira-nota">Elas começaram do mesmo lugar que você</p>
     </div>
   </div>
 </section>
@@ -1140,9 +1275,166 @@ b,strong{font-weight:700}
   </div>
 </footer>
 
+<div class="lupa" id="lupa" role="dialog" aria-modal="true" aria-label="Mensagem ampliada">
+  <button class="lupa__x" id="lupa-x" type="button" aria-label="Fechar">&#10005;</button>
+  <img id="lupa-img" src="" alt="">
+  <p id="lupa-txt"></p>
+</div>
+
 <script>
 (function(){
   "use strict";
+
+  /* ============================================================
+     PROVA SOCIAL
+     ============================================================
+     As listas moram aqui, e não no HTML, porque são longas e mudam sempre:
+     quando a Nataly manda a foto da próxima turma, entra uma linha nesta
+     lista e mais nada precisa ser tocado.
+
+     Destino dos arquivos:
+       fotos e prints  ->  public/img/prova-social/
+       vídeos e poster ->  public/video/prova-social/
+
+     Regras que valem na hora de preencher:
+       • fotos  = mosaico denso, prova de VOLUME. Nada para ler ali.
+       • prints = conversas. Vão MAIORES e abrem na lupa. O "alt" tem de
+                  carregar o TEOR da mensagem, senão quem usa leitor de tela
+                  (e o Google) não recebe prova nenhuma.
+       • videos = cartão com play manual. Sempre com poster, nunca autoplay.
+       • 🔴 NENHUM rosto se repete entre o mosaico, os vídeos, os prints e as
+         TIRAS espalhadas no meio da página. Por isso faltam aqui a Ana
+         Careline e a Ana Carolina (estão nos depoimentos falados) e as nove
+         fotos das tiras, que estão escritas direto no HTML. O efeito de volume
+         morre na hora em que alguém reconhece a mesma imagem duas vezes.
+       • w/h são as dimensões reais do arquivo. Elas evitam o pulo de layout
+         enquanto a imagem carrega, que é o que mais irrita em tráfego pago.
+     ============================================================ */
+  var PROVA = {
+    fotos: [
+      {src:"/img/prova-social/aluna-01-maria-eduarda-certificado.jpg", alt:"Maria Eduarda, formada por mim, com o certificado", w:700, h:932},
+      {src:"/img/prova-social/aluna-03-angela-marcela-certificado.jpg", alt:"Ângela Marcela, formada por mim, com o certificado", w:700, h:934},
+      {src:"/img/prova-social/aluna-04-daniely-alessandra-certificado.jpg", alt:"Daniely Alessandra, formada por mim, com o certificado", w:700, h:934},
+      {src:"/img/prova-social/aluna-05-sueli-cristina-certificado.jpg", alt:"Sueli Cristina, formada por mim, com o certificado", w:700, h:932},
+      {src:"/img/prova-social/aluna-06-kimberly-certificado.jpg", alt:"Kimberly, formada por mim, com o certificado", w:700, h:932},
+      {src:"/img/prova-social/aluna-07-ester-cristina-certificado.jpg", alt:"Ester Cristina, formada por mim, com o certificado", w:700, h:932},
+      {src:"/img/prova-social/aluna-08-tassiane-certificado.jpg", alt:"Tassiane, formada por mim, com o certificado", w:700, h:932},
+      {src:"/img/prova-social/aluna-09-julia-gabriely-certificado.jpg", alt:"Júlia Gabriely, formada por mim, com o certificado", w:700, h:932},
+      {src:"/img/prova-social/aluna-10-juliana-conceicao-certificado.jpg", alt:"Juliana Conceição, formada por mim, com o certificado", w:700, h:932},
+      {src:"/img/prova-social/aluna-11-veronica-faria-sofa.jpg", alt:"Aluna formada por mim, com o certificado", w:700, h:878},
+      {src:"/img/prova-social/aluna-13-sofa.jpg", alt:"Aluna formada por mim, com o certificado", w:700, h:878},
+      {src:"/img/prova-social/aluna-14-sofa.jpg", alt:"Aluna formada por mim, com o certificado", w:700, h:878},
+      {src:"/img/prova-social/aluna-15-camily-vitoria-sofa.jpg", alt:"Camily Vitória, formada por mim, com o certificado", w:700, h:878},
+      {src:"/img/prova-social/turma-04-resnichka-8-alunas.jpg", alt:"Turma de 8 alunas no fim do curso, com os certificados", w:700, h:876},
+      {src:"/img/prova-social/turma-05-4-alunas-certificados.jpg", alt:"Turma de 4 alunas no fim do curso, com os certificados", w:700, h:934},
+      {src:"/img/prova-social/turma-06-5-alunas-ceu-azul.jpg", alt:"Turma de 5 alunas no fim do curso, com os certificados", w:700, h:934},
+      {src:"/img/prova-social/turma-07-6-alunas-certificados.jpg", alt:"Turma de 6 alunas no fim do curso, com os certificados", w:700, h:934},
+      {src:"/img/prova-social/turma-10-duas-alunas-sofa.jpg", alt:"Turma no fim do curso, com os certificados", w:700, h:858},
+      {src:"/img/prova-social/turma-12-3-alunas-certificados.jpg", alt:"Turma de 3 alunas no fim do curso, com os certificados", w:700, h:916}
+    ],
+    prints: [
+      {src:"/img/prova-social/print-04-brenda-silva-direct.jpg", alt:"Brenda Silva conta que voltou para um segundo curso e chama a Nataly de melhor mentora", w:1000, h:1334},
+      {src:"/img/prova-social/print-07-comentarios-e-direct.jpg", alt:"Aluna conta que já atendeu três clientes depois do curso, mesmo com medo", w:1000, h:1250},
+      {src:"/img/prova-social/print-01-stefany-whatsapp.jpg", alt:"Stefany agradece pelo curso e diz que vai levar a técnica para o studio dela", w:1000, h:1334},
+      {src:"/img/prova-social/print-06-comentarios-instagram.jpg", alt:"Três alunas comentam o quanto aprenderam no fim de semana de curso", w:1000, h:1250},
+      {src:"/img/prova-social/print-03-studio-julia-andrade.jpg", alt:"Dona do Studio Julia Andrade agradece e diz que o próximo passo é a mentoria", w:1000, h:1334},
+      {src:"/img/prova-social/print-02-multiplas-mensagens-carro.jpg", alt:"Camila e outras alunas contam no grupo que o curso superou o que esperavam", w:1000, h:1334}
+    ],
+    videos: [
+      {src:"/video/prova-social/video-01-aula-pratica-nataly-orienta.mp4", poster:"/video/prova-social/video-01-aula-pratica-nataly-orienta.jpg", alt:"Eu corrigindo a mão de uma aluna durante a prática"},
+      {src:"/video/prova-social/video-17-nataly-ensinando-turma.mp4", poster:"/video/prova-social/video-17-nataly-ensinando-turma.jpg", alt:"Aula teórica com a turma, antes de ir para a bancada"},
+      {src:"/video/prova-social/video-03-aluna-aplicando-cilios.mp4", poster:"/video/prova-social/video-03-aluna-aplicando-cilios.jpg", alt:"Aluna aplicando os cílios na prática, no dia do curso"},
+      {src:"/video/prova-social/video-19-entrega-certificados-emocao.mp4", poster:"/video/prova-social/video-19-entrega-certificados-emocao.jpg", alt:"A entrega dos certificados no fim do dia"},
+      {src:"/video/prova-social/video-15-premiacao-100-mais-influentes.mp4", poster:"/video/prova-social/video-15-premiacao-100-mais-influentes.jpg", alt:"Premiação das 100 Mais Influentes do Sul de Minas"}
+    ]
+  };
+
+  function esc(t){
+    return String(t == null ? "" : t)
+      .replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;");
+  }
+  function vazio(caixa, texto){
+    caixa.className = "vazio";
+    caixa.textContent = texto;
+  }
+
+  /* ---- mosaico ---- */
+  var elFotos = document.getElementById("prova-fotos");
+  if (elFotos) {
+    if (!PROVA.fotos.length) {
+      vazio(elFotos, "As fotos das alunas entram aqui.");
+    } else {
+      elFotos.innerHTML = PROVA.fotos.map(function(f){
+        return '<img src="' + esc(f.src) + '" alt="' + esc(f.alt) + '"' +
+               (f.w ? ' width="' + f.w + '"' : '') + (f.h ? ' height="' + f.h + '"' : '') +
+               ' loading="lazy" decoding="async">';
+      }).join("");
+    }
+  }
+
+  /* ---- vídeos de bastidor: cartão com play MANUAL ---- */
+  var elVideos = document.getElementById("prova-videos");
+  if (elVideos) {
+    if (!PROVA.videos.length) {
+      vazio(elVideos, "Os vídeos do dia do curso entram aqui.");
+    } else {
+      elVideos.innerHTML = PROVA.videos.map(function(v){
+        return '<button class="depo" type="button" aria-label="' + esc(v.alt) + '">' +
+               '<video src="' + esc(v.src) + '" poster="' + esc(v.poster) + '"' +
+               ' preload="none" playsinline></video>' +
+               '<span class="depo__play"></span></button>';
+      }).join("");
+    }
+  }
+
+  /* ---- prints + lupa ---- */
+  var elPrints = document.getElementById("prova-prints");
+  var lupa    = document.getElementById("lupa");
+  var lupaImg = document.getElementById("lupa-img");
+  var lupaTxt = document.getElementById("lupa-txt");
+  var lupaX   = document.getElementById("lupa-x");
+  var voltarPara = null;
+
+  function abrirLupa(src, alt, origem){
+    lupaImg.src = src; lupaImg.alt = alt;
+    lupaTxt.textContent = alt;
+    lupa.classList.add("ver");
+    document.body.style.overflow = "hidden";
+    voltarPara = origem || null;
+    lupaX.focus();
+  }
+  function fecharLupa(){
+    lupa.classList.remove("ver");
+    lupaImg.src = "";
+    document.body.style.overflow = "";
+    if (voltarPara) { voltarPara.focus(); voltarPara = null; }
+  }
+  if (lupa && lupaX) {
+    lupaX.addEventListener("click", fecharLupa);
+    lupa.addEventListener("click", function(ev){ if (ev.target === lupa) fecharLupa(); });
+    document.addEventListener("keydown", function(ev){
+      if (ev.key === "Escape" && lupa.classList.contains("ver")) fecharLupa();
+    });
+  }
+  if (elPrints) {
+    if (!PROVA.prints.length) {
+      vazio(elPrints, "Os prints das mensagens entram aqui.");
+    } else {
+      elPrints.innerHTML = PROVA.prints.map(function(pr){
+        return '<button class="print" type="button">' +
+               '<img src="' + esc(pr.src) + '" alt="' + esc(pr.alt) + '"' +
+               (pr.w ? ' width="' + pr.w + '"' : '') + (pr.h ? ' height="' + pr.h + '"' : '') +
+               ' loading="lazy" decoding="async">' +
+               '<span>Toca para ler</span></button>';
+      }).join("");
+      elPrints.querySelectorAll(".print").forEach(function(botao){
+        botao.addEventListener("click", function(){
+          var img = botao.querySelector("img");
+          abrirLupa(img.getAttribute("src"), img.getAttribute("alt"), botao);
+        });
+      });
+    }
+  }
 
   /* ================= PLAYER ================= */
   var vsl       = document.getElementById('vsl');
@@ -1366,7 +1658,12 @@ b,strong{font-weight:700}
     recalcula();
   }
 
-  /* ================= DEPOIMENTOS ================= */
+  /* ================= DEPOIMENTOS =================
+     🔴 Vale para os TRÊS depoimentos falados (escritos no HTML) e para os CINCO
+     cartões de bastidor que o bloco de prova social cria mais acima neste mesmo
+     script. Por isso este trecho tem de continuar DEPOIS daquele: subir ele
+     deixaria os cinco novos sem clique, sem erro nenhum no console. Um listener
+     só também é o que garante que tocar um vídeo pause o outro. */
   document.querySelectorAll('.depo').forEach(function(caixa){
     var v = caixa.querySelector('video');
     caixa.addEventListener('click', function(){

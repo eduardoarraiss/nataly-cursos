@@ -53,7 +53,7 @@ var GA_MEASUREMENT_ID = "G-MZS1VCZ89D"; // Nataly — GA4
   var produto = isFunil
     ? { id: "funil-qualificacao", name: "Funil de qualificação", value: 0 }
     : isProfLashPresencial
-    ? { id: "profissao-lash-presencial", name: "Profissão Lash — Online + Presencial", value: 1497 }
+    ? { id: "profissao-lash-presencial", name: "Profissão Lash — Online + Presencial", value: 1197 }
     : isProfissaoLash
     ? { id: "profissao-lash",      name: "Profissão Lash — Iniciante", value: 497 }
     : isPresencial
