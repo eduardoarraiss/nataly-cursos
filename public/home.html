@@ -30,315 +30,357 @@
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@1,400;1,500&family=Hanken+Grotesk:wght@400;500;600;700&family=Playfair+Display:ital,wght@1,400;1,500;1,600&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="/css/nr.css?v=20260629c">
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@1,400;1,500&family=Hanken+Grotesk:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@1,400;1,500&display=swap" rel="stylesheet">
 
   <style>
     /* ===================================================================
        HOME — Nataly Ribeiro
-       Herda o design system de /css/nr.css. Aqui só o que é da home.
-       Regras que valem para tudo neste arquivo:
-         · toda coluna de grade usa minmax(0,1fr). Uma grade com mínimo maior
-           que o contêiner pinta o conteúdo FORA do cartão, e isso passa por
-           todo check de texto (aconteceu na página do presencial, 232px fora).
-         · nenhuma box-shadow. Profundidade só por filete de 1px e superfície.
-         · uma Playfair por seção (o título). O resto é Hanken.
+       Página autossuficiente: NÃO carrega /css/nr.css, para respirar com
+       escala e ritmo próprios em vez de herdar o CSS das páginas de venda.
+
+       As cores e a tipografia continuam sendo as do sistema dela, com os
+       nomes de token NEUTROS: o repositório é público e o codinome interno
+       do design system não pode aparecer em lugar nenhum, nem em nome de
+       variável ou de classe. Mapa: verde = #A5B59A · verde-fundo = #7E9072.
+
+       Régua desta página:
+         · uma ideia por tela, muito respiro, texto só quando explica
+         · a imagem carrega a mensagem; a prova social é VISUAL
+         · sem cartão com borda, sem bullet empilhado, sem cara de landing
+         · nenhuma box-shadow: profundidade por superfície e filete de 1px
+         · toda coluna de grade em minmax(0,1fr) — grade com mínimo maior
+           que o contêiner pinta conteúdo FORA da caixa e isso passa em
+           todo check de texto
        =================================================================== */
 
-    /* ---------- barra de navegação ---------- */
-    .pula-para {
-      position: absolute; left: -9999px; top: 0; z-index: 200;
-      background: var(--branco-quente); color: var(--tinta);
-      padding: 12px 20px; border-radius: 0 0 12px 0; font-weight: 600; font-size: 14px;
-      text-decoration: none;
+    :root {
+      --creme:        #F2EEE5;  /* fundo principal */
+      --papel:        #FAF7F0;  /* superfície clara */
+      --acento-claro: #C9A48B;  /* acento sobre fundo escuro */
+      --verde:        #A5B59A;  /* acento fresco */
+      --verde-fundo:  #7E9072;  /* ponto do rótulo */
+      --chocolate:    #6B4F3A;  /* acento e ação no claro */
+      --tinta:        #463729;  /* texto no claro */
+      --filete:       #DED3C2;
+      --escuro:       #241C15;  /* fundo escuro editorial */
+
+      --display: 'Playfair Display', Georgia, serif;
+      --texto:   'Hanken Grotesk', -apple-system, BlinkMacSystemFont, 'Helvetica Neue', system-ui, sans-serif;
+      --apoio:   'Cormorant Garamond', Georgia, serif;
+
+      --ar:      clamp(96px, 13vw, 190px);   /* respiro entre seções */
+      --largura: 1180px;
     }
-    .pula-para:focus { left: 0; }
+
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+    html {
+      scroll-behavior: smooth;
+      -webkit-text-size-adjust: 100%;
+      background: var(--creme);
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
+
+    body {
+      font-family: var(--texto);
+      background: var(--creme);
+      color: var(--tinta);
+      font-size: 18px;
+      line-height: 1.6;
+      overflow-x: hidden;
+    }
+
+    img { display: block; max-width: 100%; }
+    a { color: inherit; }
+
+    .wrap { width: 100%; max-width: var(--largura); margin: 0 auto; padding: 0 24px; }
+    .estreito { max-width: 760px; margin-inline: auto; }
+    .secao { padding: var(--ar) 0; }
+    .centro { text-align: center; }
+
+    /* ---------- tipografia ---------- */
+    .rotulo {
+      font-size: 11.5px; font-weight: 600; letter-spacing: .24em; text-transform: uppercase;
+      color: var(--chocolate);
+      display: inline-flex; align-items: center; gap: .7em;
+    }
+    .rotulo::before { content: ""; width: 5px; height: 5px; border-radius: 50%; background: var(--verde-fundo); flex: none; }
+
+    /* Playfair itálico, um título por seção. A escala é o que faz a hierarquia. */
+    .titulo {
+      font-family: var(--display); font-style: italic; font-weight: 400;
+      line-height: 1.06; letter-spacing: -.012em;
+      font-size: clamp(40px, 7.4vw, 92px);
+      color: var(--tinta);
+    }
+    .titulo--md { font-size: clamp(32px, 5.2vw, 62px); }
+    .acento { color: var(--chocolate); }
+
+    /* a linha de apoio é curta por regra: se precisa de parágrafo, o bloco está errado */
+    .linha {
+      font-size: clamp(17.5px, 2vw, 22px); line-height: 1.55; font-weight: 300;
+      color: var(--tinta); margin-top: 22px;
+    }
+
+    .acao {
+      display: inline-flex; align-items: center; justify-content: center; gap: .55em;
+      font-family: var(--texto); font-weight: 600; font-size: 16px;
+      background: var(--chocolate); color: var(--creme);
+      padding: 18px 38px; border-radius: 100px; text-decoration: none;
+      transition: transform .25s ease, opacity .25s ease;
+    }
+    .acao:hover { transform: translateY(-2px); opacity: .93; }
+    .acao:focus-visible { outline: 2px solid var(--chocolate); outline-offset: 4px; }
+
+    /* ---------- blocos escuros ---------- */
+    .escuro { background: var(--escuro); color: var(--creme); }
+    .escuro .titulo { color: var(--creme); }
+    .escuro .acento { color: var(--acento-claro); }
+    .escuro .rotulo { color: var(--acento-claro); }
+    .escuro .rotulo::before { background: var(--verde); }
+    .escuro .linha { color: rgba(242,238,229,.86); }
+    .escuro .acao { background: var(--creme); color: var(--tinta); }
+
+    /* ===================================================================
+       NAVEGAÇÃO
+       =================================================================== */
+    .pula {
+      position: absolute; left: -9999px; top: 0; z-index: 200;
+      background: var(--creme); color: var(--tinta);
+      padding: 12px 20px; font-weight: 600; font-size: 14px; text-decoration: none;
+    }
+    .pula:focus { left: 0; }
 
     .nav {
       position: fixed; top: 0; left: 0; right: 0; z-index: 100;
-      background: transparent;
+      transition: background .35s ease, border-color .35s ease;
       border-bottom: 1px solid transparent;
-      transition: background .3s ease, border-color .3s ease;
     }
-    /* ao rolar, a barra ganha fundo — senão o menu some sobre as seções claras */
-    .nav.pousada { background: var(--pretinho); border-bottom-color: rgba(242,238,229,.16); }
+    /* fundo translúcido ao rolar, para o menu não sumir sobre as seções claras */
+    .nav.pousada {
+      background: rgba(36,28,21,.86);
+      -webkit-backdrop-filter: saturate(180%) blur(18px);
+      backdrop-filter: saturate(180%) blur(18px);
+      border-bottom-color: rgba(242,238,229,.14);
+    }
     .nav__in {
-      max-width: var(--largura-total); margin: 0 auto; padding: 0 24px;
-      height: 62px; display: flex; align-items: center; justify-content: space-between; gap: 16px;
+      max-width: var(--largura); margin: 0 auto; padding: 0 24px;
+      height: 60px; display: flex; align-items: center; justify-content: space-between; gap: 16px;
     }
     .nav__marca {
-      font-family: var(--f-display); font-style: italic; font-weight: 500;
-      font-size: 22px; color: var(--branco-quente); text-decoration: none; line-height: 1;
-      white-space: nowrap;
+      font-family: var(--display); font-style: italic; font-weight: 400;
+      font-size: 21px; color: var(--creme); text-decoration: none; line-height: 1; white-space: nowrap;
     }
     .nav__links { display: none; }
     .nav__links a {
       color: rgba(242,238,229,.82); text-decoration: none;
-      font-size: 14.5px; font-weight: 500; letter-spacing: .01em;
-      padding: 8px 2px; border-bottom: 1px solid transparent;
+      font-size: 14px; letter-spacing: .01em; padding: 8px 0;
+      border-bottom: 1px solid transparent;
     }
-    .nav__links a:hover, .nav__links a:focus-visible { color: var(--branco-quente); border-bottom-color: var(--argila); }
-    .nav__cta {
-      display: none;
-      font-family: var(--f-body); font-weight: 600; font-size: 14px;
-      background: var(--branco-quente); color: var(--tinta);
-      padding: 11px 22px; border-radius: 100px; text-decoration: none; white-space: nowrap;
-    }
-    .nav__cta:hover { opacity: .92; }
+    .nav__links a:hover, .nav__links a:focus-visible { color: var(--creme); border-bottom-color: var(--acento-claro); }
 
-    /* hambúrguer — alvo de toque de 44px, como manda o mínimo de acessibilidade */
+    /* alvo de toque de 44px, o mínimo de acessibilidade */
     .nav__burger {
-      width: 44px; height: 44px; flex: none;
+      width: 44px; height: 44px; flex: none; margin-right: -10px;
       display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 5px;
       background: none; border: 0; cursor: pointer; padding: 0;
-      margin-right: -10px;
     }
-    .nav__burger span {
-      display: block; width: 22px; height: 1.5px; background: var(--branco-quente);
-      transition: transform .3s ease, opacity .2s ease;
-    }
-    .nav__burger[aria-expanded="true"] span:nth-child(1) { transform: translateY(6.5px) rotate(45deg); }
+    .nav__burger span { display: block; width: 21px; height: 1.4px; background: var(--creme); transition: transform .3s ease, opacity .2s ease; }
+    .nav__burger[aria-expanded="true"] span:nth-child(1) { transform: translateY(6.4px) rotate(45deg); }
     .nav__burger[aria-expanded="true"] span:nth-child(2) { opacity: 0; }
-    .nav__burger[aria-expanded="true"] span:nth-child(3) { transform: translateY(-6.5px) rotate(-45deg); }
+    .nav__burger[aria-expanded="true"] span:nth-child(3) { transform: translateY(-6.4px) rotate(-45deg); }
 
-    /* painel do menu no celular */
     .menu {
-      position: fixed; inset: 62px 0 0 0; z-index: 99;
-      background: var(--pretinho);
-      padding: 22px 24px calc(40px + env(safe-area-inset-bottom));
-      overflow-y: auto;
-      display: flex; flex-direction: column;
+      position: fixed; inset: 60px 0 0 0; z-index: 99;
+      background: var(--escuro);
+      padding: 26px 24px calc(40px + env(safe-area-inset-bottom));
+      overflow-y: auto; display: flex; flex-direction: column;
     }
     .menu[hidden] { display: none; }
     .menu a {
-      color: var(--branco-quente); text-decoration: none;
-      font-family: var(--f-display); font-style: italic; font-weight: 400;
-      font-size: 27px; line-height: 1.2;
-      padding: 15px 0; border-bottom: 1px solid rgba(242,238,229,.14);
+      color: var(--creme); text-decoration: none;
+      font-family: var(--display); font-style: italic; font-weight: 400;
+      font-size: 28px; line-height: 1.2; padding: 16px 0;
+      border-bottom: 1px solid rgba(242,238,229,.13);
     }
-    .menu a:last-of-type { border-bottom: 0; }
-    .menu .menu__cta {
-      font-family: var(--f-body); font-style: normal; font-weight: 600; font-size: 16px;
-      background: var(--branco-quente); color: var(--tinta);
-      border-radius: 100px; text-align: center; padding: 18px 24px; margin-top: 22px; border: 0;
-    }
+    .menu a:last-child { border-bottom: 0; }
 
-    @media (min-width: 900px) {
-      .nav__in { height: 70px; }
-      .nav__links { display: flex; align-items: center; gap: 30px; }
-      .nav__cta { display: inline-flex; align-items: center; }
+    @media (min-width: 940px) {
+      .nav__in { height: 66px; }
+      .nav__links { display: flex; align-items: center; gap: 34px; }
       .nav__burger { display: none; }
       .menu { display: none !important; }
     }
 
-    /* o menu fixo cobriria o topo de cada seção ao pular por âncora */
-    section[id], header[id] { scroll-margin-top: 76px; }
+    section[id], header[id] { scroll-margin-top: 72px; }
     body.travado { overflow: hidden; }
 
-    /* ---------- hero ---------- */
-    .hero { padding: 118px 0 0; }
-    .hero__grid { display: grid; gap: 34px; align-items: center; grid-template-columns: minmax(0, 1fr); }
-    .hero__foto { border-radius: 20px; overflow: hidden; border: 1px solid rgba(242,238,229,.16); }
-    .hero__foto img {
-      width: 100%; height: 100%; object-fit: cover; object-position: center 22%;
-      min-height: 320px; max-height: 70vh;
-    }
-    .hero__ctas { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 32px; }
-    .hero__ctas .cta { flex: 1 1 240px; }
-    .hero__nota { font-size: 14.5px; margin-top: 20px; }
-    @media (min-width: 900px) {
-      .hero { padding: 150px 0 0; }
-      .hero__grid { grid-template-columns: minmax(0, 1.04fr) minmax(0, .96fr); gap: 56px; }
-      .hero__ctas .cta { flex: 0 0 auto; }
-    }
+    /* ===================================================================
+       ABERTURA
+       =================================================================== */
+    .abertura { padding: clamp(136px, 19vw, 200px) 0 clamp(70px, 9vw, 110px); text-align: center; }
+    .abertura .titulo { max-width: 15ch; margin-inline: auto; }
+    .abertura .linha { max-width: 46ch; margin-inline: auto; }
+    .abertura .acao { margin-top: 40px; }
 
-    /* faixa de números do hero */
-    .nums {
-      display: grid; gap: 0; grid-template-columns: minmax(0, 1fr);
-      margin-top: clamp(48px, 7vw, 78px);
-      border-top: 1px solid rgba(242,238,229,.16);
+    /* a foto ocupa espaço real: é ela que abre a página, não mais um parágrafo */
+    /* ---------- três fatos ---------- */
+    .fatos { display: grid; gap: 46px; grid-template-columns: minmax(0, 1fr); text-align: center; }
+    @media (min-width: 780px) { .fatos { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 40px; } }
+    .fatos strong {
+      display: block; font-family: var(--display); font-style: italic; font-weight: 400;
+      font-size: clamp(38px, 4.6vw, 58px); line-height: 1; color: var(--chocolate);
     }
-    .nums > div { padding: 22px 0; border-bottom: 1px solid rgba(242,238,229,.16); }
-    .nums strong {
-      display: block; font-family: var(--f-display); font-style: italic; font-weight: 500;
-      font-size: clamp(26px, 3.4vw, 34px); line-height: 1.1; color: var(--argila);
+    .fatos span { display: block; margin-top: 14px; font-size: 15.5px; font-weight: 300; color: var(--tinta); }
+
+    /* ===================================================================
+       OS CAMINHOS — blocos visuais grandes e clicáveis
+       =================================================================== */
+    .caminhos { display: grid; gap: 16px; grid-template-columns: minmax(0, 1fr); margin-top: clamp(52px, 7vw, 84px); }
+    @media (min-width: 760px) { .caminhos { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 18px; } }
+
+    .caminho {
+      position: relative; display: block; text-decoration: none;
+      border-radius: 22px; overflow: hidden; min-height: 340px;
+      background: var(--escuro);
+      transition: transform .4s cubic-bezier(.22,.61,.36,1);
     }
-    .nums span { display: block; margin-top: 7px; font-size: 14.5px; color: rgba(242,238,229,.72); }
+    .caminho img {
+      position: absolute; inset: 0; width: 100%; height: 100%;
+      object-fit: cover; object-position: center 32%;
+      transition: transform .7s cubic-bezier(.22,.61,.36,1);
+    }
+    /* Clima geral da foto. NÃO é isto que garante a leitura do texto:
+       um gradiente preso em porcentagem da ALTURA DO BLOCO deixa o rótulo
+       pequeno na parte clara quando o bloco cresce. Medido: 1,17:1. */
+    .caminho::after {
+      content: ""; position: absolute; inset: 0;
+      background: linear-gradient(180deg, rgba(36,28,21,.34) 0%, rgba(36,28,21,.50) 55%, rgba(36,28,21,.66) 100%);
+    }
+    .caminho:hover img { transform: scale(1.04); }
+    .caminho:hover { transform: translateY(-3px); }
+    .caminho:focus-visible { outline: 2px solid var(--chocolate); outline-offset: 3px; }
+
+    /* 🔴 O scrim mora AQUI, não no bloco: assim ele tem exatamente a altura do
+       texto e o rótulo de 12px nunca cai numa faixa clara da foto, não importa
+       quantas linhas o nome ocupe nem o tamanho do bloco. Medido por pixel. */
+    .caminho__txt {
+      position: absolute; left: 0; right: 0; bottom: 0; z-index: 2;
+      display: flex; flex-direction: column; justify-content: flex-end;
+      padding: clamp(70px, 10vw, 120px) clamp(26px, 3.6vw, 40px) clamp(26px, 3.6vw, 40px);
+      color: var(--creme);
+      /* A rampa do escuro acontece dentro do padding de cima, que é vazio: quando
+         a primeira linha (o rótulo de 12px) começa, o scrim já está em 0,86.
+         Sem isso o rótulo caía em 2,2:1 sobre as fotos claras. Medido no pixel. */
+      background: linear-gradient(180deg, rgba(36,28,21,0) 0%, rgba(36,28,21,.52) 30%, rgba(36,28,21,.86) 52%, rgba(36,28,21,.94) 76%, rgba(36,28,21,.96) 100%);
+    }
+    /* 🔴 O rótulo é creme, não argila. Argila a 11,5px sobre as fotos claras media
+       2,2 a 3,4:1 mesmo com o scrim reforçado — medido no pixel renderizado, não
+       a olho. O acento da marca segue na foto e no resto da página; aqui quem manda
+       é a leitura. */
+    .caminho__para { font-size: 11.5px; font-weight: 600; letter-spacing: .22em; text-transform: uppercase; color: var(--creme); }
+    .caminho__nome {
+      font-family: var(--display); font-style: italic; font-weight: 400;
+      font-size: clamp(28px, 3.4vw, 40px); line-height: 1.08; margin-top: 12px;
+    }
+    .caminho__linha { font-size: 16px; font-weight: 300; line-height: 1.5; color: rgba(242,238,229,.9); margin-top: 10px; max-width: 34ch; }
+    .caminho__seta { margin-top: 20px; font-size: 15px; font-weight: 600; color: var(--creme); }
+
+    /* o primeiro bloco ocupa a linha inteira: é a porta de entrada mais larga */
     @media (min-width: 760px) {
-      .nums { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 0 40px; }
-      .nums > div { padding: 26px 0 30px; }
+      .caminho--largo { grid-column: 1 / -1; min-height: 420px; }
+      .caminho--largo .caminho__nome { font-size: clamp(34px, 4vw, 54px); }
     }
 
-    /* ---------- roteador: por onde você começa ---------- */
-    .rota { display: grid; gap: 18px; grid-template-columns: minmax(0, 1fr); margin-top: 40px; }
-    @media (min-width: 780px) { .rota { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 22px; } }
-    .rota__op {
-      display: block; text-decoration: none; color: inherit;
-      background: var(--papel); border: 1px solid var(--filete); border-radius: 20px;
-      padding: clamp(26px, 4vw, 38px);
-      transition: border-color .22s ease, transform .18s ease;
-    }
-    .rota__op:hover { border-color: var(--salvia-prof); transform: translateY(-2px); }
-    .rota__op:focus-visible { outline: 2px solid var(--chocolate); outline-offset: 3px; }
-    .rota__op h3 {
-      font-family: var(--f-display); font-style: italic; font-weight: 500;
-      font-size: clamp(25px, 3.4vw, 33px); line-height: 1.14; color: var(--tinta); margin-top: 12px;
-    }
-    .rota__op p { font-size: 16px; line-height: 1.6; color: var(--tinta); margin-top: 12px; }
-
-    /* 🔴 CONTRASTE do texto secundário nos fundos CLAROS.
-       O `--tinta-suave` #8A7766 dá 3,69:1 sobre o branco quente e 4,0:1 sobre o
-       papel — abaixo dos 4,5:1 que texto normal exige. Sobre o PRETINHO o texto
-       secundário passa folgado (creme a 66%), então a correção é só aqui.
-       A hierarquia dos parágrafos de abertura passa a ser feita por tamanho e
-       fonte, não por cor mais fraca. Nenhuma cor nova: é o `--tinta` do próprio
-       sistema, no papel dele (texto principal do fundo claro). */
-    .bg-claro .corpo--lg.txt2, .bg-papel .corpo--lg.txt2 { color: var(--tinta); }
-    .rota__seta {
-      display: inline-flex; align-items: center; gap: .5em; margin-top: 20px;
-      font-weight: 600; font-size: 15px; color: var(--chocolate);
-    }
-
-    /* ---------- cartões de programa ---------- */
-    .progs { display: grid; gap: 20px; grid-template-columns: minmax(0, 1fr); margin-top: 40px; }
-    @media (min-width: 820px) { .progs { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 24px; } }
-    .prog {
-      display: flex; flex-direction: column;
-      border: 1px solid var(--filete); border-radius: 22px;
-      padding: clamp(26px, 4vw, 40px);
-      background: var(--papel);
-    }
-    .bg-papel .prog { background: var(--branco-quente); }
-    .prog__tag {
-      align-self: flex-start; font-size: 11px; font-weight: 700;
-      letter-spacing: .14em; text-transform: uppercase;
-      background: var(--chocolate); color: var(--branco-quente);
-      border-radius: 100px; padding: 6px 14px; margin-bottom: 16px;
-    }
-    .prog__eyebrow {
-      font-size: 12px; font-weight: 600; letter-spacing: .2em; text-transform: uppercase;
-      color: var(--chocolate); display: inline-flex; align-items: center; gap: .6em;
-    }
-    .prog__eyebrow::before { content: ""; width: 6px; height: 6px; border-radius: 50%; background: var(--salvia-prof); flex: none; }
-    .prog h3 {
-      font-family: var(--f-display); font-style: italic; font-weight: 500;
-      font-size: clamp(27px, 3.6vw, 37px); line-height: 1.08; color: var(--tinta); margin-top: 12px;
-    }
-    .prog__sub { font-family: var(--f-apoio); font-style: italic; font-size: clamp(19px, 2.2vw, 22px); color: var(--tinta); margin-top: 8px; }
-    .prog ul { list-style: none; margin-top: 20px; display: grid; gap: 12px; }
-    .prog li { display: flex; gap: 11px; align-items: flex-start; font-size: 15.5px; line-height: 1.5; color: var(--tinta); }
-    .prog li::before {
-      content: ""; flex: none; width: 6px; height: 6px; border-radius: 50%;
-      background: var(--salvia-prof); margin-top: 9px;
-    }
-    .prog .cta { margin-top: auto; width: 100%; }
-    .prog__espaco { margin-top: 28px; }
-
-    /* ---------- apostila ----------
-       🔴 CORREÇÃO DE CONTRASTE, medida no DOM e não a olho.
-       A receita do fundo sálvia manda o acento em creme #F2EEE5. Sobre o
-       sálvia #A5B59A isso dá 1,87:1 — a palavra some. Medido, não suposto.
-       O chocolate #6B4F3A, que é a cor do CTA da MESMA receita, dá 3,45:1 e
-       passa no mínimo de 3:1 para texto grande (o título aqui tem 30px).
-       Continua dentro do bloco sálvia, sem inventar cor nova. Se um dia o
-       título encolher abaixo de 24px, esta cor deixa de bastar. */
-    .bg-salvia .titulo .acento { color: var(--chocolate); }
-
-    .apo { display: grid; gap: 30px; align-items: center; grid-template-columns: minmax(0, 1fr); }
-    @media (min-width: 800px) { .apo { grid-template-columns: minmax(0, .8fr) minmax(0, 1.2fr); gap: 50px; } }
-    .apo__foto img { width: 100%; height: auto; max-width: 340px; margin: 0 auto; }
-
-    /* ---------- quem sou eu ---------- */
-    .bio { display: grid; gap: 34px; align-items: start; grid-template-columns: minmax(0, 1fr); }
-    @media (min-width: 900px) { .bio { grid-template-columns: minmax(0, .82fr) minmax(0, 1.18fr); gap: 54px; } }
-    .bio__foto { border-radius: 18px; overflow: hidden; border: 1px solid var(--filete); }
-    .bio__foto img { width: 100%; height: auto; }
-    .bio__texto p { font-size: clamp(16.5px, 1.6vw, 18.5px); line-height: 1.72; color: var(--tinta); margin-top: 18px; }
-    .bio__texto p:first-of-type { margin-top: 22px; }
-    .bio__assina { font-family: var(--f-apoio); font-style: italic; font-size: clamp(21px, 2.4vw, 26px); color: var(--chocolate); margin-top: 30px; }
-    @media (min-width: 900px) { .bio__foto { position: sticky; top: 96px; } }
-
-    /* ---------- mosaico de alunas ---------- */
-    .mosaico { display: grid; gap: 10px; grid-template-columns: repeat(2, minmax(0, 1fr)); margin-top: 40px; }
-    @media (min-width: 620px) { .mosaico { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; } }
+    /* ===================================================================
+       PROVA SOCIAL — visual
+       =================================================================== */
+    .mosaico { display: grid; gap: 8px; grid-template-columns: repeat(2, minmax(0, 1fr)); margin-top: clamp(48px, 6vw, 76px); }
+    @media (min-width: 620px) { .mosaico { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; } }
     @media (min-width: 1000px) { .mosaico { grid-template-columns: repeat(4, minmax(0, 1fr)); } }
     .mosaico img {
-      width: 100%; height: 100%; object-fit: cover; aspect-ratio: 3 / 4;
-      border-radius: 12px; border: 1px solid rgba(242,238,229,.14);
+      width: 100%; height: 100%; object-fit: cover; object-position: center 26%;
+      aspect-ratio: 3 / 4; border-radius: 12px;
     }
 
-    /* ---------- vídeos ---------- */
-    .videos { display: grid; gap: 14px; grid-template-columns: minmax(0, 1fr); margin-top: 40px; }
-    @media (min-width: 620px) { .videos { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
-    @media (min-width: 1000px) { .videos { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
-    .vd {
-      position: relative; border-radius: 14px; overflow: hidden;
-      border: 1px solid rgba(242,238,229,.16); background: #000;
-      aspect-ratio: 9 / 16; cursor: pointer;
+    .filmes { display: grid; gap: 10px; grid-template-columns: repeat(2, minmax(0, 1fr)); margin-top: 10px; }
+    @media (min-width: 720px) { .filmes { grid-template-columns: repeat(5, minmax(0, 1fr)); } }
+    .filme {
+      position: relative; border-radius: 12px; overflow: hidden; background: #100C09;
+      aspect-ratio: 9 / 16; cursor: pointer; border: 0; padding: 0; width: 100%; display: block;
     }
-    .vd video { width: 100%; height: 100%; object-fit: cover; display: block; }
-    .vd__play {
+    .filme video { width: 100%; height: 100%; object-fit: cover; display: block; }
+    .filme__play {
       position: absolute; inset: 0; display: flex; align-items: center; justify-content: center;
-      background: linear-gradient(180deg, rgba(36,28,21,.05) 0%, rgba(36,28,21,.55) 100%);
-      transition: opacity .25s ease;
+      background: linear-gradient(180deg, rgba(36,28,21,.06) 0%, rgba(36,28,21,.44) 100%);
+      transition: opacity .3s ease;
     }
-    .vd__play i {
-      width: 58px; height: 58px; border-radius: 50%;
-      border: 1.5px solid rgba(242,238,229,.72);
+    .filme__play i {
+      width: 50px; height: 50px; border-radius: 50%;
+      border: 1.4px solid rgba(242,238,229,.78); background: rgba(36,28,21,.3);
       display: flex; align-items: center; justify-content: center;
-      background: rgba(36,28,21,.34);
     }
-    .vd__play i::after {
-      content: ""; border-style: solid; border-width: 9px 0 9px 15px;
-      border-color: transparent transparent transparent var(--branco-quente); margin-left: 4px;
+    .filme__play i::after {
+      content: ""; border-style: solid; border-width: 8px 0 8px 13px;
+      border-color: transparent transparent transparent var(--creme); margin-left: 3px;
     }
-    .vd.tocando .vd__play { opacity: 0; pointer-events: none; }
-    .vd__leg {
-      position: absolute; left: 12px; right: 12px; bottom: 12px; z-index: 2;
-      font-size: 13px; line-height: 1.4; color: var(--branco-quente);
-      text-shadow: 0 1px 12px rgba(36,28,21,.9);
-    }
-    .vd.tocando .vd__leg { opacity: 0; transition: opacity .25s ease; }
+    .filme.tocando .filme__play { opacity: 0; pointer-events: none; }
 
-    /* ---------- fecho ---------- */
-    .fecho__ctas { display: flex; flex-wrap: wrap; gap: 12px; justify-content: center; margin-top: 34px; }
-    .fecho__ctas .cta { flex: 1 1 250px; max-width: 340px; }
+    /* prints de conversa: entram como IMAGEM, nunca transcritos em texto */
+    .conversas { columns: 2; column-gap: 12px; max-width: 940px; margin: clamp(48px, 6vw, 76px) auto 0; }
+    @media (min-width: 820px) { .conversas { columns: 3; } }
+    .conversas img { break-inside: avoid; margin-bottom: 12px; border-radius: 12px; width: 100%; height: auto; }
 
-    /* ---------- rodapé ---------- */
-    .rod__grid { display: grid; gap: 30px; grid-template-columns: minmax(0, 1fr); text-align: left; }
-    @media (min-width: 760px) { .rod__grid { grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr) minmax(0, 1fr); gap: 40px; } }
-    .rod__grid h4 { font-size: 12px; font-weight: 600; letter-spacing: .2em; text-transform: uppercase; color: var(--argila); }
-    .rod__grid ul { list-style: none; margin-top: 14px; display: grid; gap: 10px; }
-    .rod__grid a { color: rgba(242,238,229,.82); text-decoration: none; font-size: 15px; }
-    .rod__grid a:hover { color: var(--branco-quente); text-decoration: underline; text-underline-offset: 3px; }
-    .rod__fim { margin-top: 44px; padding-top: 26px; border-top: 1px solid rgba(242,238,229,.16); font-size: 12.5px; color: rgba(242,238,229,.66); }
+    /* ===================================================================
+       QUEM É ELA
+       =================================================================== */
+    .dela { display: grid; gap: 44px; align-items: center; grid-template-columns: minmax(0, 1fr); }
+    @media (min-width: 940px) { .dela { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 72px; } }
+    .dela__foto img { width: 100%; height: auto; border-radius: 20px; }
+    .dela p { font-size: clamp(17px, 1.75vw, 20px); font-weight: 300; line-height: 1.65; margin-top: 20px; }
+    .dela .assina {
+      font-family: var(--apoio); font-style: italic; font-weight: 500;
+      font-size: clamp(24px, 2.8vw, 32px); color: var(--chocolate); margin-top: 34px;
+    }
+
+    /* ===================================================================
+       RODAPÉ
+       =================================================================== */
+    .rodape { background: var(--escuro); color: var(--creme); padding: 74px 0 44px; }
+    .rodape__grid { display: grid; gap: 34px; grid-template-columns: minmax(0, 1fr); }
+    @media (min-width: 760px) { .rodape__grid { grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr) minmax(0, 1fr); gap: 40px; } }
+    .rodape .marca { font-family: var(--display); font-style: italic; font-size: 25px; color: var(--acento-claro); }
+    .rodape h2 { font-size: 11.5px; font-weight: 600; letter-spacing: .2em; text-transform: uppercase; color: var(--acento-claro); }
+    .rodape ul { list-style: none; margin-top: 15px; display: grid; gap: 11px; }
+    .rodape a { color: rgba(242,238,229,.86); text-decoration: none; font-size: 15px; }
+    .rodape a:hover { color: var(--creme); text-decoration: underline; text-underline-offset: 3px; }
+    .rodape .nota { font-size: 15px; color: rgba(242,238,229,.76); margin-top: 12px; max-width: 30ch; }
+    .rodape .fim { margin-top: 46px; padding-top: 26px; border-top: 1px solid rgba(242,238,229,.14); font-size: 12.5px; color: rgba(242,238,229,.7); }
+
+    /* ---------- entrada suave, sem quebra dura entre seções ---------- */
+    .sobe { opacity: 0; transform: translateY(26px); transition: opacity .9s cubic-bezier(.22,.61,.36,1), transform .9s cubic-bezier(.22,.61,.36,1); }
+    .sobe.dentro { opacity: 1; transform: none; }
 
     @media (prefers-reduced-motion: reduce) {
-      .reveal { opacity: 1 !important; transform: none !important; }
-      * { transition: none !important; }
       html { scroll-behavior: auto; }
+      * { transition: none !important; animation: none !important; }
+      .sobe { opacity: 1 !important; transform: none !important; }
     }
   </style>
 </head>
 <body>
 
-<a class="pula-para" href="#conteudo">Pular para o conteúdo</a>
+<a class="pula" href="#conteudo">Pular para o conteúdo</a>
 
-<!-- ============ NAVEGAÇÃO ============ -->
 <nav class="nav" id="nav" aria-label="Navegação principal">
   <div class="nav__in">
     <a class="nav__marca" href="/">Nataly Ribeiro</a>
-
     <div class="nav__links">
-      <a href="#comecar">Por onde começar</a>
-      <a href="#do-zero">Do zero</a>
-      <a href="#led">Método LED</a>
+      <a href="#caminhos">Cursos</a>
       <a href="#alunas">Alunas</a>
-      <a href="#quem-sou">Quem sou eu</a>
+      <a href="#dela">Quem sou eu</a>
     </div>
-
-    <a class="nav__cta" href="#comecar">Ver os cursos</a>
-
     <button class="nav__burger" id="burger" type="button"
             aria-label="Abrir o menu" aria-expanded="false" aria-controls="menu">
       <span></span><span></span><span></span>
@@ -347,353 +389,224 @@
 </nav>
 
 <div class="menu" id="menu" hidden>
-  <a href="#comecar">Por onde começar</a>
-  <a href="#do-zero">Começar do zero</a>
-  <a href="#led">O Método LED</a>
-  <a href="#apostila">A apostila</a>
-  <a href="#alunas">As alunas</a>
-  <a href="#quem-sou">Quem sou eu</a>
-  <a class="menu__cta" href="#comecar">Ver os cursos</a>
+  <a href="#caminhos">Cursos</a>
+  <a href="#alunas">Alunas</a>
+  <a href="#dela">Quem sou eu</a>
+  <a href="/apostila">A apostila</a>
+  <a href="/links">Todos os links</a>
 </div>
 
-<!-- ============ HERO ============ -->
-<header class="bg-pretinho hero" id="conteudo">
+<!-- ============ ABERTURA ============ -->
+<header class="escuro abertura" id="conteudo">
   <div class="wrap">
-    <div class="hero__grid">
-      <div>
-        <span class="eyebrow">Lash Designer · Cambuí, MG</span>
-        <h1 class="titulo mt-m">Eu ensino extensão de cílios do jeito que eu queria ter <span class="acento">aprendido</span>.</h1>
-        <p class="corpo--lg txt2 mt-m">O meu primeiro curso foi péssimo. Encheram linguiça, quase não teve prática e ninguém me ensinou manutenção. Eu saí de lá atordoada. Hoje eu já formei mais de trezentas mulheres, e a minha régua é essa: você sai sabendo o porquê de cada coisa que faz.</p>
-
-        <div class="hero__ctas">
-          <a class="cta" href="#do-zero" data-prog="rota-do-zero">Eu nunca apliquei cílios</a>
-          <a class="cta cta--ghost" href="#led" data-prog="rota-led">Eu já aplico cílios</a>
-        </div>
-        <p class="txt2 hero__nota">Online, no seu tempo, ou presencial, comigo em Cambuí.</p>
-      </div>
-
-      <div class="hero__foto">
-        <img src="/img/home/nataly-hero.jpg" alt="Nataly Ribeiro, lash designer"
-             width="1060" height="1590" fetchpriority="high" decoding="async">
-      </div>
-    </div>
-
-    <div class="nums">
-      <div>
-        <strong>Mais de 300</strong>
-        <span>alunas formadas por mim até aqui</span>
-      </div>
-      <div>
-        <strong>Desde os 17 anos</strong>
-        <span>extensão de cílios é a única profissão que eu tive</span>
-      </div>
-      <div>
-        <strong>100 Mais Influentes</strong>
-        <span>premiação das 100 Mais Influentes do Sul de Minas</span>
-      </div>
-    </div>
+    <span class="rotulo">Lash Designer · Cambuí, MG</span>
+    <h1 class="titulo" style="margin-top:26px">Arte com <span class="acento">responsabilidade</span>.</h1>
+    <p class="linha">Formação em extensão de cílios, do primeiro fio ao Método LED.</p>
+    <a class="acao" href="#caminhos" data-prog="abertura">Ver os cursos</a>
   </div>
+
 </header>
 
-<!-- ============ POR ONDE COMEÇAR ============ -->
-<section class="secao bg-claro" id="comecar">
+<!-- ============ TRÊS FATOS ============ -->
+<section class="secao">
   <div class="wrap">
-    <div class="centro" style="max-width: 680px; margin-inline: auto;">
-      <span class="eyebrow eyebrow-c">Por onde começar</span>
-      <h2 class="titulo titulo--md mt-m">Me diz de onde você está <span class="acento">partindo</span>.</h2>
-      <p class="corpo--lg txt2 mt-m">Quem nunca encostou numa pinça precisa de uma coisa. Quem já atende e quer subir de nível precisa de outra. Escolhe o seu ponto de partida que eu te mostro só o que interessa.</p>
-    </div>
-
-    <div class="rota">
-      <a class="rota__op" href="#do-zero" data-prog="rota-do-zero">
-        <span class="prog__eyebrow">Formação do zero</span>
-        <h3>Eu nunca apliquei cílios na vida</h3>
-        <p>Você aprende a profissão inteira: a teoria, a higiene, o mapeamento, a aplicação, a manutenção, quanto cobrar e como conseguir a primeira cliente.</p>
-        <span class="rota__seta">Ver o Profissão Lash →</span>
-      </a>
-
-      <a class="rota__op" href="#led" data-prog="rota-led">
-        <span class="prog__eyebrow">Aperfeiçoamento</span>
-        <h3>Eu já sou lash designer</h3>
-        <p>Você já aplica e quer parar de depender da umidade do dia. O Método LED é a técnica em que o adesivo cura com luz, em três segundos, na hora que você decide.</p>
-        <span class="rota__seta">Ver o Método LED →</span>
-      </a>
-    </div>
-
-    <p class="apoio acento centro mt-l" style="max-width: 620px; margin-inline: auto;">Quer só o material de estudo? A apostila está logo abaixo.</p>
-  </div>
-</section>
-
-<!-- ============ DO ZERO — PROFISSÃO LASH ============ -->
-<section class="secao bg-papel" id="do-zero">
-  <div class="wrap">
-    <div style="max-width: 720px;">
-      <span class="eyebrow">Formação do zero · Profissão Lash</span>
-      <h2 class="titulo titulo--md mt-m">Você começa do zero e eu te levo até a primeira <span class="acento">cliente</span>.</h2>
-      <p class="corpo--lg txt2 mt-m">O meu curso nasceu de uma cliente minha que me perguntou por que eu não ensinava. Ela tinha dezoito anos, trabalhava numa loja, pediu a conta e em mais ou menos uma semana já estava ganhando com isso. Desde então eu montei o curso que eu queria ter feito: cada aula responde uma dificuldade que eu vi acontecer na bancada.</p>
-    </div>
-
-    <div class="progs">
-      <!-- ONLINE -->
-      <article class="prog">
-        <span class="prog__eyebrow">100% online · no seu tempo</span>
-        <h3>Profissão Lash Iniciante</h3>
-        <p class="prog__sub">Do zero à sua primeira aplicação</p>
-        <ul>
-          <li>Aulas gravadas, da teoria até a prática, para assistir quando der</li>
-          <li>Módulo prático: você me vê aplicando, passo por passo</li>
-          <li>Uma mentoria ao vivo comigo por mês</li>
-          <li>Grupo de suporte no WhatsApp para tirar dúvida no meio do atendimento</li>
-          <li>Certificado e acesso por um ano</li>
-        </ul>
-        <a class="cta prog__espaco" href="/profissao-lash-curso" data-prog="profissao-lash-online">Conhecer o Profissão Lash</a>
-      </article>
-
-      <!-- ONLINE + PRESENCIAL -->
-      <article class="prog">
-        <span class="prog__tag">Mais completo</span>
-        <span class="prog__eyebrow">Online + um dia comigo em Cambuí</span>
-        <h3>Profissão Lash Online e Presencial</h3>
-        <p class="prog__sub">Eu corrijo a sua mão pessoalmente</p>
-        <ul>
-          <li>Tudo que tem no curso online, mais o dia presencial</li>
-          <li>Um dia inteiro na bancada comigo, com você aplicando</li>
-          <li>Eu vejo o seu erro na hora e corrijo antes de virar vício</li>
-          <li>Turma pequena, material e certificado inclusos</li>
-          <li>A vaga começa por um formulário, para eu entender de onde você vem</li>
-        </ul>
-        <a class="cta prog__espaco" href="/profissao-lash-presencial" data-prog="profissao-lash-presencial">Ver como funciona o dia</a>
-      </article>
-    </div>
-  </div>
-</section>
-
-<!-- ============ MÉTODO LED ============ -->
-<section class="secao bg-claro" id="led">
-  <div class="wrap">
-    <div style="max-width: 720px;">
-      <span class="eyebrow">Aperfeiçoamento · O Método LED</span>
-      <h2 class="titulo titulo--md mt-m">A sua cliente sai da cadeira podendo lavar o rosto no mesmo <span class="acento">dia</span>.</h2>
-      <p class="corpo--lg txt2 mt-m">No LED o adesivo cura quando eu ativo a luz, em cerca de três segundos, na faixa de 395 a 410 nanômetros. Ou seja, eu decido a hora da cura, e não a umidade que estava fazendo naquela tarde. Some a lista de proibições, some a mensagem no dia seguinte, e o seu resultado fica igual de janeiro a dezembro.</p>
-      <p class="corpo--lg txt2 mt-m">Eu cheguei nisso pelas minhas clientes. Algumas amavam fazer cílios e sentiam ardência durante o procedimento. Não fazia sentido continuar oferecendo um serviço em que a cliente precisava passar por um incômodo, então eu fui estudar, testei, e só depois trouxe para o meu atendimento.</p>
-    </div>
-
-    <div class="progs">
-      <!-- LED ONLINE -->
-      <article class="prog">
-        <span class="prog__eyebrow">100% online · no seu tempo</span>
-        <h3>O Método LED Online</h3>
-        <p class="prog__sub">A técnica inteira, em vídeo</p>
-        <ul>
-          <li>O método completo, das quatro fases, com o porquê de cada uma</li>
-          <li>Potência, distância, tempo de luz e proteção ocular explicados</li>
-          <li>Uma mentoria online por mês comigo</li>
-          <li>Grupo de suporte e acesso por um ano</li>
-          <li>Certificado e garantia de sete dias</li>
-        </ul>
-        <a class="cta prog__espaco" href="/lash-2-metodo-led" data-prog="metodo-led-online">Conhecer o Método LED</a>
-      </article>
-
-      <!-- LED PRESENCIAL -->
-      <article class="prog">
-        <span class="prog__tag">Ao vivo</span>
-        <span class="prog__eyebrow">Presencial · Cambuí, MG</span>
-        <h3>Formação Presencial LED</h3>
-        <p class="prog__sub">Um dia, com a minha mão do lado da sua</p>
-        <ul>
-          <li>Demonstração da técnica de perto e você pegando no aparelho</li>
-          <li>A turma tem só cinco alunas, de propósito, para eu dar atenção a cada uma</li>
-          <li>Encontros online depois do dia, para acompanhar a sua evolução</li>
-          <li>Apostila, certificado e o curso online junto</li>
-          <li>Vagas limitadas pela capacidade da sala</li>
-        </ul>
-        <a class="cta prog__espaco" href="/presencial" data-prog="metodo-led-presencial">Ver a formação presencial</a>
-      </article>
-    </div>
-  </div>
-</section>
-
-<!-- ============ APOSTILA ============ -->
-<section class="secao bg-salvia" id="apostila">
-  <div class="wrap">
-    <div class="apo">
-      <div class="apo__foto">
-        <img src="/img/home/apostila-3d.png" alt="A apostila do Método LED, em PDF"
-             width="760" height="783" loading="lazy" decoding="async">
+    <div class="fatos sobe">
+      <div>
+        <strong>+300</strong>
+        <span>alunas formadas</span>
       </div>
       <div>
-        <span class="eyebrow">Material de estudo · PDF</span>
-        <h2 class="titulo titulo--md mt-m">O método por escrito, para consultar na <span class="acento">bancada</span>.</h2>
-        <p class="corpo--lg mt-m">Se você ainda não quer fazer um curso e só quer entender como o LED funciona, a apostila é por onde começar. É o material que eu uso para explicar a técnica, em PDF, com acesso na hora da compra.</p>
-        <a class="cta mt-l" href="/apostila" data-prog="apostila">Ver a apostila</a>
+        <strong>17 anos</strong>
+        <span>a idade em que eu comecei na profissão</span>
+      </div>
+      <div>
+        <strong>100 Mais</strong>
+        <span>entre as Mais Influentes do Sul de Minas</span>
       </div>
     </div>
   </div>
 </section>
 
-<!-- ============ QUEM SOU EU ============ -->
-<section class="secao bg-papel" id="quem-sou">
+<!-- ============ OS CAMINHOS ============ -->
+<section class="secao" id="caminhos" style="padding-top:0">
   <div class="wrap">
-    <div class="bio">
-      <div class="bio__foto">
-        <img src="/img/home/nataly-bio.jpg" alt="Nataly Ribeiro"
-             width="900" height="1350" loading="lazy" decoding="async">
-      </div>
+    <div class="estreito centro sobe">
+      <span class="rotulo">Os cursos</span>
+      <h2 class="titulo titulo--md" style="margin-top:22px">Escolha o seu <span class="acento">caminho</span>.</h2>
+      <p class="linha">Cada porta leva a um ponto de partida diferente.</p>
+    </div>
 
-      <div class="bio__texto">
-        <span class="eyebrow">Quem sou eu</span>
-        <h2 class="titulo titulo--md mt-m">Eu não escolhi ensinar. A minha primeira aluna é que me <span class="acento">pediu</span>.</h2>
+    <div class="caminhos">
 
-        <p>Eu comecei aos dezessete anos, em Cambuí. Queria fazer odontologia, ganhei setenta por cento de bolsa e não deu pé: o material era caro demais, eu já pagava república, e a minha mãe criava um filho pequeno sozinha. Consegui trocar por uma bolsa integral em estética, e a minha irmã, que já fazia cílios, ficou falando na minha cabeça até eu fazer o primeiro curso.</p>
+      <a class="caminho caminho--largo sobe" href="/profissao-lash-curso" data-prog="profissao-lash-online">
+        <img src="/img/home/bloco-iniciante.jpg" alt="Nataly ensinando a turma na sala de aula" width="1200" height="675" loading="lazy" decoding="async">
+        <span class="caminho__txt">
+          <span class="caminho__para">Para quem nunca aplicou</span>
+          <span class="caminho__nome">Profissão Lash Iniciante</span>
+          <span class="caminho__linha">A profissão inteira, online, no seu tempo.</span>
+          <span class="caminho__seta">Conhecer →</span>
+        </span>
+      </a>
 
-        <p>O que me prendeu na profissão apareceu só no segundo curso, na hora de fazer a modelo. A moça estava passando por um período difícil, me abraçou no fim e agradeceu muito. Foi ali que eu entendi uma coisa: todo mundo que sai desse espaço sai feliz.</p>
+      <a class="caminho sobe" href="/profissao-lash-presencial" data-prog="profissao-lash-presencial">
+        <img src="/img/home/bloco-combo.jpg" alt="Turma de alunas com os certificados no fim do curso" width="900" height="1200" loading="lazy" decoding="async">
+        <span class="caminho__txt">
+          <span class="caminho__para">Do zero, com um dia comigo</span>
+          <span class="caminho__nome">Profissão Lash Online e Presencial</span>
+          <span class="caminho__linha">Eu corrijo a sua mão pessoalmente, em Cambuí.</span>
+          <span class="caminho__seta">Conhecer →</span>
+        </span>
+      </a>
 
-        <p>Voltei para Cambuí e aluguei uma salinha dentro de um salão. Na época quase ninguém fazia por aqui, e muita gente aprendia errado pelo YouTube. Eu passava os dias removendo aplicação malfeita e refazendo do jeito certo, e fiquei conhecida por isso. Foi daí que veio o nome que eu uso até hoje, Arte com Responsabilidade.</p>
+      <a class="caminho sobe" href="/lash-2-metodo-led" data-prog="metodo-led-online">
+        <img src="/img/home/bloco-led.jpg" alt="Nataly aplicando cílios com a luz do LED" width="1400" height="788" loading="lazy" decoding="async">
+        <span class="caminho__txt">
+          <span class="caminho__para">Para quem já aplica</span>
+          <span class="caminho__nome">O Método LED Online</span>
+          <span class="caminho__linha">O adesivo cura com luz, em três segundos.</span>
+          <span class="caminho__seta">Conhecer →</span>
+        </span>
+      </a>
 
-        <p>Em 2019 eu sofri um acidente de carro grave e passei meses sem conseguir trabalhar direito. Uma cliente minha, com uma filha de dois anos, olhou para mim e perguntou por que eu não ensinava. Eu nunca tinha tido essa chavinha, era muito insegura. Ensinei mesmo assim. Ela tinha dezoito anos, pediu a conta da loja onde trabalhava e em cerca de uma semana já estava ganhando com os cílios. Hoje mora em São Paulo. Ela é que me disse, segurando a minha mão, que para tudo tem um propósito.</p>
+      <a class="caminho sobe" href="/presencial" data-prog="metodo-led-presencial">
+        <img src="/img/home/bloco-presencial.jpg" alt="A sala de aula com três macas em atendimento com LED" width="900" height="1177" loading="lazy" decoding="async">
+        <span class="caminho__txt">
+          <span class="caminho__para">O LED ao vivo</span>
+          <span class="caminho__nome">Formação Presencial LED</span>
+          <span class="caminho__linha">Um dia na bancada, em turma de cinco.</span>
+          <span class="caminho__seta">Conhecer →</span>
+        </span>
+      </a>
 
-        <p>Depois vieram as clientes reclamando que em dez dias já estava falhado. Eu me achei ruim e fui estudar. Descobri que o shampoo de bebê que todo mundo usava hidratava o fio, procurei uma farmácia de manipulação aqui perto e a gente desenvolveu um produto mais alcalino, que abre a cutícula para o adesivo pegar. A durabilidade voltou, e eu passei a ser conhecida por isso também.</p>
+      <a class="caminho sobe" href="/apostila" data-prog="apostila">
+        <img src="/img/home/bloco-apostila.jpg" alt="A apostila do Método LED sobre a mesa" width="928" height="1152" loading="lazy" decoding="async">
+        <span class="caminho__txt">
+          <span class="caminho__para">Só o material de estudo</span>
+          <span class="caminho__nome">A Apostila do Método LED</span>
+          <span class="caminho__linha">O método por escrito, em PDF.</span>
+          <span class="caminho__seta">Conhecer →</span>
+        </span>
+      </a>
 
-        <p>Hoje eu ensino porque eu quero tirar do CLT as mães, as meninas que estão começando agora, e toda mulher que quer ter dignidade com o próprio trabalho.</p>
-
-        <p class="bio__assina">Arte com responsabilidade.</p>
-      </div>
     </div>
   </div>
 </section>
 
-<!-- ============ ALUNAS ============ -->
-<section class="secao bg-pretinho" id="alunas">
+<!-- ============ AS ALUNAS ============ -->
+<section class="secao escuro" id="alunas">
   <div class="wrap">
-    <div class="centro" style="max-width: 700px; margin-inline: auto;">
-      <span class="eyebrow eyebrow-c">As alunas</span>
-      <h2 class="titulo titulo--md mt-m">Não sou só eu <span class="acento">falando</span>.</h2>
-      <p class="corpo--lg txt2 mt-m">Todas essas mulheres já passaram por aqui. Umas vieram do zero, outras já atendiam e vieram evoluir. Todas saíram com o certificado na mão.</p>
+    <div class="estreito centro sobe">
+      <span class="rotulo">As alunas</span>
+      <h2 class="titulo titulo--md" style="margin-top:22px">Elas já passaram por <span class="acento">aqui</span>.</h2>
+      <p class="linha">Todas saíram com o certificado na mão.</p>
     </div>
 
-    <div class="mosaico">
-      <img src="/img/home/aluna-01-maria-eduarda-certificado.jpg" alt="Maria Eduarda, formada por mim, com o certificado" width="560" height="746" loading="lazy" decoding="async">
-      <img src="/img/home/turma-07-6-alunas-certificados.jpg" alt="Turma de seis alunas no fim do curso, com os certificados" width="560" height="747" loading="lazy" decoding="async">
-      <img src="/img/home/aluna-04-daniely-alessandra-certificado.jpg" alt="Daniely Alessandra, formada por mim, com o certificado" width="560" height="747" loading="lazy" decoding="async">
-      <img src="/img/home/turma-06-5-alunas-ceu-azul.jpg" alt="Turma de cinco alunas no fim do curso, com os certificados" width="560" height="747" loading="lazy" decoding="async">
-      <img src="/img/home/aluna-09-julia-gabriely-certificado.jpg" alt="Júlia Gabriely, formada por mim, com o certificado" width="560" height="746" loading="lazy" decoding="async">
-      <img src="/img/home/turma-04-resnichka-8-alunas.jpg" alt="Turma de oito alunas no fim do curso, com os certificados" width="560" height="701" loading="lazy" decoding="async">
-      <img src="/img/home/aluna-06-kimberly-certificado.jpg" alt="Kimberly, formada por mim, com o certificado" width="560" height="746" loading="lazy" decoding="async">
-      <img src="/img/home/turma-13-trio-certificados-por-do-sol.jpg" alt="Três alunas no fim do curso, com os certificados" width="560" height="720" loading="lazy" decoding="async">
-      <img src="/img/home/aluna-05-sueli-cristina-certificado.jpg" alt="Sueli Cristina, formada por mim, com o certificado" width="560" height="746" loading="lazy" decoding="async">
-      <img src="/img/home/sala-de-aula-tres-macas-led.jpg" alt="A sala de aula montada, com três macas prontas para a prática" width="560" height="733" loading="lazy" decoding="async">
-      <img src="/img/home/aluna-15-camily-vitoria-sofa.jpg" alt="Camily Vitória, formada por mim, com o certificado" width="560" height="702" loading="lazy" decoding="async">
-      <img src="/img/home/turma-09-9-alunas-por-do-sol-lilas.jpg" alt="Turma de nove alunas no fim do curso, com os certificados" width="560" height="714" loading="lazy" decoding="async">
+    <div class="mosaico sobe">
+      <img src="/img/home/aluna-01-maria-eduarda-certificado.jpg" alt="Maria Eduarda com o certificado" width="560" height="746" loading="lazy" decoding="async">
+      <img src="/img/home/turma-07-6-alunas-certificados.jpg" alt="Turma de seis alunas com os certificados" width="560" height="747" loading="lazy" decoding="async">
+      <img src="/img/home/aluna-04-daniely-alessandra-certificado.jpg" alt="Daniely Alessandra com o certificado" width="560" height="747" loading="lazy" decoding="async">
+      <img src="/img/home/turma-06-5-alunas-ceu-azul.jpg" alt="Turma de cinco alunas com os certificados" width="560" height="747" loading="lazy" decoding="async">
+      <img src="/img/home/aluna-09-julia-gabriely-certificado.jpg" alt="Júlia Gabriely com o certificado" width="560" height="746" loading="lazy" decoding="async">
+      <img src="/img/home/turma-04-resnichka-8-alunas.jpg" alt="Turma de oito alunas com os certificados" width="560" height="701" loading="lazy" decoding="async">
+      <img src="/img/home/aluna-06-kimberly-certificado.jpg" alt="Kimberly com o certificado" width="560" height="746" loading="lazy" decoding="async">
+      <img src="/img/home/turma-13-trio-certificados-por-do-sol.jpg" alt="Três alunas com os certificados" width="560" height="720" loading="lazy" decoding="async">
+      <img src="/img/home/aluna-05-sueli-cristina-certificado.jpg" alt="Sueli Cristina com o certificado" width="560" height="746" loading="lazy" decoding="async">
+      <img src="/img/home/sala-de-aula-tres-macas-led.jpg" alt="A sala de aula com três macas em atendimento" width="560" height="733" loading="lazy" decoding="async">
+      <img src="/img/home/aluna-15-camily-vitoria-sofa.jpg" alt="Camily Vitória com o certificado" width="560" height="702" loading="lazy" decoding="async">
+      <img src="/img/home/turma-09-9-alunas-por-do-sol-lilas.jpg" alt="Turma de nove alunas com os certificados" width="560" height="714" loading="lazy" decoding="async">
     </div>
 
-    <!-- vídeos: aula, prática e a entrega dos certificados -->
-    <div class="videos" id="videos">
-      <div class="vd" data-vd>
-        <video preload="none" playsinline muted loop
-               poster="/video/prova-social/video-17-nataly-ensinando-turma.jpg">
+    <div class="filmes" id="filmes">
+      <button class="filme" type="button" aria-label="Ver o vídeo da aula teórica com a turma">
+        <video preload="none" playsinline muted loop poster="/video/prova-social/video-17-nataly-ensinando-turma.jpg">
           <source src="/video/prova-social/video-17-nataly-ensinando-turma.mp4" type="video/mp4">
         </video>
-        <div class="vd__play"><i></i></div>
-        <p class="vd__leg">A aula teórica com a turma, antes de ir para a bancada</p>
-      </div>
-
-      <div class="vd" data-vd>
-        <video preload="none" playsinline muted loop
-               poster="/video/prova-social/video-01-aula-pratica-nataly-orienta.jpg">
+        <span class="filme__play"><i></i></span>
+      </button>
+      <button class="filme" type="button" aria-label="Ver o vídeo da Nataly corrigindo a mão de uma aluna">
+        <video preload="none" playsinline muted loop poster="/video/prova-social/video-01-aula-pratica-nataly-orienta.jpg">
           <source src="/video/prova-social/video-01-aula-pratica-nataly-orienta.mp4" type="video/mp4">
         </video>
-        <div class="vd__play"><i></i></div>
-        <p class="vd__leg">Eu corrigindo a mão de uma aluna durante a prática</p>
-      </div>
-
-      <div class="vd" data-vd>
-        <video preload="none" playsinline muted loop
-               poster="/video/prova-social/video-03-aluna-aplicando-cilios.jpg">
+        <span class="filme__play"><i></i></span>
+      </button>
+      <button class="filme" type="button" aria-label="Ver o vídeo de uma aluna aplicando cílios">
+        <video preload="none" playsinline muted loop poster="/video/prova-social/video-03-aluna-aplicando-cilios.jpg">
           <source src="/video/prova-social/video-03-aluna-aplicando-cilios.mp4" type="video/mp4">
         </video>
-        <div class="vd__play"><i></i></div>
-        <p class="vd__leg">Aluna aplicando os cílios na prática, no dia do curso</p>
-      </div>
-
-      <div class="vd" data-vd>
-        <video preload="none" playsinline muted loop
-               poster="/video/prova-social/video-19-entrega-certificados-emocao.jpg">
+        <span class="filme__play"><i></i></span>
+      </button>
+      <button class="filme" type="button" aria-label="Ver o vídeo da entrega dos certificados">
+        <video preload="none" playsinline muted loop poster="/video/prova-social/video-19-entrega-certificados-emocao.jpg">
           <source src="/video/prova-social/video-19-entrega-certificados-emocao.mp4" type="video/mp4">
         </video>
-        <div class="vd__play"><i></i></div>
-        <p class="vd__leg">A entrega dos certificados, no fim do dia</p>
-      </div>
-
-      <div class="vd" data-vd>
-        <video preload="none" playsinline muted loop
-               poster="/video/prova-social/video-15-premiacao-100-mais-influentes.jpg">
+        <span class="filme__play"><i></i></span>
+      </button>
+      <button class="filme" type="button" aria-label="Ver o vídeo da premiação das 100 Mais Influentes do Sul de Minas">
+        <video preload="none" playsinline muted loop poster="/video/prova-social/video-15-premiacao-100-mais-influentes.jpg">
           <source src="/video/prova-social/video-15-premiacao-100-mais-influentes.mp4" type="video/mp4">
         </video>
-        <div class="vd__play"><i></i></div>
-        <p class="vd__leg">A premiação das 100 Mais Influentes do Sul de Minas</p>
-      </div>
+        <span class="filme__play"><i></i></span>
+      </button>
     </div>
 
-    <p class="txt2 centro mt-l" style="font-size: 14px;">Os vídeos abrem sem som. Toque para ouvir.</p>
+    <div class="conversas sobe">
+      <img src="/img/home/print-04.jpg" alt="Mensagem de uma aluna que voltou para um segundo curso" width="840" height="1121" loading="lazy" decoding="async">
+      <img src="/img/home/print-07.jpg" alt="Mensagem de uma aluna que já atendeu três clientes depois do curso" width="840" height="1050" loading="lazy" decoding="async">
+      <img src="/img/home/print-01.jpg" alt="Mensagem de uma aluna agradecendo pelo curso" width="840" height="1121" loading="lazy" decoding="async">
+      <img src="/img/home/print-06.jpg" alt="Comentários de alunas sobre o fim de semana de curso" width="840" height="1050" loading="lazy" decoding="async">
+      <img src="/img/home/print-03.jpg" alt="Mensagem da dona de um studio depois do curso" width="840" height="1121" loading="lazy" decoding="async">
+      <img src="/img/home/print-02.jpg" alt="Mensagens de alunas no grupo depois do curso" width="840" height="1121" loading="lazy" decoding="async">
+    </div>
   </div>
 </section>
 
-<!-- ============ O QUE ELAS MANDAM DEPOIS ============ -->
-<section class="secao bg-claro">
+<!-- ============ QUEM É ELA ============ -->
+<section class="secao" id="dela">
   <div class="wrap">
-    <div class="centro" style="max-width: 660px; margin-inline: auto;">
-      <span class="eyebrow eyebrow-c">Depois do curso</span>
-      <h2 class="titulo titulo--md mt-m">O que elas me mandam <span class="acento">depois</span>.</h2>
-      <p class="corpo--lg txt2 mt-m">Prints de conversa, do jeito que chegaram.</p>
-    </div>
-
-    <div class="depo-masonry mt-l">
-      <div class="depo-card"><img src="/img/home/print-04.jpg" alt="Brenda Silva conta que voltou para um segundo curso e chama a Nataly de melhor mentora" width="840" height="1121" loading="lazy" decoding="async"></div>
-      <div class="depo-card"><img src="/img/home/print-07.jpg" alt="Aluna conta que já atendeu três clientes depois do curso, mesmo com medo" width="840" height="1050" loading="lazy" decoding="async"></div>
-      <div class="depo-card"><img src="/img/home/print-01.jpg" alt="Stefany agradece pelo curso e diz que vai levar a técnica para o studio dela" width="840" height="1121" loading="lazy" decoding="async"></div>
-      <div class="depo-card"><img src="/img/home/print-06.jpg" alt="Três alunas comentam o quanto aprenderam no fim de semana de curso" width="840" height="1050" loading="lazy" decoding="async"></div>
-      <div class="depo-card"><img src="/img/home/print-03.jpg" alt="Dona do Studio Julia Andrade agradece e diz que o próximo passo é a mentoria" width="840" height="1121" loading="lazy" decoding="async"></div>
-      <div class="depo-card"><img src="/img/home/print-02.jpg" alt="Camila e outras alunas contam no grupo que o curso superou o que esperavam" width="840" height="1121" loading="lazy" decoding="async"></div>
+    <div class="dela">
+      <div class="dela__foto sobe">
+        <img src="/img/home/nataly-bio.jpg" alt="Nataly Ribeiro" width="900" height="1350" loading="lazy" decoding="async">
+      </div>
+      <div class="sobe">
+        <span class="rotulo">Quem sou eu</span>
+        <h2 class="titulo titulo--md" style="margin-top:22px">Eu comecei aos dezessete, em <span class="acento">Cambuí</span>.</h2>
+        <p>Extensão de cílios é a única profissão que eu já tive.</p>
+        <p>Fiquei conhecida na cidade removendo aplicação malfeita e refazendo do jeito certo.</p>
+        <p>Hoje eu ensino porque quero tirar do CLT as mães, as meninas que estão começando agora, e toda mulher que quer ter dignidade com o próprio trabalho.</p>
+        <p class="assina">Arte com responsabilidade.</p>
+      </div>
     </div>
   </div>
 </section>
 
 <!-- ============ FECHO ============ -->
-<section class="secao bg-papel centro">
-  <div class="wrap wrap--txt">
-    <span class="eyebrow eyebrow-c">Vamos começar</span>
-    <h2 class="titulo titulo--md mt-m">Escolhe por onde você <span class="acento">entra</span>.</h2>
-    <p class="corpo--lg txt2 mt-m">Se você nunca aplicou, comece pelo Profissão Lash. Se já atende e quer evoluir a técnica, o Método LED é o seu caminho. E se quiser só estudar antes de decidir, leve a apostila.</p>
-
-    <div class="fecho__ctas">
-      <a class="cta" href="#do-zero" data-prog="fecho-do-zero">Começar do zero</a>
-      <a class="cta cta--ghost" href="#led" data-prog="fecho-led">Evoluir para o LED</a>
-    </div>
+<section class="secao centro" style="background:var(--papel)">
+  <div class="wrap estreito">
+    <h2 class="titulo titulo--md">Comece por onde faz sentido pra <span class="acento">você</span>.</h2>
+    <a class="acao" href="#caminhos" data-prog="fecho" style="margin-top:38px">Ver os cursos</a>
   </div>
 </section>
 
 <!-- ============ RODAPÉ ============ -->
-<footer class="rodape bg-pretinho">
+<footer class="rodape">
   <div class="wrap">
-    <div class="rod__grid">
+    <div class="rodape__grid">
       <div>
-        <p class="logo acento">Nataly Ribeiro</p>
-        <p class="txt2 mt-s" style="font-size: 14px; max-width: 300px;">Lash designer em Cambuí, Minas Gerais. Formação em extensão de cílios, do zero e no Método LED.</p>
+        <p class="marca">Nataly Ribeiro</p>
+        <p class="nota">Lash designer em Cambuí, Minas Gerais.</p>
       </div>
-
       <div>
-        <h4>Cursos</h4>
+        <h2>Cursos</h2>
         <ul>
           <li><a href="/profissao-lash-curso">Profissão Lash Iniciante</a></li>
           <li><a href="/profissao-lash-presencial">Profissão Lash Online e Presencial</a></li>
           <li><a href="/lash-2-metodo-led">O Método LED Online</a></li>
           <li><a href="/presencial">Formação Presencial LED</a></li>
-          <li><a href="/apostila">A apostila do Método LED</a></li>
+          <li><a href="/apostila">A Apostila do Método LED</a></li>
         </ul>
       </div>
-
       <div>
-        <h4>Mais</h4>
+        <h2>Mais</h2>
         <ul>
           <li><a href="https://www.instagram.com/nataly.estetica/" rel="noopener" target="_blank">Instagram</a></li>
           <li><a href="/links">Todos os links</a></li>
@@ -701,8 +614,7 @@
         </ul>
       </div>
     </div>
-
-    <p class="rod__fim">© 2026 Nataly Ribeiro. Todos os direitos reservados.</p>
+    <p class="fim">© 2026 Nataly Ribeiro. Todos os direitos reservados.</p>
   </div>
 </footer>
 
@@ -710,22 +622,17 @@
 (function () {
   "use strict";
 
-  /* ---------- menu de hambúrguer ----------
-     O painel é um irmão da barra, não um filho: assim ele cobre a tela inteira
-     sem depender do empilhamento da barra fixa. `hidden` liga e desliga, e o
-     body trava a rolagem enquanto ele está aberto. */
+  /* ---------- menu de hambúrguer ---------- */
   var burger = document.getElementById("burger");
   var menu   = document.getElementById("menu");
 
   function fecha() {
-    if (!menu || !burger) return;
     menu.hidden = true;
     burger.setAttribute("aria-expanded", "false");
     burger.setAttribute("aria-label", "Abrir o menu");
     document.body.classList.remove("travado");
   }
   function abre() {
-    if (!menu || !burger) return;
     menu.hidden = false;
     burger.setAttribute("aria-expanded", "true");
     burger.setAttribute("aria-label", "Fechar o menu");
@@ -733,51 +640,34 @@
   }
 
   if (burger && menu) {
-    burger.addEventListener("click", function () {
-      if (menu.hidden) { abre(); } else { fecha(); }
-    });
-    /* clicar num item do menu navega por âncora — o painel tem que sair da frente */
-    menu.addEventListener("click", function (ev) {
-      if (ev.target.closest && ev.target.closest("a")) fecha();
-    });
+    burger.addEventListener("click", function () { if (menu.hidden) { abre(); } else { fecha(); } });
+    menu.addEventListener("click", function (ev) { if (ev.target.closest && ev.target.closest("a")) fecha(); });
     document.addEventListener("keydown", function (ev) {
       if (ev.key === "Escape" && !menu.hidden) { fecha(); burger.focus(); }
     });
-    /* ao passar para o desktop o painel some por CSS, mas o body continuaria
-       travado e a página não rolaria mais. */
-    window.addEventListener("resize", function () {
-      if (window.innerWidth >= 900 && !menu.hidden) fecha();
-    });
+    /* no desktop o painel some por CSS; sem isto o body ficaria travado e a página não rolaria */
+    window.addEventListener("resize", function () { if (window.innerWidth >= 940 && !menu.hidden) fecha(); });
   }
 
   /* ---------- a barra ganha fundo depois do topo ---------- */
   var nav = document.getElementById("nav");
-  function pousa() {
-    if (!nav) return;
-    if (window.scrollY > 24) { nav.classList.add("pousada"); }
-    else { nav.classList.remove("pousada"); }
-  }
+  function pousa() { if (nav) nav.classList.toggle("pousada", window.scrollY > 20); }
   pousa();
   window.addEventListener("scroll", pousa, { passive: true });
 
-  /* ---------- vídeos de prova social ----------
-     ⚠️ Um listener só, por delegação no contêiner. Duplicar o listener faz o
-     vídeo tocar e pausar no mesmo toque, sem nenhum erro no console. */
-  var caixaVideos = document.getElementById("videos");
-  if (caixaVideos) {
-    caixaVideos.addEventListener("click", function (ev) {
-      var alvo = ev.target.closest && ev.target.closest("[data-vd]");
+  /* ---------- vídeos ----------
+     ⚠️ Um listener só, por delegação no contêiner. Duplicar o listener faz o vídeo
+     tocar e pausar no mesmo toque, sem nenhum erro no console. */
+  var caixa = document.getElementById("filmes");
+  if (caixa) {
+    caixa.addEventListener("click", function (ev) {
+      var alvo = ev.target.closest && ev.target.closest(".filme");
       if (!alvo) return;
       var v = alvo.querySelector("video");
       if (!v) return;
       if (v.paused) {
-        /* pausa os outros: dois vídeos tocando ao mesmo tempo não se entende */
-        caixaVideos.querySelectorAll("video").forEach(function (outro) {
-          if (outro !== v) { outro.pause(); }
-        });
-        caixaVideos.querySelectorAll("[data-vd]").forEach(function (c) {
-          if (c !== alvo) c.classList.remove("tocando");
-        });
+        caixa.querySelectorAll("video").forEach(function (o) { if (o !== v) o.pause(); });
+        caixa.querySelectorAll(".filme").forEach(function (c) { if (c !== alvo) c.classList.remove("tocando"); });
         v.muted = false;
         var p = v.play();
         if (p && p.catch) { p.catch(function () { v.muted = true; v.play(); }); }
@@ -790,36 +680,24 @@
   }
 
   /* ---------- qual caminho a pessoa escolheu ----------
-     A home não é página de venda e não dispara ViewContent (ver o comentário
-     no <head>). O que ela tem de próprio para medir é a ESCOLHA: qual dos cinco
-     programas recebeu o clique, e por qual porta a pessoa entrou. */
+     A home não é página de venda e não dispara ViewContent (ver o comentário do topo do arquivo). O que ela tem de próprio para medir é a ESCOLHA de caminho. */
   document.addEventListener("click", function (ev) {
     var a = ev.target.closest && ev.target.closest("a[data-prog]");
     if (!a) return;
     var prog = a.getAttribute("data-prog") || "";
-    try {
-      if (window.fbq) {
-        window.fbq("trackCustom", "EscolhaPrograma", { programa: prog, origem: "home" });
-      }
-    } catch (e) {}
-    try {
-      if (window.gtag) {
-        window.gtag("event", "select_program", { programa: prog, origem: "home" });
-      }
-    } catch (e) {}
+    try { if (window.fbq) window.fbq("trackCustom", "EscolhaPrograma", { programa: prog, origem: "home" }); } catch (e) {}
+    try { if (window.gtag) window.gtag("event", "select_program", { programa: prog, origem: "home" }); } catch (e) {}
   });
 
-  /* ---------- entrada suave dos blocos ---------- */
-  if ("IntersectionObserver" in window && !window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
-    var io = new IntersectionObserver(function (entradas) {
-      entradas.forEach(function (e) {
-        if (e.isIntersecting) { e.target.classList.add("in"); io.unobserve(e.target); }
-      });
-    }, { threshold: .12 });
-    document.querySelectorAll(".rota__op, .prog, .bio__foto, .apo__foto").forEach(function (el) {
-      el.classList.add("reveal");
-      io.observe(el);
-    });
+  /* ---------- entrada suave ---------- */
+  var suave = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  if ("IntersectionObserver" in window && !suave) {
+    var io = new IntersectionObserver(function (es) {
+      es.forEach(function (e) { if (e.isIntersecting) { e.target.classList.add("dentro"); io.unobserve(e.target); } });
+    }, { threshold: .1, rootMargin: "0px 0px -8% 0px" });
+    document.querySelectorAll(".sobe").forEach(function (el) { io.observe(el); });
+  } else {
+    document.querySelectorAll(".sobe").forEach(function (el) { el.classList.add("dentro"); });
   }
 })();
 </script>
