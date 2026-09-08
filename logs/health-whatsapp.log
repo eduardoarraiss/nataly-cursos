@@ -1,0 +1,12 @@
+2026-09-05 19:14
+ESTADO=caiu
+RESUMO=WhatsApp DESCONECTADO (estado: close)
+Reparear:  bash scripts/ops/parear-whatsapp.sh
+=== FIM DO HEALTH CHECK ===
+
+2026-09-05 19:24
+ESTADO=caiu
+RESUMO=WhatsApp DESCONECTADO (estado: close)
+Reparear:  bash scripts/ops/parear-whatsapp.sh
+=== FIM DO HEALTH CHECK ===
+

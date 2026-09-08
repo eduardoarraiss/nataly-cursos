@@ -5,3 +5,36 @@ ok    BMda0X4  R$197  (12× R$20,37)
 
 Todos os checkouts em uso estão ativos e com o preço certo.
 
+2026-09-02 12:22 | ERRO: puppeteer nao encontrado em /Users/eduardoarrais/Documents/HAUS/cases-apresentacao
+2026-09-02 12:22 | ERRO: puppeteer nao encontrado em /Users/eduardoarrais/Documents/HAUS/cases-apresentacao
+2026-09-02 12:25
+/Users/eduardoarrais/Documents/HAUS/cases-apresentacao/node_modules/puppeteer-core/lib/cjs/puppeteer/node/BrowserLauncher.js:343
+                    throw new Error(`Could not find Chrome (ver. ${this.puppeteer.browserVersion}). This can occur if either\n` +
+                          ^
+
+Error: Could not find Chrome (ver. 148.0.7778.97). This can occur if either
+ 1. you did not perform an installation before running the script (e.g. `npx puppeteer browsers install chrome`) or
+ 2. your cache path is incorrectly configured (which is: /Users/eduardoarrais/.cache/puppeteer).
+For (2), check out our guide on configuring puppeteer at https://pptr.dev/guides/configuration.
+    at ChromeLauncher.resolveExecutablePath (/Users/eduardoarrais/Documents/HAUS/cases-apresentacao/node_modules/puppeteer-core/lib/cjs/puppeteer/node/BrowserLauncher.js:343:27)
+    at ChromeLauncher.computeLaunchArguments (/Users/eduardoarrais/Documents/HAUS/cases-apresentacao/node_modules/puppeteer-core/lib/cjs/puppeteer/node/ChromeLauncher.js:94:24)
+    at async ChromeLauncher.launch (/Users/eduardoarrais/Documents/HAUS/cases-apresentacao/node_modules/puppeteer-core/lib/cjs/puppeteer/node/BrowserLauncher.js:91:28)
+    at async /Users/eduardoarrais/Documents/clientes/Nataly/site-cursos/scripts/health-checkouts.js:30:21
+
+Node.js v25.6.1
+
+2026-09-02 12:27
+ok    QOSVIDR  R$247  (12× R$25,55)
+ok    FfyBeg0  R$297  (12× R$30,72)
+ok    BMda0X4  R$197  (12× R$20,37)
+
+Todos os checkouts em uso estão ativos e com o preço certo.
+
+2026-09-04 09:10
+ok    QOSVIDR  R$247  (12× R$25,55)
+ok    FfyBeg0  R$297  (12× R$30,72)
+ok    BMda0X4  R$197  (12× R$20,37)
+ok    y1Pz2US  R$497  (12× R$51,40)
+
+Todos os checkouts em uso estão ativos e com o preço certo.
+

@@ -1,0 +1,409 @@
+2026-09-02T15:23:56.195Z | 9 passaram, 0 falharam (2.8s)
+2026-09-02T15:24:05.646Z | 1 passaram, 7 falharam (0.3s)
+    FALHA: PV /profissao-lash-presencial — HTTP 404 (esperado 200)
+    FALHA: Formulário /inscricao-presencial — HTTP 404 (esperado 200)
+    FALHA: API POST /api/lead-presencial — HTTP 405 (esperado 400 de validação) — corpo: <!doctype html><html lang="en"><head><title>Example Domain</title><link rel="icon" href="data:,"><meta name="viewport" content="width=device-width, initial-scale=1"><style>body{background:#eee;width:6
+    FALHA: /crm fechado sem sessão — HTTP 404 → (sem Location) (esperado 302 → /crm/entrar)
+    FALHA: Login /crm/entrar — HTTP 404 (esperado 200)
+    FALHA: Banco (via /crm/api/resumo) — PULADA: faltam MONITOR_CRM_USUARIO e MONITOR_CRM_SENHA no ambiente. Sem elas o monitor NÃO sabe dizer se o Postgres está de pé.
+    FALHA: VSL por Range — HTTP 404 (esperado 206). Em 01/09 este número foi 302 e o sintoma que apareceu foi "o vídeo não dá play".
+2026-09-02T15:24:21.765Z | 0 passaram, 8 falharam (0.3s)
+    FALHA: PV /profissao-lash-presencial — HTTP 404 (esperado 200)
+    FALHA: Formulário /inscricao-presencial — HTTP 404 (esperado 200)
+    FALHA: API POST /api/lead-presencial — HTTP 405 (esperado 400 de validação) — corpo: <!doctype html><html lang="en"><head><title>Example Domain</title><link rel="icon" href="data:,"><meta name="viewport" content="width=device-width, initial-scale=1"><style>body{background:#eee;width:6
+    FALHA: /crm fechado sem sessão — HTTP 404 → (sem Location) (esperado 302 → /crm/entrar)
+    FALHA: /crm/api/leads exige sessão — HTTP 404 (esperado 401). Não vazou, mas também não é o painel: provavelmente o router do funil não subiu.
+    FALHA: Login /crm/entrar — HTTP 404 (esperado 200)
+    FALHA: Banco (via /crm/api/resumo) — PULADA: faltam MONITOR_CRM_USUARIO e MONITOR_CRM_SENHA no ambiente. Sem elas o monitor NÃO sabe dizer se o Postgres está de pé.
+    FALHA: VSL por Range — HTTP 404 (esperado 206). Em 01/09 este número foi 302 e o sintoma que apareceu foi "o vídeo não dá play".
+2026-09-02T15:24:24.607Z | 9 passaram, 0 falharam (2.8s)
+2026-09-02T15:24:59.038Z | 9 passaram, 0 falharam (2.7s)
+2026-09-02T15:30:40.530Z | 9 passaram, 0 falharam (2.1s)
+2026-09-02T15:35:16.030Z | 8 passaram, 1 falharam (2.9s)
+    FALHA: API POST /api/lead-presencial — HTTP 429 (esperado 400 de validação) — corpo: {"ok":false,"erro":"limite","mensagem":"Você já enviou o formulário. A Nataly vai te chamar no WhatsApp."}
+2026-09-02T15:36:02.527Z | 10 passaram, 0 falharam (2.9s)
+2026-09-02T15:36:05.627Z | 10 passaram, 0 falharam (3.0s)
+2026-09-02T15:36:08.711Z | 10 passaram, 0 falharam (3.0s)
+2026-09-02T15:36:11.597Z | 10 passaram, 0 falharam (2.8s)
+2026-09-02T15:36:25.520Z | 10 passaram, 0 falharam (2.6s)
+2026-09-02T15:48:26.934Z | 10 passaram, 0 falharam (3.3s)
+2026-09-02T15:51:29.192Z | 10 passaram, 0 falharam (3.4s)
+2026-09-02T16:06:33.275Z | 10 passaram, 0 falharam (3.8s)
+2026-09-02T16:10:22.467Z | 10 passaram, 0 falharam (3.4s)
+2026-09-02T16:21:37.407Z | 10 passaram, 0 falharam (3.9s)
+2026-09-02T16:36:41.697Z | 10 passaram, 0 falharam (4.1s)
+2026-09-02T16:51:45.057Z | 10 passaram, 0 falharam (3.1s)
+2026-09-02T17:06:49.030Z | 10 passaram, 0 falharam (3.7s)
+2026-09-02T17:21:56.311Z | 10 passaram, 0 falharam (7.0s)
+2026-09-02T17:36:59.476Z | 10 passaram, 0 falharam (2.9s)
+2026-09-02T17:52:03.024Z | 10 passaram, 0 falharam (3.3s)
+2026-09-02T18:07:06.165Z | 10 passaram, 0 falharam (2.9s)
+2026-09-02T18:22:09.718Z | 10 passaram, 0 falharam (3.3s)
+2026-09-02T18:37:13.885Z | 10 passaram, 0 falharam (3.9s)
+2026-09-02T18:52:17.526Z | 10 passaram, 0 falharam (3.4s)
+2026-09-02T19:07:20.988Z | 10 passaram, 0 falharam (3.2s)
+2026-09-02T19:22:25.121Z | 10 passaram, 0 falharam (3.9s)
+2026-09-02T19:37:28.417Z | 10 passaram, 0 falharam (3.1s)
+2026-09-02T19:52:31.744Z | 10 passaram, 0 falharam (3.1s)
+2026-09-02T20:07:35.321Z | 10 passaram, 0 falharam (3.3s)
+2026-09-02T20:22:39.124Z | 10 passaram, 0 falharam (3.6s)
+2026-09-02T20:37:42.080Z | 10 passaram, 0 falharam (2.7s)
+2026-09-02T20:52:45.505Z | 10 passaram, 0 falharam (3.2s)
+2026-09-02T21:07:49.447Z | 10 passaram, 0 falharam (3.7s)
+2026-09-02T21:22:52.718Z | 10 passaram, 0 falharam (3.1s)
+2026-09-02T21:37:56.370Z | 10 passaram, 0 falharam (3.4s)
+2026-09-02T21:53:00.153Z | 10 passaram, 0 falharam (3.5s)
+2026-09-02T22:08:04.065Z | 10 passaram, 0 falharam (3.7s)
+2026-09-02T22:23:07.831Z | 10 passaram, 0 falharam (3.5s)
+2026-09-02T22:38:14.685Z | 10 passaram, 0 falharam (6.7s)
+2026-09-02T22:53:19.134Z | 10 passaram, 0 falharam (4.2s)
+2026-09-02T23:08:22.588Z | 10 passaram, 0 falharam (3.2s)
+2026-09-02T23:23:26.671Z | 10 passaram, 0 falharam (3.8s)
+2026-09-02T23:38:30.177Z | 10 passaram, 0 falharam (3.3s)
+2026-09-02T23:53:33.813Z | 10 passaram, 0 falharam (3.4s)
+2026-09-03T00:08:40.594Z | 10 passaram, 0 falharam (6.5s)
+2026-09-03T00:23:46.513Z | 10 passaram, 0 falharam (5.7s)
+2026-09-03T00:38:52.966Z | 10 passaram, 0 falharam (6.2s)
+2026-09-03T00:53:57.034Z | 10 passaram, 0 falharam (3.8s)
+2026-09-03T14:03:49.024Z | 10 passaram, 0 falharam (10.4s)
+2026-09-03T14:18:53.363Z | 10 passaram, 0 falharam (3.9s)
+2026-09-03T14:33:57.400Z | 10 passaram, 0 falharam (3.8s)
+2026-09-03T14:49:01.530Z | 10 passaram, 0 falharam (3.9s)
+2026-09-03T15:04:05.916Z | 10 passaram, 0 falharam (4.2s)
+2026-09-03T15:19:09.771Z | 10 passaram, 0 falharam (3.6s)
+2026-09-03T15:34:12.948Z | 10 passaram, 0 falharam (2.9s)
+2026-09-03T15:49:16.590Z | 10 passaram, 0 falharam (3.4s)
+2026-09-03T16:04:21.167Z | 10 passaram, 0 falharam (4.2s)
+2026-09-03T16:19:25.960Z | 10 passaram, 0 falharam (4.5s)
+2026-09-03T16:34:29.844Z | 10 passaram, 0 falharam (3.6s)
+2026-09-03T16:49:33.333Z | 10 passaram, 0 falharam (3.2s)
+2026-09-03T17:04:58.972Z | 10 passaram, 0 falharam (3.3s)
+2026-09-03T17:20:03.620Z | 10 passaram, 0 falharam (4.4s)
+2026-09-03T17:35:15.187Z | 10 passaram, 0 falharam (11.4s)
+2026-09-03T17:50:19.496Z | 10 passaram, 0 falharam (4.0s)
+2026-09-03T18:05:23.671Z | 10 passaram, 0 falharam (3.9s)
+2026-09-03T18:20:27.522Z | 10 passaram, 0 falharam (3.6s)
+2026-09-03T18:35:31.152Z | 10 passaram, 0 falharam (3.4s)
+2026-09-03T18:50:35.115Z | 10 passaram, 0 falharam (3.7s)
+2026-09-03T19:05:39.005Z | 10 passaram, 0 falharam (3.7s)
+2026-09-03T19:20:43.318Z | 10 passaram, 0 falharam (4.1s)
+2026-09-03T19:35:47.266Z | 10 passaram, 0 falharam (3.7s)
+2026-09-03T19:50:51.106Z | 10 passaram, 0 falharam (3.6s)
+2026-09-03T20:05:54.847Z | 10 passaram, 0 falharam (3.5s)
+2026-09-03T20:20:58.423Z | 10 passaram, 0 falharam (3.3s)
+2026-09-03T20:36:01.905Z | 10 passaram, 0 falharam (3.2s)
+2026-09-03T20:51:05.993Z | 10 passaram, 0 falharam (3.8s)
+2026-09-03T21:06:09.356Z | 10 passaram, 0 falharam (3.1s)
+2026-09-03T21:21:13.555Z | 10 passaram, 0 falharam (3.9s)
+2026-09-03T21:36:17.050Z | 10 passaram, 0 falharam (3.1s)
+2026-09-03T21:51:21.085Z | 10 passaram, 0 falharam (3.8s)
+2026-09-03T22:06:25.360Z | 10 passaram, 0 falharam (4.0s)
+2026-09-03T22:21:28.989Z | 10 passaram, 0 falharam (3.3s)
+2026-09-03T22:36:33.162Z | 10 passaram, 0 falharam (3.9s)
+2026-09-03T22:51:37.217Z | 10 passaram, 0 falharam (3.8s)
+2026-09-03T23:06:41.066Z | 10 passaram, 0 falharam (3.6s)
+2026-09-03T23:21:45.264Z | 10 passaram, 0 falharam (3.9s)
+2026-09-03T23:36:49.305Z | 10 passaram, 0 falharam (3.8s)
+2026-09-03T23:51:53.648Z | 10 passaram, 0 falharam (4.1s)
+2026-09-04T00:06:57.689Z | 10 passaram, 0 falharam (3.8s)
+2026-09-04T00:22:01.506Z | 10 passaram, 0 falharam (3.6s)
+2026-09-04T00:56:41.138Z | 10 passaram, 0 falharam (3.8s)
+2026-09-04T10:51:30.199Z | 10 passaram, 0 falharam (6.4s)
+2026-09-04T11:06:33.672Z | 10 passaram, 0 falharam (3.2s)
+2026-09-04T11:21:36.871Z | 10 passaram, 0 falharam (3.0s)
+2026-09-04T11:36:40.720Z | 10 passaram, 0 falharam (3.7s)
+2026-09-04T11:51:44.070Z | 10 passaram, 0 falharam (3.1s)
+2026-09-04T12:06:48.087Z | 10 passaram, 0 falharam (3.8s)
+2026-09-04T12:21:51.589Z | 10 passaram, 0 falharam (3.3s)
+2026-09-04T12:36:56.009Z | 10 passaram, 0 falharam (4.2s)
+2026-09-04T12:51:59.376Z | 10 passaram, 0 falharam (3.1s)
+2026-09-04T13:07:02.676Z | 10 passaram, 0 falharam (3.1s)
+2026-09-04T13:22:06.680Z | 10 passaram, 0 falharam (3.8s)
+2026-09-04T13:37:10.360Z | 10 passaram, 0 falharam (3.5s)
+2026-09-04T13:52:14.318Z | 10 passaram, 0 falharam (3.8s)
+2026-09-04T14:07:18.334Z | 10 passaram, 0 falharam (3.8s)
+2026-09-04T14:22:22.879Z | 10 passaram, 0 falharam (4.4s)
+2026-09-04T14:37:26.837Z | 10 passaram, 0 falharam (3.7s)
+2026-09-04T14:52:31.436Z | 10 passaram, 0 falharam (4.4s)
+2026-09-04T15:07:35.439Z | 10 passaram, 0 falharam (3.7s)
+2026-09-04T15:22:39.368Z | 10 passaram, 0 falharam (3.7s)
+2026-09-04T15:37:42.668Z | 10 passaram, 0 falharam (3.1s)
+2026-09-04T15:52:46.150Z | 10 passaram, 0 falharam (3.3s)
+2026-09-04T16:07:49.527Z | 10 passaram, 0 falharam (3.2s)
+2026-09-04T16:22:53.359Z | 10 passaram, 0 falharam (3.6s)
+2026-09-04T16:37:57.073Z | 10 passaram, 0 falharam (3.5s)
+2026-09-04T16:53:27.023Z | 10 passaram, 0 falharam (29.7s)
+2026-09-04T17:08:31.262Z | 10 passaram, 0 falharam (4.0s)
+2026-09-04T17:23:34.785Z | 10 passaram, 0 falharam (3.3s)
+2026-09-04T17:38:39.156Z | 10 passaram, 0 falharam (4.1s)
+2026-09-04T17:53:43.445Z | 10 passaram, 0 falharam (4.1s)
+2026-09-04T18:08:47.246Z | 10 passaram, 0 falharam (3.6s)
+2026-09-04T18:23:51.015Z | 10 passaram, 0 falharam (3.6s)
+2026-09-04T18:38:58.135Z | 10 passaram, 0 falharam (6.9s)
+2026-09-04T18:54:01.393Z | 10 passaram, 0 falharam (3.1s)
+2026-09-04T19:09:05.065Z | 10 passaram, 0 falharam (3.5s)
+2026-09-04T19:24:09.402Z | 10 passaram, 0 falharam (4.1s)
+2026-09-04T19:39:12.782Z | 10 passaram, 0 falharam (3.2s)
+2026-09-04T19:54:17.805Z | 10 passaram, 0 falharam (4.8s)
+2026-09-04T20:09:21.972Z | 10 passaram, 0 falharam (4.0s)
+2026-09-04T20:24:25.602Z | 10 passaram, 0 falharam (3.4s)
+2026-09-04T20:39:29.660Z | 10 passaram, 0 falharam (3.8s)
+2026-09-04T20:54:33.162Z | 10 passaram, 0 falharam (3.3s)
+2026-09-04T21:09:37.327Z | 10 passaram, 0 falharam (3.9s)
+2026-09-04T21:24:42.885Z | 10 passaram, 0 falharam (5.3s)
+2026-09-04T21:39:46.220Z | 10 passaram, 0 falharam (3.1s)
+2026-09-04T21:54:50.379Z | 10 passaram, 0 falharam (3.9s)
+2026-09-04T22:09:54.210Z | 10 passaram, 0 falharam (3.4s)
+2026-09-04T22:24:57.873Z | 10 passaram, 0 falharam (3.4s)
+2026-09-05T20:47:25.558Z | 10 passaram, 0 falharam (8.3s)
+2026-09-05T21:02:29.665Z | 10 passaram, 0 falharam (3.9s)
+2026-09-05T21:17:32.509Z | 10 passaram, 0 falharam (2.6s)
+2026-09-05T21:32:35.827Z | 10 passaram, 0 falharam (3.1s)
+2026-09-05T21:47:39.688Z | 10 passaram, 0 falharam (3.6s)
+2026-09-05T22:02:43.421Z | 10 passaram, 0 falharam (3.6s)
+2026-09-05T22:17:46.814Z | 10 passaram, 0 falharam (3.2s)
+2026-09-05T22:32:49.882Z | 10 passaram, 0 falharam (2.8s)
+2026-09-05T22:47:53.226Z | 10 passaram, 0 falharam (3.1s)
+2026-09-05T23:02:57.085Z | 9 passaram, 1 falharam (3.6s)
+    FALHA: Fila de avisos do WhatsApp — 2 aviso(s) não enviado(s) — a Nataly não está sendo avisada dos leads. Ver /crm, seção de avisos, botão de reenviar.
+2026-09-05T23:17:59.978Z | 9 passaram, 1 falharam (2.7s)
+    FALHA: Fila de avisos do WhatsApp — 2 aviso(s) não enviado(s) — a Nataly não está sendo avisada dos leads. Ver /crm, seção de avisos, botão de reenviar.
+2026-09-05T23:33:03.266Z | 9 passaram, 1 falharam (3.0s)
+    FALHA: Fila de avisos do WhatsApp — 2 aviso(s) não enviado(s) — a Nataly não está sendo avisada dos leads. Ver /crm, seção de avisos, botão de reenviar.
+2026-09-05T23:48:05.992Z | 9 passaram, 1 falharam (2.5s)
+    FALHA: Fila de avisos do WhatsApp — 2 aviso(s) não enviado(s) — a Nataly não está sendo avisada dos leads. Ver /crm, seção de avisos, botão de reenviar.
+2026-09-06T00:03:08.980Z | 9 passaram, 1 falharam (2.8s)
+    FALHA: Fila de avisos do WhatsApp — 2 aviso(s) não enviado(s) — a Nataly não está sendo avisada dos leads. Ver /crm, seção de avisos, botão de reenviar.
+2026-09-06T14:54:55.182Z | 9 passaram, 1 falharam (6.2s)
+    FALHA: Fila de avisos do WhatsApp — 2 aviso(s) não enviado(s) — a Nataly não está sendo avisada dos leads. Ver /crm, seção de avisos, botão de reenviar.
+2026-09-06T15:09:59.589Z | 9 passaram, 1 falharam (4.1s)
+    FALHA: Fila de avisos do WhatsApp — 3 aviso(s) não enviado(s) — a Nataly não está sendo avisada dos leads. Ver /crm, seção de avisos, botão de reenviar.
+2026-09-06T15:25:03.442Z | 9 passaram, 1 falharam (3.6s)
+    FALHA: Fila de avisos do WhatsApp — 3 aviso(s) não enviado(s) — a Nataly não está sendo avisada dos leads. Ver /crm, seção de avisos, botão de reenviar.
+2026-09-06T15:40:07.091Z | 9 passaram, 1 falharam (3.4s)
+    FALHA: Fila de avisos do WhatsApp — 3 aviso(s) não enviado(s) — a Nataly não está sendo avisada dos leads. Ver /crm, seção de avisos, botão de reenviar.
+2026-09-06T15:55:10.368Z | 9 passaram, 1 falharam (3.0s)
+    FALHA: Fila de avisos do WhatsApp — 3 aviso(s) não enviado(s) — a Nataly não está sendo avisada dos leads. Ver /crm, seção de avisos, botão de reenviar.
+2026-09-06T16:10:14.190Z | 9 passaram, 1 falharam (3.7s)
+    FALHA: Fila de avisos do WhatsApp — 3 aviso(s) não enviado(s) — a Nataly não está sendo avisada dos leads. Ver /crm, seção de avisos, botão de reenviar.
+2026-09-06T16:25:16.908Z | 9 passaram, 1 falharam (2.5s)
+    FALHA: Fila de avisos do WhatsApp — 3 aviso(s) não enviado(s) — a Nataly não está sendo avisada dos leads. Ver /crm, seção de avisos, botão de reenviar.
+2026-09-06T16:40:20.562Z | 9 passaram, 1 falharam (3.4s)
+    FALHA: Fila de avisos do WhatsApp — 3 aviso(s) não enviado(s) — a Nataly não está sendo avisada dos leads. Ver /crm, seção de avisos, botão de reenviar.
+2026-09-06T16:55:24.433Z | 9 passaram, 1 falharam (3.6s)
+    FALHA: Fila de avisos do WhatsApp — 3 aviso(s) não enviado(s) — a Nataly não está sendo avisada dos leads. Ver /crm, seção de avisos, botão de reenviar.
+2026-09-06T17:10:28.261Z | 9 passaram, 1 falharam (3.6s)
+    FALHA: Fila de avisos do WhatsApp — 3 aviso(s) não enviado(s) — a Nataly não está sendo avisada dos leads. Ver /crm, seção de avisos, botão de reenviar.
+2026-09-06T17:25:31.174Z | 9 passaram, 1 falharam (2.7s)
+    FALHA: Fila de avisos do WhatsApp — 3 aviso(s) não enviado(s) — a Nataly não está sendo avisada dos leads. Ver /crm, seção de avisos, botão de reenviar.
+2026-09-06T17:40:34.942Z | 9 passaram, 1 falharam (3.6s)
+    FALHA: Fila de avisos do WhatsApp — 3 aviso(s) não enviado(s) — a Nataly não está sendo avisada dos leads. Ver /crm, seção de avisos, botão de reenviar.
+2026-09-06T17:55:38.839Z | 9 passaram, 1 falharam (3.7s)
+    FALHA: Fila de avisos do WhatsApp — 3 aviso(s) não enviado(s) — a Nataly não está sendo avisada dos leads. Ver /crm, seção de avisos, botão de reenviar.
+2026-09-06T18:10:42.565Z | 9 passaram, 1 falharam (3.5s)
+    FALHA: Fila de avisos do WhatsApp — 3 aviso(s) não enviado(s) — a Nataly não está sendo avisada dos leads. Ver /crm, seção de avisos, botão de reenviar.
+2026-09-06T18:25:45.783Z | 9 passaram, 1 falharam (3.0s)
+    FALHA: Fila de avisos do WhatsApp — 3 aviso(s) não enviado(s) — a Nataly não está sendo avisada dos leads. Ver /crm, seção de avisos, botão de reenviar.
+2026-09-06T18:40:49.711Z | 9 passaram, 1 falharam (3.6s)
+    FALHA: Fila de avisos do WhatsApp — 3 aviso(s) não enviado(s) — a Nataly não está sendo avisada dos leads. Ver /crm, seção de avisos, botão de reenviar.
+2026-09-06T18:55:53.323Z | 9 passaram, 1 falharam (3.4s)
+    FALHA: Fila de avisos do WhatsApp — 3 aviso(s) não enviado(s) — a Nataly não está sendo avisada dos leads. Ver /crm, seção de avisos, botão de reenviar.
+2026-09-06T19:10:57.111Z | 9 passaram, 1 falharam (3.5s)
+    FALHA: Fila de avisos do WhatsApp — 3 aviso(s) não enviado(s) — a Nataly não está sendo avisada dos leads. Ver /crm, seção de avisos, botão de reenviar.
+2026-09-06T19:26:00.129Z | 9 passaram, 1 falharam (2.8s)
+    FALHA: Fila de avisos do WhatsApp — 3 aviso(s) não enviado(s) — a Nataly não está sendo avisada dos leads. Ver /crm, seção de avisos, botão de reenviar.
+2026-09-06T19:41:03.378Z | 9 passaram, 1 falharam (3.0s)
+    FALHA: Fila de avisos do WhatsApp — 3 aviso(s) não enviado(s) — a Nataly não está sendo avisada dos leads. Ver /crm, seção de avisos, botão de reenviar.
+2026-09-06T19:56:07.213Z | 9 passaram, 1 falharam (3.6s)
+    FALHA: Fila de avisos do WhatsApp — 3 aviso(s) não enviado(s) — a Nataly não está sendo avisada dos leads. Ver /crm, seção de avisos, botão de reenviar.
+2026-09-06T20:11:11.450Z | 9 passaram, 1 falharam (4.0s)
+    FALHA: Fila de avisos do WhatsApp — 3 aviso(s) não enviado(s) — a Nataly não está sendo avisada dos leads. Ver /crm, seção de avisos, botão de reenviar.
+2026-09-06T20:26:15.336Z | 9 passaram, 1 falharam (3.6s)
+    FALHA: Fila de avisos do WhatsApp — 3 aviso(s) não enviado(s) — a Nataly não está sendo avisada dos leads. Ver /crm, seção de avisos, botão de reenviar.
+2026-09-06T20:41:19.471Z | 9 passaram, 1 falharam (3.9s)
+    FALHA: Fila de avisos do WhatsApp — 3 aviso(s) não enviado(s) — a Nataly não está sendo avisada dos leads. Ver /crm, seção de avisos, botão de reenviar.
+2026-09-06T20:56:23.234Z | 9 passaram, 1 falharam (3.5s)
+    FALHA: Fila de avisos do WhatsApp — 3 aviso(s) não enviado(s) — a Nataly não está sendo avisada dos leads. Ver /crm, seção de avisos, botão de reenviar.
+2026-09-06T21:11:26.521Z | 9 passaram, 1 falharam (3.1s)
+    FALHA: Fila de avisos do WhatsApp — 3 aviso(s) não enviado(s) — a Nataly não está sendo avisada dos leads. Ver /crm, seção de avisos, botão de reenviar.
+2026-09-06T21:26:29.516Z | 9 passaram, 1 falharam (2.8s)
+    FALHA: Fila de avisos do WhatsApp — 3 aviso(s) não enviado(s) — a Nataly não está sendo avisada dos leads. Ver /crm, seção de avisos, botão de reenviar.
+2026-09-06T21:41:32.898Z | 9 passaram, 1 falharam (3.1s)
+    FALHA: Fila de avisos do WhatsApp — 3 aviso(s) não enviado(s) — a Nataly não está sendo avisada dos leads. Ver /crm, seção de avisos, botão de reenviar.
+2026-09-06T21:56:36.501Z | 9 passaram, 1 falharam (3.4s)
+    FALHA: Fila de avisos do WhatsApp — 3 aviso(s) não enviado(s) — a Nataly não está sendo avisada dos leads. Ver /crm, seção de avisos, botão de reenviar.
+2026-09-06T22:11:40.368Z | 9 passaram, 1 falharam (3.6s)
+    FALHA: Fila de avisos do WhatsApp — 3 aviso(s) não enviado(s) — a Nataly não está sendo avisada dos leads. Ver /crm, seção de avisos, botão de reenviar.
+2026-09-06T22:26:44.120Z | 9 passaram, 1 falharam (3.5s)
+    FALHA: Fila de avisos do WhatsApp — 3 aviso(s) não enviado(s) — a Nataly não está sendo avisada dos leads. Ver /crm, seção de avisos, botão de reenviar.
+2026-09-06T22:41:48.026Z | 9 passaram, 1 falharam (3.7s)
+    FALHA: Fila de avisos do WhatsApp — 3 aviso(s) não enviado(s) — a Nataly não está sendo avisada dos leads. Ver /crm, seção de avisos, botão de reenviar.
+2026-09-06T22:56:51.005Z | 9 passaram, 1 falharam (2.8s)
+    FALHA: Fila de avisos do WhatsApp — 3 aviso(s) não enviado(s) — a Nataly não está sendo avisada dos leads. Ver /crm, seção de avisos, botão de reenviar.
+2026-09-06T23:11:54.376Z | 9 passaram, 1 falharam (3.2s)
+    FALHA: Fila de avisos do WhatsApp — 3 aviso(s) não enviado(s) — a Nataly não está sendo avisada dos leads. Ver /crm, seção de avisos, botão de reenviar.
+2026-09-06T23:26:57.435Z | 9 passaram, 1 falharam (2.8s)
+    FALHA: Fila de avisos do WhatsApp — 3 aviso(s) não enviado(s) — a Nataly não está sendo avisada dos leads. Ver /crm, seção de avisos, botão de reenviar.
+2026-09-06T23:42:01.223Z | 9 passaram, 1 falharam (3.6s)
+    FALHA: Fila de avisos do WhatsApp — 3 aviso(s) não enviado(s) — a Nataly não está sendo avisada dos leads. Ver /crm, seção de avisos, botão de reenviar.
+2026-09-06T23:57:04.661Z | 9 passaram, 1 falharam (3.2s)
+    FALHA: Fila de avisos do WhatsApp — 3 aviso(s) não enviado(s) — a Nataly não está sendo avisada dos leads. Ver /crm, seção de avisos, botão de reenviar.
+2026-09-07T00:12:08.770Z | 9 passaram, 1 falharam (3.9s)
+    FALHA: Fila de avisos do WhatsApp — 3 aviso(s) não enviado(s) — a Nataly não está sendo avisada dos leads. Ver /crm, seção de avisos, botão de reenviar.
+2026-09-07T00:27:12.119Z | 9 passaram, 1 falharam (3.1s)
+    FALHA: Fila de avisos do WhatsApp — 3 aviso(s) não enviado(s) — a Nataly não está sendo avisada dos leads. Ver /crm, seção de avisos, botão de reenviar.
+2026-09-07T00:42:16.105Z | 9 passaram, 1 falharam (3.8s)
+    FALHA: Fila de avisos do WhatsApp — 3 aviso(s) não enviado(s) — a Nataly não está sendo avisada dos leads. Ver /crm, seção de avisos, botão de reenviar.
+2026-09-07T00:57:20.173Z | 9 passaram, 1 falharam (3.8s)
+    FALHA: Fila de avisos do WhatsApp — 3 aviso(s) não enviado(s) — a Nataly não está sendo avisada dos leads. Ver /crm, seção de avisos, botão de reenviar.
+2026-09-07T01:12:23.921Z | 9 passaram, 1 falharam (3.5s)
+    FALHA: Fila de avisos do WhatsApp — 3 aviso(s) não enviado(s) — a Nataly não está sendo avisada dos leads. Ver /crm, seção de avisos, botão de reenviar.
+2026-09-07T01:27:27.435Z | 9 passaram, 1 falharam (3.3s)
+    FALHA: Fila de avisos do WhatsApp — 3 aviso(s) não enviado(s) — a Nataly não está sendo avisada dos leads. Ver /crm, seção de avisos, botão de reenviar.
+2026-09-07T01:42:31.254Z | 9 passaram, 1 falharam (3.6s)
+    FALHA: Fila de avisos do WhatsApp — 3 aviso(s) não enviado(s) — a Nataly não está sendo avisada dos leads. Ver /crm, seção de avisos, botão de reenviar.
+2026-09-07T01:57:34.384Z | 9 passaram, 1 falharam (2.9s)
+    FALHA: Fila de avisos do WhatsApp — 3 aviso(s) não enviado(s) — a Nataly não está sendo avisada dos leads. Ver /crm, seção de avisos, botão de reenviar.
+2026-09-07T02:12:37.424Z | 9 passaram, 1 falharam (2.8s)
+    FALHA: Fila de avisos do WhatsApp — 3 aviso(s) não enviado(s) — a Nataly não está sendo avisada dos leads. Ver /crm, seção de avisos, botão de reenviar.
+2026-09-07T14:18:46.156Z | 9 passaram, 1 falharam (5.1s)
+    FALHA: Fila de avisos do WhatsApp — 3 aviso(s) não enviado(s) — a Nataly não está sendo avisada dos leads. Ver /crm, seção de avisos, botão de reenviar.
+2026-09-07T14:32:01.281Z | 8 passaram, 1 falharam (2.2s)
+    FALHA: Banco (via /crm/api/resumo) — PULADA: faltam MONITOR_CRM_USUARIO e MONITOR_CRM_SENHA no ambiente. Sem elas o monitor NÃO sabe dizer se o Postgres está de pé.
+2026-09-07T14:32:16.750Z | 9 passaram, 1 falharam (3.5s)
+    FALHA: Fila de avisos do WhatsApp — 3 aviso(s) não enviado(s) — a Nataly não está sendo avisada dos leads. Ver /crm, seção de avisos, botão de reenviar.
+2026-09-07T14:33:49.802Z | 9 passaram, 1 falharam (3.3s)
+    FALHA: Fila de avisos do WhatsApp — 3 aviso(s) não enviado(s) — a Nataly não está sendo avisada dos leads. Ver /crm, seção de avisos, botão de reenviar.
+2026-09-07T14:48:53.171Z | 9 passaram, 1 falharam (3.1s)
+    FALHA: Fila de avisos do WhatsApp — 3 aviso(s) não enviado(s) — a Nataly não está sendo avisada dos leads. Ver /crm, seção de avisos, botão de reenviar.
+2026-09-07T15:03:56.727Z | 9 passaram, 1 falharam (3.3s)
+    FALHA: Fila de avisos do WhatsApp — 3 aviso(s) não enviado(s) — a Nataly não está sendo avisada dos leads. Ver /crm, seção de avisos, botão de reenviar.
+2026-09-07T15:19:00.080Z | 9 passaram, 1 falharam (3.1s)
+    FALHA: Fila de avisos do WhatsApp — 3 aviso(s) não enviado(s) — a Nataly não está sendo avisada dos leads. Ver /crm, seção de avisos, botão de reenviar.
+2026-09-07T15:34:03.404Z | 9 passaram, 1 falharam (3.1s)
+    FALHA: Fila de avisos do WhatsApp — 3 aviso(s) não enviado(s) — a Nataly não está sendo avisada dos leads. Ver /crm, seção de avisos, botão de reenviar.
+2026-09-07T15:49:07.750Z | 9 passaram, 1 falharam (4.1s)
+    FALHA: Fila de avisos do WhatsApp — 3 aviso(s) não enviado(s) — a Nataly não está sendo avisada dos leads. Ver /crm, seção de avisos, botão de reenviar.
+2026-09-07T16:04:11.981Z | 9 passaram, 1 falharam (4.0s)
+    FALHA: Fila de avisos do WhatsApp — 3 aviso(s) não enviado(s) — a Nataly não está sendo avisada dos leads. Ver /crm, seção de avisos, botão de reenviar.
+2026-09-07T16:19:15.447Z | 9 passaram, 1 falharam (3.2s)
+    FALHA: Fila de avisos do WhatsApp — 3 aviso(s) não enviado(s) — a Nataly não está sendo avisada dos leads. Ver /crm, seção de avisos, botão de reenviar.
+2026-09-07T16:34:18.755Z | 9 passaram, 1 falharam (3.1s)
+    FALHA: Fila de avisos do WhatsApp — 3 aviso(s) não enviado(s) — a Nataly não está sendo avisada dos leads. Ver /crm, seção de avisos, botão de reenviar.
+2026-09-07T16:49:22.886Z | 9 passaram, 1 falharam (3.9s)
+    FALHA: Fila de avisos do WhatsApp — 3 aviso(s) não enviado(s) — a Nataly não está sendo avisada dos leads. Ver /crm, seção de avisos, botão de reenviar.
+2026-09-07T17:04:26.726Z | 9 passaram, 1 falharam (3.6s)
+    FALHA: Fila de avisos do WhatsApp — 3 aviso(s) não enviado(s) — a Nataly não está sendo avisada dos leads. Ver /crm, seção de avisos, botão de reenviar.
+2026-09-07T17:19:30.530Z | 9 passaram, 1 falharam (3.5s)
+    FALHA: Fila de avisos do WhatsApp — 3 aviso(s) não enviado(s) — a Nataly não está sendo avisada dos leads. Ver /crm, seção de avisos, botão de reenviar.
+2026-09-07T17:34:34.505Z | 9 passaram, 1 falharam (3.7s)
+    FALHA: Fila de avisos do WhatsApp — 3 aviso(s) não enviado(s) — a Nataly não está sendo avisada dos leads. Ver /crm, seção de avisos, botão de reenviar.
+2026-09-07T17:49:37.535Z | 9 passaram, 1 falharam (2.8s)
+    FALHA: Fila de avisos do WhatsApp — 3 aviso(s) não enviado(s) — a Nataly não está sendo avisada dos leads. Ver /crm, seção de avisos, botão de reenviar.
+2026-09-07T18:04:40.978Z | 9 passaram, 1 falharam (3.2s)
+    FALHA: Fila de avisos do WhatsApp — 3 aviso(s) não enviado(s) — a Nataly não está sendo avisada dos leads. Ver /crm, seção de avisos, botão de reenviar.
+2026-09-07T18:19:45.238Z | 9 passaram, 1 falharam (4.0s)
+    FALHA: Fila de avisos do WhatsApp — 3 aviso(s) não enviado(s) — a Nataly não está sendo avisada dos leads. Ver /crm, seção de avisos, botão de reenviar.
+2026-09-07T18:34:49.370Z | 9 passaram, 1 falharam (3.9s)
+    FALHA: Fila de avisos do WhatsApp — 3 aviso(s) não enviado(s) — a Nataly não está sendo avisada dos leads. Ver /crm, seção de avisos, botão de reenviar.
+2026-09-07T18:49:52.385Z | 9 passaram, 1 falharam (2.8s)
+    FALHA: Fila de avisos do WhatsApp — 3 aviso(s) não enviado(s) — a Nataly não está sendo avisada dos leads. Ver /crm, seção de avisos, botão de reenviar.
+2026-09-07T19:04:55.785Z | 9 passaram, 1 falharam (3.2s)
+    FALHA: Fila de avisos do WhatsApp — 3 aviso(s) não enviado(s) — a Nataly não está sendo avisada dos leads. Ver /crm, seção de avisos, botão de reenviar.
+2026-09-07T19:19:59.358Z | 9 passaram, 1 falharam (3.4s)
+    FALHA: Fila de avisos do WhatsApp — 3 aviso(s) não enviado(s) — a Nataly não está sendo avisada dos leads. Ver /crm, seção de avisos, botão de reenviar.
+2026-09-07T19:35:02.936Z | 9 passaram, 1 falharam (3.3s)
+    FALHA: Fila de avisos do WhatsApp — 3 aviso(s) não enviado(s) — a Nataly não está sendo avisada dos leads. Ver /crm, seção de avisos, botão de reenviar.
+2026-09-07T19:50:06.452Z | 9 passaram, 1 falharam (3.3s)
+    FALHA: Fila de avisos do WhatsApp — 3 aviso(s) não enviado(s) — a Nataly não está sendo avisada dos leads. Ver /crm, seção de avisos, botão de reenviar.
+2026-09-07T20:05:10.590Z | 9 passaram, 1 falharam (3.9s)
+    FALHA: Fila de avisos do WhatsApp — 3 aviso(s) não enviado(s) — a Nataly não está sendo avisada dos leads. Ver /crm, seção de avisos, botão de reenviar.
+2026-09-07T20:20:14.164Z | 9 passaram, 1 falharam (3.3s)
+    FALHA: Fila de avisos do WhatsApp — 3 aviso(s) não enviado(s) — a Nataly não está sendo avisada dos leads. Ver /crm, seção de avisos, botão de reenviar.
+2026-09-07T20:35:18.459Z | 9 passaram, 1 falharam (4.0s)
+    FALHA: Fila de avisos do WhatsApp — 3 aviso(s) não enviado(s) — a Nataly não está sendo avisada dos leads. Ver /crm, seção de avisos, botão de reenviar.
+2026-09-07T20:50:25.653Z | 9 passaram, 1 falharam (6.9s)
+    FALHA: Fila de avisos do WhatsApp — 3 aviso(s) não enviado(s) — a Nataly não está sendo avisada dos leads. Ver /crm, seção de avisos, botão de reenviar.
+2026-09-07T21:05:29.260Z | 9 passaram, 1 falharam (3.3s)
+    FALHA: Fila de avisos do WhatsApp — 3 aviso(s) não enviado(s) — a Nataly não está sendo avisada dos leads. Ver /crm, seção de avisos, botão de reenviar.
+2026-09-07T21:20:33.131Z | 9 passaram, 1 falharam (3.6s)
+    FALHA: Fila de avisos do WhatsApp — 3 aviso(s) não enviado(s) — a Nataly não está sendo avisada dos leads. Ver /crm, seção de avisos, botão de reenviar.
+2026-09-07T21:35:37.407Z | 9 passaram, 1 falharam (4.0s)
+    FALHA: Fila de avisos do WhatsApp — 3 aviso(s) não enviado(s) — a Nataly não está sendo avisada dos leads. Ver /crm, seção de avisos, botão de reenviar.
+2026-09-07T21:50:41.588Z | 9 passaram, 1 falharam (3.9s)
+    FALHA: Fila de avisos do WhatsApp — 3 aviso(s) não enviado(s) — a Nataly não está sendo avisada dos leads. Ver /crm, seção de avisos, botão de reenviar.
+2026-09-07T22:05:44.753Z | 9 passaram, 1 falharam (2.9s)
+    FALHA: Fila de avisos do WhatsApp — 3 aviso(s) não enviado(s) — a Nataly não está sendo avisada dos leads. Ver /crm, seção de avisos, botão de reenviar.
+2026-09-07T22:20:49.127Z | 9 passaram, 1 falharam (4.1s)
+    FALHA: Fila de avisos do WhatsApp — 3 aviso(s) não enviado(s) — a Nataly não está sendo avisada dos leads. Ver /crm, seção de avisos, botão de reenviar.
+2026-09-07T22:35:53.186Z | 9 passaram, 1 falharam (3.8s)
+    FALHA: Fila de avisos do WhatsApp — 3 aviso(s) não enviado(s) — a Nataly não está sendo avisada dos leads. Ver /crm, seção de avisos, botão de reenviar.
+2026-09-07T22:50:57.478Z | 9 passaram, 1 falharam (4.0s)
+    FALHA: Fila de avisos do WhatsApp — 3 aviso(s) não enviado(s) — a Nataly não está sendo avisada dos leads. Ver /crm, seção de avisos, botão de reenviar.
+2026-09-07T23:06:00.883Z | 9 passaram, 1 falharam (3.1s)
+    FALHA: Fila de avisos do WhatsApp — 3 aviso(s) não enviado(s) — a Nataly não está sendo avisada dos leads. Ver /crm, seção de avisos, botão de reenviar.
+2026-09-07T23:21:04.803Z | 9 passaram, 1 falharam (3.6s)
+    FALHA: Fila de avisos do WhatsApp — 3 aviso(s) não enviado(s) — a Nataly não está sendo avisada dos leads. Ver /crm, seção de avisos, botão de reenviar.
+2026-09-07T23:36:08.335Z | 9 passaram, 1 falharam (3.3s)
+    FALHA: Fila de avisos do WhatsApp — 3 aviso(s) não enviado(s) — a Nataly não está sendo avisada dos leads. Ver /crm, seção de avisos, botão de reenviar.
+2026-09-07T23:51:11.497Z | 9 passaram, 1 falharam (3.0s)
+    FALHA: Fila de avisos do WhatsApp — 3 aviso(s) não enviado(s) — a Nataly não está sendo avisada dos leads. Ver /crm, seção de avisos, botão de reenviar.
+2026-09-08T00:06:14.636Z | 9 passaram, 1 falharam (2.9s)
+    FALHA: Fila de avisos do WhatsApp — 3 aviso(s) não enviado(s) — a Nataly não está sendo avisada dos leads. Ver /crm, seção de avisos, botão de reenviar.
+2026-09-08T00:21:18.556Z | 9 passaram, 1 falharam (3.7s)
+    FALHA: Fila de avisos do WhatsApp — 3 aviso(s) não enviado(s) — a Nataly não está sendo avisada dos leads. Ver /crm, seção de avisos, botão de reenviar.
+2026-09-08T00:36:22.330Z | 9 passaram, 1 falharam (3.5s)
+    FALHA: Fila de avisos do WhatsApp — 3 aviso(s) não enviado(s) — a Nataly não está sendo avisada dos leads. Ver /crm, seção de avisos, botão de reenviar.
+2026-09-08T00:51:25.844Z | 9 passaram, 1 falharam (3.3s)
+    FALHA: Fila de avisos do WhatsApp — 3 aviso(s) não enviado(s) — a Nataly não está sendo avisada dos leads. Ver /crm, seção de avisos, botão de reenviar.
+2026-09-08T01:06:29.669Z | 9 passaram, 1 falharam (3.6s)
+    FALHA: Fila de avisos do WhatsApp — 3 aviso(s) não enviado(s) — a Nataly não está sendo avisada dos leads. Ver /crm, seção de avisos, botão de reenviar.
+2026-09-08T01:21:33.316Z | 9 passaram, 1 falharam (3.4s)
+    FALHA: Fila de avisos do WhatsApp — 3 aviso(s) não enviado(s) — a Nataly não está sendo avisada dos leads. Ver /crm, seção de avisos, botão de reenviar.
+2026-09-08T01:36:37.674Z | 9 passaram, 1 falharam (4.1s)
+    FALHA: Fila de avisos do WhatsApp — 3 aviso(s) não enviado(s) — a Nataly não está sendo avisada dos leads. Ver /crm, seção de avisos, botão de reenviar.
+2026-09-08T01:51:41.027Z | 9 passaram, 1 falharam (3.1s)
+    FALHA: Fila de avisos do WhatsApp — 3 aviso(s) não enviado(s) — a Nataly não está sendo avisada dos leads. Ver /crm, seção de avisos, botão de reenviar.
+2026-09-08T02:06:44.886Z | 9 passaram, 1 falharam (3.6s)
+    FALHA: Fila de avisos do WhatsApp — 3 aviso(s) não enviado(s) — a Nataly não está sendo avisada dos leads. Ver /crm, seção de avisos, botão de reenviar.
+2026-09-08T13:33:41.687Z | 9 passaram, 1 falharam (7.5s)
+    FALHA: Fila de avisos do WhatsApp — 3 aviso(s) não enviado(s) — a Nataly não está sendo avisada dos leads. Ver /crm, seção de avisos, botão de reenviar.
+2026-09-08T13:48:45.559Z | 9 passaram, 1 falharam (3.7s)
+    FALHA: Fila de avisos do WhatsApp — 3 aviso(s) não enviado(s) — a Nataly não está sendo avisada dos leads. Ver /crm, seção de avisos, botão de reenviar.
+2026-09-08T14:03:50.120Z | 9 passaram, 1 falharam (4.4s)
+    FALHA: Fila de avisos do WhatsApp — 3 aviso(s) não enviado(s) — a Nataly não está sendo avisada dos leads. Ver /crm, seção de avisos, botão de reenviar.
+2026-09-08T14:18:53.974Z | 9 passaram, 1 falharam (3.6s)
+    FALHA: Fila de avisos do WhatsApp — 3 aviso(s) não enviado(s) — a Nataly não está sendo avisada dos leads. Ver /crm, seção de avisos, botão de reenviar.
+2026-09-08T14:33:57.971Z | 9 passaram, 1 falharam (3.8s)
+    FALHA: Fila de avisos do WhatsApp — 3 aviso(s) não enviado(s) — a Nataly não está sendo avisada dos leads. Ver /crm, seção de avisos, botão de reenviar.
+2026-09-08T14:49:01.966Z | 9 passaram, 1 falharam (3.8s)
+    FALHA: Fila de avisos do WhatsApp — 3 aviso(s) não enviado(s) — a Nataly não está sendo avisada dos leads. Ver /crm, seção de avisos, botão de reenviar.
+2026-09-08T15:04:06.069Z | 9 passaram, 1 falharam (3.9s)
+    FALHA: Fila de avisos do WhatsApp — 3 aviso(s) não enviado(s) — a Nataly não está sendo avisada dos leads. Ver /crm, seção de avisos, botão de reenviar.
+2026-09-08T15:19:09.666Z | 9 passaram, 1 falharam (3.4s)
+    FALHA: Fila de avisos do WhatsApp — 3 aviso(s) não enviado(s) — a Nataly não está sendo avisada dos leads. Ver /crm, seção de avisos, botão de reenviar.
+2026-09-08T15:34:16.855Z | 9 passaram, 1 falharam (7.0s)
+    FALHA: Fila de avisos do WhatsApp — 3 aviso(s) não enviado(s) — a Nataly não está sendo avisada dos leads. Ver /crm, seção de avisos, botão de reenviar.
+2026-09-08T15:49:21.134Z | 9 passaram, 1 falharam (4.1s)
+    FALHA: Fila de avisos do WhatsApp — 3 aviso(s) não enviado(s) — a Nataly não está sendo avisada dos leads. Ver /crm, seção de avisos, botão de reenviar.
+2026-09-08T16:04:25.220Z | 9 passaram, 1 falharam (3.9s)
+    FALHA: Fila de avisos do WhatsApp — 3 aviso(s) não enviado(s) — a Nataly não está sendo avisada dos leads. Ver /crm, seção de avisos, botão de reenviar.
+2026-09-08T16:19:28.149Z | 9 passaram, 1 falharam (2.7s)
+    FALHA: Fila de avisos do WhatsApp — 3 aviso(s) não enviado(s) — a Nataly não está sendo avisada dos leads. Ver /crm, seção de avisos, botão de reenviar.
+2026-09-08T16:34:31.888Z | 9 passaram, 1 falharam (3.5s)
+    FALHA: Fila de avisos do WhatsApp — 3 aviso(s) não enviado(s) — a Nataly não está sendo avisada dos leads. Ver /crm, seção de avisos, botão de reenviar.
+2026-09-08T16:49:34.865Z | 9 passaram, 1 falharam (2.8s)
+    FALHA: Fila de avisos do WhatsApp — 3 aviso(s) não enviado(s) — a Nataly não está sendo avisada dos leads. Ver /crm, seção de avisos, botão de reenviar.
+2026-09-08T17:04:37.958Z | 9 passaram, 1 falharam (2.9s)
+    FALHA: Fila de avisos do WhatsApp — 3 aviso(s) não enviado(s) — a Nataly não está sendo avisada dos leads. Ver /crm, seção de avisos, botão de reenviar.
+2026-09-08T17:19:41.371Z | 9 passaram, 1 falharam (3.2s)
+    FALHA: Fila de avisos do WhatsApp — 3 aviso(s) não enviado(s) — a Nataly não está sendo avisada dos leads. Ver /crm, seção de avisos, botão de reenviar.
+2026-09-08T17:34:44.822Z | 9 passaram, 1 falharam (3.2s)
+    FALHA: Fila de avisos do WhatsApp — 3 aviso(s) não enviado(s) — a Nataly não está sendo avisada dos leads. Ver /crm, seção de avisos, botão de reenviar.
+2026-09-08T17:49:48.762Z | 9 passaram, 1 falharam (3.7s)
+    FALHA: Fila de avisos do WhatsApp — 3 aviso(s) não enviado(s) — a Nataly não está sendo avisada dos leads. Ver /crm, seção de avisos, botão de reenviar.
+2026-09-08T18:04:52.064Z | 9 passaram, 1 falharam (3.1s)
+    FALHA: Fila de avisos do WhatsApp — 3 aviso(s) não enviado(s) — a Nataly não está sendo avisada dos leads. Ver /crm, seção de avisos, botão de reenviar.
+2026-09-08T18:19:56.491Z | 9 passaram, 1 falharam (4.2s)
+    FALHA: Fila de avisos do WhatsApp — 3 aviso(s) não enviado(s) — a Nataly não está sendo avisada dos leads. Ver /crm, seção de avisos, botão de reenviar.
+2026-09-08T18:34:59.617Z | 10 passaram, 0 falharam (2.9s)
