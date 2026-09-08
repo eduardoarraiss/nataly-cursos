@@ -625,6 +625,24 @@ tr[data-abre]{cursor:pointer}
   padding:var(--e2) var(--e2) var(--e2) 0; display:grid;
   grid-template-columns:28px 1fr; align-items:start; gap:0 var(--e1); min-width:0;
   box-shadow:var(--sombra);
+  position:relative;   /* âncora da idade do lead, no canto superior direito */
+}
+/* IDADE DO LEAD — há quanto tempo ele chegou.
+   Fica ABSOLUTA no canto superior direito de propósito: o card é um grid de
+   duas colunas montado para o nome ocupar a linha inteira, e enfiar a idade
+   dentro dessa linha exigiria uma terceira coluna que apertaria o nome em
+   TODOS os cards, inclusive nos que não têm nada de urgente a dizer.
+   Absoluta, ela não participa do fluxo e não empurra nada.
+   O `padding-right` do nome (abaixo) é o que reserva o espaço dela — sem
+   isso, um nome comprido passa por baixo do número.
+   Cor `--ink-3`: 4.97:1 sobre `--carta`, acima do piso de 4.5 mesmo aos 11px.
+   `tabular-nums` para o número não dançar quando "9min" vira "10min". */
+.kcard__idade{
+  position:absolute; top:var(--e2); right:var(--e2);
+  font-size:11px; line-height:1; color:var(--ink-3);
+  font-variant-numeric:tabular-nums; letter-spacing:.01em;
+  pointer-events:none;   /* nunca rouba o clique que abre o detalhe */
+  user-select:none;
 }
 .kcard.pego{border-color:var(--azul); box-shadow:0 0 0 1px var(--azul)}
 .kcard.fantasma{
@@ -641,7 +659,8 @@ tr[data-abre]{cursor:pointer}
 .kpega:hover{color:var(--ink); background:var(--carta-2)}
 .kpega:active{cursor:grabbing}
 .kcard__nome{
-  grid-column:2; text-align:left; background:none; border:none; padding:2px 0 0;
+  grid-column:2; text-align:left; background:none; border:none;
+  padding:2px 42px 0 0;   /* 42px = a faixa reservada para a idade, no canto */
   font-weight:640; font-size:14px; color:var(--ink); cursor:pointer;
   overflow-wrap:anywhere; min-width:0; width:100%; border-radius:var(--r1);
 }
@@ -1158,6 +1177,43 @@ code{background:var(--carta-2); border:1px solid var(--linha); border-radius:var
     var anos = Math.floor(dias / 365);
     return 'há ' + anos + (anos === 1 ? ' ano' : ' anos');
   }
+  /* ---------- idade do lead, em forma compacta ----------
+     Serve ao cartão do kanban, onde cabe pouquíssimo: "20min", "3h", "2d".
+     É PRIMA de `dataRelativa`, não substituta — aquela escreve por extenso
+     ("há 20 min") e continua sendo o que a tabela e a gaveta mostram. Aqui o
+     espaço é um canto de 42px, e "há 20 min" não cabe sem competir com o nome.
+
+     A régua das unidades:
+       < 1 min   → "agora"  (número nenhum: aos 40 segundos "0min" mentiria)
+       < 60 min  → "45min"
+       < 48 h    → "3h", "24h", "36h"   ← as horas passam de 24 de propósito
+       resto     → "3d", até "99d+"
+
+     Por que horas até 48 e não até 24: um lead de 26 horas lido como "1d"
+     parece de ontem e some da fila do dia. "26h" ainda soa como "hoje ainda
+     dá tempo", que é a verdade comercial. Depois de 48h a hora exata não muda
+     mais nenhuma decisão, e o dia é mais legível.
+
+     Devolve `null` quando não há data utilizável — quem chama decide o que
+     fazer, e o cartão simplesmente não mostra nada. Inventar "0min" para uma
+     data quebrada seria pior do que não mostrar. */
+  function idadeCompacta(iso) {
+    if (!iso) return null;
+    var d = new Date(iso);
+    if (isNaN(d.getTime())) return null;
+    var seg = Math.floor((Date.now() - d.getTime()) / 1000);
+    /* Relógio do computador atrasado em relação ao do servidor devolveria um
+       negativo, e "-3min" na tela parece defeito. Trata como recém-chegado. */
+    if (seg < 0) seg = 0;
+    if (seg < 60) return 'agora';
+    var min = Math.floor(seg / 60);
+    if (min < 60) return min + 'min';
+    var h = Math.floor(min / 60);
+    if (h < 48) return h + 'h';
+    var dias = Math.floor(h / 24);
+    return dias > 99 ? '99d+' : dias + 'd';
+  }
+
   /* Quantos dias inteiros (no fuso de São Paulo) separam a data de hoje.
      Usa a CHAVE DO DIA, não a diferença em milissegundos: um lead das 23h
      de ontem está a 1 dia, não a "0,4 dia".
@@ -2860,6 +2916,27 @@ code{background:var(--carta-2); border:1px solid var(--linha); border-radius:var
     bn.addEventListener('click', function () { abreLead(lead.id, bn); });
     art.appendChild(bn);
 
+    /* --- há quanto tempo este lead chegou ---
+       Usa `criado_em`, que é o instante em que a linha nasceu no banco — e
+       não `atualizado_em`, que muda toda vez que alguém mexe no status. A
+       pergunta que este número responde é "faz quanto tempo que esta pessoa
+       está esperando", e mover o cartão de coluna não faz ninguém esperar
+       menos.
+
+       `<time datetime>` em vez de `<span>`: o valor legível é abreviado, e o
+       atributo guarda a data completa para quem lê a página por outro meio.
+       O `title` (dica ao passar o mouse) e o `aria-label` dizem por extenso,
+       porque "3h" lido em voz alta por um leitor de tela vira "três agá". */
+    var idade = idadeCompacta(lead.criado_em);
+    if (idade) {
+      var ti = el('time', 'kcard__idade', idade);
+      ti.setAttribute('datetime', String(lead.criado_em));
+      ti.setAttribute('data-idade', String(lead.criado_em));
+      ti.setAttribute('title', 'Chegou em ' + dataAbsoluta(lead.criado_em));
+      ti.setAttribute('aria-label', 'Chegou ' + dataRelativa(lead.criado_em));
+      art.appendChild(ti);
+    }
+
     var meta = texto(lead.cidade);
     if (lead.utm_content) meta += ' · ' + texto(lead.utm_content);
     if (lead.produto_id) meta += ' · ' + rot('produto_curto', lead.produto_id);
@@ -3584,6 +3661,44 @@ code{background:var(--carta-2); border:1px solid var(--linha); border-radius:var
 
   /* Recarrega o resumo de tempos em tempos para o contador não envelhecer. */
   window.setInterval(carregaResumo, 120000);
+
+  /* ---------- o relógio da idade dos leads ----------
+     UM só temporizador varrendo o DOM, e não um por cartão. Com 120 leads
+     seriam 120 temporizadores para escrever 120 textos curtos — e cada
+     cartão é jogado fora e refeito a cada redesenho do kanban (mover de
+     coluna, filtrar, recarregar), o que deixaria temporizadores órfãos
+     rodando sobre elementos que já saíram da tela. Varrer o DOM não tem esse
+     problema: ele sempre encontra exatamente os cartões que existem AGORA.
+
+     30 segundos é o passo porque a menor unidade que a tela mostra é o
+     minuto: com meio minuto de passo, nenhum cartão fica exibindo um valor
+     vencido por mais de 30 segundos.
+
+     🔴 O `visibilitychange` não é enfeite. O navegador ESTRANGULA
+     `setInterval` em aba oculta (no Chrome, para no máximo uma vez por
+     minuto, e em aba congelada não roda nada). Sem o gancho, a Nataly volta
+     ao painel depois de duas horas no WhatsApp e lê "5min" num lead que tem
+     duas horas e cinco minutos — que é exatamente o erro que este número
+     existe para não deixar acontecer. Ao voltar para a aba, redesenha na
+     hora, antes do próximo tique. */
+  function atualizaIdades() {
+    var nos = document.querySelectorAll('[data-idade]');
+    for (var i = 0; i < nos.length; i++) {
+      var iso = nos[i].getAttribute('data-idade');
+      var t = idadeCompacta(iso);
+      /* Só escreve quando MUDOU. Escrever o mesmo texto de novo suja a árvore
+         de acessibilidade (leitores de tela anunciam a alteração) e provoca
+         repintura à toa, duas vezes por minuto, para sempre. */
+      if (t && nos[i].textContent !== t) {
+        nos[i].textContent = t;
+        nos[i].setAttribute('aria-label', 'Chegou ' + dataRelativa(iso));
+      }
+    }
+  }
+  window.setInterval(atualizaIdades, 30000);
+  document.addEventListener('visibilitychange', function () {
+    if (document.visibilityState === 'visible') atualizaIdades();
+  });
 })();
 </script>
 </body>

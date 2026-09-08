@@ -192,8 +192,10 @@ const pausa=ms=>new Promise(r=>setTimeout(r,ms));
   ok('diz qual e a opcao ideal', /opção ideal para você/.test(s.txt));
   ok('a recomendacao aparece', s.rec===true);
   ok('recomenda o combo presencial', /online \+ presencial/.test(s.produto), s.produto);
-  ok('mostra o preco DESSE produto', s.preco==='R$ 1.497', s.preco);
-  ok('e o parcelamento DESSE produto', /154,82/.test(s.parcela), s.parcela);
+  ok('mostra o preco DESSE produto', s.preco==='R$ 1.197 à vista no PIX', s.preco);
+  /* O combo não tem parcelamento: a linha "ou 12x de…" some da tela em vez de
+     ficar com um "ou null" pendurado. */
+  ok('e NAO mostra parcelamento nenhum', s.parcela==='', JSON.stringify(s.parcela));
   ok('explica por que, na voz da Nataly', s.porque.length>30, s.porque.slice(0,60));
   ok('lista o que esta incluso', s.itens>=5, String(s.itens));
   ok('🔴 NAO da checkout no presencial', s.ctaEscondido===true);

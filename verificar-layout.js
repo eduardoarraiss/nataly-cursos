@@ -61,7 +61,9 @@ function daContas(){
 const _c=daContas();
 const SENHA=process.argv[3]||process.env.CRM_SENHA||(_c?_c.s:'')||'';
 const USUARIO=process.env.CRM_USUARIO||(_c?_c.u:'')||'nataly';
-const ROTAS=['/links','/bio','/profissao-lash-presencial','/inscricao-presencial','/obrigado-profissao-lash','/obrigado-profissao-lash-presencial'];
+/* A home (`/`) entrou aqui em 06/09/2026, no redesenho. Ela estava de fora, entao
+   nenhuma medicao cobria a pagina que recebe MAIS visita do site. */
+const ROTAS=['/','/links','/bio','/profissao-lash-presencial','/inscricao-presencial','/obrigado-profissao-lash','/obrigado-profissao-lash-presencial'];
 const LARGURAS=[320,390,430,900,1280];
 const SELETORES='.bloco,.bio,.nums,.oferta,.estreito,.largo,.wrap,.par,'+
   /* pagina de links (bio): o cartao ja transbordou 232px aqui uma vez */
@@ -163,7 +165,7 @@ function medida(SEL){
         presencial_possivel:{nome:'Método LED — presencial',preco:'R$ 1.997',parcela:'12x de R$ 206,54'},
         sugestao:true}},
       {nome:'combo Profissão Lash', d:{id:'profissao-lash-presencial',
-        nome:'Profissão Lash — online + presencial',preco:'R$ 1.497',parcela:'12x de R$ 154,82',
+        nome:'Profissão Lash — online + presencial',preco:'R$ 1.197 à vista no PIX',parcela:null,
         formato:'presencial',checkout:null,
         porque:'É o caminho que combina com o que você me contou sobre a sua rotina.',
         inclui:['Um dia de prática ao vivo comigo, em Cambuí, MG',
@@ -184,7 +186,7 @@ function medida(SEL){
         document.getElementById('rec-nome').textContent=dado.nome;
         document.getElementById('rec-porque').textContent=dado.porque;
         document.getElementById('rec-preco').textContent=dado.preco;
-        document.getElementById('rec-parcela').textContent='ou '+dado.parcela;
+        document.getElementById('rec-parcela').textContent=dado.parcela?'ou '+dado.parcela:'';
         const ul=document.getElementById('rec-inclui'); ul.innerHTML='';
         dado.inclui.forEach(t=>{const li=document.createElement('li');li.textContent=t;ul.appendChild(li);});
         /* O botao existe nos DOIS caminhos, com papeis diferentes: <a> que
@@ -201,8 +203,9 @@ function medida(SEL){
         if(dado.presencial_possivel){
           document.getElementById('rec-extra-txt').textContent=
             'E fica sabendo: o '+dado.presencial_possivel.nome+' existe, por '+
-            dado.presencial_possivel.preco+' ('+dado.presencial_possivel.parcela+
-            '). Se você quiser fazer a prática ao vivo comigo, me fala no WhatsApp '+
+            dado.presencial_possivel.preco+
+            (dado.presencial_possivel.parcela?' ('+dado.presencial_possivel.parcela+')':'')+
+            '. Se você quiser fazer a prática ao vivo comigo, me fala no WhatsApp '+
             'que a gente vê as condições juntas.';
         }
         const maus=[];
